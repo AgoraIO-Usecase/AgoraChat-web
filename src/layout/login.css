@@ -1,0 +1,90 @@
+.login-container {
+    background-image: url('../assets/background@2x.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-form {
+    width: 26.4%;
+    height: 48.8%;
+    min-width: 300px;
+    min-height: 460px;
+    background-color: #FFF;
+    border: 1px solid #fff;
+    border-radius: 12px;
+    box-shadow: 0 24 36 0 rgba(0, 0, 0, 0.8);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.login-form-icon {
+    background-image: url('../assets/Icon@2x.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    width: 100px;
+    height: 100px;
+    margin-top: 15%;
+}
+
+.login-form-AC {
+    background-image: url('../assets/AgoraChat@2x.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    width: 153px;
+    height: 27px;
+    margin: 2.6% 0;
+}
+
+.login-form-notice {
+    background-image: url('../assets/red@2x.png');
+    background-size: 14px;
+    background-position: 2px;
+    background-repeat: no-repeat;
+    padding-left: 18px;
+    max-width: 85%;
+    color: #000;
+    font-size: 14px;
+    overflow: hidden;
+    word-break: break-all;
+    height: 18px;
+    margin: 2% 0;
+}
+
+.login-form-input {
+    width: 85%;
+    height: 48px;
+    background-color: #F2F3F3;
+    border: 1px solid #F2F3F3;
+    border-radius: 24px;
+    margin: 2% 0;
+    font-size: 14px;
+    color: #999999;
+    padding: 0 19px;
+    box-sizing: border-box;
+}
+
+.button {
+    background-color: #114EFF;
+    color: #fff;
+}
+
+.button:active {
+    background-color: #093ed9;
+}
+
+.login-copyright {
+    font-size: 16px;
+    color: #fff;
+    position: absolute;
+    bottom: 90px;
+}
+
+.main-container {
+    flex: 1;
+}
