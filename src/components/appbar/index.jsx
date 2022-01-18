@@ -21,6 +21,7 @@ import avater3 from '../../assets/avatar3.png'
 import store from '../../redux/store'
 import { setMyUserInfo } from '../../redux/actions'
 import { logout } from '../../api/loginChat'
+import getGroups from '../../api/groupChat/getGroups'
 
 // import UserInfoPopover from './userInfo'
 
@@ -77,7 +78,8 @@ export default function Header() {
     }, [])
 
     const handleClickMore = (e) => {
-        setAddEl(e.currentTarget)
+        setAddEl(e.currentTarget);
+        getGroups();
     }
 
     const newChatDialog = () => {
