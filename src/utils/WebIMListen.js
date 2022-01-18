@@ -14,7 +14,6 @@ const history = createHashHistory()
 const initListen = () => {
     WebIM.conn.listen({
         onOpened: () => {
-            console.log('onOpened>>>');
             getContacts();
             getGroups();
             getPublicGroups();
@@ -23,28 +22,12 @@ const initListen = () => {
             store.dispatch(setFetchingStatus(false))
         },
         onClosed: () => {
-            console.log('onClosed>>>');
             store.dispatch(setFetchingStatus(false))
             history.push('/login')
-        },
-        onOnline: (network) => {
-            console.log('onOnline>>>', network);
-        },
-        onOffline: (network) => {
-            console.log('onOffline>>>', network);
         },
         onError: (err) => {
             console.log('onError>>>', err);
         },
-        // onTextMessage: (message) => {
-        //     console.log('onTextMessage>>>', message);
-        // },
-        // onPictureMessage: (message) => {
-        //     console.log('onPictureMessage>>>', message);
-        // },
-        // onCmdMessage: (message) => {
-        //     console.log('onCmdMessaeg>>>', message);
-        // },
         onPresence: (event) => {
             console.log('onPresence>>>', event);
             const { type } = event;
@@ -65,20 +48,6 @@ const initListen = () => {
                     break;
             }
         },
-        onContactInvited: (msg) => {
-            console.log('onContactInvited', msg)
-        },
-
-        onTokenWillExpire: () => {
-            console.log('token 将要过期 -')
-            let { myUserInfo } = store.getState()
-            console.log('myUserInfo>>>', myUserInfo);
-            getToken(myUserInfo.agoraId, myUserInfo.nickName).then((res) => {
-                const { accessToken } = res
-                WebIM.conn.renewToken(accessToken)
-                console.log('token 重新设置成功')
-            })
-        }
     })
 
     WebIM.conn.addEventHandler('REQUESTS', {
@@ -125,14 +94,16 @@ const initListen = () => {
     })
 
     WebIM.conn.addEventHandler('TOKENSTATUS', {
-        onTokenWillExpire: () => {
-            console.log('token 将要过期 addEventHandler')
-            // let { myUserInfo } = store.getState()
-            // getToken(myUserInfo.agoraId, myUserInfo.nickName).then((res) => {
-            //     const { accessToken } = res
-            //     WebIM.conn.renewToken(accessToken)
-            //     console.log('token 重新设置成功')
-            // })
+        onTokenWillExpire: (token) => {
+            let { myUserInfo } = store.getState()
+            getToken(myUserInfo.agoraId, myUserInfo.nickName).then((res) => {
+                const { accessToken } = res
+                WebIM.conn.renewToken(accessToken)
+                const authData = sessionStorage.getItem('webim_auth')
+                const webim_auth = authData && JSON.parse(authData)
+                webim_auth.accessToken = accessToken
+                sessionStorage.setItem('webim_auth', JSON.stringify(webim_auth))
+            })
         },
         onTokenExpired: () => {
             console.error('onTokenExpired')
@@ -144,7 +115,6 @@ const initListen = () => {
             console.log('onDisconnected')
         }
     })
-
 }
 
 export default initListen;
