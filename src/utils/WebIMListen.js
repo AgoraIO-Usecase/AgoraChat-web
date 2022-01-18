@@ -15,7 +15,6 @@ const initListen = () => {
     WebIM.conn.listen({
         onOpened: () => {
             getContacts();
-            getGroups();
             getPublicGroups();
             getBlackList()
             history.push('/main')
