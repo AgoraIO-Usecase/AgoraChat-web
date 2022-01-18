@@ -25,6 +25,7 @@ export const agreeInviteGroup = (val) => {
     WebIM.conn.agreeInviteIntoGroup(options).then((res) => {
         console.log('agreeInvite>>>', res);
         message.success(`${i18next.t('You have joined the group：')}` + gid)
+        getGroups();
     })
 }
 
