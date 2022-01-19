@@ -7,6 +7,7 @@ export const getGroupWrite = (groupId) => {
         groupId: groupId
     }
     WebIM.conn.getGroupWhitelist(options).then((res) => {
+        console.log("getGroupWhitelist>>>",res);
         store.dispatch(groupAllowAction(res.data))
     })
 }

@@ -9,7 +9,7 @@ export const getGroupBlock = (groupId) => {
         groupId: groupId
     };
     WebIM.conn.getGroupBlacklistNew(option).then((res) => {
-        console.log(res)
+        console.log("getGroupBlacklistNew>>>", res);
         store.dispatch(groupBlockAction(res.data));
         getGroupInfo(groupId, 'block')
     })

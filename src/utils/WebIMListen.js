@@ -8,6 +8,9 @@ import store from '../redux/store'
 import { setRequests, setFetchingStatus } from '../redux/actions'
 import { getToken } from '../api/loginChat'
 import { agreeInviteGroup } from '../api/groupChat/addGroup'
+import { getGroupMuted } from "../api/groupChat/groupMute";
+import { getGroupWrite } from "../api/groupChat/groupWhite";
+
 import i18next from "i18next";
 import { message } from '../components/common/alert'
 const history = createHashHistory()
@@ -84,11 +87,19 @@ const initListen = () => {
                 }else{
                     groupRequests.unshift(data)
                 }
-                
                 // groupRequests.unshift(data)
                 let newRequests = { ...requests, group: [...groupRequests] }
                 store.dispatch(setRequests(newRequests))
-            }
+            }else if (msg.type === "addMute") {
+                getGroupMuted(msg.gid);
+			}else if (msg.type ===  "removeMute") {
+				getGroupMuted(msg.gid);
+			}else if (msg.type === "addUserToGroupWhiteList") {
+                getGroupWrite(msg.gid);
+			}else if (msg.type === "rmUserFromGroupWhiteList") {
+                getGroupWrite(msg.gid);
+			}
+            
         }
     })
 

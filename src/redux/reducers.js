@@ -68,18 +68,11 @@ const reducer = (state = defaultState, action) => {
                 }
             }
         case 'GROUP_MUTE_ACITON':
-            let muteType = action.options?.type
-            let newMuteList = []
-            if (muteType === 'make') {
-                newMuteList = _.concat(state.groups.groupMuteList, data)
-            } else if (muteType === 'move') {
-                newMuteList = data
-            }
             return {
                 ...state,
                 groups: {
                     ...state.groups,
-                    groupMuteList: newMuteList
+                    groupMuteList: data
                 }
             }
         case 'GROUP_BLOCK_ACITON':

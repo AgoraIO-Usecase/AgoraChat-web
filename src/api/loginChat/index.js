@@ -2,7 +2,7 @@ import WebIM from '../../utils/WebIM'
 
 
 export const getToken = (agoraId, nickName) => {
-    return postData('https://a41.easemob.com/app/chat/user/login', { "userAccount": agoraId, "userNickname": nickName })
+    return postData('https://a1-vip6.easemob.com/app/chat/user/login', { "userAccount": agoraId, "userNickname": nickName })
 }
 
 export const loginWithToken = (agoraId, agoraToken) => {

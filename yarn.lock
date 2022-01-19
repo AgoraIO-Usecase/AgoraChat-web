@@ -3467,10 +3467,10 @@ char-regex@^1.0.2:
   resolved "https://registry.yarnpkg.com/char-regex/-/char-regex-1.0.2.tgz#d744358226217f981ed58f479b1d6bcc29545dcf"
   integrity sha512-kWWXztvZ5SBQV+eRgKFeh8q5sLuZY2+8WUIzlxWVTg+oGwY14qylx1KbKzHd8P6ZYkAg0xyIDU9JMHhyJMZ1jw==
 
-chat-uikit@1.0.78:
-  version "1.0.78"
-  resolved "https://registry.yarnpkg.com/chat-uikit/-/chat-uikit-1.0.78.tgz#67d8499ce8e3d9115ccde9dc09992fabfb8d5ba4"
-  integrity sha512-fnsMUrm/2BymjtxLqNoC3WMfsEI+XIz7RmQTACFPp7OOEYbPfco3cu6bsEUzT0lkSs+WE4rcRFMMm0SDkFPw8w==
+chat-uikit@^1.0.81:
+  version "1.0.81"
+  resolved "https://registry.yarnpkg.com/chat-uikit/-/chat-uikit-1.0.81.tgz#7c569c6514019d9cf8b82c588ade998b55c999ae"
+  integrity sha512-khFul624se543AxqBYspqIOZZdN+md6XB8HYr9zeVWz7670BasHn0IwYirdF6Jn8dGxWGHOIN8bxSCOL8gBKKA==
   dependencies:
     "@emotion/react" "^11.5.0"
     "@emotion/styled" "^11.3.0"
@@ -3497,7 +3497,7 @@ chat-uikit@1.0.78:
     dexie "^3.0.3"
     dotenv "8.2.0"
     dotenv-expand "5.1.0"
-    easemob-websdk "^4.0.3-beta"
+    easemob-websdk "^4.0.3"
     eslint "^7.11.0"
     eslint-config-react-app "^6.0.0"
     eslint-plugin-flowtype "^5.2.0"
@@ -4656,15 +4656,10 @@ duplexify@^3.4.2, duplexify@^3.6.0:
     readable-stream "^2.0.0"
     stream-shift "^1.0.0"
 
-easemob-websdk@4.0.1-beta2:
-  version "4.0.1-beta2"
-  resolved "https://registry.yarnpkg.com/easemob-websdk/-/easemob-websdk-4.0.1-beta2.tgz#4b4eaa50a20b8b8bcdcb808dee5ee2a2ba0967af"
-  integrity sha512-IZRLI3I1siwBPZe2in7JrF9ezot7JI8NKOvwLa6LsIgy92nncCFLLU8Almxou5WNWL4XL1jJLAFfjZv3gY7JmA==
-
-easemob-websdk@^4.0.3-beta:
-  version "4.0.3-beta"
-  resolved "https://registry.yarnpkg.com/easemob-websdk/-/easemob-websdk-4.0.3-beta.tgz#70fe08bcbabe590fd96d33b8c17c59fd6cf6e712"
-  integrity sha512-5sxAL17Wa32r5kmgRvtTropI5xM4ZLTrhZ5wbQsUCUya4ixnyuk6fdI2GenKG8QBKjVBNNJOpZisHPOPD3MmwQ==
+easemob-websdk@^4.0.3:
+  version "4.0.3"
+  resolved "https://registry.yarnpkg.com/easemob-websdk/-/easemob-websdk-4.0.3.tgz#b8dfede7664b7bc0662c80514587d95b6693ec13"
+  integrity sha512-M7dN5lXt7di7EA+7WQ/A7fe+uxeUALufouTnEttVgx3cpPlGj2BTL+4JntxJHIu716W5j8jXlXNh9ZOOTQigUA==
 
 ee-first@1.1.1:
   version "1.1.1"
