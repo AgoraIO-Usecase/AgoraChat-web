@@ -9,7 +9,6 @@ export const getGroupBlock = (groupId) => {
         groupId: groupId
     };
     WebIM.conn.getGroupBlacklistNew(option).then((res) => {
-        console.log("getGroupBlacklistNew>>>", res);
         store.dispatch(groupBlockAction(res.data));
         getGroupInfo(groupId, 'block')
     })
@@ -22,12 +21,10 @@ export const onChangeGroupBlock = (groupId, userName, type) => {
     };
     if (type === "move") {
         WebIM.conn.removeGroupBlockSingle(options).then((res) => {
-            console.log(res)
             getGroupBlock(groupId)
         })
     } else if (type === "make") {
         WebIM.conn.groupBlockSingle(options).then((res) => {
-            console.log(res)
             getGroupBlock(groupId)
         })
     }
