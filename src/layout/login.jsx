@@ -7,7 +7,7 @@ import { getToken, loginWithToken } from '../api/loginChat'
 
 import store from '../redux/store'
 import { setMyUserInfo, setFetchingStatus } from '../redux/actions'
-
+import { message } from '../components/common/alert'
 export default function Login() {
     // const history = useHistory()
     const [notice, setNotice] = useState({
@@ -39,6 +39,9 @@ export default function Login() {
             loginWithToken(values.agoraId, accessToken)
             store.dispatch(setMyUserInfo({ agoraId: values.agoraId, nickName: values.nickName }))
             sessionStorage.setItem('webim_auth', JSON.stringify({ ...values, accessToken }))
+        }).catch(() => {
+            store.dispatch(setFetchingStatus(false))
+            message.error('login fail.')
         })
     }, [values])
 
