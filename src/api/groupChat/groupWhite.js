@@ -18,7 +18,6 @@ export const rmGroupWhiteUser = (groupId, userName) => {
         userName: userName
     };
     WebIM.conn.rmUsersFromGroupWhitelist(options).then((res) => {
-        console.log('move mute success>>>', res);
         getGroupWrite(groupId)
     })
 }
