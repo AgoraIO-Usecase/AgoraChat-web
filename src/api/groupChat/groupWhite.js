@@ -28,7 +28,6 @@ export const addGroupWhiteUser = (groupId, userName) => {
         users: [userName]
     };
     WebIM.conn.addUsersToGroupWhitelist(options).then((res) => {
-        console.log('make mute success>>>', res);
         getGroupWrite(groupId)
     })
 }
