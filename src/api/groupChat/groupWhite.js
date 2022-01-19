@@ -7,6 +7,7 @@ export const getGroupWrite = (groupId) => {
         groupId: groupId
     }
     WebIM.conn.getGroupWhitelist(options).then((res) => {
+        console.log("getGroupWhitelist>>>",res);
         store.dispatch(groupAllowAction(res.data))
     })
 }
@@ -17,7 +18,6 @@ export const rmGroupWhiteUser = (groupId, userName) => {
         userName: userName
     };
     WebIM.conn.rmUsersFromGroupWhitelist(options).then((res) => {
-        console.log('move mute success>>>', res);
         getGroupWrite(groupId)
     })
 }
@@ -28,7 +28,6 @@ export const addGroupWhiteUser = (groupId, userName) => {
         users: [userName]
     };
     WebIM.conn.addUsersToGroupWhitelist(options).then((res) => {
-        console.log('make mute success>>>', res);
         getGroupWrite(groupId)
     })
 }

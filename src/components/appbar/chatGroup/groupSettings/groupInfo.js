@@ -5,12 +5,15 @@ import i18next from "i18next";
 import { Box, Tabs, Tab } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { TabPanel, a11yProps } from '../../../common/tabs'
+import store from '../../../../redux/store';
 import WebIM from '../../../../utils/WebIM'
 import MembersList from './membersList'
 import AdminList from './adminList'
 import MuteList from './muteList'
 import BlockList from './blockList'
 import AllowList from './allowList'
+import { getGroupBlock } from "../../../../api/groupChat/groupBlock";
+
 
 const useStyles = makeStyles((theme) => {
     return ({
@@ -46,6 +49,10 @@ const GroupInfo = () => {
     const [newMuteList, setNewMuteList] = useState([])
     const [value, setValue] = useState(0);
     const handleChange = (event, newValue) => {
+        if (newValue === 3) {
+            let gid = store.getState()?.groups?.groupsInfo?.id
+            getGroupBlock(gid);
+        }
         setValue(newValue);
     };
 
@@ -82,7 +89,7 @@ const GroupInfo = () => {
             <TabPanel value={value} index={2} className={classes.gUserBox}>
                 <MuteList newMuteList={newMuteList} className={classes.gUserBox} />
             </TabPanel>
-            <TabPanel value={value} index={3} className={classes.gUserBox}>
+            <TabPanel value={value} index={3} className={classes.gUserBox} >
                 <BlockList />
             </TabPanel>
             <TabPanel value={value} index={4} className={classes.gUserBox}>
