@@ -241,7 +241,7 @@ const CreateGroup = () => {
                         />
                     </Box>
                     <Box className={classes.gNext} onClick={() => handleSelectUserDialog()}>
-                        <Typography>{i18next.t('Next')}</Typography>
+                        <Typography className={classes.gNameText} style={{color: '#005FFF'}}>{i18next.t('Next')}</Typography>
                         <img src={go_icon} alt="" className={classes.gNextImg} />
                     </Box>
                 </Box>}
