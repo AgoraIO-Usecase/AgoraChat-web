@@ -26,7 +26,7 @@ npm run build
 ```
 
 ## Contact Us
-- You can find full API document at[Document Center](https://hyphenateinc.github.io/web_product_overview.html).
+- You can find the complete API document at [Document Center](https://hyphenateinc.github.io/web_product_overview.html).
 - You can file bugs about this demo a[issue](https://github.com/AgoraIO-Usecase/AgoraChat-web/issues).
 
 ## License
