@@ -17,7 +17,7 @@ Recall a message
 
 ## Running the App
 ``` bash
-# install dependency
+# Install dependency.
 npm install
 # run in dev mode
 HTTPS=true npm start
