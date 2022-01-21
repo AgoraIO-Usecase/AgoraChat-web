@@ -19,7 +19,7 @@ Recall a message
 ``` bash
 # Install dependency.
 npm install
-# run in dev mode
+# Run in dev mode.
 HTTPS=true npm start
 # generate dist
 npm run build
