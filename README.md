@@ -4,7 +4,7 @@ This repository contains the sample project using the Agora Chat Web UI KIT.
 
 With this sample project, you can:
 
-Login chat server
+1. Log in to the chat server.
 Start a chat
 Manage session list
 Add friends
