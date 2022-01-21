@@ -6,7 +6,7 @@ With this sample project, you can:
 
 1. Log in to the chat server.
 2. Start a chat conversation.
-Manage session list
+3. Manage the conversation list.
 Add friends
 Join group chats
 Add your friends to your blacklist
