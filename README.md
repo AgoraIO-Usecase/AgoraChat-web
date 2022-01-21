@@ -7,7 +7,7 @@ With this sample project, you can:
 1. Log in to the chat server.
 2. Start a chat conversation.
 3. Manage the conversation list.
-Add friends
+4. Add friends.
 Join group chats
 Add your friends to your blacklist
 Send various types of messages, Such as: text, expression, picture, voice, file and so on
