@@ -8,7 +8,7 @@ With this sample project, you can:
 2. Start a chat conversation.
 3. Manage the conversation list.
 4. Add friends.
-Join group chats
+5. Join group chats.
 Add your friends to your blacklist
 Send various types of messages, Such as: text, expression, picture, voice, file and so on
 Recall a message
