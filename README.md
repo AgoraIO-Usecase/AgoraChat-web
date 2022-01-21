@@ -12,7 +12,7 @@ With this sample project, you can:
 Add your friends to your blacklist
 Send various types of messages, Such as: text, expression, picture, voice, file and so on
 Recall a message
-Logout
+9. Log out of the chat server.
 
 
 ## Running the App
