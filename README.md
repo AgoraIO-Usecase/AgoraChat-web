@@ -2,7 +2,7 @@
 
 This repository contains the sample project using the Agora Chat Web UI KIT.
 
-With this sample app, you can:
+With this sample project, you can:
 
 Login chat server
 Start a chat
