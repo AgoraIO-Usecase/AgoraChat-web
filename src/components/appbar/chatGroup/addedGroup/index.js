@@ -90,7 +90,7 @@ const AddedGroups = ({ onClose }) => {
     const [showGroupSettings, setshowGroupSettings] = useState(false)
     const [currentGroupId, setCurrentGroupId] = useState('')
 
-
+    const [renderGroups, setRenderGroups] = useState([...groupList])
 
     // click group avatar
     const handleGroupInfo = (groupid) => {
@@ -101,10 +101,15 @@ const AddedGroups = ({ onClose }) => {
 
     const handleSearchValue = (e) => {
         if (!(e.target.value)) {
-            getGroups()
-            store.dispatch(searchLoadAction(true))
+            // getGroups()
+            // store.dispatch(searchLoadAction(true))
+            setRenderGroups(groupList)
         } else {
-            store.dispatch(searchAddedGroupAction(e.target.value))
+            let reRenderGroups = groupList.filter((item) => {
+                return item.groupname.includes(e.target.value)
+            });
+            setRenderGroups(reRenderGroups)
+            // store.dispatch(searchAddedGroupAction(e.target.value))
         }
     }
 
@@ -134,7 +139,7 @@ const AddedGroups = ({ onClose }) => {
                 </Box>
                 <Loading show={isSearching} />
                 <List className={classes.gItem}>
-                    {groupList.length > 0 && groupList.map((item, key) => {
+                    {renderGroups.length > 0 && renderGroups.map((item, key) => {
                         return (
                             <ListItem className={classes.gInfoBox} key={key}>
                                 {/* <Box  onClick={() => handleGroupInfo(item.groupid)}></Box> */}
