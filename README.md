@@ -1,6 +1,6 @@
 # Agora chat demo (WEB)
 
-This repository will help you learn how to use Agora chat SDK to realize a simple chat web application.
+This repository contains the sample project using the Agora Chat Web UI KIT.
 
 With this sample app, you can:
 
