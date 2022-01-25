@@ -1,10 +1,10 @@
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { Box, InputBase, List, ListItem, Button, Avatar } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
-import { EaseApp } from 'chat-uikit'
+import { EaseApp } from 'agora-chat-uikit'
 import store from '../../../../redux/store'
 import { searchAddedGroupAction, searchLoadAction } from '../../../../redux/actions'
 import GroupSettingsDialog from '../groupSettings'
@@ -91,6 +91,10 @@ const AddedGroups = ({ onClose }) => {
     const [currentGroupId, setCurrentGroupId] = useState('')
 
     const [renderGroups, setRenderGroups] = useState([...groupList])
+
+    useEffect(() => {
+        setRenderGroups(groupList)
+    }, [groupList])
 
     // click group avatar
     const handleGroupInfo = (groupid) => {

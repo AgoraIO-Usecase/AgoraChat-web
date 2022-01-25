@@ -3,7 +3,7 @@ import Header from '../components/appbar'
 import './login.css'
 import { loginWithToken } from '../api/loginChat'
 import WebIM from '../utils/WebIM';
-import { EaseApp } from 'chat-uikit'
+import { EaseApp } from 'agora-chat-uikit'
 import { createHashHistory } from 'history'
 import store from '../redux/store'
 import { setMyUserInfo} from '../redux/actions'
