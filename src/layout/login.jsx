@@ -39,6 +39,9 @@ export default function Login() {
             loginWithToken(values.agoraId, accessToken)
             store.dispatch(setMyUserInfo({ agoraId: values.agoraId, nickName: values.nickName }))
             sessionStorage.setItem('webim_auth', JSON.stringify({ ...values, accessToken }))
+        }).catch(() => {
+            store.dispatch(setFetchingStatus(false))
+            message.error('login fail.')
         })
     }, [values])
 
@@ -46,7 +49,6 @@ export default function Login() {
         const listener = function (event) {
             let curKey = event.which
             if (curKey === 13) {
-                console.log('AAA>>>');
                 login()
             }
         }

@@ -14,7 +14,6 @@ const history = createHashHistory()
 const initListen = () => {
     WebIM.conn.listen({
         onOpened: () => {
-            console.log('onOpened>>>');
             getContacts();
             getGroups();
             getPublicGroups();
@@ -23,7 +22,6 @@ const initListen = () => {
             store.dispatch(setFetchingStatus(false))
         },
         onClosed: () => {
-            console.log('onClosed>>>');
             store.dispatch(setFetchingStatus(false))
             history.push('/login')
         },
@@ -36,15 +34,7 @@ const initListen = () => {
         onError: (err) => {
             console.log('onError>>>', err);
         },
-        // onTextMessage: (message) => {
-        //     console.log('onTextMessage>>>', message);
-        // },
-        // onPictureMessage: (message) => {
-        //     console.log('onPictureMessage>>>', message);
-        // },
-        // onCmdMessage: (message) => {
-        //     console.log('onCmdMessaeg>>>', message);
-        // },
+
         onPresence: (event) => {
             console.log('onPresence>>>', event);
             const { type } = event;
@@ -59,7 +49,7 @@ const initListen = () => {
                     agreeInviteGroup(event)
                     break;
                 case 'removedFromGroup':
-                    message.info(`${i18next.t('您已被移除群：')}` + event.gid)
+                    message.info(`${i18next.t('You have been removed from the group:')}` + event.gid)
                     break;
                 default:
                     break;
@@ -70,13 +60,11 @@ const initListen = () => {
         },
 
         onTokenWillExpire: () => {
-            console.log('token 将要过期 -')
             let { myUserInfo } = store.getState()
-            console.log('myUserInfo>>>', myUserInfo);
             getToken(myUserInfo.agoraId, myUserInfo.nickName).then((res) => {
                 const { accessToken } = res
                 WebIM.conn.renewToken(accessToken)
-                console.log('token 重新设置成功')
+                console.log('reset token success')
             })
         }
     })
@@ -125,14 +113,16 @@ const initListen = () => {
     })
 
     WebIM.conn.addEventHandler('TOKENSTATUS', {
-        onTokenWillExpire: () => {
-            console.log('token 将要过期 addEventHandler')
-            // let { myUserInfo } = store.getState()
-            // getToken(myUserInfo.agoraId, myUserInfo.nickName).then((res) => {
-            //     const { accessToken } = res
-            //     WebIM.conn.renewToken(accessToken)
-            //     console.log('token 重新设置成功')
-            // })
+        onTokenWillExpire: (token) => {
+            let { myUserInfo } = store.getState()
+            getToken(myUserInfo.agoraId, myUserInfo.nickName).then((res) => {
+                const { accessToken } = res
+                WebIM.conn.renewToken(accessToken)
+                const authData = sessionStorage.getItem('webim_auth')
+                const webim_auth = authData && JSON.parse(authData)
+                webim_auth.accessToken = accessToken
+                sessionStorage.setItem('webim_auth', JSON.stringify(webim_auth))
+            })
         },
         onTokenExpired: () => {
             console.error('onTokenExpired')
