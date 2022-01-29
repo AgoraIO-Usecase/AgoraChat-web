@@ -135,7 +135,6 @@ const PublicGroup = () => {
     }
 
     const handleSearchValue = (e) => {
-        console.log(12345, e.target.value)
         if (!(e.target.value)) {
             // getPublicGroups()
             // store.dispatch(searchLoadAction(true))
