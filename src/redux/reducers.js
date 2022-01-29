@@ -23,6 +23,7 @@ let defaultState = {
     },
     isFetching: false,
     isSearching: false,
+    isShowGroupChat: false
 };
 
 const reducer = (state = defaultState, action) => {
@@ -188,9 +189,11 @@ const reducer = (state = defaultState, action) => {
                 ...state,
                 constacts: searchContacts
             }
+        case 'CLOSE_GROUP_CHAT_ACTION':
             return {
-
-            }
+				...state,
+				isShowGroupChat: data
+			};
         default:
             break;
     }

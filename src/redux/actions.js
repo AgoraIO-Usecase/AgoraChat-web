@@ -80,3 +80,8 @@ export const searchLoadAction = (data) => {
 export const searchContactsAction = (data) => {
     return { type: 'SEARCH_CONTACTS_ACTION', data }
 }
+
+// close Group Chat
+export const closeGroupChatAction = (data) => {
+	return { type: "CLOSE_GROUP_CHAT_ACTION", data };
+};

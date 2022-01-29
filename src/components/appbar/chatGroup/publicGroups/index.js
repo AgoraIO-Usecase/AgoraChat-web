@@ -122,6 +122,18 @@ const PublicGroup = () => {
     }, [addedGroups])
 
 
+    const handleGroup = (groupId) => {
+        addGroup(groupId);
+        let newGroups = []
+        renderGroups.forEach((item) => {
+            if (groupId === item.groupid) {
+                item.status = 'padding'   
+			}
+            newGroups.push(item);
+        });
+        setRenderGroups(newGroups);
+    }
+
     const handleSearchValue = (e) => {
         console.log(12345, e.target.value)
         if (!(e.target.value)) {
@@ -152,23 +164,48 @@ const PublicGroup = () => {
                 <Loading show={isSearching} />
                 {
                     renderGroups.length > 0 && renderGroups.map((item, key) => {
+                        let isJoinGroups = addedGroupsId.includes(item.groupid)
+                        item.status = isJoinGroups ? 'joined' : 'join'; 
                         return (
-                            <Box key={item.groupid} className={classes.gItem}>
-                                {/* <Box className={classes.gAvatar}></Box> */}
-                                <Avatar className={classes.gAvatar} src={groupAvatar_icon} ></Avatar>
-                                <Box className={classes.gInfoBox}>
-                                    <Box>
-                                        <Typography className={classes.gNameText}>{item.groupname}</Typography>
-                                        <Typography className={classes.gIdText}>{item.groupid}</Typography>
-                                    </Box>
-                                    <Box>
-                                        {addedGroupsId.includes(item.groupid) ?
-                                            <Typography className={classes.gAddedText}>{i18next.t('Added')}</Typography> :
-                                            <Typography onClick={() => addGroup(item.groupid)} className={classes.gAddText}>{i18next.t('Add')}</Typography>}
-                                    </Box>
-                                </Box>
-                            </Box>
-                        )
+							<Box key={item.groupid} className={classes.gItem}>
+								{/* <Box className={classes.gAvatar}></Box> */}
+								<Avatar
+									className={classes.gAvatar}
+									src={groupAvatar_icon}
+								></Avatar>
+								<Box className={classes.gInfoBox}>
+									<Box>
+										<Typography
+											className={classes.gNameText}
+										>
+											{item.groupname}
+										</Typography>
+										<Typography className={classes.gIdText}>
+											{item.groupid}
+										</Typography>
+									</Box>
+									<Box id={item.groupid}>
+										<Typography
+											className={
+												item.status === "joined"
+													? classes.gAddedText
+													: classes.gAddText
+											}
+											onClick={
+												() => {
+                                                    handleGroup(
+													item.groupid,
+													item.status
+												)
+                                                }
+											}
+										>
+											{i18next.t(`${item.status}`)}
+										</Typography>
+									</Box>
+								</Box>
+							</Box>
+						);
                     })
                 }
             </Box>

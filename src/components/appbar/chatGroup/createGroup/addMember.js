@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react'
 import i18next from "i18next";
 import store from '../../../../redux/store'
+import { EaseApp } from "agora-chat-uikit";
 import CommonDialog from '../../../common/dialog'
 import createGroup from '../../../../api/groupChat/createGroup'
 import { Box, Checkbox, List, ListItem, InputBase } from '@material-ui/core';
@@ -143,6 +144,16 @@ const AddGroupMemberDialog = ({ groupInfoData, onClearValue, open, onClose }) =>
         store.dispatch(searchContactsAction(searchValue))
     }
 
+    // click group 
+    const handleClickSession = (itemData) => {
+		// uikit
+		let conversationItem = {
+			conversationType: "groupChat",
+			conversationId: itemData,
+		};
+		EaseApp.addConversationItem(conversationItem);
+		onClose();
+	};
 
     const handleSelect = (val) => (e) => {
         if (e.target.checked) {
@@ -183,7 +194,13 @@ const AddGroupMemberDialog = ({ groupInfoData, onClearValue, open, onClose }) =>
     }
 
     const handleCreateGroup = () => {
-        createGroup(groupInfoData, groupMembers, onClearValue, onClose)
+        createGroup(
+			groupInfoData,
+			groupMembers,
+			onClearValue,
+			onClose,
+			handleClickSession
+		);
     }
     let throttled = _.throttle(handleCreateGroup, 3000, { 'trailing': false });
 

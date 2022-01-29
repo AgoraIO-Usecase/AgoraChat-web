@@ -35,7 +35,6 @@ export default function Login() {
         store.dispatch(setFetchingStatus(true))
         getToken(values.agoraId, values.nickName).then((res) => {
             const { accessToken } = res
-            console.log(accessToken)
             loginWithToken(values.agoraId, accessToken)
             store.dispatch(setMyUserInfo({ agoraId: values.agoraId, nickName: values.nickName }))
             sessionStorage.setItem('webim_auth', JSON.stringify({ ...values, accessToken }))
@@ -63,7 +62,6 @@ export default function Login() {
         if (prop === 'agoraId') {
             value = event.target.value.replace(/[^\w\.\/]/ig, '')
         }
-        console.log('value', value)
         setValues({ ...values, [prop]: value });
     };
 
