@@ -49,7 +49,6 @@ export default function Login() {
         const listener = function (event) {
             let curKey = event.which
             if (curKey === 13) {
-                console.log('AAA>>>');
                 login()
             }
         }
@@ -76,12 +75,14 @@ export default function Login() {
                 {notice.show ? <div className='login-form-notice'>
                     {notice.text}
                 </div> : null}
-                <input className='login-form-input' placeholder='AgoraID' onChange={handleChange('agoraId')} value={values.agoraId}></input>
+                <input className='login-form-input' 
+                placeholder={i18next.t('login-UserID')} 
+                onChange={handleChange('agoraId')} value={values.agoraId}></input>
                 <input className='login-form-input' placeholder={i18next.t('login-NickName')} value={values.nickName} onChange={handleChange('nickName')}></input>
                 <input type='button' className='login-form-input button' value={i18next.t('login-Login')} onClick={login} />
             </div>
             <div className='login-copyright'>
-                © 2021 Agora
+                © 2022 Agora
             </div>
         </div>
     )

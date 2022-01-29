@@ -44,12 +44,24 @@ const initListen = () => {
                     agreeInviteGroup(event)
                     break;
                 case 'removedFromGroup':
-                    message.info(`${i18next.t('您已被移除群：')}` + event.gid)
+                    message.info(`${i18next.t('You have been removed from the group:')}` + event.gid)
                     break;
                 default:
                     break;
             }
         },
+        onContactInvited: (msg) => {
+            console.log('onContactInvited', msg)
+        },
+
+        onTokenWillExpire: () => {
+            let { myUserInfo } = store.getState()
+            getToken(myUserInfo.agoraId, myUserInfo.nickName).then((res) => {
+                const { accessToken } = res
+                WebIM.conn.renewToken(accessToken)
+                console.log('reset token success')
+            })
+        }
     })
 
     WebIM.conn.addEventHandler('REQUESTS', {

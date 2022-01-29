@@ -240,8 +240,8 @@ export default function Setting({ open, onClose }) {
                 classes.infoPanel
             }>
                 <div style={{ flex: 1 }}>
-                    <div className={classes.aboutItem}>SDK version: 4.0.0</div>
-                    <div className={classes.aboutItem}>uikit version: 0.0.3</div>
+                    <div className={classes.aboutItem}>SDK version: 1.0.3</div>
+                    <div className={classes.aboutItem}>uikit version: 1.0.3</div>
                 </div>
             </div>
         )

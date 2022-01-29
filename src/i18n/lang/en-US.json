@@ -1,9 +1,12 @@
 {
     "translation": {
         "login-Login": "Log in",
-        "login-NickName": "NickName",
+        "login-UserID": "User ID",
+        "login-NickName": "Displayed Profile Name",
         "Add Contact": "Add Contact",
         "accept": "Accept",
-        "Successfully send the application": "Successfully send the application"
+        "Successfully send the application": "Successfully send the application",
+        "Send Contact Adding Request": "Send Contact Adding Request",
+        "Send": "Send"
     }
 }

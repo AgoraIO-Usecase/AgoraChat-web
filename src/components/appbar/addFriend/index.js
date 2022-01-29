@@ -57,18 +57,18 @@ export default function AddfriendDialog({ open, onClose }) {
         return (
             <Box className={classes.root}>
                 <Typography className={classes.inputLabel}>
-                    {i18next.t('AgoraID')}
+                    {i18next.t('login-UserID')}
                 </Typography>
 
                 <TextField
-                    label="AgoraID" variant="outlined" fullWidth autoFocus name="email"
+                    label={i18next.t('login-UserID')} variant="outlined" fullWidth autoFocus name="email"
                     error={error}
                     value={inputValue}
                     onChange={handleChange} />
 
                 <Button
                     onClick={addFriend} variant="contained" color="primary" className={classes.button}>
-                    {i18next.t('Add Contact')}
+                    {i18next.t('Send')}
                 </Button>
             </Box>
         )
@@ -78,7 +78,7 @@ export default function AddfriendDialog({ open, onClose }) {
         <CommonDialog
             open={open}
             onClose={handleClose}
-            title={i18next.t('Add Contact')}
+            title={i18next.t('Send Contact Adding Request')}
             content={renderContent()}
         ></CommonDialog>
     )
