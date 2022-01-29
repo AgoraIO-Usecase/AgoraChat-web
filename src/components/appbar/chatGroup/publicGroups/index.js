@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { useSelector } from 'react-redux'
+import { useSelector} from 'react-redux'
 import i18next from "i18next";
 import { Box, InputBase, Avatar } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
@@ -110,6 +110,9 @@ const PublicGroup = () => {
     const pulicGroupsList = state?.groups?.publicGroups;
     const isSearching = state?.isSearching || false
     const [addedGroupsId, setAddedGroupsId] = useState([])
+
+    const [renderGroups, setRenderGroups] = useState([...pulicGroupsList])
+
     useEffect(() => {
         let groupArr = []
         addedGroups.length > 0 && addedGroups.forEach((item, key) => {
@@ -120,11 +123,17 @@ const PublicGroup = () => {
 
 
     const handleSearchValue = (e) => {
+        console.log(12345, e.target.value)
         if (!(e.target.value)) {
-            getPublicGroups()
-            store.dispatch(searchLoadAction(true))
+            // getPublicGroups()
+            // store.dispatch(searchLoadAction(true))
+            setRenderGroups(pulicGroupsList)
         } else {
-            store.dispatch(searchPublicGroupAction(e.target.value))
+            let reRenderGroups = pulicGroupsList.filter((item) => {
+                return item.groupname.includes(e.target.value)
+            });
+            setRenderGroups(reRenderGroups)
+            //store.dispatch(searchPublicGroupAction(e.target.value))
         }
     }
 
@@ -142,7 +151,7 @@ const PublicGroup = () => {
             <Box className={classes.gList}>
                 <Loading show={isSearching} />
                 {
-                    pulicGroupsList.length > 0 && pulicGroupsList.map((item, key) => {
+                    renderGroups.length > 0 && renderGroups.map((item, key) => {
                         return (
                             <Box key={item.groupid} className={classes.gItem}>
                                 {/* <Box className={classes.gAvatar}></Box> */}

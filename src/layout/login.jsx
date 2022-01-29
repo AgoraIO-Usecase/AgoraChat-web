@@ -7,7 +7,7 @@ import { getToken, loginWithToken } from '../api/loginChat'
 
 import store from '../redux/store'
 import { setMyUserInfo, setFetchingStatus } from '../redux/actions'
-
+import { message } from '../components/common/alert'
 export default function Login() {
     // const history = useHistory()
     const [notice, setNotice] = useState({

@@ -8,6 +8,9 @@ import store from '../redux/store'
 import { setRequests, setFetchingStatus } from '../redux/actions'
 import { getToken } from '../api/loginChat'
 import { agreeInviteGroup } from '../api/groupChat/addGroup'
+import { getGroupMuted } from "../api/groupChat/groupMute";
+import { getGroupWrite } from "../api/groupChat/groupWhite";
+
 import i18next from "i18next";
 import { message } from '../components/common/alert'
 const history = createHashHistory()
@@ -15,7 +18,6 @@ const initListen = () => {
     WebIM.conn.listen({
         onOpened: () => {
             getContacts();
-            getGroups();
             getPublicGroups();
             getBlackList()
             history.push('/main')
@@ -25,16 +27,9 @@ const initListen = () => {
             store.dispatch(setFetchingStatus(false))
             history.push('/login')
         },
-        onOnline: (network) => {
-            console.log('onOnline>>>', network);
-        },
-        onOffline: (network) => {
-            console.log('onOffline>>>', network);
-        },
         onError: (err) => {
             console.log('onError>>>', err);
         },
-
         onPresence: (event) => {
             console.log('onPresence>>>', event);
             const { type } = event;
@@ -104,11 +99,19 @@ const initListen = () => {
                 }else{
                     groupRequests.unshift(data)
                 }
-                
                 // groupRequests.unshift(data)
                 let newRequests = { ...requests, group: [...groupRequests] }
                 store.dispatch(setRequests(newRequests))
-            }
+            }else if (msg.type === "addMute") {
+                getGroupMuted(msg.gid);
+			}else if (msg.type ===  "removeMute") {
+				getGroupMuted(msg.gid);
+			}else if (msg.type === "addUserToGroupWhiteList") {
+                getGroupWrite(msg.gid);
+			}else if (msg.type === "rmUserFromGroupWhiteList") {
+                getGroupWrite(msg.gid);
+			}
+            
         }
     })
 
@@ -134,7 +137,6 @@ const initListen = () => {
             console.log('onDisconnected')
         }
     })
-
 }
 
 export default initListen;
