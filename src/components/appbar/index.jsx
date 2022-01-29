@@ -19,7 +19,7 @@ import avater1 from '../../assets/avatar1.png'
 import avater2 from '../../assets/avatar2.png'
 import avater3 from '../../assets/avatar3.png'
 import store from '../../redux/store'
-import { setMyUserInfo } from '../../redux/actions'
+import { setMyUserInfo, closeGroupChatAction } from '../../redux/actions'
 import { logout } from '../../api/loginChat'
 import getGroups from '../../api/groupChat/getGroups'
 
@@ -31,7 +31,6 @@ const AVATARS = [avater1, avater2, avater3]
 export default function Header() {
     const [addEl, setAddEl] = useState(null)
     const [showAddFriend, setShowAddFriend] = useState(false)
-    const [showChatGroup, setShowChatGroup] = useState(false);
     const [showUserSetting, setShowUserSetting] = useState(false)
     const [showContact, setShowContact] = useState(false)
     const [showRequest, setShowRequest] = useState(false)
@@ -44,6 +43,7 @@ export default function Header() {
     const state = useSelector(state => state)
     let myUserInfo = state?.myUserInfo
     let requests = state?.requests || {}
+    let showChatGroup = state?.isShowGroupChat
     // let unDealRequestsNum = countNum(requests.group) + countNum(requests.contact)
 
     useEffect(() => {
@@ -97,11 +97,11 @@ export default function Header() {
     }
 
     function createGroupDialog() {
-        setShowChatGroup(true);
+        store.dispatch(closeGroupChatAction(true));
         setAddEl(null);
     }
     function handleCreateGroupDialogClose() {
-        setShowChatGroup(false);
+        store.dispatch(closeGroupChatAction(false));
     }
 
     // const handleUserInfo = (e) => {

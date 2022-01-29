@@ -13,6 +13,10 @@ export const addGroup = (groupId) => {
         console.log('joinGroup>>>', res)
         message.success(`${i18next.t('addGroup succes')}`)
         getGroups();
+    }).catch((err)=>{
+        if (err.type === 605) {
+            message.error(`${i18next.t("Group does not exist")}`);
+        }
     })
 }
 
