@@ -3,7 +3,7 @@ import CommonDialog from '../../common/dialog'
 import { Box, ListItemAvatar, Avatar, ListItem, List } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
-import { EaseApp } from "chat-uikit";
+import { EaseApp } from "agora-chat-uikit";
 import { useSelector } from 'react-redux'
 
 import avatarIcon1 from '../../../assets/avatar1.png'
