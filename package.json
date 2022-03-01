@@ -13,6 +13,7 @@
     "i18next": "^21.3.3",
     "i18next-browser-languagedetector": "^6.1.2",
     "lodash": "^4.17.21",
+    "luleiyu-agora-chat": "0.0.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-i18next": "^11.12.0",

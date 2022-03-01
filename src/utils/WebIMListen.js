@@ -61,7 +61,18 @@ const initListen = () => {
                 WebIM.conn.renewToken(accessToken)
                 console.log('reset token success')
             })
-        }
+        },
+        // onPresenceStatusChange: function(message){
+        //     console.log('onPresenceStatusChange', message);
+        //     const { userId } = JSON.parse(window.localStorage.getItem('userInfo'));
+        //     // const { data: { values } } = message
+        //     if(userId != message[0].userId){
+        //         // Vue.$store.dispatch('onGetContactUserList');
+        //     }
+        //     else{
+        //         // Vue.$store.commit('updateUserPresenceStatus', message[0].ext);
+        //     }
+        // }, // 发布者发布新的状态时，订阅者触发该回调
     })
 
     WebIM.conn.addEventHandler('REQUESTS', {

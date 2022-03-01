@@ -1,9 +1,10 @@
 import WebIM from '../../utils/WebIM'
 import store from '../../redux/store'
 import { contactsAciton, setBlackList, updateRequestStatus, searchLoadAction } from '../../redux/actions'
-
+import { subFriendStatus } from '../presence/index'
 const getContacts = () => {
     WebIM.conn.getRoster().then((res) => {
+        subFriendStatus({usernames: res.data})
         store.dispatch(contactsAciton(res.data))
         store.dispatch(searchLoadAction(false))
     });
