@@ -99,7 +99,7 @@ const SessionInfoPopover = ({ open, onClose, sessionInfo }) => {
 				</Button>
 				<Button
 					className={classes.infoBtn}
-					onClick={() => deleteContact(to)}
+					onClick={() => deleteContact(to, onClose)}
 				>
 					<img
 						src={deleteIcon}
