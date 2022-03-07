@@ -3467,10 +3467,10 @@ char-regex@^1.0.2:
   resolved "https://registry.yarnpkg.com/char-regex/-/char-regex-1.0.2.tgz#d744358226217f981ed58f479b1d6bcc29545dcf"
   integrity sha512-kWWXztvZ5SBQV+eRgKFeh8q5sLuZY2+8WUIzlxWVTg+oGwY14qylx1KbKzHd8P6ZYkAg0xyIDU9JMHhyJMZ1jw==
 
-chat-uikit@^1.0.81:
-  version "1.0.81"
-  resolved "https://registry.yarnpkg.com/chat-uikit/-/chat-uikit-1.0.81.tgz#7c569c6514019d9cf8b82c588ade998b55c999ae"
-  integrity sha512-khFul624se543AxqBYspqIOZZdN+md6XB8HYr9zeVWz7670BasHn0IwYirdF6Jn8dGxWGHOIN8bxSCOL8gBKKA==
+chat-uikit@^1.1.2:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/chat-uikit/-/chat-uikit-1.1.2.tgz#f590950e986826c1d8c5ed8ed9aebdce2b3bb348"
+  integrity sha512-I+Ll3ZWr18JLK09WqG3ImF4hkdrqS226fAJhCPdhzAwGx/S4+uG4mQbtWvvYBoM8FfgtSkPAiApxlIUszNF/2A==
   dependencies:
     "@emotion/react" "^11.5.0"
     "@emotion/styled" "^11.3.0"
