@@ -8,6 +8,7 @@ import { createHashHistory } from 'history'
 import store from '../redux/store'
 import { setMyUserInfo} from '../redux/actions'
 import SessionInfoPopover from '../components/appbar/sessionInfo'
+import GroupMemberInfoPopover from '../components/appbar/chatGroup/memberInfo'
 import { truncate } from 'lodash';
 const history = createHashHistory()
 
@@ -25,34 +26,45 @@ export default function Main() {
     }, [])
 
     const [sessionInfoAddEl, setSessionInfoAddEl] = useState(null)
-
     const [sessionInfo, setSessionInfo] = useState({});
 
+    const [groupMemberInfoAddEl, setGroupMemberInfoAddEl] = useState(null)
+    const [memberInfo, setMemberInfo] = useState({})
 
-    const handleClickSessionInfoDialog = (res) => {
+    // session avatar click
+    const handleClickSessionInfoDialog = (e,res) => {
+        console.log("handleClickSessionInfoDialog>>>",e,res);
         // TODO 
         let isSingleChat = res.chatType === "singleChat"
         if (isSingleChat) {
-            setSessionInfoAddEl(true);
+            setSessionInfoAddEl(e.target);
             setSessionInfo(res)
         }
     }
 
-    const handlecloseSessionInfoDialog = () => {
-        setSessionInfoAddEl(null);
+    const handleClickGroupMemberInfoDialog = (e,res) => {
+        let isGroupChat = res.chatType === "groupChat"
+        if (isGroupChat) {
+            setGroupMemberInfoAddEl(e.target);
+            setMemberInfo(res)
+        }
     }
-
 
     return (
         <div className='main-container'>
             <EaseApp
                 header={<Header />}
                 onChatAvatarClick={handleClickSessionInfoDialog}
+                onAvatarChange={handleClickGroupMemberInfoDialog}
             />
             <SessionInfoPopover 
                 open={sessionInfoAddEl}
-                onClose={handlecloseSessionInfoDialog}
+                onClose={() => setSessionInfoAddEl(null)}
                 sessionInfo={sessionInfo}/>
+            <GroupMemberInfoPopover 
+                open={groupMemberInfoAddEl}
+                onClose={() => setGroupMemberInfoAddEl(null)}
+                memberInfo={memberInfo}/>
         </div>
     )
 }
