@@ -69,12 +69,12 @@ const SessionInfoPopover = ({ open, onClose, sessionInfo }) => {
 			anchorEl={open}
 			onClose={onClose}
 			anchorOrigin={{
-				vertical: "top",
-				horizontal: "center",
+				vertical: "bottom",
+				horizontal: "left",
 			}}
 			transformOrigin={{
 				vertical: "top",
-				horizontal: "center",
+				horizontal: "left",
 			}}
 		>
 			<Box className={classes.root}>
