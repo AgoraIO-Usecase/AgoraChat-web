@@ -33,7 +33,6 @@ export default function Main() {
 
     // session avatar click
     const handleClickSessionInfoDialog = (e,res) => {
-        console.log("handleClickSessionInfoDialog>>>",e,res);
         // TODO 
         let isSingleChat = res.chatType === "singleChat"
         if (isSingleChat) {
