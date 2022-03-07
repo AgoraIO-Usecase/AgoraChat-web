@@ -1,6 +1,6 @@
 
 
-import { EaseApp } from "agora-chat-uikit";
+import { EaseApp } from "chat-uikit";
 
 const WebIM = EaseApp.getSdk({ appkey: "71117440#417715" });
 
