@@ -4,15 +4,15 @@ import { useSelector } from 'react-redux'
 import i18next from "i18next";
 import { Box, Tabs, Tab } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import { TabPanel, a11yProps } from '../../../common/tabs'
-import store from '../../../../redux/store';
-import WebIM from '../../../../utils/WebIM'
+import { TabPanel, a11yProps } from '../../../../common/tabs'
+import store from '../../../../../redux/store';
+import WebIM from '../../../../../utils/WebIM'
 import MembersList from './membersList'
 import AdminList from './adminList'
 import MuteList from './muteList'
 import BlockList from './blockList'
 import AllowList from './allowList'
-import { getGroupBlock } from "../../../../api/groupChat/groupBlock";
+import { getGroupBlock } from "../../../../../api/groupChat/groupBlock";
 
 
 const useStyles = makeStyles((theme) => {
