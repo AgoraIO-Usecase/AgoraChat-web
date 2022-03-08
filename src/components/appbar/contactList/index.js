@@ -5,7 +5,6 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 // import { EaseApp } from "agora-chat-uikit";
 import { EaseApp } from "luleiyu-agora-chat";
-// import { EaseApp } from "chat-uikit";
 import { useSelector } from 'react-redux'
 
 import avatarIcon1 from '../../../assets/avatar1.png'
