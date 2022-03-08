@@ -1,4 +1,5 @@
 import _ from 'lodash'
+import onlineIcon from '../assets/Online.png'
 
 let defaultState = {
     constacts: [],
@@ -23,7 +24,12 @@ let defaultState = {
     },
     isFetching: false,
     isSearching: false,
-    isShowGroupChat: false
+    isShowGroupChat: false,
+    statusObj: {
+        statusImg: onlineIcon,
+        index: 0
+    },
+    presenceList: []
 };
 
 const reducer = (state = defaultState, action) => {
@@ -194,6 +200,16 @@ const reducer = (state = defaultState, action) => {
 				...state,
 				isShowGroupChat: data
 			};
+        case 'PRESENCE_STATUS_IMG':
+            return {
+                ...state,
+                statusObj: data
+            }
+        case 'SET_PRESENCE_LIST':
+            return {
+                ...state,
+                presenceList: data
+            }
         default:
             break;
     }

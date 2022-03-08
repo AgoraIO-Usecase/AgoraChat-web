@@ -7,7 +7,6 @@ import ChatGroupDialog from './chatGroup'
 import SettingsDialog from './settings'
 import ContactDialog from './contactList'
 import RequestDialog from './request'
-import PresenceDialog from './presence'
 
 import newChatIcon from '../../assets/newchat@2x.png'
 import groupChatIcon from '../../assets/groupchat@2x.png'
@@ -24,10 +23,10 @@ import { setMyUserInfo, closeGroupChatAction } from '../../redux/actions'
 import { logout } from '../../api/loginChat'
 import getGroups from '../../api/groupChat/getGroups'
 
-import { EasePresence } from 'luleiyu-agora-chat'
+// import { EasePresence } from 'luleiyu-agora-chat'
 
 // import UserInfoPopover from './userInfo'
-
+import PresenceStatus from './presence/index'
 import { useSelector } from "react-redux";
 
 const AVATARS = [avater1, avater2, avater3]
@@ -120,8 +119,8 @@ export default function Header() {
             <div className='chatlist-header'>
                 {/* <div className='chatlist-header-avatar'></div> */}
                 <Avatar style={{ width: 40, height: 40 }} src={avatarUrl} ></Avatar>
-                {/* <PresenceDialog /> */}
-                <EasePresence></EasePresence>
+                {/* <EasePresence></EasePresence> */}
+                <PresenceStatus style={{position: 'absolute', bottom: '10px', left: '40px'}} />
                 <div className='chatlist-header-title'>AgoraChat</div>
                 <div className='chatlist-header-more' onClick={handleClickMore}>...
                 {unDealRequestsNum > 0 ? <p style={{ width: '6px', height: '6px', background: '#FF14CC', borderRadius: '3px', position: 'absolute', top: '-12px', left: '-5px' }}></p> : null}

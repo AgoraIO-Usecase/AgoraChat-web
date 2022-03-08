@@ -1,4 +1,9 @@
-
+import offlineImg from '../assets/Offline.png'
+import onlineIcon from '../assets/Online.png'
+import busyIcon from '../assets/Busy.png'
+import donotdisturbIcon from '../assets/Do_not_Disturb.png'
+import customIcon from '../assets/custom.png'
+import leaveIcon from '../assets/leave.png'
 
 export const contactsAciton = (data) => {
     return { type: 'CONTACTS_ACTION', data };
@@ -85,3 +90,41 @@ export const searchContactsAction = (data) => {
 export const closeGroupChatAction = (data) => {
 	return { type: "CLOSE_GROUP_CHAT_ACTION", data };
 };
+
+export const presenceStatusImg = ext => {
+    let data = {
+        statusImg: customIcon,
+        index: 4
+    }
+    if (ext === 'Offline') {
+        data = {
+            statusImg: offlineImg,
+            index: 5
+        }
+    } else if (ext === 'Online' || ext === '') {
+        data = {
+            statusImg: onlineIcon,
+            index: 0
+        }
+    } else if (ext === 'Busy') {
+        data = {
+            statusImg: busyIcon,
+            index:1
+        }
+    } else if (ext === 'Do not Disturb') {
+        data = {
+            statusImg: donotdisturbIcon,
+            index: 2
+        }
+    } else if (ext === 'Leave') {
+        data = {
+            statusImg: leaveIcon,
+            index: 3
+        }
+    }
+    return { type: "PRESENCE_STATUS_IMG", data }
+}
+
+export const setPresenceList = (data) => {
+    return { type: "SET_PRESENCE_LIST", data }
+}

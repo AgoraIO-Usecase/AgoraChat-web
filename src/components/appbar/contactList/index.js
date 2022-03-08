@@ -11,7 +11,12 @@ import avatarIcon1 from '../../../assets/avatar1.png'
 import avatarIcon2 from '../../../assets/avatar2.png'
 import avatarIcon3 from '../../../assets/avatar3.png'
 
-import { publishNewPresence, subFriendStatus } from '../../../api/presence'
+import offlineImg from '../../../assets/Offline.png'
+import onlineIcon from '../../../assets/Online.png'
+import busyIcon from '../../../assets/Busy.png'
+import donotdisturbIcon from '../../../assets/Do_not_Disturb.png'
+import customIcon from '../../../assets/custom.png'
+import leaveIcon from '../../../assets/leave.png'
 
 const useStyles = makeStyles((theme) => {
     return ({
@@ -49,6 +54,15 @@ const useStyles = makeStyles((theme) => {
             flex: 1,
             alignItems: 'center',
             boxSizing: 'border-box',
+            position: 'relative'
+        },
+        statusImg: {
+            position: 'absolute',
+            bottom: '10px',
+            left: theme.spacing(3.2),
+            zIndex: 1,
+            width: '18px',
+            height: '18px'
         },
         avatar: {
             height: theme.spacing(4.5),
@@ -87,6 +101,7 @@ function AddressBookDialog(props) {
     const { open, onClose } = props
     const classes = useStyles();
     const constacts = useSelector((state) => state?.constacts) || []
+    const presenceList = useSelector((state) => state?.presenceList) || []
 
     const [userInfoObj, setUserInfoObj] = useState({})
     let userAvatars = {
@@ -113,7 +128,8 @@ function AddressBookDialog(props) {
         // uikit
         let conversationItem = {
 			conversationType: "singleChat",
-			conversationId: itemData,
+			conversationId: itemData.name,
+            ext: itemData?.presence?.ext,
 		};
         EaseApp.addConversationItem(conversationItem);
         onClose()
@@ -131,7 +147,14 @@ function AddressBookDialog(props) {
         let serchList = getBrands(serchContact)
         setContactList(serchList)
     }
-
+    const statusImgObj = {
+        'Offline': offlineImg,
+        'Online': onlineIcon,
+        'Busy': busyIcon,
+        'Do not Disturb': donotdisturbIcon,
+        'Leave': leaveIcon,
+        '': onlineIcon
+    }
     function renderContent() {
         return (
             <div className={classes.root}>
@@ -151,7 +174,7 @@ function AddressBookDialog(props) {
                                     userGroup.brands.map((user) => {
                                         return (
                                             <ListItem key={user.name}
-                                                onClick={() => handleClick(user.name)}
+                                                onClick={() => handleClick(user)}
                                                 data={user.name}
                                                 value={user.name}
                                                 button className={classes.listItem}>
@@ -164,6 +187,7 @@ function AddressBookDialog(props) {
                                                         >
                                                         </Avatar>
                                                     </ListItemAvatar>
+                                                    {/* <img className={classes.statusImg} alt="" src={statusImgObj[user?.presence?.ext] || customIcon} /> */}
                                                     <Box>
                                                         <Typography className={classes.itemName}>
                                                             {user.name}
@@ -228,6 +252,15 @@ function AddressBookDialog(props) {
         };
         someArr.sort((a, b) => a.region.charCodeAt(0) - b.region.charCodeAt(0))
         if (lastObj) { someArr.push(lastObj) }
+        someArr.forEach(item => {
+            item.brands.forEach(val => {
+                presenceList.length && presenceList.forEach(innerItem => {
+                    if (val.name === innerItem.userId) {
+                        val.presence = innerItem
+                    }
+                })
+            })
+        })
         return someArr
     }
 
@@ -246,7 +279,7 @@ function AddressBookDialog(props) {
         }
         getcontactsInfo()
         // // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [constacts.length])
+    }, [constacts.length, presenceList.length])
 
     return (
         <CommonDialog

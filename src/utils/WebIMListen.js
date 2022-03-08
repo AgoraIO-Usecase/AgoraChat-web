@@ -5,7 +5,7 @@ import getGroups from '../api/groupChat/getGroups'
 import getPublicGroups from '../api/groupChat/getPublicGroups'
 import { createHashHistory } from 'history'
 import store from '../redux/store'
-import { setRequests, setFetchingStatus } from '../redux/actions'
+import { setRequests, setFetchingStatus, presenceStatusImg, setPresenceList } from '../redux/actions'
 import { getToken } from '../api/loginChat'
 import { agreeInviteGroup } from '../api/groupChat/addGroup'
 import { getGroupMuted } from "../api/groupChat/groupMute";
@@ -13,6 +13,8 @@ import { getGroupWrite } from "../api/groupChat/groupWhite";
 
 import i18next from "i18next";
 import { message } from '../components/common/alert'
+
+import { EaseApp } from "luleiyu-agora-chat"
 const history = createHashHistory()
 const initListen = () => {
     WebIM.conn.listen({
@@ -62,17 +64,23 @@ const initListen = () => {
                 console.log('reset token success')
             })
         },
-        // onPresenceStatusChange: function(message){
-        //     console.log('onPresenceStatusChange', message);
-        //     const { userId } = JSON.parse(window.localStorage.getItem('userInfo'));
-        //     // const { data: { values } } = message
-        //     if(userId != message[0].userId){
-        //         // Vue.$store.dispatch('onGetContactUserList');
-        //     }
-        //     else{
-        //         // Vue.$store.commit('updateUserPresenceStatus', message[0].ext);
-        //     }
-        // }, // 发布者发布新的状态时，订阅者触发该回调
+        onPresenceStatusChange: function(message){
+            let { myUserInfo, presenceList } = store.getState()
+            console.log('onPresenceStatusChange', message, myUserInfo.agoraId, myUserInfo.nickName)
+            if(myUserInfo.agoraId !== message[0].userId){
+                console.log('SessionActions.setSessionList')
+                presenceList.forEach(item => {
+                    if (item.userId === message[0].userId) {
+                        item.ext = message[0].ext
+                    }
+                })
+                store.dispatch(setPresenceList(presenceList))
+                EaseApp.changePresenceStatus(message[0].ext)
+            }
+            else{
+                store.dispatch(presenceStatusImg(message[0].ext))
+            }
+        }, // 发布者发布新的状态时，订阅者触发该回调
     })
 
     WebIM.conn.addEventHandler('REQUESTS', {
