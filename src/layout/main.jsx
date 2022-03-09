@@ -13,6 +13,8 @@ import SessionInfoPopover from '../components/appbar/sessionInfo'
 import GroupMemberInfoPopover from '../components/appbar/chatGroup/memberInfo'
 import { truncate } from 'lodash';
 import { subFriendStatus } from '../api/presence'
+import { notify } from '../utils/notification'
+
 const history = createHashHistory()
 
 export default function Main() {
@@ -54,7 +56,7 @@ export default function Main() {
             })
         }
     }
-
+    notify()
     return (
         <div className='main-container'>
             <EaseApp

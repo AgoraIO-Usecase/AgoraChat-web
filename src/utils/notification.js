@@ -1,27 +1,27 @@
+const options = {
+  requireInteraction: true, // 是否自动消失
+  body: 'Liz: "Hi there!"', // 展示的具体内容
+  tag: '1eee4', // 唯一值供记录用
+  // body: 'https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimg.jj20.com%2Fup%2Fallimg%2Ftp01%2F1ZZQ20QJS6-0-lp.jpg&refer=http%3A%2F%2Fimg.jj20.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1648367265&t=c26344538c227e42c92ac1b26d4f9c65',
+  icon: 'https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimg.jj20.com%2Fup%2Fallimg%2Ftp01%2F1ZZQ20QJS6-0-lp.jpg&refer=http%3A%2F%2Fimg.jj20.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1648367265&t=c26344538c227e42c92ac1b26d4f9c65',
+  // icon: '/logo192.png',
+  image: 'https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimg.jj20.com%2Fup%2Fallimg%2Ftp01%2F1ZZQ20QJS6-0-lp.jpg&refer=http%3A%2F%2Fimg.jj20.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1648367265&t=c26344538c227e42c92ac1b26d4f9c65',
+  data: '你猜猜', // 附带的数据，可以在展示时获取，然后用做具体的情况使用
+  lang: 'en-US', // 语言
+  dir: 'rtl', // 文字方向
+  renotify: true, // 允许覆盖
+  silent: false, // 静音属性为true时不能和vibrate一起使用
+  badge: 'https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimg.jj20.com%2Fup%2Fallimg%2F1114%2F113020142315%2F201130142315-1-1200.jpg&refer=http%3A%2F%2Fimg.jj20.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1648367265&t=2c1f9cf6b828120b81f18776a6c42c3d',
+  vibrate: [200, 100, 200], // 设备震动频率
+  // actions: [
+  //     {
+  //         action: '',
+  //         title: '',
+  //         icon: ''
+  //     }
+  // ]
+}
 export const notification = () => {
-  const options = {
-    requireInteraction: true, // 是否自动消失
-    body: 'qwertyuioqwertyuioqwertyuioqwertyuioqwertyuioqwertyuioqwertyuioqwertyuioqwertyuioqwertyuioqwertyuioqwertyuioqwertyuioqwertyuioqwertyuioqwertyuioqwertyuioqwertyuioqwertyuioqwertyuioqwertyuioqwertyuioqwertyuioqwertyuioqwertyuioqwertyuioqwertyuioqwertyuioqwertyuioqwertyuioqwertyuioqwertyuioqwertyuio', // 展示的具体内容
-    tag: '1eee4', // 唯一值供记录用
-    // body: 'https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimg.jj20.com%2Fup%2Fallimg%2Ftp01%2F1ZZQ20QJS6-0-lp.jpg&refer=http%3A%2F%2Fimg.jj20.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1648367265&t=c26344538c227e42c92ac1b26d4f9c65',
-    icon: 'https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimg.jj20.com%2Fup%2Fallimg%2Ftp01%2F1ZZQ20QJS6-0-lp.jpg&refer=http%3A%2F%2Fimg.jj20.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1648367265&t=c26344538c227e42c92ac1b26d4f9c65',
-    // icon: '/logo192.png',
-    image: 'https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimg.jj20.com%2Fup%2Fallimg%2Ftp01%2F1ZZQ20QJS6-0-lp.jpg&refer=http%3A%2F%2Fimg.jj20.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1648367265&t=c26344538c227e42c92ac1b26d4f9c65',
-    data: '你猜猜', // 附带的数据，可以在展示时获取，然后用做具体的情况使用
-    lang: 'en-US', // 语言
-    dir: 'rtl', // 文字方向
-    renotify: true, // 允许覆盖
-    silent: false, // 静音属性为true时不能和vibrate一起使用
-    badge: 'https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimg.jj20.com%2Fup%2Fallimg%2F1114%2F113020142315%2F201130142315-1-1200.jpg&refer=http%3A%2F%2Fimg.jj20.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1648367265&t=2c1f9cf6b828120b81f18776a6c42c3d',
-    vibrate: [200, 100, 200], // 设备震动频率
-    // actions: [
-    //     {
-    //         action: '',
-    //         title: '',
-    //         icon: ''
-    //     }
-    // ]
-  }
   console.log(Notification.permission)
   // 先检查浏览器是否支持
   if (!("Notification" in window)) {
@@ -110,14 +110,7 @@ export const notify = () => {
   }
   // If the user has granted permission for this domain to send notifications...
   else if (Notification.permission === 'granted') {
-    var n = new Notification(
-      'New message from Liz',
-      {
-        'body': 'Liz: "Hi there!"',
-        // ...prevent duplicate notifications
-        'tag' : 'unique string'
-      }
-    );
+    var n = new Notification("'New message from Liz", options);
     // Remove the notification from Notification Center when clicked.
     n.onclick = function () {
       console.log('2222')
@@ -127,6 +120,7 @@ export const notify = () => {
     n.onclose = function () {
       console.log('Notification closed');
     };
+    changeIcon()
   }
   // If the user does not want notifications to come from this domain...
   else if (Notification.permission === 'denied') {
