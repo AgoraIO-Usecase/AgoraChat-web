@@ -16,7 +16,8 @@ import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import WebIM from "../../../../utils/WebIM";
 import { TabPanel, a11yProps } from "../../../common/tabs";
-import GroupInfo from "./members";
+import Members from "./members";
+import AddMembers from './addMembers'
 import { closeGroup } from "../../../../api/groupChat/closeGroup";
 
 import groupAvatar from "../../../../assets/groupAvatar.png";
@@ -194,7 +195,7 @@ const GroupSettingsDialog = ({ open, onClose, currentGroupId }) => {
 				<Button className={classes.membersBox}>
 					<img
 						src={editIcon}
-						alt="addMembers"
+						alt="edit"
 						className={classes.iconStyle}
 					></img>
 					<Typography className={classes.menus}>
@@ -208,7 +209,7 @@ const GroupSettingsDialog = ({ open, onClose, currentGroupId }) => {
 				<Button className={classes.membersBox}>
 					<img
 						src={transferIcon}
-						alt="addMembers"
+						alt="transfer"
 						className={classes.iconStyle}
 					></img>
 					<Typography className={classes.menus}>
@@ -306,14 +307,14 @@ const GroupSettingsDialog = ({ open, onClose, currentGroupId }) => {
 						index={0}
 						className={classes.content}
 					>
-						<GroupInfo />
+						<Members />
 					</TabPanel>
 					<TabPanel
 						value={value}
 						index={1}
 						className={classes.content}
 					>
-						Add Members
+						<AddMembers onClose={onClose} />
 					</TabPanel>
 					<TabPanel
 						value={value}
