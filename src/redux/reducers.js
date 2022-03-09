@@ -27,7 +27,8 @@ let defaultState = {
     isShowGroupChat: false,
     statusObj: {
         statusImg: onlineIcon,
-        index: 0
+        index: 0,
+        ext: ''
     },
     presenceList: []
 };

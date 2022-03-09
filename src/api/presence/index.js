@@ -17,8 +17,11 @@ export const getAllFriendsStatus = (payload) => {
 
 export const subFriendStatus = (payload) => {
   payload.expiry = 10000000
-  WebIM.conn.subscribePresence(payload).then(res => {
-    store.dispatch(setPresenceList(res.result))
+  return new Promise((resolve) => {
+    WebIM.conn.subscribePresence(payload).then(res => {
+      store.dispatch(setPresenceList(res.result))
+      resolve(res.result)
+    })
   })
 }
 

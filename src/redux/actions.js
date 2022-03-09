@@ -94,33 +94,24 @@ export const closeGroupChatAction = (data) => {
 export const presenceStatusImg = ext => {
     let data = {
         statusImg: customIcon,
-        index: 4
+        index: 4,
+        ext
     }
     if (ext === 'Offline') {
-        data = {
-            statusImg: offlineImg,
-            index: 5
-        }
+        data.statusImg = offlineImg
+        data.index = 5
     } else if (ext === 'Online' || ext === '') {
-        data = {
-            statusImg: onlineIcon,
-            index: 0
-        }
+        data.statusImg = onlineIcon
+        data.index = 0
     } else if (ext === 'Busy') {
-        data = {
-            statusImg: busyIcon,
-            index:1
-        }
+        data.statusImg = busyIcon
+        data.index = 1
     } else if (ext === 'Do not Disturb') {
-        data = {
-            statusImg: donotdisturbIcon,
-            index: 2
-        }
+        data.statusImg = donotdisturbIcon
+        data.index = 2
     } else if (ext === 'Leave') {
-        data = {
-            statusImg: leaveIcon,
-            index: 3
-        }
+        data.statusImg = leaveIcon
+        data.index = 3
     }
     return { type: "PRESENCE_STATUS_IMG", data }
 }

@@ -19,6 +19,7 @@ import store from "../../../redux/store";
 import { message } from '../../common/alert'
 
 import { publishNewPresence } from '../../../api/presence'
+import AlertDialogSlide from '../../common/dialog'
 
 const useStyles = makeStyles((theme) => {
   return ({
@@ -132,10 +133,12 @@ const PresencePopover = (props) => {
       item.checked = false
     })
     presenceList[presenceObj.index].checked = true
+    presenceList[presenceObj.index].title = presenceObj.ext
   }, [presenceObj])
 
   const [useOpenModal, setOpenModal] = useState(false);
   const [useInputValue, setInputValue] = useState(null);
+  const [useDialogOpen, setDialogOpen] = useState(false)
   const handleModalOpen = () => setOpenModal(true);
   const handleModalClose = (val) => {
     console.log(useInputValue)
@@ -173,7 +176,7 @@ const PresencePopover = (props) => {
 
   const openPopover = Boolean(usePopoverAnchorEl);
   const id = openPopover ? 'simple-popover' : undefined;
-
+  let changeTitle = ''
   const handlerPresence = (item, index) => {
     handlePopoverClose()
     let tempArr = []
@@ -183,6 +186,11 @@ const PresencePopover = (props) => {
     if (item.id === 103) {
       handleModalOpen()
     } else {
+      if (presenceList[4].checked) {
+        changeTitle = item.title
+        setDialogOpen(true)
+        return
+      }
       presenceList.forEach(val => {
         if (item.id === val.id) {
           val.checked = true
@@ -203,7 +211,14 @@ const PresencePopover = (props) => {
   const handlerInput = e => {
     setInputValue(e.currentTarget.value)
   }
-
+  const closeDialog = () => {
+    setDialogOpen(false)
+  }
+  const button = () => {
+    return (
+      <Button onClick={closeDialog}>Done</Button>
+    )
+  }
   return (
     <div className={props.className} style={{...props.style}}>
       <img aria-describedby={id} src={presenceObj.statusImg} className={useClasses.imgStyle} onClick={handlePopoverClick} alt="" />
@@ -256,6 +271,13 @@ const PresencePopover = (props) => {
           </div>
         </div>
       </Modal>
+      <AlertDialogSlide
+        open={Boolean(useDialogOpen)}
+        close={() => setDialogOpen(false)}
+        title={'Clear your Custom Status?'}
+        content={`Clear ”${presenceList[4].title}”, change to ${changeTitle}.`}
+        footer={button}
+      />
     </div>
 	);
 }

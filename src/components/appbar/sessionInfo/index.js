@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useSelector } from 'react-redux'
 import i18next from "i18next";
-import { Popover, Box, Avatar, Button } from "@material-ui/core";
+import { Popover, Box, Avatar, Button, Tooltip } from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import {
@@ -11,6 +12,13 @@ import avatarImg from "../../../assets/avatar1.png";
 import blockIcon from "../../../assets/block@2x.png";
 import deleteIcon from "../../../assets/red@2x.png";
 
+import offlineImg from '../../../assets/Offline.png'
+import onlineIcon from '../../../assets/Online.png'
+import busyIcon from '../../../assets/Busy.png'
+import donotdisturbIcon from '../../../assets/Do_not_Disturb.png'
+import customIcon from '../../../assets/custom.png'
+import leaveIcon from '../../../assets/leave.png'
+
 const useStyles = makeStyles((theme) => {
 	return {
 		root: {
@@ -20,6 +28,7 @@ const useStyles = makeStyles((theme) => {
 		},
 		infoBox: {
 			textAlign: "center",
+			position: 'relative',
 		},
 		avatarImg: {
 			width: "100px",
@@ -57,12 +66,37 @@ const useStyles = makeStyles((theme) => {
 			character: "0",
 			color: "#000000",
 		},
+		imgStyle: {
+			position: 'absolute',
+			left: '100px',
+			bottom: '10px',
+			width: '20px',
+			height: '20px'
+		}
 	};
 });
-
+const statusImgObj = {
+	'Offline': offlineImg,
+	'Online': onlineIcon,
+	'Busy': busyIcon,
+	'Do not Disturb': donotdisturbIcon,
+	'Leave': leaveIcon,
+	'': onlineIcon
+}
 const SessionInfoPopover = ({ open, onClose, sessionInfo }) => {
 	const classes = useStyles();
-	let { to } = sessionInfo;
+	const presenceList = useSelector((state) => state?.presenceList) || []
+
+	let { to } = sessionInfo
+	const [usePresenceExt, setPresenceExt] = useState('')
+	useEffect(() => {
+		presenceList.forEach(item => {
+			if (item.userId === to) {
+				setPresenceExt(item.ext)
+			}
+		})
+	}, [presenceList.length])
+	
 	return (
 		<Popover
 			open={Boolean(open)}
@@ -83,6 +117,9 @@ const SessionInfoPopover = ({ open, onClose, sessionInfo }) => {
 						src={avatarImg}
 						className={classes.avatarImg}
 					></Avatar>
+					<Tooltip title={usePresenceExt} placement="bottom-end">
+						<img alt="" src={statusImgObj[usePresenceExt] || customIcon} className={classes.imgStyle} />
+					</Tooltip>
 					<Typography className={classes.nameText}>{to}</Typography>
 					<Typography className={classes.idText}>
 						AgoraID:{to}
