@@ -20,14 +20,10 @@ import { message } from '../../common/alert'
 
 import { publishNewPresence } from '../../../api/presence'
 import AlertDialogSlide from '../../common/dialog'
+import Loading from '../../common/loading'
 
 const useStyles = makeStyles((theme) => {
   return ({
-    // boxStyle: {
-    //   position: 'absolute',
-    //   bottom: '7px',
-    //   left: '40px'
-    // },
     nameText: {
         Typeface: 'Ping Fang SC',
         fontWeight: 'Semibold(600)',
@@ -81,6 +77,21 @@ const useStyles = makeStyles((theme) => {
     },
     rightBtn: {
       marginLeft: '20px'
+    },
+    btnBox: {
+      width: '444px',
+      textAlign: 'center',
+    },
+    contentBox: {
+      margin: '20px 18px',
+    },
+    btnStyle: {
+      width: '150px',
+      height: '36px',
+      borderRadius: '26px',
+      background: '#114eff',
+      color: '#fff',
+      margin: '10px'
     }
   })
 });
@@ -133,12 +144,15 @@ const PresencePopover = (props) => {
       item.checked = false
     })
     presenceList[presenceObj.index].checked = true
-    presenceList[presenceObj.index].title = presenceObj.ext
+    if (presenceObj.index === 4) {
+      presenceList[presenceObj.index].title = presenceObj.ext
+    }
   }, [presenceObj])
 
   const [useOpenModal, setOpenModal] = useState(false);
   const [useInputValue, setInputValue] = useState(null);
   const [useDialogOpen, setDialogOpen] = useState(false)
+  const [useShowLoading, setShowLoading] = useState(false)
   const handleModalOpen = () => setOpenModal(true);
   const handleModalClose = (val) => {
     console.log(useInputValue)
@@ -147,25 +161,27 @@ const PresencePopover = (props) => {
         message.warn('自定义状态不能为空')
       return
       } else {
-        setPresenceIndex(4)
         const params = {
           description: useInputValue
         };
-        presenceList.forEach((item, index) => {
-          item.checked = false
-          if (index === 4) {
-            item.title = useInputValue
-            item.checked = true
-          }
+        pubPresence(params).then(res => {
+          console.log(res)
+          presenceList.forEach((item, index) => {
+            item.checked = false
+            if (index === 4) {
+              item.title = useInputValue
+              item.checked = true
+            }
+          })
+        }).catch(err => {
+          console.log(err)
         })
-        pubPresence(params)
       }
     }
     setOpenModal(false)
   }
 
   const [usePopoverAnchorEl, setPopoverAnchorEl] = useState(null);
-  const [usePresenceIndex, setPresenceIndex] = useState(0)
   const handlePopoverClick = (event) => {
     setPopoverAnchorEl(event.currentTarget);
   };
@@ -179,7 +195,6 @@ const PresencePopover = (props) => {
   let changeTitle = ''
   const handlerPresence = (item, index) => {
     handlePopoverClose()
-    let tempArr = []
     const params = {
       description: item.title
     };
@@ -191,32 +206,52 @@ const PresencePopover = (props) => {
         setDialogOpen(true)
         return
       }
-      presenceList.forEach(val => {
-        if (item.id === val.id) {
-          val.checked = true
-        } else {
-          val.checked = false
-        }
-        tempArr.push(val)
+      pubPresence(params).then(res => {
+        console.log(res)
+        presenceList.forEach(val => {
+          if (item.id === val.id) {
+            val.checked = true
+          } else {
+            val.checked = false
+          }
+        })
+      }).catch(err => {
+        console.log(err)
       })
-      pubPresence(params)
-      setPresenceIndex(index)
     }
   }
   const pubPresence = (params) => {
     console.log(params)
-    store.dispatch(presenceStatusImg(params.description))
-    publishNewPresence(params)
+    setShowLoading(true)
+    return new Promise((resolve, reject) => {
+      publishNewPresence(params).then(res => {
+        console.log(res, 'resolve')
+        store.dispatch(presenceStatusImg(params.description))
+        resolve(res)
+      }).catch(err => {
+        console.log(err, 'reject')
+        reject(err)
+      }).finally(e => {
+        setShowLoading(false)
+      })
+    })
   }
   const handlerInput = e => {
     setInputValue(e.currentTarget.value)
   }
-  const closeDialog = () => {
-    setDialogOpen(false)
-  }
+
   const button = () => {
     return (
-      <Button onClick={closeDialog}>Done</Button>
+      <div className={useClasses.btnBox}>
+        <Button className={useClasses.btnStyle} onClick={() => setDialogOpen(false)}>{i18next.t('Clear')}</Button>
+      </div>
+    )
+  }
+  const renderContent = () => {
+    return (
+      <div className={useClasses.contentBox}>
+        {`Clear ”${presenceList[4].title}”, change to ${changeTitle}.`}
+      </div>
     )
   }
   return (
@@ -273,11 +308,13 @@ const PresencePopover = (props) => {
       </Modal>
       <AlertDialogSlide
         open={Boolean(useDialogOpen)}
-        close={() => setDialogOpen(false)}
-        title={'Clear your Custom Status?'}
-        content={`Clear ”${presenceList[4].title}”, change to ${changeTitle}.`}
-        footer={button}
+        onClose={() => setDialogOpen(false)}
+        title={i18next.t('Clear your Custom Status?')}
+        content={renderContent()}
+        footer={button()}
+        maxWidth={'xs'}
       />
+      <Loading show={Boolean(useShowLoading)} />
     </div>
 	);
 }
