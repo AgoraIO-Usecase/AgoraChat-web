@@ -61,6 +61,8 @@ export default function Main() {
         <div className='main-container'>
             <EaseApp
                 header={<Header />}
+                onChatAvatarClick={handleClickSessionInfoDialog}
+                onAvatarChange={handleClickGroupMemberInfoDialog}
             />
             <SessionInfoPopover 
                 open={sessionInfoAddEl}
