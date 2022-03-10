@@ -207,6 +207,7 @@ const reducer = (state = defaultState, action) => {
                 statusObj: data
             }
         case 'SET_PRESENCE_LIST':
+            console.log(data,'SET_PRESENCE_LIST')
             return {
                 ...state,
                 presenceList: data

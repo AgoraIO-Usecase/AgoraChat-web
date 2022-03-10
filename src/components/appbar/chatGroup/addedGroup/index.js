@@ -6,6 +6,7 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 // import { EaseApp } from "chat-uikit";
 import { EaseApp } from "luleiyu-agora-chat";
+// import { EaseApp } from 'agora-chat-uikit'
 import store from '../../../../redux/store'
 import { searchAddedGroupAction, searchLoadAction } from '../../../../redux/actions'
 import GroupSettingsDialog from '../groupSettings'

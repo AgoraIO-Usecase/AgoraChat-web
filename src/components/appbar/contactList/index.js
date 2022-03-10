@@ -5,7 +5,6 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 // import { EaseApp } from "agora-chat-uikit";
 import { EaseApp } from "luleiyu-agora-chat";
-// import { EaseApp } from "chat-uikit";
 import { useSelector } from 'react-redux'
 
 import avatarIcon1 from '../../../assets/avatar1.png'
@@ -103,7 +102,7 @@ function AddressBookDialog(props) {
     const classes = useStyles();
     const constacts = useSelector((state) => state?.constacts) || []
     const presenceList = useSelector((state) => state?.presenceList) || []
-
+    console.log(presenceList, 'presenceList=presenceList')
     const [userInfoObj, setUserInfoObj] = useState({})
     let userAvatars = {
         1: avatarIcon1,
@@ -127,6 +126,7 @@ function AddressBookDialog(props) {
     const [contactList, setContactList] = useState([])
     const handleClick = (itemData) => {
         // uikit
+        console.log(itemData, 'itemData')
         let conversationItem = {
 			conversationType: "singleChat",
 			conversationId: itemData.name,
@@ -253,10 +253,11 @@ function AddressBookDialog(props) {
         };
         someArr.sort((a, b) => a.region.charCodeAt(0) - b.region.charCodeAt(0))
         if (lastObj) { someArr.push(lastObj) }
+        console.log(presenceList, 'presenceList=presenceList')
         someArr.forEach(item => {
             item.brands.forEach(val => {
                 presenceList.length && presenceList.forEach(innerItem => {
-                    if (val.name === innerItem.userId) {
+                    if (val.name === innerItem.uid) {
                         val.presence = innerItem
                     }
                 })

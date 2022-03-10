@@ -66,27 +66,27 @@ const useStyles = makeStyles((theme) => {
         },
 				imgStyle: {
 					position: 'absolute',
-					left: '100px',
-					bottom: '10px',
-					width: '20px',
-					height: '20px'
+					left: '196px',
+					bottom: '80px',
+					width: '30px',
+					height: '30px'
 				}
     })
 });
 
 
-const GroupMemberInfoPopover = ({ open, onClose, memberInfo }) => {
+const GroupMemberInfoPopover = ({ open, onClose, memberInfo, presenceList }) => {
 	const classes = useStyles();
 	const state = useSelector((state) => state);
 	const constacts = state?.constacts || [];
-	let { from, presence } = memberInfo
+	let { from } = memberInfo
 
 	const handleClickChat = (userId) => {
 		// uikit
 		let conversationItem = {
 			conversationType: "singleChat",
 			conversationId: from,
-			ext: presence[0].ext
+			ext: presenceList[0].ext
 		};
 		EaseApp.addConversationItem(conversationItem);
 		onClose();
@@ -119,8 +119,8 @@ const GroupMemberInfoPopover = ({ open, onClose, memberInfo }) => {
 						src={avatarImg}
 						className={classes.avatarImg}
 					></Avatar>
-					<Tooltip title={presence?.ext} placement="bottom-end">
-						<img alt="" src={statusImgObj[presence?.ext] || customIcon} className={classes.imgStyle} />
+					<Tooltip title={presenceList[0]?.ext} placement="bottom-end">
+						<img alt="" src={statusImgObj[presenceList[0]?.ext] || customIcon} className={classes.imgStyle} />
 					</Tooltip>
 					<Typography className={classes.nameText}>{from}</Typography>
 					<Typography className={classes.idText}>
