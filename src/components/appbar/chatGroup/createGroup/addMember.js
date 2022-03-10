@@ -4,6 +4,7 @@ import i18next from "i18next";
 import store from '../../../../redux/store'
 // import { EaseApp } from "chat-uikit";
 import { EaseApp } from "luleiyu-agora-chat";
+// import { EaseApp } from "agora-chat-uikit";
 import CommonDialog from '../../../common/dialog'
 import createGroup from '../../../../api/groupChat/createGroup'
 import { Box, Checkbox, List, ListItem, InputBase } from '@material-ui/core';

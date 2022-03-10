@@ -1,18 +1,19 @@
-import React, { useState,useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Header from '../components/appbar'
 import './login.css'
 import { loginWithToken } from '../api/loginChat'
 import WebIM from '../utils/WebIM';
 // import { EaseApp } from 'agora-chat-uikit'
 import { EaseApp } from 'luleiyu-agora-chat'
-// import { EaseApp } from 'chat-uikit'
 import { createHashHistory } from 'history'
 import store from '../redux/store'
 import { setMyUserInfo} from '../redux/actions'
+
 import SessionInfoPopover from '../components/appbar/sessionInfo'
 import GroupMemberInfoPopover from '../components/appbar/chatGroup/memberInfo'
 import { truncate } from 'lodash';
 import { subFriendStatus } from '../api/presence'
+
 const history = createHashHistory()
 
 export default function Main() {
@@ -60,8 +61,6 @@ export default function Main() {
         <div className='main-container'>
             <EaseApp
                 header={<Header />}
-                onChatAvatarClick={handleClickSessionInfoDialog}
-                onAvatarChange={handleClickGroupMemberInfoDialog}
             />
             <SessionInfoPopover 
                 open={sessionInfoAddEl}
