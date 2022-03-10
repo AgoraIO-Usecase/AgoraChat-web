@@ -25,19 +25,19 @@ import Loading from '../../common/loading'
 const useStyles = makeStyles((theme) => {
   return ({
     nameText: {
-        Typeface: 'Ping Fang SC',
-        fontWeight: 'Semibold(600)',
-        fontSize: '14px',
-        character: '0',
-        color: '#0D0D0D',
-        marginLeft: '8px'
+      fontSize: '14px',
+      color: '#0D0D0D',
+      marginLeft: '8px',
+      overflow: 'hidden',
+      display: 'inline-block',
+      width: '140px'
     },
     imgStyle: {
       width: '18px',
       height: '18px',
       borderRadius: '50%',
       cursor: 'pointer',
-      verticalAlign: 'middle'
+      // verticalAlign: 'middle'
     },
     statusBox: {
       display: 'flex',
@@ -235,11 +235,17 @@ const PresencePopover = (props) => {
   const handlerInput = e => {
     setInputValue(e.currentTarget.value)
   }
-
+  const handlerChangeStatus = () => {
+    const params = {
+      description: changeTitle
+    }
+    pubPresence(params)
+    setDialogOpen(false)
+  }
   const button = () => {
     return (
       <div className={useClasses.btnBox}>
-        <Button className={useClasses.btnStyle} color="primary" variant="contained" onClick={() => setDialogOpen(false)}>{i18next.t('Clear')}</Button>
+        <Button className={useClasses.btnStyle} color="primary" variant="contained" onClick={handlerChangeStatus}>{i18next.t('Clear')}</Button>
       </div>
     )
   }

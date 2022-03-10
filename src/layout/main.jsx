@@ -49,6 +49,7 @@ export default function Main() {
     }
 
     const handleClickGroupMemberInfoDialog = (e,res) => {
+        console.log(res, 'handleClickGroupMemberInfoDialog')
         let isGroupChat = res.chatType === "groupChat"
         if (isGroupChat) {
             subFriendStatus({usernames: [res.from]}).then(val => {
