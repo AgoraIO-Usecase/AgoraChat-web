@@ -155,7 +155,6 @@ const PresencePopover = (props) => {
   const [useShowLoading, setShowLoading] = useState(false)
   const handleModalOpen = () => setOpenModal(true);
   const handleModalClose = (val) => {
-    console.log(useInputValue)
     if (val === 1) {
       if (!useInputValue) {
         message.warn('自定义状态不能为空')
@@ -165,7 +164,6 @@ const PresencePopover = (props) => {
           description: useInputValue
         };
         pubPresence(params).then(res => {
-          console.log(res)
           presenceList.forEach((item, index) => {
             item.checked = false
             if (index === 4) {
@@ -174,7 +172,7 @@ const PresencePopover = (props) => {
             }
           })
         }).catch(err => {
-          console.log(err)
+          // console.log(err)
         })
       }
     }
@@ -192,7 +190,9 @@ const PresencePopover = (props) => {
 
   const openPopover = Boolean(usePopoverAnchorEl);
   const id = openPopover ? 'simple-popover' : undefined;
-  let changeTitle = ''
+
+  const [changeTitle, setChangeTitle] = useState('')
+
   const handlerPresence = (item, index) => {
     handlePopoverClose()
     const params = {
@@ -202,12 +202,11 @@ const PresencePopover = (props) => {
       handleModalOpen()
     } else {
       if (presenceList[4].checked) {
-        changeTitle = item.title
+        setChangeTitle(item.title)
         setDialogOpen(true)
         return
       }
       pubPresence(params).then(res => {
-        console.log(res)
         presenceList.forEach(val => {
           if (item.id === val.id) {
             val.checked = true
@@ -216,20 +215,17 @@ const PresencePopover = (props) => {
           }
         })
       }).catch(err => {
-        console.log(err)
+        // console.log(err)
       })
     }
   }
   const pubPresence = (params) => {
-    console.log(params)
     setShowLoading(true)
     return new Promise((resolve, reject) => {
       publishNewPresence(params).then(res => {
-        console.log(res, 'resolve')
         store.dispatch(presenceStatusImg(params.description))
         resolve(res)
       }).catch(err => {
-        console.log(err, 'reject')
         reject(err)
       }).finally(e => {
         setShowLoading(false)
@@ -243,11 +239,11 @@ const PresencePopover = (props) => {
   const button = () => {
     return (
       <div className={useClasses.btnBox}>
-        <Button className={useClasses.btnStyle} onClick={() => setDialogOpen(false)}>{i18next.t('Clear')}</Button>
+        <Button className={useClasses.btnStyle} color="primary" variant="contained" onClick={() => setDialogOpen(false)}>{i18next.t('Clear')}</Button>
       </div>
     )
   }
-  const renderContent = () => {
+  const renderContent = (title) => {
     return (
       <div className={useClasses.contentBox}>
         {`Clear ”${presenceList[4].title}”, change to ${changeTitle}.`}

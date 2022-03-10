@@ -33,6 +33,7 @@ export default function Main() {
 
     const [groupMemberInfoAddEl, setGroupMemberInfoAddEl] = useState(null)
     const [memberInfo, setMemberInfo] = useState({})
+    const [presenceList, setPresenceList] = useState([])
 
     // session avatar click
     const handleClickSessionInfoDialog = (e,res) => {
@@ -47,10 +48,10 @@ export default function Main() {
     const handleClickGroupMemberInfoDialog = (e,res) => {
         let isGroupChat = res.chatType === "groupChat"
         if (isGroupChat) {
-            setGroupMemberInfoAddEl(e.target);
             subFriendStatus({usernames: [res.from]}).then(val => {
-                res.presence = val
+                setPresenceList(val)
                 setMemberInfo(res)
+                setGroupMemberInfoAddEl(e.target);
             })
         }
     }
@@ -69,7 +70,8 @@ export default function Main() {
             <GroupMemberInfoPopover 
                 open={groupMemberInfoAddEl}
                 onClose={() => setGroupMemberInfoAddEl(null)}
-                memberInfo={memberInfo}/>
+                memberInfo={memberInfo}
+                presenceList={presenceList}/>
         </div>
     )
 }

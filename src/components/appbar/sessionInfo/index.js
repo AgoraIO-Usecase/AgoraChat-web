@@ -68,10 +68,10 @@ const useStyles = makeStyles((theme) => {
 		},
 		imgStyle: {
 			position: 'absolute',
-			left: '100px',
-			bottom: '10px',
-			width: '20px',
-			height: '20px'
+			left: '196px',
+			bottom: '80px',
+			width: '30px',
+			height: '30px'
 		}
 	};
 });
@@ -86,17 +86,19 @@ const statusImgObj = {
 const SessionInfoPopover = ({ open, onClose, sessionInfo }) => {
 	const classes = useStyles();
 	const presenceList = useSelector((state) => state?.presenceList) || []
-
+	console.log(presenceList, 'presenceList')
 	let { to } = sessionInfo
 	const [usePresenceExt, setPresenceExt] = useState('')
 	useEffect(() => {
+		console.log(presenceList, 'presenceList')
 		presenceList.forEach(item => {
-			if (item.userId === to) {
+			console.log(to)
+			if (item.uid === to) {
 				setPresenceExt(item.ext)
 			}
 		})
-	}, [presenceList.length])
-	
+	}, [presenceList, to])
+
 	return (
 		<Popover
 			open={Boolean(open)}

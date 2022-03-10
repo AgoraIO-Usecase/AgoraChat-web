@@ -117,5 +117,6 @@ export const presenceStatusImg = ext => {
 }
 
 export const setPresenceList = (data) => {
+    console.log(data,'setPresenceList')
     return { type: "SET_PRESENCE_LIST", data }
 }

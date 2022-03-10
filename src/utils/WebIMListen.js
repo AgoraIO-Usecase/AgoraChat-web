@@ -68,12 +68,13 @@ const initListen = () => {
             let { myUserInfo, presenceList } = store.getState()
             console.log('onPresenceStatusChange', message, myUserInfo.agoraId, myUserInfo.nickName)
             if(myUserInfo.agoraId !== message[0].userId){
-                console.log('SessionActions.setSessionList')
+                console.log('SessionActions.setSessionList', presenceList)
                 presenceList.forEach(item => {
-                    if (item.userId === message[0].userId) {
+                    if (item.uid === message[0].userId) {
                         item.ext = message[0].ext
                     }
                 })
+                console.log('SessionActions', presenceList)
                 store.dispatch(setPresenceList(presenceList))
                 EaseApp.changePresenceStatus(message[0].ext)
             }
