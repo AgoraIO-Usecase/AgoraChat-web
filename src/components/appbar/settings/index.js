@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import CommonDialog from "../../common/dialog";
 import i18next from "i18next";
-import { Avatar, Button, TextField, List, ListItem, ListItemAvatar, Menu, MenuItem } from "@material-ui/core";
+import { Avatar, Button, TextField, List, ListItem, ListItemAvatar, Menu, MenuItem, Switch, Select, RadioGroup, FormControlLabel, Radio } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import editIcon from '../../../assets/white@2x.png'
@@ -19,6 +19,7 @@ import { setMyUserInfo } from '../../../redux/actions'
 import store from '../../../redux/store'
 
 import { removeFromBlackList } from '../../../api/contactsChat/getContacts'
+const label = { inputProps: { 'aria-label': 'Switch demo' } }
 const useStyles = makeStyles((theme) => {
     return {
         root: {
@@ -107,6 +108,38 @@ const useStyles = makeStyles((theme) => {
             lineHeight: '50px',
             margin: '2px 0',
             padding: '0 8px'
+        },
+        notificationPanel: {
+            width: '100%',
+            height: '450px',
+            backgroundColor: '#EDEFF2',
+            padding: '6px 8px',
+            overflow: 'auto',
+        },
+        notificationItem: {
+            backgroundColor: '#F4F5F7',
+            borderRadius: '16px',
+            width: '100%',
+            padding: '0 16px',
+            boxSizing: 'border-box',
+        },
+        notifyTitle: {
+            fontWeight: '600',
+            fontSize: '16px',
+            lineHeight: '22px',
+            color: '#0D0D0D',
+
+        },
+        notifySubTitle: {
+            fontWeight: '600',
+            fontSize: '14px',
+            lineHeight: '22px',
+            color: '#0D0D0D',
+        },
+        notifySelect: {
+            background: '#fff',
+            width: '160px',
+            height: '40px',
         }
     };
 });
@@ -119,6 +152,7 @@ export default function Setting({ open, onClose }) {
     const [nickName, setNickName] = useState('')
     const [avatarIndex, setAvatarIndex] = useState(null)
     const [addEl, setAddEl] = useState(null)
+    const [age, setAge] = React.useState('');
 
     const myUserInfo = useSelector(state => state?.myUserInfo)
     const blackList = useSelector(state => state?.blackList) || []
@@ -142,6 +176,8 @@ export default function Setting({ open, onClose }) {
             setTabIndex(2)
         } else if (e.target.innerHTML === 'about') {
             setTabIndex(3)
+        } else if (e.target.innerHTML === 'Notifications') {
+            setTabIndex(4)
         }
     }
 
@@ -190,6 +226,7 @@ export default function Setting({ open, onClose }) {
                 </div>
                 <div className={classes.settingMenuBox} onClick={handleMenuClick}>
                     <Button key={0} style={{ justifyContent: 'start' }} >info</Button>
+                    <Button key={3} style={{ justifyContent: 'start' }} >Notifications</Button>
                     <Button key={1} style={{ justifyContent: 'start' }} >privacy</Button>
                     <Button key={2} style={{ justifyContent: 'start' }}>about</Button>
                 </div>
@@ -206,7 +243,13 @@ export default function Setting({ open, onClose }) {
             return privacyTabPanel()
         } else if (tabIndex === 3) {
             return aboutTabPanel()
+        } else if (tabIndex === 4) {
+            return notificationTabPanel()
         }
+    }
+
+    const handleChange = (event) => {
+        setAge(event.target.value)
     }
 
     function infoTabPanel() {
@@ -316,6 +359,75 @@ export default function Setting({ open, onClose }) {
         )
     }
 
+    function notificationTabPanel() {
+        return (
+            <div className={classes.notificationPanel}>
+                <div className={classes.notificationItem}>
+                    <div className={classes.notifyTitle}>
+                        Push Notifications
+                    </div>
+                    <div>
+                        <div>
+                            <div>
+                                <span className={classes.notifySubTitle}>Notifications Settings</span>
+                                <Select
+                                    value={age}
+                                    className={classes.notifySelect}
+                                    onChange={handleChange}
+                                    displayEmpty
+                                    inputProps={{ 'aria-label': 'Without label' }}
+                                    variant="outlined"
+                                >
+                                    <MenuItem value={10}>All Message</MenuItem>
+                                    <MenuItem value={20}>Only @Metion</MenuItem>
+                                    <MenuItem value={30}>Nothing</MenuItem>
+                                </Select>
+                            </div>
+                            <div>
+                                <div>
+                                    <span className={classes.notifySubTitle}>Do not Disturb</span>
+                                    <img alt="" src="../../../assets/go@2x.png" />
+                                </div>
+                                <div>
+                                    <RadioGroup
+                                        aria-labelledby="demo-radio-buttons-group-label"
+                                        defaultValue="0"
+                                        name="radio-buttons-group"
+                                    >
+                                        <FormControlLabel value="0" control={<Radio sx={{
+                                            color: '#005FFF',
+                                            '&.Mui-checked': {
+                                                color: '#005FFF',
+                                            },
+                                            }} />} label="For 15 minutes" />
+                                        <FormControlLabel value="1" control={<Radio />} label="For 1 hour" />
+                                        <FormControlLabel value="2" control={<Radio />} label="For 8 hours" />
+                                        <FormControlLabel value="3" control={<Radio />} label="For 24 hours" />
+                                        <FormControlLabel value="4" control={<Radio />} label="Until 8:00 AM Tomorow" />
+                                        <FormControlLabel value="5" control={<Radio />} label="Until I turn it off" />
+                                    </RadioGroup>
+                                    <div>
+                                        <Button>Done</Button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <span className={classes.notifySubTitle}>Show Preview Text</span>
+                            <Switch {...label} defaultChecked></Switch>
+                        </div>
+                    </div>
+                </div>
+                <div className={classes.notificationItem}>
+                    <div className={classes.notifyTitle}>Notification Sounds</div>
+                    <div>
+                        <span className={classes.notifySubTitle}>Alert Sound</span>
+                        <Switch {...label} defaultChecked></Switch>
+                    </div>
+                </div>
+            </div>
+        )
+    }
 
     function renderContent() {
         return (

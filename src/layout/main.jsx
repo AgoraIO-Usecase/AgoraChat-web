@@ -59,7 +59,7 @@ export default function Main() {
             })
         }
     }
-    notify()
+    // notify()
     return (
         <div className='main-container'>
             <EaseApp
