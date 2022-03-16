@@ -64,12 +64,20 @@ const useStyles = makeStyles((theme) => {
             character: '0',
             color: '#000000'
         },
-				imgStyle: {
+				imgBox: {
+					borderRadius: '50%',
+					width: '32px',
+					height: '32px',
+					background: '#fff',
+					textAlign: 'center',
 					position: 'absolute',
 					left: '196px',
 					bottom: '80px',
+				},
+				imgStyle: {
 					width: '30px',
-					height: '30px'
+					height: '30px',
+					borderRadius: '50%',
 				}
     })
 });
@@ -120,7 +128,9 @@ const GroupMemberInfoPopover = ({ open, onClose, memberInfo, presenceList }) => 
 						className={classes.avatarImg}
 					></Avatar>
 					<Tooltip title={presenceList[0]?.ext} placement="bottom-end">
-						<img alt="" src={statusImgObj[presenceList[0]?.ext] || customIcon} className={classes.imgStyle} />
+						<div className={classes.imgBox}>
+							<img alt="" src={statusImgObj[presenceList[0]?.ext] || customIcon} className={classes.imgStyle} />
+						</div>
 					</Tooltip>
 					<Typography className={classes.nameText}>{from}</Typography>
 					<Typography className={classes.idText}>

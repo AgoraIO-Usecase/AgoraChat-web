@@ -74,7 +74,7 @@ const initListen = () => {
                         item.ext = message[0].ext
                     }
                 })
-                console.log('SessionActions', presenceList)
+                console.log('SessionActions', presenceList, EaseApp)
                 store.dispatch(setPresenceList(presenceList))
                 EaseApp.changePresenceStatus(message[0].ext)
             }

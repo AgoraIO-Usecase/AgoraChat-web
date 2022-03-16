@@ -66,10 +66,18 @@ const useStyles = makeStyles((theme) => {
 			character: "0",
 			color: "#000000",
 		},
-		imgStyle: {
+		imgBox: {
+			borderRadius: '50%',
+      width: '32px',
+      height: '32px',
+      background: '#fff',
+      textAlign: 'center',
 			position: 'absolute',
 			left: '196px',
 			bottom: '80px',
+		},
+		imgStyle: {
+			borderRadius: '50%',
 			width: '30px',
 			height: '30px'
 		}
@@ -120,7 +128,9 @@ const SessionInfoPopover = ({ open, onClose, sessionInfo }) => {
 						className={classes.avatarImg}
 					></Avatar>
 					<Tooltip title={usePresenceExt} placement="bottom-end">
-						<img alt="" src={statusImgObj[usePresenceExt] || customIcon} className={classes.imgStyle} />
+						<div className={classes.imgBox}>
+							<img alt="" src={statusImgObj[usePresenceExt] || customIcon} className={classes.imgStyle} />
+						</div>
 					</Tooltip>
 					<Typography className={classes.nameText}>{to}</Typography>
 					<Typography className={classes.idText}>

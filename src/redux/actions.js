@@ -92,6 +92,7 @@ export const closeGroupChatAction = (data) => {
 };
 
 export const presenceStatusImg = ext => {
+    ext = decodeURIComponent(ext)
     let data = {
         statusImg: customIcon,
         index: 4,
