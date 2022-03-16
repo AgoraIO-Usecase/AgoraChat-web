@@ -33,6 +33,7 @@ export function postData(url, data) {
 }
 
 export function logout() {
+    WebIM.conn.publishPresence({description: 'Offline'})
     WebIM.conn.close()
 }
 
