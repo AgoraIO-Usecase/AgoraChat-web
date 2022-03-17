@@ -16,7 +16,11 @@ import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import WebIM from "../../../../utils/WebIM";
 import { TabPanel, a11yProps } from "../../../common/tabs";
-import GroupInfo from "./members";
+
+import Members from "./members";
+import AddMembers from "./addMembers";
+import Notice from "./notice";
+import TransFerOwner from "./transfer";
 import { closeGroup } from "../../../../api/groupChat/closeGroup";
 
 import groupAvatar from "../../../../assets/groupAvatar.png";
@@ -119,6 +123,9 @@ const useStyles = makeStyles((theme) => {
 			height: "30px",
 			width: "30px",
 		},
+		deleteGroupBox:{
+			padding:"6px 12px"
+		}
 	};
 });
 
@@ -217,26 +224,6 @@ const GroupSettingsDialog = ({ open, onClose, currentGroupId }) => {
 				</Button>
 			);
 		};
-		const deleteLabel = () => {
-			return (
-				<Button className={classes.membersBox}>
-					<img
-						src={deleteIcon}
-						alt="delete"
-						className={classes.iconStyle}
-					></img>
-					{isOwner ? (
-						<Typography className={classes.gCloseText}>
-							Disband this Group
-						</Typography>
-					) : (
-						<Typography className={classes.gCloseText}>
-							Leave the Group
-						</Typography>
-					)}
-				</Button>
-			);
-		};
 		return (
 			<Box className={classes.root}>
 				<Box className={classes.gSettingleft}>
@@ -294,11 +281,43 @@ const GroupSettingsDialog = ({ open, onClose, currentGroupId }) => {
 							{...a11yProps(5)}
 							className={classes.itemBox}
 						/>
-						<Tab
-							label={deleteLabel()}
-							className={classes.itemBox}
-						/>
 					</Tabs>
+					<Box className={classes.deleteGroupBox}>
+						<Button className={classes.membersBox}>
+							<img
+								src={deleteIcon}
+								alt="delete"
+								className={classes.iconStyle}
+							></img>
+							{isOwner ? (
+								<Typography
+									className={classes.gCloseText}
+									onClick={() =>
+										closeGroup(
+											currentGroupId,
+											"dissolve",
+											onClose
+										)
+									}
+								>
+									Disband this Group
+								</Typography>
+							) : (
+								<Typography
+									className={classes.gCloseText}
+									onClick={() =>
+										closeGroup(
+											currentGroupId,
+											"quit",
+											onClose
+										)
+									}
+								>
+									Leave the Group
+								</Typography>
+							)}
+						</Button>
+					</Box>
 				</Box>
 				<Box className={classes.gSettingRight}>
 					<TabPanel
@@ -320,7 +339,7 @@ const GroupSettingsDialog = ({ open, onClose, currentGroupId }) => {
 						index={2}
 						className={classes.content}
 					>
-						Group Notice
+						<Notice />
 					</TabPanel>
 					<TabPanel
 						value={value}
@@ -336,6 +355,14 @@ const GroupSettingsDialog = ({ open, onClose, currentGroupId }) => {
 					>
 						Group Chat Info
 					</TabPanel>
+					<TabPanel
+						value={value}
+						index={5}
+						className={classes.content}
+					>
+						<TransFerOwner />
+					</TabPanel>
+					
 				</Box>
 			</Box>
 		);
