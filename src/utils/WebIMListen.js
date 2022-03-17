@@ -77,18 +77,32 @@ const initListen = () => {
             let { myUserInfo, presenceList } = store.getState()
             console.log('onPresenceStatusChange', message, myUserInfo.agoraId, myUserInfo.nickName)
             if(myUserInfo.agoraId !== message[0].userId){
+                presenceList = JSON.parse(JSON.stringify(presenceList))
                 const tempArr = []
+                const obj = {}
                 message.forEach(item => {
+                    item.statusDetails.forEach(val => {
+                        obj[val.device] = val.status.toString()
+                    })
                     tempArr.push({
                         expiry: item.expire,
                         ext: item.ext,
                         last_time: item.lastTime,
-                        status: item.statusDetails,
-                        uid: item.userId
+                        uid: item.userId,
+                        status: obj
                     })
                 })
-                presenceList = JSON.parse(JSON.stringify(presenceList))
-                const newArr = [...presenceList, ...tempArr]
+                if (presenceList.findIndex(item => item.uid === message[0].userId) !== -1) {
+                    presenceList.forEach(item => {
+                        if (item.uid === message[0].userId) {
+                            item.ext = message[0].ext
+                        }
+                    })
+                } else {
+                    presenceList.contact(tempArr)
+                }
+                console.log(presenceList, 'onPresenceStatusChange=presenceList')
+                const newArr = presenceList
                 store.dispatch(setPresenceList(newArr))
                 EaseApp.changePresenceStatus(message[0].ext)
             }
