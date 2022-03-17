@@ -16,29 +16,29 @@ import { getGroupBlock } from "../../../../../api/groupChat/groupBlock";
 
 
 const useStyles = makeStyles((theme) => {
-    return {
-		root: {
-			padding: "0",
-		},
-		gUserBox: {
-			height: "585px",
-			overflowY: "scroll",
-			overflowS: "hidden",
-		},
-		menus: {
-			color: "#000000",
-			fontSize: "16px",
-			fontWeight: "Semibold (600)",
-			typeface: "Ping Fang SC",
-			textTransform: "none",
-			maxWidth: "100%",
-			minWidth: "0",
-			padding: "0",
-		},
-	};
+    return ({
+        root: {
+            padding: '0'
+        },
+        gUserBox: {
+            height: '585px',
+            overflowY: 'scroll',
+            overflowS: 'hidden',
+        },
+        menus: {
+            color: '#000000',
+            fontSize: '16px',
+            fontWeight: 'Semibold (600)',
+            typeface: 'Ping Fang SC',
+            textTransform: ' none',
+            maxWidth: '100%',
+            minWidth: '0',
+            padding: '0'
+        },
+    })
 });
 
-const Members = () => {
+const GroupInfo = () => {
     const classes = useStyles();
     const state = useSelector((state) => state);
     const groupsInfo = state?.groups?.groupsInfo || {}
@@ -99,4 +99,4 @@ const Members = () => {
     )
 }
 
-export default Members;
+export default GroupInfo;
