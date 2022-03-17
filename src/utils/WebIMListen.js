@@ -10,6 +10,7 @@ import { getToken } from '../api/loginChat'
 import { agreeInviteGroup } from '../api/groupChat/addGroup'
 import { getGroupMuted } from "../api/groupChat/groupMute";
 import { getGroupWrite } from "../api/groupChat/groupWhite";
+import { getSubPresence, publishNewPresence } from "../api/presence/";
 
 import i18next from "i18next";
 import { message } from '../components/common/alert'
@@ -19,6 +20,14 @@ const history = createHashHistory()
 const initListen = () => {
     WebIM.conn.listen({
         onOpened: () => {
+            let { myUserInfo } = store.getState()
+            console.log(myUserInfo)
+            getSubPresence({usernames: [myUserInfo.agoraId]}).then(res => {
+                console.log(res, 'onOpened')
+                if (res.result[0].ext === 'Offline') {
+                    publishNewPresence({description: 'Online'})
+                }
+            })
             getContacts();
             getPublicGroups();
             getBlackList()
@@ -68,17 +77,25 @@ const initListen = () => {
             let { myUserInfo, presenceList } = store.getState()
             console.log('onPresenceStatusChange', message, myUserInfo.agoraId, myUserInfo.nickName)
             if(myUserInfo.agoraId !== message[0].userId){
-                console.log('SessionActions.setSessionList', presenceList)
-                presenceList.forEach(item => {
-                    if (item.uid === message[0].userId) {
-                        item.ext = message[0].ext
-                    }
+                const tempArr = []
+                message.forEach(item => {
+                    tempArr.push({
+                        expiry: item.expire,
+                        ext: item.ext,
+                        last_time: item.lastTime,
+                        status: item.statusDetails,
+                        uid: item.userId
+                    })
                 })
-                console.log('SessionActions', presenceList)
-                store.dispatch(setPresenceList(presenceList))
+                presenceList = JSON.parse(JSON.stringify(presenceList))
+                const newArr = [...presenceList, ...tempArr]
+                store.dispatch(setPresenceList(newArr))
                 EaseApp.changePresenceStatus(message[0].ext)
             }
             else{
+                if (message[0].ext === 'Offline') {
+                    message[0].ext = 'Online'
+                }
                 store.dispatch(presenceStatusImg(message[0].ext))
             }
         }, // 发布者发布新的状态时，订阅者触发该回调

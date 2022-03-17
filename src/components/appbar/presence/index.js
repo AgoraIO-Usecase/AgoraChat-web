@@ -32,11 +32,19 @@ const useStyles = makeStyles((theme) => {
       display: 'inline-block',
       width: '140px'
     },
+    imgBox: {
+      borderRadius: '50%',
+      width: '20px',
+      height: '20px',
+      background: 'rgb(240, 242, 243)',
+      textAlign: 'center',
+      lineHeight: '25px',
+      cursor: 'pointer',
+    },
     imgStyle: {
       width: '18px',
       height: '18px',
       borderRadius: '50%',
-      cursor: 'pointer',
       // verticalAlign: 'middle'
     },
     statusBox: {
@@ -146,6 +154,8 @@ const PresencePopover = (props) => {
     presenceList[presenceObj.index].checked = true
     if (presenceObj.index === 4) {
       presenceList[presenceObj.index].title = presenceObj.ext
+    } else {
+      presenceList[4].title = 'Custom Status'
     }
   }, [presenceObj])
 
@@ -260,7 +270,9 @@ const PresencePopover = (props) => {
   }
   return (
     <div className={props.className} style={{...props.style}}>
-      <img aria-describedby={id} src={presenceObj.statusImg} className={useClasses.imgStyle} onClick={handlePopoverClick} alt="" />
+      <div className={useClasses.imgBox} onClick={handlePopoverClick}>
+        <img aria-describedby={id} src={presenceObj.statusImg} className={useClasses.imgStyle} alt="" />
+      </div>
       <Popover
         id={id}
         open={openPopover}

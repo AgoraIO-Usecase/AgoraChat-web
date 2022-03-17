@@ -30,15 +30,20 @@ export const subFriendStatus = (payload) => {
   })
 }
 
-export const  unsubFriendStatus = (payload) => {
+export const unsubFriendStatus = (payload) => {
   WebIM.conn.unsubscribePresence(payload).then(res => {
     console.log(res, 'unsubFriendStatus');
   });
 }
 
-export const  getSubPresence = (payload) => {
-  WebIM.conn.getPresenceStatus(payload).then(res => {
-    
+export const getSubPresence = (payload) => {
+  console.log(payload, 'payload==getSubPresence')
+  return new Promise((resolve, reject) => {
+    WebIM.conn.getPresenceStatus(payload).then(res => {
+      resolve(res)
+    }).catch(err => {
+      reject(err)
+    })
   })
 }
 

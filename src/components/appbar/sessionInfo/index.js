@@ -66,10 +66,18 @@ const useStyles = makeStyles((theme) => {
 			character: "0",
 			color: "#000000",
 		},
-		imgStyle: {
+		imgBox: {
+			borderRadius: '50%',
+      width: '32px',
+      height: '32px',
+      background: '#fff',
+      textAlign: 'center',
 			position: 'absolute',
 			left: '196px',
 			bottom: '80px',
+		},
+		imgStyle: {
+			borderRadius: '50%',
 			width: '30px',
 			height: '30px'
 		}
@@ -87,17 +95,17 @@ const SessionInfoPopover = ({ open, onClose, sessionInfo }) => {
 	const classes = useStyles();
 	const presenceList = useSelector((state) => state?.presenceList) || []
 	console.log(presenceList, 'presenceList')
-	let { to } = sessionInfo
 	const [usePresenceExt, setPresenceExt] = useState('')
+	let { to } = sessionInfo
+	let presenceExt = ''
+	presenceList.forEach(item => {
+		if (item.uid === to) {
+			presenceExt = item.ext
+		}
+	})
 	useEffect(() => {
-		console.log(presenceList, 'presenceList')
-		presenceList.forEach(item => {
-			console.log(to)
-			if (item.uid === to) {
-				setPresenceExt(item.ext)
-			}
-		})
-	}, [presenceList, to])
+		setPresenceExt(presenceExt)
+	}, [presenceExt])
 
 	return (
 		<Popover
@@ -120,7 +128,9 @@ const SessionInfoPopover = ({ open, onClose, sessionInfo }) => {
 						className={classes.avatarImg}
 					></Avatar>
 					<Tooltip title={usePresenceExt} placement="bottom-end">
-						<img alt="" src={statusImgObj[usePresenceExt] || customIcon} className={classes.imgStyle} />
+						<div className={classes.imgBox}>
+							<img alt="" src={statusImgObj[usePresenceExt] || customIcon} className={classes.imgStyle} />
+						</div>
 					</Tooltip>
 					<Typography className={classes.nameText}>{to}</Typography>
 					<Typography className={classes.idText}>
