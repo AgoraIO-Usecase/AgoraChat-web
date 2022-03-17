@@ -103,6 +103,11 @@ const AddedGroups = ({ onClose }) => {
         setCurrentGroupId(groupid)
     }
 
+    const handleCloseGroupInfo = () => {
+        setshowGroupSettings(null);
+        onClose();
+    }
+
     const handleSearchValue = (e) => {
         if (!(e.target.value)) {
             // getGroups()
@@ -130,43 +135,65 @@ const AddedGroups = ({ onClose }) => {
 
 
     return (
-        <>
-            <Box className={classes.root}>
-                <Box className={classes.inputBox}>
-                    <img src={search_icon} alt="" className={classes.searchImg} />
-                    <InputBase
-                        type="search"
-                        placeholder="Search"
-                        className={classes.inputSearch}
-                        onChange={handleSearchValue}
-                    />
-                </Box>
-                <Loading show={isSearching} />
-                <List className={classes.gItem}>
-                    {renderGroups.length > 0 && renderGroups.map((item, key) => {
-                        return (
-                            <ListItem className={classes.gInfoBox} key={key}>
-                                {/* <Box  onClick={() => handleGroupInfo(item.groupid)}></Box> */}
-                                <Avatar className={classes.gAvatar} src={groupAvatar_icon} onClick={() => handleGroupInfo(item.groupid)}></Avatar>
+		<>
+			<Box className={classes.root}>
+				<Box className={classes.inputBox}>
+					<img
+						src={search_icon}
+						alt=""
+						className={classes.searchImg}
+					/>
+					<InputBase
+						type="search"
+						placeholder="Search"
+						className={classes.inputSearch}
+						onChange={handleSearchValue}
+					/>
+				</Box>
+				<Loading show={isSearching} />
+				<List className={classes.gItem}>
+					{renderGroups.length > 0 &&
+						renderGroups.map((item, key) => {
+							return (
+								<ListItem
+									className={classes.gInfoBox}
+									key={key}
+								>
+									{/* <Box  onClick={() => handleGroupInfo(item.groupid)}></Box> */}
+									<Avatar
+										className={classes.gAvatar}
+										src={groupAvatar_icon}
+										onClick={() =>
+											handleGroupInfo(item.groupid)
+										}
+									></Avatar>
 
-                                <Box style={{ flex:'1' }} onClick={() => { handleClickSession(item.groupid) }}>
-                                    <Button className={classes.gName}>
-                                        <Typography className={classes.gNameText}>{item.groupname}</Typography>
-                                    </Button>
-                                </Box>
-                            </ListItem>
-                        )
-                    })}
-                </List>
-            </Box>
-            <GroupSettingsDialog
-                open={showGroupSettings}
-                onClose={() => setshowGroupSettings(false)}
-                currentGroupId={currentGroupId}
-            >
-            </GroupSettingsDialog>
-        </>
-    )
+									<Box
+										style={{ flex: "1" }}
+										onClick={() => {
+											handleClickSession(item.groupid);
+										}}
+									>
+										<Button className={classes.gName}>
+											<Typography
+												className={classes.gNameText}
+											>
+												{item.groupname}
+											</Typography>
+										</Button>
+									</Box>
+								</ListItem>
+							);
+						})}
+				</List>
+			</Box>
+			<GroupSettingsDialog
+				open={showGroupSettings}
+				onClose={handleCloseGroupInfo}
+				currentGroupId={currentGroupId}
+			></GroupSettingsDialog>
+		</>
+	);
 }
 
 export default AddedGroups;
