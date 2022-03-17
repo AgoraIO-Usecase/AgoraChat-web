@@ -94,7 +94,7 @@ const statusImgObj = {
 const SessionInfoPopover = ({ open, onClose, sessionInfo }) => {
 	const classes = useStyles();
 	const presenceList = useSelector((state) => state?.presenceList) || []
-	console.log(presenceList, 'presenceList')
+
 	const [usePresenceExt, setPresenceExt] = useState('')
 	let { to } = sessionInfo
 	let presenceExt = ''

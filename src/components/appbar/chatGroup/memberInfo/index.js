@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux'
 import i18next from "i18next";
 import { Popover, Box, Avatar, Button, Tooltip } from '@material-ui/core';
@@ -86,15 +86,28 @@ const useStyles = makeStyles((theme) => {
 const GroupMemberInfoPopover = ({ open, onClose, memberInfo, presenceList }) => {
 	const classes = useStyles();
 	const state = useSelector((state) => state);
+	const [usePresenceExt, setPresenceExt] = useState(null)
 	const constacts = state?.constacts || [];
 	let { from } = memberInfo
+	const presenceListRedux = useSelector((state) => state?.presenceList) || []
+
+	let presenceExt = ''
+	presenceListRedux.forEach(item => {
+		if (item.uid === from) {
+			presenceExt = item.ext
+		}
+	})
+
+	useEffect(() => {
+		setPresenceExt(presenceExt)
+	}, [presenceExt])
 
 	const handleClickChat = (userId) => {
 		// uikit
 		let conversationItem = {
 			conversationType: "singleChat",
 			conversationId: from,
-			ext: presenceList[0].ext
+			ext: presenceExt || presenceList[0].ext
 		};
 		EaseApp.addConversationItem(conversationItem);
 		onClose();
@@ -127,9 +140,9 @@ const GroupMemberInfoPopover = ({ open, onClose, memberInfo, presenceList }) => 
 						src={avatarImg}
 						className={classes.avatarImg}
 					></Avatar>
-					<Tooltip title={presenceList[0]?.ext} placement="bottom-end">
+					<Tooltip title={usePresenceExt || presenceList[0]?.ext} placement="bottom-end">
 						<div className={classes.imgBox}>
-							<img alt="" src={statusImgObj[presenceList[0]?.ext] || customIcon} className={classes.imgStyle} />
+							<img alt="" src={statusImgObj[usePresenceExt] || statusImgObj[presenceList[0]?.ext] || customIcon} className={classes.imgStyle} />
 						</div>
 					</Tooltip>
 					<Typography className={classes.nameText}>{from}</Typography>
