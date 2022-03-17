@@ -1,5 +1,5 @@
 import WebIM from '../../utils/WebIM'
-
+import { publishNewPresence } from '../presence'
 
 export const getToken = (agoraId, nickName) => {
     // return postData('https://a71.easemob.com/app/chat/user/login', { "userAccount": agoraId, "userNickname": nickName })
@@ -33,7 +33,7 @@ export function postData(url, data) {
 }
 
 export function logout() {
-    WebIM.conn.publishPresence({description: 'Offline'})
+    publishNewPresence({description: 'Offline'})
     WebIM.conn.close()
 }
 

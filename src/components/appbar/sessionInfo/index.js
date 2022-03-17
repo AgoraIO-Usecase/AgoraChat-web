@@ -95,17 +95,17 @@ const SessionInfoPopover = ({ open, onClose, sessionInfo }) => {
 	const classes = useStyles();
 	const presenceList = useSelector((state) => state?.presenceList) || []
 	console.log(presenceList, 'presenceList')
-	let { to } = sessionInfo
 	const [usePresenceExt, setPresenceExt] = useState('')
+	let { to } = sessionInfo
+	let presenceExt = ''
+	presenceList.forEach(item => {
+		if (item.uid === to) {
+			presenceExt = item.ext
+		}
+	})
 	useEffect(() => {
-		console.log(presenceList, 'presenceList')
-		presenceList.forEach(item => {
-			console.log(to)
-			if (item.uid === to) {
-				setPresenceExt(item.ext)
-			}
-		})
-	}, [presenceList, to])
+		setPresenceExt(presenceExt)
+	}, [presenceExt])
 
 	return (
 		<Popover
