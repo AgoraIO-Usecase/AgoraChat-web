@@ -12,15 +12,14 @@ export const closeGroup = (groupId, type, onClose) => {
         WebIM.conn.dissolveGroup(option).then((res) => {
             console.log(res)
             getGroups()
-            onClose && onClose()
         })
     } else if (type === "quit") {
         WebIM.conn.quitGroup(option).then((res) => {
             console.log(res)
             getGroups()
-            onClose && onClose()
         })
     }
+    onClose && onClose();
 }
 
 export const rmGroupUser = (groupId, username) => {

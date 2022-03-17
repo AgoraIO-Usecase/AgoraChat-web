@@ -4,7 +4,7 @@ import i18next from "i18next";
 import { Box, List, ListItem, ListItemText, Button, Menu, MenuItem } from "@material-ui/core"
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
-import { onChangeGroupBlock } from '../../../../api/groupChat/groupBlock'
+import { onChangeGroupBlock } from '../../../../../api/groupChat/groupBlock'
 
 const useStyles = makeStyles((theme) => {
     return ({

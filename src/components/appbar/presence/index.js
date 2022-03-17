@@ -239,7 +239,9 @@ const PresencePopover = (props) => {
     const params = {
       description: changeTitle
     }
-    pubPresence(params)
+    pubPresence(params).then(res => {
+      presenceList[4].title = 'Custom Status'
+    })
     setDialogOpen(false)
   }
   const button = () => {
@@ -302,7 +304,7 @@ const PresencePopover = (props) => {
           <div id="modal-modal-description" className={useClasses.modalBottom}>
             <Input className={useClasses.inputStyle} placeholder="Custom Status" onChange={handlerInput} />
             <div className={useClasses.bottomBtn}>
-              <Button variant="outlined" color="info" onClick={handleModalClose}>取消</Button>
+              <Button variant="outlined" color="inherit" onClick={handleModalClose}>取消</Button>
               <Button className={useClasses.rightBtn} variant="contained" color="primary" onClick={() => handleModalClose(1)}>确定</Button>
             </div>
           </div>
