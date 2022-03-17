@@ -276,11 +276,13 @@ const GroupSettingsDialog = ({ open, onClose, currentGroupId }) => {
 							{...a11yProps(4)}
 							className={classes.itemBox}
 						/>
-						<Tab
-							label={transFerLabel()}
-							{...a11yProps(5)}
-							className={classes.itemBox}
-						/>
+						{isOwner ? (
+							<Tab
+								label={transFerLabel()}
+								{...a11yProps(5)}
+								className={classes.itemBox}
+							/>
+						) : null}
 					</Tabs>
 					<Box className={classes.deleteGroupBox}>
 						<Button className={classes.membersBox}>
@@ -325,14 +327,14 @@ const GroupSettingsDialog = ({ open, onClose, currentGroupId }) => {
 						index={0}
 						className={classes.content}
 					>
-						<GroupInfo />
+						<Members />
 					</TabPanel>
 					<TabPanel
 						value={value}
 						index={1}
 						className={classes.content}
 					>
-						Add Members
+						<AddMembers />
 					</TabPanel>
 					<TabPanel
 						value={value}
@@ -360,9 +362,8 @@ const GroupSettingsDialog = ({ open, onClose, currentGroupId }) => {
 						index={5}
 						className={classes.content}
 					>
-						<TransFerOwner />
+						<TransFerOwner onClose={onClose}/>
 					</TabPanel>
-					
 				</Box>
 			</Box>
 		);
