@@ -24,4 +24,23 @@ const getGroupInfo = (groupId, type) => {
     })
 }
 
+
+export const modifyGroupInfo = (newGroupName, newDescription, handleClose) => {
+    let state = store.getState();
+	let groupId = state.groups.groupsInfo?.id;
+    let groupName = state.groups.groupsInfo?.name || "";
+	let groupDescription = state.groups.groupsInfo?.description || "";
+	let option = {
+		groupId: groupId,
+		groupName: newGroupName ? newGroupName : groupName,
+		description: newDescription ? newDescription : groupDescription,
+	};
+	WebIM.conn.modifyGroup(option).then((res) => {
+		console.log("modifyGroupInfo>>>", res);
+        getGroupInfo(groupId);
+        handleClose && handleClose();
+	});
+};
+
+
 export default getGroupInfo;

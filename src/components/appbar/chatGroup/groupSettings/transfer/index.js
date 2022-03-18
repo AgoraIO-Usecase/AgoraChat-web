@@ -60,6 +60,14 @@ const useStyles = makeStyles((theme) => ({
 			background: "#FFFFFF",
 		},
 	},
+	cancelStyle: {
+		fontFamily: "Ping Fang SC",
+		fontWeight: "600",
+		fontSize: "16px",
+		lineHeight: "16px",
+		color: "#005FFF",
+		cursor:"pointer"
+	},
 }));
 
 const TransFerOwner = ({ onClose }) => {
@@ -91,7 +99,7 @@ const TransFerOwner = ({ onClose }) => {
 
 	const handleClose = () => {
 		setAnchorEl(null);
-        onClose()
+		onClose();
 	};
 
 	const handleSearch = () => {
@@ -123,7 +131,10 @@ const TransFerOwner = ({ onClose }) => {
 								className={classes.root}
 								onChange={handleChengeValue}
 							/>
-							<Typography onClick={handleClosrSearch}>
+							<Typography
+								onClick={handleClosrSearch}
+								className={classes.cancelStyle}
+							>
 								{i18next.t("Cancel")}
 							</Typography>
 						</Box>
