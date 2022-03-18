@@ -169,7 +169,6 @@ const AddGroupMemberDialog = ({ groupInfoData, onClearValue, open, onClose }) =>
         } else if (!(e.target.checked)) {
             let groupMembers2 = _.pull(groupMembers, val)
             setGroupMembers([...groupMembers2])
-            console.log('groupMembers2', groupMembers)
             contactsObjs.forEach((value) => {
                 if (value.id === val) {
                     value.checked = false
@@ -184,11 +183,9 @@ const AddGroupMemberDialog = ({ groupInfoData, onClearValue, open, onClose }) =>
         setGroupMembers(newGroupAry)
         contactsObjs.forEach((value) => {
             if (value.id === val) {
-                console.log('1111')
                 value.checked = false
             }
         })
-        console.log('contactsObjs', contactsObjs)
         setContactsObjs([...contactsObjs])
 
     }

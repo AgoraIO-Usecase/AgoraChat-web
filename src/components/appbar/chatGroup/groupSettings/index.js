@@ -2,15 +2,7 @@ import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import CommonDialog from "../../../common/dialog";
 import i18next from "i18next";
-import {
-	Box,
-	Tabs,
-	Tab,
-	List,
-	ListItem,
-	ListItemIcon,
-	ListItemText,
-	Button,
+import {Box,Tabs,Tab,Button,
 } from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
@@ -19,7 +11,7 @@ import { TabPanel, a11yProps } from "../../../common/tabs";
 
 import Members from "./members";
 import AddMembers from "./addMembers";
-import Notice from "./notice";
+import GroupChatInfo from "./info";
 import TransFerOwner from "./transfer";
 import { closeGroup } from "../../../../api/groupChat/closeGroup";
 
@@ -341,7 +333,7 @@ const GroupSettingsDialog = ({ open, onClose, currentGroupId }) => {
 						index={2}
 						className={classes.content}
 					>
-						<Notice />
+						{/* <Notice /> */}
 					</TabPanel>
 					<TabPanel
 						value={value}
@@ -355,7 +347,7 @@ const GroupSettingsDialog = ({ open, onClose, currentGroupId }) => {
 						index={4}
 						className={classes.content}
 					>
-						Group Chat Info
+						<GroupChatInfo />	
 					</TabPanel>
 					<TabPanel
 						value={value}

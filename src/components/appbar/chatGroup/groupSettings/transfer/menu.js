@@ -38,7 +38,6 @@ const Menu = ({ open, onClose,userId }) => {
 	const groupId = state?.groups?.groupsInfo.id;
 
 	const handleTransFer = () => {
-		console.log('AAA>>>');
 		transferOwner(groupId, userId, onClose);
 	}
 
