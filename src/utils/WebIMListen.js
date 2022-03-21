@@ -20,14 +20,6 @@ const history = createHashHistory()
 const initListen = () => {
     WebIM.conn.listen({
         onOpened: () => {
-            let { myUserInfo } = store.getState()
-            console.log(myUserInfo)
-            getSubPresence({usernames: [myUserInfo.agoraId]}).then(res => {
-                console.log(res, 'onOpened')
-                if (res.result[0].ext === 'Offline') {
-                    publishNewPresence({description: 'Online'})
-                }
-            })
             getContacts();
             getPublicGroups();
             getBlackList()
@@ -76,14 +68,21 @@ const initListen = () => {
         onPresenceStatusChange: function(message){
             let { myUserInfo, presenceList } = store.getState()
             console.log('onPresenceStatusChange', message, myUserInfo.agoraId, myUserInfo.nickName)
-            if(myUserInfo.agoraId !== message[0].userId){
-                presenceList = JSON.parse(JSON.stringify(presenceList))
-                const tempArr = []
-                const obj = {}
-                message.forEach(item => {
+            message.forEach(item => {
+                if(myUserInfo.agoraId !== item.userId){
+                    presenceList = JSON.parse(JSON.stringify(presenceList))
+                    const tempArr = []
+                    const obj = {}
+                    let extFlag = false
                     item.statusDetails.forEach(val => {
+                        if (val.status === 1) {
+                            extFlag = true
+                        }
                         obj[val.device] = val.status.toString()
                     })
+                    if (!extFlag) {
+                        item.ext = 'Offline'
+                    }
                     tempArr.push({
                         expiry: item.expire,
                         ext: item.ext,
@@ -91,27 +90,24 @@ const initListen = () => {
                         uid: item.userId,
                         status: obj
                     })
-                })
-                if (presenceList.findIndex(item => item.uid === message[0].userId) !== -1) {
-                    presenceList.forEach(item => {
-                        if (item.uid === message[0].userId) {
-                            item.ext = message[0].ext
-                        }
-                    })
-                } else {
-                    presenceList.contact(tempArr)
+                    if (presenceList.findIndex(val => val.uid === item.userId) !== -1) {
+                        presenceList.forEach(val => {
+                            if (val.uid === item.userId) {
+                                val.ext = item.ext
+                            }
+                        })
+                    } else {
+                        presenceList.contact(tempArr)
+                    }
+                    console.log(presenceList, 'onPresenceStatusChange=presenceList')
+                    const newArr = presenceList
+                    store.dispatch(setPresenceList(newArr))
+                    EaseApp.changePresenceStatus(item.ext)
                 }
-                console.log(presenceList, 'onPresenceStatusChange=presenceList')
-                const newArr = presenceList
-                store.dispatch(setPresenceList(newArr))
-                EaseApp.changePresenceStatus(message[0].ext)
-            }
-            else{
-                if (message[0].ext === 'Offline') {
-                    message[0].ext = 'Online'
+                else{
+                    store.dispatch(presenceStatusImg(item.ext))
                 }
-                store.dispatch(presenceStatusImg(message[0].ext))
-            }
+            })
         }, // 发布者发布新的状态时，订阅者触发该回调
     })
 
