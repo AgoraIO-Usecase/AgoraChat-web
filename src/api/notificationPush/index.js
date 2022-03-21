@@ -1,14 +1,14 @@
 import WebIM from '../../utils/WebIM'
 
-// 用户推送免打扰
+// 设置用户免打扰
 /**
  * 
  * @param {duration} number // 免打扰时长
  * @returns
  */
-export const disablePushDuration = (payload) => {
+export const setNotDisturbDuration = (payload) => {
   return new Promise((resolve, reject) => {
-    WebIM.conn.disablePushDuration(payload).then(res => {
+    WebIM.conn.setNotDisturbDuration(payload).then(res => {
       console.log(res, 'publishNewPresence')
       resolve(res)
     }).catch(err => {
@@ -18,15 +18,15 @@ export const disablePushDuration = (payload) => {
   })
 }
 
-// 用户推送消息类型
+// 获取用户免打扰
 /**
  * 
  * @param {type} string // 推送消息类型
  * @returns 
  */
-export const updatePushRemindType = (payload) => {
+export const getNotDisturbDuration = (payload) => {
   return new Promise((resolve, reject) => {
-    WebIM.conn.updatePushRemindType(payload).then(res => {
+    WebIM.conn.getNotDisturbDuration(payload).then(res => {
       console.log(res, 'publishNewPresence')
       resolve(res)
     }).catch(err => {
@@ -43,9 +43,9 @@ export const updatePushRemindType = (payload) => {
  * @param {groupId} string // 群组id
  * @returns 
  */
- export const disableGroupPushDuration = (payload) => {
+ export const getNotDisturbDurationByLimit = (payload) => {
   return new Promise((resolve, reject) => {
-    WebIM.conn.disableGroupPushDuration(payload).then(res => {
+    WebIM.conn.getNotDisturbDurationByLimit(payload).then(res => {
       console.log(res, 'publishNewPresence')
       resolve(res)
     }).catch(err => {
@@ -62,9 +62,9 @@ export const updatePushRemindType = (payload) => {
  * @param {groupId} string // 群组id
  * @returns 
  */
- export const updateGRoupPushRemindType = (payload) => {
+ export const setNotDisturbGroupDuration = (payload) => {
   return new Promise((resolve, reject) => {
-    WebIM.conn.updateGRoupPushRemindType(payload).then(res => {
+    WebIM.conn.setNotDisturbGroupDuration(payload).then(res => {
       console.log(res, 'publishNewPresence')
       resolve(res)
     }).catch(err => {
@@ -82,9 +82,9 @@ export const updatePushRemindType = (payload) => {
  * @param {threadId} string // 群组id
  * @returns 
  */
- export const disableThreadPushDuration = (payload) => {
+ export const getNotDisturbGroupDuration = (payload) => {
   return new Promise((resolve, reject) => {
-    WebIM.conn.disableThreadPushDuration(payload).then(res => {
+    WebIM.conn.getNotDisturbGroupDuration(payload).then(res => {
       console.log(res, 'publishNewPresence')
       resolve(res)
     }).catch(err => {
@@ -102,9 +102,9 @@ export const updatePushRemindType = (payload) => {
  * @param {threadId} string // 群组id
  * @returns 
  */
- export const updateThreadPushRemindType = (payload) => {
+ export const getNotDisturbGroupDurationByLimit = (payload) => {
   return new Promise((resolve, reject) => {
-    WebIM.conn.updateThreadPushRemindType(payload).then(res => {
+    WebIM.conn.getNotDisturbGroupDurationByLimit(payload).then(res => {
       console.log(res, 'publishNewPresence')
       resolve(res)
     }).catch(err => {
