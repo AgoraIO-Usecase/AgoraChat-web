@@ -60,25 +60,27 @@ const Menu = ({ open, onClose,userId }) => {
 			}}
 		>
 			<List component="nav" aria-label="main mailbox folders">
-				<ListItem button className={classes.itemStyle}>
+				<ListItem
+					button
+					className={classes.itemStyle}
+					onClick={handleTransFer}
+				>
 					<img
 						src={transferIcon}
 						alt=""
 						className={classes.iconStyle}
 					/>
-					<Typography
-						className={classes.transferStyle}
-						onClick={handleTransFer}
-					>
+					<Typography className={classes.transferStyle}>
 						{i18next.t("Transfer")}
 					</Typography>
 				</ListItem>
-				<ListItem button className={classes.itemStyle}>
+				<ListItem
+					button
+					className={classes.itemStyle}
+					onClick={handleTransFerLeave}
+				>
 					<img src={leaveIcon} alt="" className={classes.iconStyle} />
-					<Typography
-						className={classes.leaveStyle}
-						onClick={handleTransFerLeave}
-					>
+					<Typography className={classes.leaveStyle}>
 						{i18next.t("Transfer and Leave")}
 					</Typography>
 				</ListItem>
