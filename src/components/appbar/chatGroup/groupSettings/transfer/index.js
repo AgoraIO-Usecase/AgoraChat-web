@@ -21,7 +21,8 @@ const useStyles = makeStyles((theme) => ({
 		justifyContent: "space-between",
 		alignItems: "center",
 		borderRadius: "12px",
-		padding: "0 10px",
+		padding: "0 15px",
+		background: "#F6F7F8",
 	},
 	searchBox: {
 		display: "flex",
@@ -66,14 +67,22 @@ const useStyles = makeStyles((theme) => ({
 		fontSize: "16px",
 		lineHeight: "16px",
 		color: "#005FFF",
-		cursor:"pointer"
+		cursor: "pointer",
+	},
+	listStyle: {
+		background: "#F6F7F8",
+		marginTop: "20px",
+		borderRadius: "16px",
+		height: "550px",
+		overflowX: "hidden",
+		overflowY: "scroll",
 	},
 }));
 
 const TransFerOwner = ({ onClose }) => {
 	const classes = useStyles();
 	const [newMembers, setNewMembers] = useState([]);
-	const [anchorEl, setAnchorEl] = React.useState(null);
+	const [anchorEl, setAnchorEl] = useState(null);
 	const [clickUser, setClickUser] = useState("");
 	const [showSearch, setShowSearch] = useState(false);
 	const [searchMembers, setSearchMembers] = useState([]);
@@ -99,7 +108,6 @@ const TransFerOwner = ({ onClose }) => {
 
 	const handleClose = () => {
 		setAnchorEl(null);
-		onClose();
 	};
 
 	const handleSearch = () => {
@@ -149,7 +157,11 @@ const TransFerOwner = ({ onClose }) => {
 					)}
 				</Box>
 			</Box>
-			<List component="nav" aria-label="main mailbox folders">
+			<List
+				component="nav"
+				aria-label="main mailbox folders"
+				className={classes.listStyle}
+			>
 				{membersLength &&
 					(searchMembersLength ? searchMembers : newMembers).map(
 						(item, i) => {

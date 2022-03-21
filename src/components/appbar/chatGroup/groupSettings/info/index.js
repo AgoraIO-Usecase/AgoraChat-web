@@ -16,6 +16,7 @@ const useStyles = makeStyles((theme) => {
 			justifyContent: "space-between",
 			alignItems: "center",
 			padding: "0 15px",
+			borderRadius: "12px",
 		},
 		titleStyle: {
 			fontFamily: "Ping Fang SC",

@@ -11,6 +11,8 @@ import { TabPanel, a11yProps } from "../../../common/tabs";
 
 import Members from "./members";
 import AddMembers from "./addMembers";
+import GroupNotice from './notice'
+// import GroupFiles from "./files";
 import GroupChatInfo from "./info";
 import TransFerOwner from "./transfer";
 import { closeGroup } from "../../../../api/groupChat/closeGroup";
@@ -142,7 +144,9 @@ const GroupSettingsDialog = ({ open, onClose, currentGroupId }) => {
 						alt="members"
 						className={classes.iconStyle}
 					/>
-					<Typography className={classes.menus}>Members</Typography>
+					<Typography className={classes.menus}>
+						{i18next.t("Members")}
+					</Typography>
 				</Button>
 			);
 		};
@@ -155,7 +159,7 @@ const GroupSettingsDialog = ({ open, onClose, currentGroupId }) => {
 						className={classes.iconStyle}
 					></img>
 					<Typography className={classes.menus}>
-						Add Members
+						{i18next.t("Add Members")}
 					</Typography>
 				</Button>
 			);
@@ -169,25 +173,25 @@ const GroupSettingsDialog = ({ open, onClose, currentGroupId }) => {
 						className={classes.iconStyle}
 					></img>
 					<Typography className={classes.menus}>
-						Group Notice
+						{i18next.t("Group Notice")}
 					</Typography>
 				</Button>
 			);
 		};
-		const groupFileLabel = () => {
-			return (
-				<Button className={classes.membersBox}>
-					<img
-						src={filesIcon}
-						alt="files"
-						className={classes.iconStyle}
-					></img>
-					<Typography className={classes.menus}>
-						Group File
-					</Typography>
-				</Button>
-			);
-		};
+		// const groupFileLabel = () => {
+		// 	return (
+		// 		<Button className={classes.membersBox}>
+		// 			<img
+		// 				src={filesIcon}
+		// 				alt="files"
+		// 				className={classes.iconStyle}
+		// 			></img>
+		// 			<Typography className={classes.menus}>
+		// 				Group File
+		// 			</Typography>
+		// 		</Button>
+		// 	);
+		// };
 		const groupInfoLabel = () => {
 			return (
 				<Button className={classes.membersBox}>
@@ -197,7 +201,7 @@ const GroupSettingsDialog = ({ open, onClose, currentGroupId }) => {
 						className={classes.iconStyle}
 					></img>
 					<Typography className={classes.menus}>
-						Group Chat Info
+						{i18next.t("Group Chat Info")}
 					</Typography>
 				</Button>
 			);
@@ -211,7 +215,7 @@ const GroupSettingsDialog = ({ open, onClose, currentGroupId }) => {
 						className={classes.iconStyle}
 					></img>
 					<Typography className={classes.menus}>
-						TransFer Ownership
+						{i18next.t("TransFer Ownership")}
 					</Typography>
 				</Button>
 			);
@@ -258,20 +262,20 @@ const GroupSettingsDialog = ({ open, onClose, currentGroupId }) => {
 							{...a11yProps(2)}
 							className={classes.itemBox}
 						/>
-						<Tab
+						{/* <Tab
 							label={groupFileLabel()}
 							{...a11yProps(3)}
 							className={classes.itemBox}
-						/>
+						/> */}
 						<Tab
 							label={groupInfoLabel()}
-							{...a11yProps(4)}
+							{...a11yProps(3)}
 							className={classes.itemBox}
 						/>
 						{isOwner ? (
 							<Tab
 								label={transFerLabel()}
-								{...a11yProps(5)}
+								{...a11yProps(4)}
 								className={classes.itemBox}
 							/>
 						) : null}
@@ -294,7 +298,7 @@ const GroupSettingsDialog = ({ open, onClose, currentGroupId }) => {
 										)
 									}
 								>
-									Disband this Group
+									{i18next.t("Disband this Group")}
 								</Typography>
 							) : (
 								<Typography
@@ -307,7 +311,7 @@ const GroupSettingsDialog = ({ open, onClose, currentGroupId }) => {
 										)
 									}
 								>
-									Leave the Group
+									{i18next.t("Leave the Group")}
 								</Typography>
 							)}
 						</Button>
@@ -333,28 +337,28 @@ const GroupSettingsDialog = ({ open, onClose, currentGroupId }) => {
 						index={2}
 						className={classes.content}
 					>
-						{/* <Notice /> */}
+						<GroupNotice />
 					</TabPanel>
+					{/* <TabPanel
+						value={value}
+						index={3}
+						className={classes.content}
+					>
+						<GroupFiles onClose={onClose} />
+					</TabPanel> */}
 					<TabPanel
 						value={value}
 						index={3}
 						className={classes.content}
 					>
-						Group File
+						<GroupChatInfo />
 					</TabPanel>
 					<TabPanel
 						value={value}
 						index={4}
 						className={classes.content}
 					>
-						<GroupChatInfo />	
-					</TabPanel>
-					<TabPanel
-						value={value}
-						index={5}
-						className={classes.content}
-					>
-						<TransFerOwner onClose={onClose}/>
+						<TransFerOwner onClose={onClose} />
 					</TabPanel>
 				</Box>
 			</Box>
