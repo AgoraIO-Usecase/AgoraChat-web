@@ -18,9 +18,10 @@ import WebIM from "../../../../utils/WebIM";
 import { TabPanel, a11yProps } from "../../../common/tabs";
 
 import Members from "./members";
-import AddMembers from "./addMembers";
-import Notice from "./notice";
-import TransFerOwner from "./transfer";
+// import AddMembers from "./addMembers";
+// import Notice from "./notice";
+// import TransFerOwner from "./transfer";
+import Notifications from './members/notifications'
 import { closeGroup } from "../../../../api/groupChat/closeGroup";
 
 import groupAvatar from "../../../../assets/groupAvatar.png";
@@ -32,6 +33,7 @@ import editIcon from "../../../../assets/edit@2x.png";
 import allowSearchIcon from "../../../../assets/allow_search@2x.png";
 import transferIcon from "../../../../assets/transfer@2x.png";
 import deleteIcon from "../../../../assets/red@2x.png";
+import muteIcon from '../../../../assets/mute@2x.png'
 
 const useStyles = makeStyles((theme) => {
 	return {
@@ -182,6 +184,20 @@ const GroupSettingsDialog = ({ open, onClose, currentGroupId }) => {
 				</Button>
 			);
 		};
+		const notificationsLabel = () => {
+			return (
+				<Button className={classes.membersBox}>
+					<img
+						src={muteIcon}
+						alt="files"
+						className={classes.iconStyle}
+					></img>
+					<Typography className={classes.menus}>
+						Notifications
+					</Typography>
+				</Button>
+			);
+		};
 		const groupFileLabel = () => {
 			return (
 				<Button className={classes.membersBox}>
@@ -272,13 +288,18 @@ const GroupSettingsDialog = ({ open, onClose, currentGroupId }) => {
 							className={classes.itemBox}
 						/>
 						<Tab
-							label={groupInfoLabel()}
+							label={notificationsLabel()}
 							{...a11yProps(4)}
 							className={classes.itemBox}
 						/>
 						<Tab
-							label={transFerLabel()}
+							label={groupInfoLabel()}
 							{...a11yProps(5)}
+							className={classes.itemBox}
+						/>
+						<Tab
+							label={transFerLabel()}
+							{...a11yProps(6)}
 							className={classes.itemBox}
 						/>
 					</Tabs>
@@ -325,7 +346,7 @@ const GroupSettingsDialog = ({ open, onClose, currentGroupId }) => {
 						index={0}
 						className={classes.content}
 					>
-						<GroupInfo />
+						{/* <GroupInfo /> */}
 					</TabPanel>
 					<TabPanel
 						value={value}
@@ -339,7 +360,7 @@ const GroupSettingsDialog = ({ open, onClose, currentGroupId }) => {
 						index={2}
 						className={classes.content}
 					>
-						<Notice />
+						{/* <Notice /> */}
 					</TabPanel>
 					<TabPanel
 						value={value}
@@ -353,14 +374,21 @@ const GroupSettingsDialog = ({ open, onClose, currentGroupId }) => {
 						index={4}
 						className={classes.content}
 					>
-						Group Chat Info
+						<Notifications />
 					</TabPanel>
 					<TabPanel
 						value={value}
 						index={5}
 						className={classes.content}
 					>
-						<TransFerOwner />
+						Group Chat Info
+					</TabPanel>
+					<TabPanel
+						value={value}
+						index={6}
+						className={classes.content}
+					>
+						{/* <TransFerOwner /> */}
 					</TabPanel>
 					
 				</Box>

@@ -127,4 +127,11 @@ export const notify = () => {
     // ...remain silent.
     return;
   }
-};
+}
+
+export const handlerTime = (time) => {
+  // time为分钟
+  time = time * 60 * 1000
+  const timeList = new Date(new Date().getTime() + (time)).toString().split(' ')
+  return `${timeList[1]} ${timeList[2]}, ${timeList[3]}, ${timeList[4].substring(0,5)}`
+}

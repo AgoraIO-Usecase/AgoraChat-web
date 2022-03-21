@@ -20,6 +20,7 @@ import { setMyUserInfo } from '../../../redux/actions'
 import store from '../../../redux/store'
 
 import { removeFromBlackList } from '../../../api/contactsChat/getContacts'
+import { handlerTime } from '../../../utils/notification'
 
 const useStyles = makeStyles((theme) => {
     return {
@@ -221,6 +222,7 @@ const useStyles = makeStyles((theme) => {
         contentBox: {
             margin: '20px',
             fontSize: '14px',
+            width: '540px',
         },
         turnOffBtnStyle: {
             width: '84px',
@@ -235,7 +237,12 @@ const useStyles = makeStyles((theme) => {
         rightBtn: {
             margin: '0px 20px 20px 10px',
             fontSize: '14px',
-        }
+        },
+        unmuteTimeStyle: {
+			color: '#0D0D0D',
+			fontSize: '16px',
+			fontWeight: 'normal',
+		},
     }
 })
 
@@ -247,7 +254,7 @@ export default function Setting({ open, onClose }) {
     const [nickName, setNickName] = useState('')
     const [avatarIndex, setAvatarIndex] = useState(null)
     const [addEl, setAddEl] = useState(null)
-    const [notifyText, setNotifyText] = React.useState('');
+    const [notifyText, setNotifyText] = useState('');
     const [defaultValue, setDefaultValue] = useState('')
     const [showRadio, setShowRadio] = useState(false)
     const [checkedValue, setCheckedValue] = useState('')
@@ -355,31 +362,38 @@ export default function Setting({ open, onClose }) {
     const radioList = [
         {
             title: 'For 15 minutes',
-            value: '0'
+            value: '0',
+            time: 15,
         },
         {
             title: 'For 1 hour',
-            value: '1'
+            value: '1',
+            time: 1,
         },
         {
             title: 'For 8 hours',
-            value: '2'
+            value: '2',
+            time: 8,
         },
         {
             title: 'For 24 hours',
-            value: '3'
+            value: '3',
+            time: 24,
         },
         {
             title: 'Until 8:00 AM Tomorow',
-            value: '4'
+            value: '4',
+            time: 24,
         },
         {
             title: 'Until I turn it off',
-            value: '5'
+            value: '5',
+            time: 'none',
         }
     ]
 
     const handleChangeRadio = (event) => {
+        console.log(event.target.value, 'event.target.value')
         setDefaultValue(event.target.value)
     }
     const handlerArrowImg = () => {
@@ -389,7 +403,21 @@ export default function Setting({ open, onClose }) {
         setopenTurnOff(true)
     }
     const handlerDoneBtn = () => {
-        setCheckedValue(radioList[Number(defaultValue)].title)
+        if (defaultValue === '5') {
+            setCheckedValue('You Turn it Off')
+        } else {
+            const radioIndex = Number(defaultValue)
+            let str = ''
+            if (radioIndex === 0) {
+                str = handlerTime(radioList[radioIndex].time)
+            } else if (radioIndex > 0 && radioIndex < 4) {
+                str = handlerTime(radioList[radioIndex].time * 60)
+            } else {
+                let list = handlerTime(24 * 60).split(',')
+                str = `${list[0]}, ${list[1]}, 08:00`
+            }
+            setCheckedValue(str)
+        }
         setShowRadio(false)
     }
 
@@ -409,6 +437,7 @@ export default function Setting({ open, onClose }) {
     const handlerOkay = () => {
         setCheckedValue('')
         setShowRadio(true)
+        handleTurnOffClose()
     }
     function infoTabPanel() {
         return (
@@ -520,7 +549,7 @@ export default function Setting({ open, onClose }) {
     function renderTurnOffContent() {
         return (
             <div className={classes.contentBox}>
-                {`You have set Do Not Disturb${' ' + checkedValue}.`}
+                {defaultValue === '5' ? 'You have set Do Not Disturb.' : <span>You have set Do Not Disturb <span className={classes.unmuteTimeStyle}>{checkedValue}</span>.</span>}
             </div>
         )
     }
@@ -561,7 +590,7 @@ export default function Setting({ open, onClose }) {
                                     <div>
                                         <span className={classes.notifySubTitle}>{i18next.t('Do not Disturb')}</span>
                                         {
-                                            checkedValue ? <span className={classes.notifyPrayTitle}>{checkedValue}</span> : ''
+                                            checkedValue ? <span className={classes.notifyPrayTitle}>Until {checkedValue}</span> : null
                                         }
                                     </div>
                                     {
