@@ -91,33 +91,31 @@ const GroupNotice = () => {
 		owner === currentLoginUser || admin.includes(currentLoginUser);
 	let isGroupNotice = groupNotices.length > 0;
 
-	const [editChange, setEditChange] = useState(true);
-	const [disabledEdit, setDisabledEdit] = useState(true);
+	const [editStatus, setEditStatus] = useState(true);
+	const [disabledStatus, setDisabledStatus] = useState(true);
 	const [noticeContent, setnoticeContent] = useState("");
 
 	const handleEdit = () => {
-		setEditChange(false);
-		setDisabledEdit(false);
+		setEditStatus(false);
+		setDisabledStatus(false);
 	};
 
 	const handleSetNoitce = () => {
 		updateGroupNotice(groupId, noticeContent);
-		setEditChange(true);
-		setDisabledEdit(true);
+		setEditStatus(true);
+		setDisabledStatus(true);
 	};
 
 	const handleNoticeChange = (e) => {
 		let value = e.target.value;
-		if (value.length > contentMaxLength){
-			console.log('AAA>>>');
-		};
+		if (value.length > contentMaxLength) return
 		setnoticeContent(e.target.value);
 	};
 
 	const renderNameEdit = () => {
 		return (
 			<>
-				{editChange ? (
+				{editStatus ? (
 					<Typography
 						className={classes.editStyle}
 						onClick={handleEdit}
@@ -144,17 +142,16 @@ const GroupNotice = () => {
 				<Typography>{isPermissions && renderNameEdit()}</Typography>
 			</Box>
 			<Box>
-				{isGroupNotice || !disabledEdit ? (
+				{isGroupNotice || !disabledStatus ? (
 					<Box>
 						<Box className={classes.noticeBox}>
 							<InputBase
 								type="text"
 								multiline={true}
-								maxLength={300}
 								rows={3}
 								autoFocus
 								defaultValue={groupNotices}
-								disabled={disabledEdit}
+								disabled={disabledStatus}
 								className={classes.inputStyle}
 								onChange={handleNoticeChange}
 							/>
