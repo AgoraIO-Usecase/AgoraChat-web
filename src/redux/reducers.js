@@ -28,7 +28,6 @@ let defaultState = {
 };
 
 const reducer = (state = defaultState, action) => {
-	console.log('action>>>',action);
     const { type, data,option } = action;
     switch (type) {
 		case "CONTACTS_ACTION": {

@@ -108,6 +108,7 @@ const TransFerOwner = ({ onClose }) => {
 
 	const handleClose = () => {
 		setAnchorEl(null);
+		onClose();
 	};
 
 	const handleSearch = () => {
