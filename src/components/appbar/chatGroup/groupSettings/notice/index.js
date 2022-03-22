@@ -81,6 +81,7 @@ const useStyles = makeStyles((theme) => {
 const GroupNotice = () => {
 	const classes = useStyles();
 	const state = useSelector((state) => state);
+	const contentMaxLength = 300;
 	let groupNotices = state.groups.groupNotices;
 	let groupId = state.groups.groupsInfo?.id;
 	let owner = state.groups.groupsInfo?.owner;
@@ -106,6 +107,10 @@ const GroupNotice = () => {
 	};
 
 	const handleNoticeChange = (e) => {
+		let value = e.target.value;
+		if (value.length > contentMaxLength){
+			console.log('AAA>>>');
+		};
 		setnoticeContent(e.target.value);
 	};
 
@@ -139,14 +144,15 @@ const GroupNotice = () => {
 				<Typography>{isPermissions && renderNameEdit()}</Typography>
 			</Box>
 			<Box>
-				{(isGroupNotice || !disabledEdit) ? (
+				{isGroupNotice || !disabledEdit ? (
 					<Box>
 						<Box className={classes.noticeBox}>
 							<InputBase
 								type="text"
 								multiline={true}
-								max={20}
+								maxLength={300}
 								rows={3}
+								autoFocus
 								defaultValue={groupNotices}
 								disabled={disabledEdit}
 								className={classes.inputStyle}
@@ -154,7 +160,7 @@ const GroupNotice = () => {
 							/>
 							<Box className={classes.numberBox}>
 								<Typography className={classes.numberStyle}>
-									{noticeContent.length}/300
+									{noticeContent.length}/{contentMaxLength}
 								</Typography>
 							</Box>
 						</Box>
