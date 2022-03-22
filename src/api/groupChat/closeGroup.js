@@ -20,7 +20,7 @@ export const closeGroup = (groupId, type, onClose) => {
 	onClose && onClose();
 };
 
-export const rmGroupUser = (groupId, username) => {
+export const rmGroupUser = (groupId, username, onClose) => {
 	let option = {
 		groupId: groupId,
 		username: username,
@@ -28,6 +28,7 @@ export const rmGroupUser = (groupId, username) => {
 	WebIM.conn.removeSingleGroupMember(option).then((res) => {
 		console.log("rmGroupUser success >>>", res);
 		getGroupInfo(groupId, "rmGroupUser");
+		onClose && onClose();
 	});
 };
 

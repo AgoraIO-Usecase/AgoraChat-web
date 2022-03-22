@@ -61,7 +61,12 @@ const BlockList = () => {
                                 onClose={handleClose}
                             >
                                 <MenuItem>
-                                    <Typography variant="inherit" noWrap onClick={() => { onChangeGroupBlock(groupId, selectedUser, 'move') }}>
+                                    <Typography variant="inherit" noWrap onClick={() => { onChangeGroupBlock(
+                                      groupId,
+                                      selectedUser,
+                                      "move",
+                                      handleClose
+                                    ); }}>
                                         {i18next.t('Move to Blocked List')}
                                     </Typography>
                                 </MenuItem>

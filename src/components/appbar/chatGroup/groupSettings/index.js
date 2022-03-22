@@ -221,148 +221,114 @@ const GroupSettingsDialog = ({ open, onClose, currentGroupId }) => {
 			);
 		};
 		return (
-			<Box className={classes.root}>
-				<Box className={classes.gSettingleft}>
-					<Box className={classes.gInfoBox}>
-						<img
-							src={groupAvatar}
-							alt=""
-							className={classes.gAvatar}
-						/>
-						<Typography className={classes.gNameText}>
-							{groupsInfo?.name}
-						</Typography>
-						<Typography className={classes.gAppIdText}>
-							GroupID:{groupsInfo?.id}{" "}
-						</Typography>
-						<Typography className={classes.gDescriptionText}>
-							{groupNotice}
-						</Typography>
-					</Box>
-					<Tabs
-						orientation="vertical"
-						variant="scrollable"
-						value={value}
-						onChange={handleChange}
-						aria-label="Vertical tabs example"
-						style={{ maxWidth: "none" }}
-					>
-						<Tab
-							label={memberLabel()}
-							{...a11yProps(0)}
-							className={classes.itemBox}
-						/>
-						<Tab
-							label={addMembersLabel()}
-							{...a11yProps(1)}
-							className={classes.itemBox}
-						/>
-						<Tab
-							label={groupNoticeLabel()}
-							{...a11yProps(2)}
-							className={classes.itemBox}
-						/>
-						{/* <Tab
+      <Box className={classes.root}>
+        <Box className={classes.gSettingleft}>
+          <Box className={classes.gInfoBox}>
+            <img src={groupAvatar} alt="" className={classes.gAvatar} />
+            <Typography className={classes.gNameText}>
+              {groupsInfo?.name}
+            </Typography>
+            <Typography className={classes.gAppIdText}>
+              GroupID:{groupsInfo?.id}{" "}
+            </Typography>
+            <Typography className={classes.gDescriptionText}>
+              {groupNotice}
+            </Typography>
+          </Box>
+          <Tabs
+            orientation="vertical"
+            variant="scrollable"
+            value={value}
+            onChange={handleChange}
+            aria-label="Vertical tabs example"
+            style={{ maxWidth: "none" }}
+          >
+            <Tab
+              label={memberLabel()}
+              {...a11yProps(0)}
+              className={classes.itemBox}
+            />
+            <Tab
+              label={addMembersLabel()}
+              {...a11yProps(1)}
+              className={classes.itemBox}
+            />
+            <Tab
+              label={groupNoticeLabel()}
+              {...a11yProps(2)}
+              className={classes.itemBox}
+            />
+            {/* <Tab
 							label={groupFileLabel()}
 							{...a11yProps(3)}
 							className={classes.itemBox}
 						/> */}
-						<Tab
-							label={groupInfoLabel()}
-							{...a11yProps(3)}
-							className={classes.itemBox}
-						/>
-						{isOwner ? (
-							<Tab
-								label={transFerLabel()}
-								{...a11yProps(4)}
-								className={classes.itemBox}
-							/>
-						) : null}
-					</Tabs>
-					<Box className={classes.deleteGroupBox}>
-						<Button className={classes.membersBox}>
-							<img
-								src={deleteIcon}
-								alt="delete"
-								className={classes.iconStyle}
-							></img>
-							{isOwner ? (
-								<Typography
-									className={classes.gCloseText}
-									onClick={() =>
-										closeGroup(
-											currentGroupId,
-											"dissolve",
-											onClose
-										)
-									}
-								>
-									{i18next.t("Disband this Group")}
-								</Typography>
-							) : (
-								<Typography
-									className={classes.gCloseText}
-									onClick={() =>
-										closeGroup(
-											currentGroupId,
-											"quit",
-											onClose
-										)
-									}
-								>
-									{i18next.t("Leave the Group")}
-								</Typography>
-							)}
-						</Button>
-					</Box>
-				</Box>
-				<Box className={classes.gSettingRight}>
-					<TabPanel
-						value={value}
-						index={0}
-						className={classes.content}
-					>
-						<Members />
-					</TabPanel>
-					<TabPanel
-						value={value}
-						index={1}
-						className={classes.content}
-					>
-						<AddMembers />
-					</TabPanel>
-					<TabPanel
-						value={value}
-						index={2}
-						className={classes.content}
-					>
-						<GroupNotice />
-					</TabPanel>
-					{/* <TabPanel
+            <Tab
+              label={groupInfoLabel()}
+              {...a11yProps(3)}
+              className={classes.itemBox}
+            />
+            {isOwner ? (
+              <Tab
+                label={transFerLabel()}
+                {...a11yProps(4)}
+                className={classes.itemBox}
+              />
+            ) : null}
+          </Tabs>
+          <Box className={classes.deleteGroupBox}>
+            <Button className={classes.membersBox}>
+              <img
+                src={deleteIcon}
+                alt="delete"
+                className={classes.iconStyle}
+              ></img>
+              {isOwner ? (
+                <Typography
+                  className={classes.gCloseText}
+                  onClick={() =>
+                    closeGroup(currentGroupId, "dissolve", onClose)
+                  }
+                >
+                  {i18next.t("Disband this Group")}
+                </Typography>
+              ) : (
+                <Typography
+                  className={classes.gCloseText}
+                  onClick={() => closeGroup(currentGroupId, "quit", onClose)}
+                >
+                  {i18next.t("Leave the Group")}
+                </Typography>
+              )}
+            </Button>
+          </Box>
+        </Box>
+        <Box className={classes.gSettingRight}>
+          <TabPanel value={value} index={0} className={classes.content}>
+            <Members />
+          </TabPanel>
+          <TabPanel value={value} index={1} className={classes.content}>
+            <AddMembers onClose={onClose}/>
+          </TabPanel>
+          <TabPanel value={value} index={2} className={classes.content}>
+            <GroupNotice />
+          </TabPanel>
+          {/* <TabPanel
 						value={value}
 						index={3}
 						className={classes.content}
 					>
 						<GroupFiles onClose={onClose} />
 					</TabPanel> */}
-					<TabPanel
-						value={value}
-						index={3}
-						className={classes.content}
-					>
-						<GroupChatInfo />
-					</TabPanel>
-					<TabPanel
-						value={value}
-						index={4}
-						className={classes.content}
-					>
-						<TransFerOwner onClose={onClose} />
-					</TabPanel>
-				</Box>
-			</Box>
-		);
+          <TabPanel value={value} index={3} className={classes.content}>
+            <GroupChatInfo />
+          </TabPanel>
+          <TabPanel value={value} index={4} className={classes.content}>
+            <TransFerOwner onClose={onClose} />
+          </TabPanel>
+        </Box>
+      </Box>
+    );
 	};
 
 	return (

@@ -8,5 +8,6 @@ export const inviteUsersToGroup = (groupId, data, onClose) => {
 	};
 	WebIM.conn.inviteUsersToGroup(option).then((res) => {
 		console.log("inviteUsersToGroup>>>", res);
+		onClose && onClose();
 	});
 };

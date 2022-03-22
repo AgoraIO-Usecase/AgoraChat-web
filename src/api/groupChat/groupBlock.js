@@ -14,7 +14,7 @@ export const getGroupBlock = (groupId) => {
     })
 }
 
-export const onChangeGroupBlock = (groupId, userName, type) => {
+export const onChangeGroupBlock = (groupId, userName, type, onClose) => {
     let options = {
         groupId: groupId,
         username: userName
@@ -28,4 +28,5 @@ export const onChangeGroupBlock = (groupId, userName, type) => {
             getGroupBlock(groupId)
         })
     }
+    onClose && onClose();
 }
