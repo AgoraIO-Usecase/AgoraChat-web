@@ -44,7 +44,7 @@ const useStyles = makeStyles((theme) => {
 			fontSize: "16px",
 			color: "#0D0D0D",
 		},
-		nameEditStyle: {
+		nameEditStatusStyle: {
 			position: "absolute",
 			top: "20px",
 			right: "30px",
@@ -54,7 +54,7 @@ const useStyles = makeStyles((theme) => {
 			color: "#005FFF",
 			cursor: "pointer",
 		},
-		descEditStyle: {
+		descEditStatusStyle: {
 			position: "absolute",
 			right: "30px",
 			fontFamily: "Ping Fang SC",
@@ -108,9 +108,9 @@ const useStyles = makeStyles((theme) => {
 
 const GroupChatInfo = () => {
 	const classes = useStyles();
-	const [nameEdit, setNameEdit] = useState(true)
+	const [nameEditStatus, setNameEditStatus] = useState(true)
 	const [nameValue, setNameValue] = useState("")
-	const [descEdit, setDescEdit] = useState(true);
+	const [descEditStatus, setDescEditStatus] = useState(true);
 	const [descValue, setDescValue] = useState("");
 	let state = store.getState();
 	let groupName = state.groups.groupsInfo?.name || "";
@@ -134,24 +134,24 @@ const GroupChatInfo = () => {
 	}
 
 	const handleClose = () => {
-		setNameEdit(true)
-		setDescEdit(true);
+		setNameEditStatus(true)
+		setDescEditStatus(true);
 	}
 
-	const renderNameEdit = () => {
+	const rendernameEditStatus = () => {
 		return <>
-			{nameEdit ? (
+			{nameEditStatus ? (
 				<Typography
-					className={classes.nameEditStyle}
+					className={classes.nameEditStatusStyle}
 					onClick={() => {
-						setNameEdit(false);
+						setNameEditStatus(false);
 					}}
 				>
 					{i18next.t("Edit")}
 				</Typography>
 			) : (
 				<Typography
-					className={classes.nameEditStyle}
+					className={classes.nameEditStatusStyle}
 					onClick={() => {
 						handleModifyGroupInfo();
 					}}
@@ -162,21 +162,21 @@ const GroupChatInfo = () => {
 		</>
 	}
 
-	const renderDescEdit = () => {
+	const renderdescEditStatus = () => {
 		return (
 			<>
-				{descEdit ? (
+				{descEditStatus ? (
 					<Typography
-						className={classes.descEditStyle}
+						className={classes.descEditStatusStyle}
 						onClick={() => {
-							setDescEdit(false);
+							setDescEditStatus(false);
 						}}
 					>
 						{i18next.t("Edit")}
 					</Typography>
 				) : (
 					<Typography
-						className={classes.descEditStyle}
+						className={classes.descEditStatusStyle}
 						onClick={() => {
 							handleModifyGroupInfo();
 						}}
@@ -205,10 +205,10 @@ const GroupChatInfo = () => {
 							type="text"
 							max={20}
 							defaultValue={groupName}
-							disabled={nameEdit}
+							disabled={nameEditStatus}
 							onChange={handleNameChange}
 						/>
-						{isPermissions && renderNameEdit()}
+						{isPermissions && rendernameEditStatus()}
 					</Box>
 				</Box>
 				<Box className={classes.noticeBox}>
@@ -222,7 +222,7 @@ const GroupChatInfo = () => {
 							max={20}
 							rows={3}
 							defaultValue={groupDescription}
-							disabled={descEdit}
+							disabled={descEditStatus}
 							style={{
 								height: "60px",
 								overflowX: "hidden",
@@ -230,7 +230,7 @@ const GroupChatInfo = () => {
 							}}
 							onChange={handleDescChange}
 						/>
-						{isPermissions && renderDescEdit()}
+						{isPermissions && renderdescEditStatus()}
 					</Box>
 				</Box>
 			</Box>

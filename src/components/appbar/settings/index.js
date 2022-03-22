@@ -152,7 +152,9 @@ export default function Setting({ open, onClose }) {
         setEditStatus(false)
     }
     const handleEditChange = (e) => {
-        setNickName(e.target.value)
+        let value = e.target.value;
+        if (value.length === 0 || value.length > 12) return
+        setNickName(e.target.value);
     }
 
     const handlePrivacyItemMoreClick = (e) => {
