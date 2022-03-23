@@ -42,12 +42,16 @@ const initListen = () => {
 				case "invite":
 					agreeInviteGroup(event);
 					break;
+				case "direct_joined":
+					getGroups();
+					break;
 				case "removedFromGroup":
 					message.info(
 						`${i18next.t(
 							"You have been removed from the group:"
 						)}` + event.gid
 					);
+					getGroups();
 					break;
 				case "updateAnnouncement":
 					message.info(
