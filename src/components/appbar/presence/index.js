@@ -151,11 +151,13 @@ const PresencePopover = (props) => {
     presenceList.forEach((item, index) => {
       item.checked = false
     })
-    presenceList[presenceObj.index].checked = true
-    if (presenceObj.index === 4) {
-      presenceList[presenceObj.index].title = presenceObj.ext
-    } else {
-      presenceList[4].title = 'Custom Status'
+    if (presenceObj?.index) {
+      presenceList[presenceObj.index].checked = true
+      if (presenceObj.index === 4) {
+        presenceList[presenceObj.index].title = presenceObj.ext
+      } else {
+        presenceList[4].title = 'Custom Status'
+      }
     }
   }, [presenceObj])
 
@@ -271,7 +273,7 @@ const PresencePopover = (props) => {
   return (
     <div className={props.className} style={{...props.style}}>
       <div className={useClasses.imgBox} onClick={handlePopoverClick}>
-        <img aria-describedby={id} src={presenceObj.statusImg} className={useClasses.imgStyle} alt="" />
+        <img aria-describedby={id} src={presenceObj?.statusImg} className={useClasses.imgStyle} alt="" />
       </div>
       <Popover
         id={id}
