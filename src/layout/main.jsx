@@ -14,7 +14,7 @@ import GroupMemberInfoPopover from '../components/appbar/chatGroup/memberInfo'
 import { truncate } from 'lodash';
 import { subFriendStatus } from '../api/presence'
 
-import { notify } from '../utils/notification'
+// import { notify } from '../utils/notification'
 
 const history = createHashHistory()
 
@@ -37,7 +37,6 @@ export default function Main() {
     const [groupMemberInfoAddEl, setGroupMemberInfoAddEl] = useState(null)
     const [memberInfo, setMemberInfo] = useState({})
     const [presenceList, setPresenceList] = useState([])
-
     // session avatar click
     const handleClickSessionInfoDialog = (e,res) => {
         // TODO 

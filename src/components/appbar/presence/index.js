@@ -1,6 +1,5 @@
 import React, { memo, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux'
-// import { useSelector } from "../../../EaseApp/index";
 import i18next from "i18next";
 import { Popover, Button, Box, Modal, Input } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
@@ -146,16 +145,17 @@ const presenceList = [
 const PresencePopover = (props) => {
   const useClasses = useStyles();
   const presenceObj = useSelector(state => state?.statusObj)
-
   useEffect(() => {
     presenceList.forEach((item, index) => {
       item.checked = false
     })
-    presenceList[presenceObj.index].checked = true
-    if (presenceObj.index === 4) {
-      presenceList[presenceObj.index].title = presenceObj.ext
-    } else {
-      presenceList[4].title = 'Custom Status'
+    if (presenceObj?.index) {
+      presenceList[presenceObj.index].checked = true
+      if (presenceObj.index === 4) {
+        presenceList[presenceObj.index].title = presenceObj.ext
+      } else {
+        presenceList[4].title = 'Custom Status'
+      }
     }
   }, [presenceObj])
 
@@ -271,7 +271,7 @@ const PresencePopover = (props) => {
   return (
     <div className={props.className} style={{...props.style}}>
       <div className={useClasses.imgBox} onClick={handlePopoverClick}>
-        <img aria-describedby={id} src={presenceObj.statusImg} className={useClasses.imgStyle} alt="" />
+        <img aria-describedby={id} src={presenceObj?.statusImg} className={useClasses.imgStyle} alt="" />
       </div>
       <Popover
         id={id}

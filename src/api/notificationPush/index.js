@@ -10,7 +10,7 @@ export const setNotDisturbDuration = (payload) => {
   return new Promise((resolve, reject) => {
     WebIM.conn.setNotDisturbDuration(payload).then(res => {
       console.log(res, 'publishNewPresence')
-      resolve(res)
+      resolve(res.data)
     }).catch(err => {
       console.log(err, 'publishNewPresence')
       reject(err)
@@ -28,7 +28,7 @@ export const getNotDisturbDuration = (payload) => {
   return new Promise((resolve, reject) => {
     WebIM.conn.getNotDisturbDuration(payload).then(res => {
       console.log(res, 'publishNewPresence')
-      resolve(res)
+      resolve(res.data)
     }).catch(err => {
       console.log(err, 'publishNewPresence')
       reject(err)
@@ -47,7 +47,7 @@ export const getNotDisturbDuration = (payload) => {
   return new Promise((resolve, reject) => {
     WebIM.conn.getNotDisturbDurationByLimit(payload).then(res => {
       console.log(res, 'publishNewPresence')
-      resolve(res)
+      resolve(res.data)
     }).catch(err => {
       console.log(err, 'publishNewPresence')
       reject(err)
@@ -66,7 +66,7 @@ export const getNotDisturbDuration = (payload) => {
   return new Promise((resolve, reject) => {
     WebIM.conn.setNotDisturbGroupDuration(payload).then(res => {
       console.log(res, 'publishNewPresence')
-      resolve(res)
+      resolve(res.data)
     }).catch(err => {
       console.log(err, 'publishNewPresence')
       reject(err)
@@ -86,7 +86,7 @@ export const getNotDisturbDuration = (payload) => {
   return new Promise((resolve, reject) => {
     WebIM.conn.getNotDisturbGroupDuration(payload).then(res => {
       console.log(res, 'publishNewPresence')
-      resolve(res)
+      resolve(res.data)
     }).catch(err => {
       console.log(err, 'publishNewPresence')
       reject(err)
@@ -106,7 +106,7 @@ export const getNotDisturbDuration = (payload) => {
   return new Promise((resolve, reject) => {
     WebIM.conn.getNotDisturbGroupDurationByLimit(payload).then(res => {
       console.log(res, 'publishNewPresence')
-      resolve(res)
+      resolve(res.data)
     }).catch(err => {
       console.log(err, 'publishNewPresence')
       reject(err)

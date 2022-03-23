@@ -257,9 +257,9 @@ const SessionInfoPopover = ({ open, onClose, sessionInfo }) => {
 						variant="outlined"
 					>
 						{
-							radioList.map(item => {
+							radioList.map((item, index) => {
 								return (
-									<MenuItem value={item.value}>{item.title}</MenuItem>
+									<MenuItem key={index} value={item.value}>{item.title}</MenuItem>
 								)
 							})
 						}

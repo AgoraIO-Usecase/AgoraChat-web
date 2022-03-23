@@ -135,3 +135,26 @@ export const handlerTime = (time) => {
   const timeList = new Date(new Date().getTime() + (time)).toString().split(' ')
   return `${timeList[1]} ${timeList[2]}, ${timeList[3]}, ${timeList[4].substring(0,5)}`
 }
+export const handlerMillisecond = (time) => {
+  switch(time) {
+    case 15:
+      return 15 * 1000
+    case '8AM':
+      return 1 * 60 * 1000
+    default:
+      return time * 60 * 1000
+  }
+}
+export const handlerItervalTime = (time) => {
+  // time为分钟
+  time = time * 60 * 1000
+  const timeList = new Date(new Date().getTime() + (time)).toString().split(' ')
+  return `${timeList[1]} ${timeList[2]}, ${timeList[3]}, ${timeList[4].substring(0,5)}`
+}
+function startTime () {
+  var d = new Date();
+  var d0 = new Date(d.getFullYear(), d.getMonth(), d.getDate(), 24, '00', '00');
+  var cha=d.getTime()-d0.getTime();
+  let time = parseInt((11-d.getDay())*24*60*60+8*60*60-cha/1000)+"秒";
+  console.log(time)
+}

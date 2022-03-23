@@ -21,6 +21,7 @@ import store from '../../../redux/store'
 
 import { removeFromBlackList } from '../../../api/contactsChat/getContacts'
 import { handlerTime } from '../../../utils/notification'
+import { setNotDisturbDuration, getNotDisturbDuration, getNotDisturbDurationByLimit, setNotDisturbGroupDuration, getNotDisturbGroupDuration, getNotDisturbGroupDurationByLimit } from '../../../api/notificationPush'
 
 const useStyles = makeStyles((theme) => {
     return {
@@ -247,6 +248,28 @@ const useStyles = makeStyles((theme) => {
 })
 
 const AVATARS = [avater1, avater2, avater3]
+const selectList = [
+    {
+        id: 0,
+        value: 'DEFAULT',
+        label: 'Default'
+    },
+    {
+        id: 1,
+        value: 'ALL',
+        label: 'All Message'
+    },
+    {
+        id: 2,
+        value: 'AT',
+        label: 'Only @Metion'
+    },
+    {
+        id: 3,
+        value: 'NONE',
+        label: 'Nothing'
+    }
+]
 export default function Setting({ open, onClose }) {
     const classes = useStyles();
     const [tabIndex, setTabIndex] = useState(1)
@@ -355,9 +378,53 @@ export default function Setting({ open, onClose }) {
             return notificationTabPanel()
         }
     }
-
+    useEffect(() => {
+        getNotDisturbDuration({}).then(res => {
+            console.log(res, 'getNotDisturbDuration')
+            const type = res.type || 'DEFAULT'
+            setNotifyText(type)
+        })
+    }, [])
     const handleSelectChange = (event) => {
+        console.log(event.target.value, 'event.target.value')
         setNotifyText(event.target.value)
+        // type 类型 DEFAULT, ALL, AT, NONE;
+        const params = {
+            duration: 15 * 60 * 1000,
+            type: 'NONE',
+            interval: '21:00-08:00'
+        }
+        setNotDisturbDuration(params).then(res => {
+            console.log(res, 'setNotDisturbDuration')
+        })
+        getNotDisturbDuration({}).then(res => {
+            console.log(res, 'getNotDisturbDuration')
+        })
+        // const params1 = {
+        //     limit: 1
+        // }
+        // getNotDisturbDurationByLimit(params1).then(res => {
+        //     console.log(res, 'getNotDisturbDurationByLimit')
+        // })
+        // const params2 = {
+        //     duration: 15 * 60 * 1000,
+        //     groupId: '174441045753857',
+        //     type: 'ALL',
+        //     interval: '21:30-08:00'
+        // }
+        // setNotDisturbGroupDuration(params2).then(res => {
+        //     console.log(res, 'setNotDisturbGroupDuration')
+        // })
+        // const params3 = {
+        //     groupId: '174441045753857'
+        // }
+        // getNotDisturbGroupDuration(params3).then(res => {
+        //     console.log(res, 'getNotDisturbGroupDuration')
+        // })
+
+        // getNotDisturbGroupDurationByLimit(params1).then(res => {
+        //     console.log(res, 'getNotDisturbGroupDurationByLimit')
+        // })
     }
     const radioList = [
         {
@@ -580,9 +647,13 @@ export default function Setting({ open, onClose }) {
                                     onChange={handleSelectChange}
                                     variant="outlined"
                                 >
-                                    <MenuItem value={1}>All Message</MenuItem>
-                                    <MenuItem value={2}>Only @Metion</MenuItem>
-                                    <MenuItem value={3}>Nothing</MenuItem>
+                                    {
+                                        selectList.map(item=> {
+                                            return (
+                                                <MenuItem value={item.value}>{item.label}</MenuItem>
+                                            )
+                                        })
+                                    }
                                 </Select>
                             </div>
                             <div className={classes.bottomItem}>
