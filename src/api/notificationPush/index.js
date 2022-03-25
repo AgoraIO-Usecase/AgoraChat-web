@@ -3,7 +3,10 @@ import WebIM from '../../utils/WebIM'
 // 设置用户免打扰
 /**
  * 
+ * @param {userId} number // 用户 id
  * @param {duration} number // 免打扰时长
+ * @param {interval} number // 时间段
+ * @param {type} number // 类型
  * @returns
  */
 export const setNotDisturbDuration = (payload) => {
@@ -21,7 +24,7 @@ export const setNotDisturbDuration = (payload) => {
 // 获取用户免打扰
 /**
  * 
- * @param {type} string // 推送消息类型
+ * @param {userId} string // 推送消息类型
  * @returns 
  */
 export const getNotDisturbDuration = (payload) => {
@@ -36,14 +39,13 @@ export const getNotDisturbDuration = (payload) => {
   })
 }
 
-// 群组推送免打扰
+// 批量获取用户免打扰
 /**
  * 
- * @param {duration} number // 免打扰时长
- * @param {groupId} string // 群组id
+ * @param {limit} number // 查询数量
  * @returns 
  */
- export const getNotDisturbDurationByLimit = (payload) => {
+export const getNotDisturbDurationByLimit = (payload) => {
   return new Promise((resolve, reject) => {
     WebIM.conn.getNotDisturbDurationByLimit(payload).then(res => {
       console.log(res, 'publishNewPresence')
@@ -55,14 +57,16 @@ export const getNotDisturbDuration = (payload) => {
   })
 }
 
-// 群组推送消息类型
+// 设置群组免打扰
 /**
  * 
- * @param {type} string // 推送消息类型
+ * @param {duration} number // 免打扰时长
  * @param {groupId} string // 群组id
+ * @param {type} string // 类型
+ * @param {interval} string // 时间段
  * @returns 
  */
- export const setNotDisturbGroupDuration = (payload) => {
+export const setNotDisturbGroupDuration = (payload) => {
   return new Promise((resolve, reject) => {
     WebIM.conn.setNotDisturbGroupDuration(payload).then(res => {
       console.log(res, 'publishNewPresence')
@@ -74,15 +78,13 @@ export const getNotDisturbDuration = (payload) => {
   })
 }
 
-// 子区推送免打扰
+// 获取群组免打扰
 /**
  * 
- * @param {duration} number // 免打扰时长
  * @param {groupId} string // 群组id
- * @param {threadId} string // 群组id
  * @returns 
  */
- export const getNotDisturbGroupDuration = (payload) => {
+export const getNotDisturbGroupDuration = (payload) => {
   return new Promise((resolve, reject) => {
     WebIM.conn.getNotDisturbGroupDuration(payload).then(res => {
       console.log(res, 'publishNewPresence')
@@ -94,17 +96,68 @@ export const getNotDisturbDuration = (payload) => {
   })
 }
 
-// 子区推送消息类型
+// 批量获取群组免打扰
 /**
  * 
- * @param {type} string // 推送消息类型
- * @param {groupId} string // 群组id
- * @param {threadId} string // 群组id
+ * @param {limit} number // 查询数量
  * @returns 
  */
- export const getNotDisturbGroupDurationByLimit = (payload) => {
+export const getNotDisturbGroupDurationByLimit = (payload) => {
   return new Promise((resolve, reject) => {
     WebIM.conn.getNotDisturbGroupDurationByLimit(payload).then(res => {
+      console.log(res, 'publishNewPresence')
+      resolve(res.data)
+    }).catch(err => {
+      console.log(err, 'publishNewPresence')
+      reject(err)
+    })
+  })
+}
+
+// 批量获取用户和群组免打扰
+/**
+ * 
+ * @param {usersId} string // 用户 id
+ * @param {groupsId} string // 群组 id
+ * @returns 
+ */
+export const getNotDisturbUserAndGroupDuration = (payload) => {
+  return new Promise((resolve, reject) => {
+    WebIM.conn.getNotDisturbUserAndGroupDuration(payload).then(res => {
+      console.log(res, 'publishNewPresence')
+      resolve(res.data)
+    }).catch(err => {
+      console.log(err, 'publishNewPresence')
+      reject(err)
+    })
+  })
+}
+
+// 选择推送翻译语言
+/**
+ * 
+ * @param {language} string // 语言
+ * @returns 
+ */
+export const selectTranslationLanguage = (payload) => {
+  return new Promise((resolve, reject) => {
+    WebIM.conn.selectTranslationLanguage(payload).then(res => {
+      console.log(res, 'publishNewPresence')
+      resolve(res.data)
+    }).catch(err => {
+      console.log(err, 'publishNewPresence')
+      reject(err)
+    })
+  })
+}
+
+// 批量推送翻译语言
+/**
+ * @param 无
+ */
+export const getTranslationLanguage = (payload) => {
+  return new Promise((resolve, reject) => {
+    WebIM.conn.getTranslationLanguage(payload).then(res => {
       console.log(res, 'publishNewPresence')
       resolve(res.data)
     }).catch(err => {

@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { MenuItem, Select, RadioGroup, FormControlLabel, Radio } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import i18next from "i18next";
-import { handlerTime } from '../../../../../utils/notification'
+import { handlerTime, getMillisecond, computedItervalTime } from '../../../../../utils/notification'
+import { setNotDisturbGroupDuration, getNotDisturbGroupDuration, getNotDisturbGroupDurationByLimit } from '../../../../../api/notificationPush'
 import muteIcon from '../../../../../assets/go@2x.png'
 import CommonDialog from "../../../../common/dialog";
 
@@ -134,7 +136,7 @@ const radioList = [
   {
       title: 'Until 8:00 AM Tomorow',
       value: '4',
-      time: 'tomorow'
+      time: '8AM'
   },
   {
       title: 'Until I turn it Unmute',
@@ -144,7 +146,11 @@ const radioList = [
 ]
 const Notifications = () => {
   const classes = useStyles()
-  const [notifyText, setNotifyText] = useState('')
+  const state = useSelector((state) => state)
+  const groupsInfo = state?.groups?.groupsInfo || {}
+  const groupId = groupsInfo?.id
+  const groupList = state?.groups?.groupList || [];
+  const [notifyText, setNotifyText] = useState('DEFAULT')
   const [defaultValue, setDefaultValue] = useState('')
   const [showRadio, setShowRadio] = useState(false)
   const [muteTimeText, setMuteTimeText] = useState(null)
@@ -162,23 +168,50 @@ const Notifications = () => {
     setShowRadio(!showRadio)
   }
   const handlerDone = () => {
+    const radioIndex = Number(defaultValue)
     if (defaultValue === '5') {
       setMuteTimeText('You Turn it Unmute')
     } else {
-      const radioIndex = Number(defaultValue)
       let str = ''
-      if (radioIndex === 0) {
+      if (radioIndex < 4) {
         str = handlerTime(radioList[radioIndex].time)
-      } else if (radioIndex > 0 && radioIndex < 4) {
-        str = handlerTime(radioList[radioIndex].time * 60)
       } else {
-        let list = handlerTime(24 * 60).split(',')
+        let list = handlerTime(24).split(',')
         str = `${list[0]}, ${list[1]}, 08:00`
       }
       setMuteTimeText(str)
     }
     setShowRadio(false)
+    const params = {
+      groupId,
+      duration:  getMillisecond(radioList[radioIndex].time),
+      type: notifyText,
+      interval: computedItervalTime(radioList[radioIndex].time)
+    }
+    setNotDisturbGroup(params)
   }
+  const setNotDisturbGroup = (params) => {
+    setNotDisturbGroupDuration(params).then(res => {
+      console.log(res)
+    })
+  }
+  useEffect(() => {
+    getNotDisturbGroupDuration({groupId}).then(res => {
+      console.log(res, 'getNotDisturbDuration')
+      const type = res.type || 'DEFAULT'
+      setNotifyText(type)
+    })
+  }, [groupId])
+
+  useEffect(() => {
+    getNotDisturbGroupByLimit(groupList.length)
+  }, [groupList.length])
+  const getNotDisturbGroupByLimit = (val) => {
+    getNotDisturbGroupDurationByLimit({limit: val || 1}).then(res => {
+      console.log(res)
+    })
+  }
+
   const handlerTurnOffBtn = () => {
     setopenTurnOff(true)
   }

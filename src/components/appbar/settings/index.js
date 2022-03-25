@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import CommonDialog from "../../common/dialog";
-import i18next from "i18next";
+import i18next, { use } from "i18next";
 import { Avatar, Button, TextField, List, ListItem, ListItemAvatar, Menu, MenuItem, Switch, Select, RadioGroup, FormControlLabel, Radio } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
@@ -20,8 +20,8 @@ import { setMyUserInfo } from '../../../redux/actions'
 import store from '../../../redux/store'
 
 import { removeFromBlackList } from '../../../api/contactsChat/getContacts'
-import { handlerTime } from '../../../utils/notification'
-import { setNotDisturbDuration, getNotDisturbDuration, getNotDisturbDurationByLimit, setNotDisturbGroupDuration, getNotDisturbGroupDuration, getNotDisturbGroupDurationByLimit } from '../../../api/notificationPush'
+import { handlerTime, getMillisecond, computedItervalTime, timeIntervalToMinutesOrHours } from '../../../utils/notification'
+import { setNotDisturbDuration, getNotDisturbDuration, getNotDisturbDurationByLimit, getNotDisturbUserAndGroupDuration, selectTranslationLanguage, getTranslationLanguage } from '../../../api/notificationPush'
 
 const useStyles = makeStyles((theme) => {
     return {
@@ -216,8 +216,8 @@ const useStyles = makeStyles((theme) => {
         },
         switchOpenStyle: {
             '& .MuiSwitch-track': {
-                background: 'rgb(48, 78, 238) !important',
-                opacity: 1,
+                background: 'rgb(49, 78, 238) !important',
+                opacity: '1 !important',
             }
         },
         contentBox: {
@@ -270,6 +270,38 @@ const selectList = [
         label: 'Nothing'
     }
 ]
+const radioList = [
+    {
+        title: 'For 15 minutes',
+        value: '0',
+        time: 15,
+    },
+    {
+        title: 'For 1 hour',
+        value: '1',
+        time: 1,
+    },
+    {
+        title: 'For 8 hours',
+        value: '2',
+        time: 8,
+    },
+    {
+        title: 'For 24 hours',
+        value: '3',
+        time: 24,
+    },
+    {
+        title: 'Until 8:00 AM Tomorow',
+        value: '4',
+        time: '8AM',
+    },
+    {
+        title: 'Until I turn it off',
+        value: '5',
+        time: 'none',
+    }
+]
 export default function Setting({ open, onClose }) {
     const classes = useStyles();
     const [tabIndex, setTabIndex] = useState(1)
@@ -277,7 +309,7 @@ export default function Setting({ open, onClose }) {
     const [nickName, setNickName] = useState('')
     const [avatarIndex, setAvatarIndex] = useState(null)
     const [addEl, setAddEl] = useState(null)
-    const [notifyText, setNotifyText] = useState('');
+    const [notifyText, setNotifyText] = useState('DEFAULT');
     const [defaultValue, setDefaultValue] = useState('')
     const [showRadio, setShowRadio] = useState(false)
     const [checkedValue, setCheckedValue] = useState('')
@@ -378,87 +410,54 @@ export default function Setting({ open, onClose }) {
             return notificationTabPanel()
         }
     }
-    useEffect(() => {
-        getNotDisturbDuration({}).then(res => {
-            console.log(res, 'getNotDisturbDuration')
-            const type = res.type || 'DEFAULT'
-            setNotifyText(type)
-        })
-    }, [])
+
     const handleSelectChange = (event) => {
         console.log(event.target.value, 'event.target.value')
         setNotifyText(event.target.value)
-        // type 类型 DEFAULT, ALL, AT, NONE;
         const params = {
-            duration: 15 * 60 * 1000,
-            type: 'NONE',
-            interval: '21:00-08:00'
+            userId: myUserInfo.agoraId,
+            type: event.target.value,
+            interval: '',
+            duration: 0
         }
-        setNotDisturbDuration(params).then(res => {
-            console.log(res, 'setNotDisturbDuration')
-        })
-        getNotDisturbDuration({}).then(res => {
-            console.log(res, 'getNotDisturbDuration')
-        })
+        setNotDisturb(params)
         // const params1 = {
         //     limit: 1
         // }
         // getNotDisturbDurationByLimit(params1).then(res => {
         //     console.log(res, 'getNotDisturbDurationByLimit')
         // })
-        // const params2 = {
-        //     duration: 15 * 60 * 1000,
-        //     groupId: '174441045753857',
-        //     type: 'ALL',
-        //     interval: '21:30-08:00'
-        // }
-        // setNotDisturbGroupDuration(params2).then(res => {
-        //     console.log(res, 'setNotDisturbGroupDuration')
+        // getNotDisturbUserAndGroupDuration({usersId: 'lu1,lu2,lu3', groupsId: '123,1234,12345'}).then(res => {
+        //     console.log(res, 'getNotDisturbUserAndGroupDuration')
         // })
-        // const params3 = {
-        //     groupId: '174441045753857'
-        // }
-        // getNotDisturbGroupDuration(params3).then(res => {
-        //     console.log(res, 'getNotDisturbGroupDuration')
+        // selectTranslationLanguage({language: 'EU'}).then(res => {
+        //     console.log(res, 'selectTranslationLanguage')
         // })
-
-        // getNotDisturbGroupDurationByLimit(params1).then(res => {
-        //     console.log(res, 'getNotDisturbGroupDurationByLimit')
+        // getTranslationLanguage({}).then(res => {
+        //     console.log(res, 'getTranslationLanguage')
         // })
     }
-    const radioList = [
-        {
-            title: 'For 15 minutes',
-            value: '0',
-            time: 15,
-        },
-        {
-            title: 'For 1 hour',
-            value: '1',
-            time: 1,
-        },
-        {
-            title: 'For 8 hours',
-            value: '2',
-            time: 8,
-        },
-        {
-            title: 'For 24 hours',
-            value: '3',
-            time: 24,
-        },
-        {
-            title: 'Until 8:00 AM Tomorow',
-            value: '4',
-            time: 24,
-        },
-        {
-            title: 'Until I turn it off',
-            value: '5',
-            time: 'none',
-        }
-    ]
+    const setNotDisturb = (params) => {
+        setNotDisturbDuration(params).then(res => {
+            console.log(res, 'setNotDisturbDuration')
+        })
+    }
 
+    const getNotDisturb = (userId) => {
+        getNotDisturbDuration({userId}).then(res => {
+            console.log(res, 'getNotDisturbDuration')
+            const type = res.type || 'DEFAULT'
+            setNotifyText(type)
+            setDefaultValue(radioList[timeIntervalToMinutesOrHours(res.ignoreInterval)])
+            setCheckedDefaultValue(res.ignoreDuration, radioList[timeIntervalToMinutesOrHours(res.ignoreInterval)], true)
+        })
+    }
+    const userId = myUserInfo?.agoraId
+    useEffect(() => {
+        if (userId) {
+            getNotDisturb(userId)
+        }
+    }, [userId])
     const handleChangeRadio = (event) => {
         console.log(event.target.value, 'event.target.value')
         setDefaultValue(event.target.value)
@@ -469,23 +468,32 @@ export default function Setting({ open, onClose }) {
     const handlerTurnOffBtn = () => {
         setopenTurnOff(true)
     }
+    const setCheckedDefaultValue = (time, index, flag) => {
+        let str = ''
+        if (index < 4) {
+            str = handlerTime(time, flag)
+        } else {
+            let list = handlerTime(24).split(',')
+            str = `${list[0]}, ${list[1]}, 08:00`
+        }
+        setCheckedValue(str)
+    }
     const handlerDoneBtn = () => {
+        const radioIndex = Number(defaultValue)
         if (defaultValue === '5') {
             setCheckedValue('You Turn it Off')
         } else {
-            const radioIndex = Number(defaultValue)
-            let str = ''
-            if (radioIndex === 0) {
-                str = handlerTime(radioList[radioIndex].time)
-            } else if (radioIndex > 0 && radioIndex < 4) {
-                str = handlerTime(radioList[radioIndex].time * 60)
-            } else {
-                let list = handlerTime(24 * 60).split(',')
-                str = `${list[0]}, ${list[1]}, 08:00`
-            }
-            setCheckedValue(str)
+            setCheckedDefaultValue(radioList[radioIndex].time, radioIndex)
         }
         setShowRadio(false)
+        const params = {
+            duration:  getMillisecond(radioList[radioIndex].time),
+            type: notifyText,
+            interval: computedItervalTime(radioList[radioIndex].time),
+            userId: myUserInfo.agoraId
+        }
+        console.log(params, 'params')
+        setNotDisturb(params)
     }
 
     const handleSwitchChange = (e, val) => {
@@ -650,7 +658,7 @@ export default function Setting({ open, onClose }) {
                                     {
                                         selectList.map(item=> {
                                             return (
-                                                <MenuItem value={item.value}>{item.label}</MenuItem>
+                                                <MenuItem key={item.value} value={item.value}>{item.label}</MenuItem>
                                             )
                                         })
                                     }

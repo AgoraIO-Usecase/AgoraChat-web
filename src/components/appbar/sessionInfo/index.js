@@ -9,7 +9,8 @@ import {
 	deleteContact,
 } from "../../../api/contactsChat/getContacts";
 import CommonDialog from "../../common/dialog";
-import { handlerTime } from '../../../utils/notification'
+import { handlerTime, getMillisecond, computedItervalTime } from '../../../utils/notification'
+import { setNotDisturbDuration, getNotDisturbDuration, getNotDisturbDurationByLimit } from '../../../api/notificationPush'
 
 import avatarImg from "../../../assets/avatar1.png";
 import blockIcon from "../../../assets/block@2x.png";
@@ -229,15 +230,17 @@ const SessionInfoPopover = ({ open, onClose, sessionInfo }) => {
 		} else {
 			if (notifyText !== 5) {
 				let str = ''
-				if (notifyText === 0) {
-					str = handlerTime(radioList[notifyText].time)
-				} else {
-					str = handlerTime(radioList[notifyText].time * 60)
-				}
+				str = handlerTime(radioList[notifyText].time)
 				setUnmuteTimeText(str)
 				setMuteTimeText('Mute Until ' + str)
 			}
 			setNotifyDialogText('Unmute this Contact')
+			const params = {
+				duration:  getMillisecond(radioList[notifyText].time),
+				type: 'DEFAULT',
+				interval: computedItervalTime(radioList[notifyText].time)
+			}
+			setNotDisturb(params)
 		}
 		handleTurnOffClose()
 	}
@@ -245,6 +248,22 @@ const SessionInfoPopover = ({ open, onClose, sessionInfo }) => {
 		console.log(event.target.value)
 		setNotifyText(event.target.value)
 	}
+
+	const setNotDisturb = (params) => {
+		setNotDisturbDuration(params).then(res => {
+			console.log(res, 'setNotDisturbDuration')
+		})
+	}
+	const getNotDisturb = () => {
+		getNotDisturbDuration({}).then(res => {
+			console.log(res, 'getNotDisturbDuration')
+			const type = res.type || 'DEFAULT'
+			// setNotifyText(type)
+		})
+	}
+	useEffect(() => {
+		// getNotDisturb()
+	}, [])
 
 	function renderTurnOffContent() {
 		if (notifyDialogText === 'Mute this Contact') {
