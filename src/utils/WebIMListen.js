@@ -102,7 +102,7 @@ const initListen = () => {
                     console.log(presenceList, 'onPresenceStatusChange=presenceList')
                     const newArr = presenceList
                     store.dispatch(setPresenceList(newArr))
-                    EaseApp.changePresenceStatus(item.ext)
+                    EaseApp.changePresenceStatus({[item.userId] : item.ext})
                 }
                 else{
                     store.dispatch(presenceStatusImg(item.ext))
