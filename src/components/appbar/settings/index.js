@@ -221,13 +221,13 @@ export default function Setting({ open, onClose }) {
                         onBlur={handleEditBlur}
                         onChange={handleEditChange}
                         id="filled-helperText"
-                        label="NickName"
+                        label="Displayed Profile Name"
                         defaultValue={nickName}
                         variant="filled"
                         fullWidth
                     />) :
                     (<div className={classes.infoItem}>
-                        <span>NickName</span>
+                        <span>Displayed Profile Name</span>
                         <span>{nickName}</span>
                         <span onClick={handleEditClick}>Edit</span>
                     </div>)
