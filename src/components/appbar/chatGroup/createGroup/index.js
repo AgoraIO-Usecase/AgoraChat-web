@@ -128,7 +128,12 @@ const CreateGroup = () => {
     // Group Description
     const handleDescriptionChange = (event) => {
         let value = event.target.value;
-        if (value.length > descMaxLength) return;
+        if (value.length > descMaxLength) {
+            message.error(
+              i18next.t("The group description exceeded the upper limit")
+            );
+            return;
+        } 
         setGroupDescriptionValue(value)
     }
     //
