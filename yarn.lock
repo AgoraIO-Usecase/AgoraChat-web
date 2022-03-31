@@ -3720,10 +3720,10 @@ char-regex@^1.0.2:
   resolved "https://registry.yarnpkg.com/char-regex/-/char-regex-1.0.2.tgz#d744358226217f981ed58f479b1d6bcc29545dcf"
   integrity sha512-kWWXztvZ5SBQV+eRgKFeh8q5sLuZY2+8WUIzlxWVTg+oGwY14qylx1KbKzHd8P6ZYkAg0xyIDU9JMHhyJMZ1jw==
 
-chat-uikit@^1.1.4:
-  version "1.1.4"
-  resolved "https://registry.yarnpkg.com/chat-uikit/-/chat-uikit-1.1.4.tgz#7d756bb4e807607ef957b96e3e97ae9ebcb377fe"
-  integrity sha512-ojcupvKxvuE4gJm46OyHM6/rVyP0O5RQsGDuzhUd5VCp+5RIro2VUc0WF6LV73PVXlNwK2dl1mwLuOSlioqv3w==
+chat-uikit@^1.1.6:
+  version "1.1.6"
+  resolved "https://registry.yarnpkg.com/chat-uikit/-/chat-uikit-1.1.6.tgz#364d0673b14305fad2a36e74e21e161d1f6a23a0"
+  integrity sha512-HEHyNSQUHK93z6QTSX2JErkxIViS89RTV0T5Tk8rZNkNG1zl+oBtzsP7vzPamDG92BfWs54SwCQN2AOq+aoptQ==
   dependencies:
     "@emotion/react" "^11.8.2"
     "@emotion/styled" "^11.8.1"
@@ -3752,7 +3752,7 @@ chat-uikit@^1.1.4:
     dexie "^3.0.3"
     dotenv "8.2.0"
     dotenv-expand "5.1.0"
-    easemob-websdk "^4.0.2"
+    easemob-websdk "^4.0.3"
     eslint "^7.11.0"
     eslint-config-react-app "^6.0.0"
     eslint-plugin-flowtype "^5.2.0"
@@ -4939,7 +4939,7 @@ duplexify@^3.4.2, duplexify@^3.6.0:
     readable-stream "^2.0.0"
     stream-shift "^1.0.0"
 
-easemob-websdk@^4.0.2:
+easemob-websdk@^4.0.3:
   version "4.0.3"
   resolved "https://registry.yarnpkg.com/easemob-websdk/-/easemob-websdk-4.0.3.tgz#b8dfede7664b7bc0662c80514587d95b6693ec13"
   integrity sha512-M7dN5lXt7di7EA+7WQ/A7fe+uxeUALufouTnEttVgx3cpPlGj2BTL+4JntxJHIu716W5j8jXlXNh9ZOOTQigUA==

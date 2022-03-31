@@ -225,6 +225,7 @@ const GroupChatInfo = () => {
 							disabled={descEditStatus}
 							style={{
 								height: "60px",
+								width:"100%",
 								overflowX: "hidden",
 								overflowY: "scroll",
 							}}
