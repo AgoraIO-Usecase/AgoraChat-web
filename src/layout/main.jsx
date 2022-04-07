@@ -11,6 +11,9 @@ import { setMyUserInfo} from '../redux/actions'
 import SessionInfoPopover from '../components/appbar/sessionInfo'
 import GroupMemberInfoPopover from '../components/appbar/chatGroup/memberInfo'
 import GroupSettingsDialog from '../components/appbar/chatGroup/groupSettings'
+import { Report } from '../components/report';
+import i18next from "i18next";
+
 const history = createHashHistory()
 
 export default function Main() {
@@ -25,7 +28,7 @@ export default function Main() {
             history.push('/login')  
         }
     }, [])
-
+    const state = store.getState();
     const [sessionInfoAddEl, setSessionInfoAddEl] = useState(null)
     const [sessionInfo, setSessionInfo] = useState({});
 
@@ -35,6 +38,8 @@ export default function Main() {
     const [groupSettingAddEl, setGroupSettingAddEl] = useState(null)
     const [currentGroupId, setCurrentGroupId] = useState("");
 
+    const [isShowReport, setShowReport] = useState(false)
+    const [currentMsg, setCurrentMsg] = useState({})
     // session avatar click
     const handleClickSessionInfoDialog = (e,res) => {
         let {chatType,to} = res
@@ -56,12 +61,21 @@ export default function Main() {
         }
     }
 
+    const onMessageEventClick = (e,data,msg) => {
+        if(data.value === 'report'){
+            setShowReport(true)
+            setCurrentMsg(msg)
+        }        
+    }
+
     return (
         <div className='main-container'>
             <EaseApp
                 header={<Header />}
                 onChatAvatarClick={handleClickSessionInfoDialog}
                 onAvatarChange={handleClickGroupMemberInfoDialog}
+                customMessageList={[{name: i18next.t("Report"), value: 'report'}]}
+                customMessageClick={onMessageEventClick}
             />
             <SessionInfoPopover 
                 open={sessionInfoAddEl}
@@ -75,6 +89,7 @@ export default function Main() {
                 open={groupSettingAddEl}
                 onClose={() => setGroupSettingAddEl(null)}
                 currentGroupId={currentGroupId} />
+            <Report open={isShowReport} onClose={() => {setShowReport(false)}} currentMsg={currentMsg}/>
         </div>
     )
 }

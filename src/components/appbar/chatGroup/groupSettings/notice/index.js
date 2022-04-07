@@ -6,6 +6,7 @@ import i18next from "i18next";
 import store from "../../../../../redux/store";
 import WebIM from "../../../../../utils/WebIM";
 import { updateGroupNotice } from "../../../../../api/groupChat/getGroupInfo";
+import { message } from '../../../../common/alert'
 
 const useStyles = makeStyles((theme) => {
 	return {
@@ -98,6 +99,7 @@ const GroupNotice = () => {
 	const handleEdit = () => {
 		setEditStatus(false);
 		setDisabledStatus(false);
+		setnoticeContent(groupNotices);
 	};
 
 	const handleSetNoitce = () => {
@@ -108,8 +110,12 @@ const GroupNotice = () => {
 
 	const handleNoticeChange = (e) => {
 		let value = e.target.value;
-		if (value.length > contentMaxLength) return
-		setnoticeContent(e.target.value);
+		if (value.length > contentMaxLength) {
+			message.error(`${i18next.t("Content exceeded the limit")}`);
+			return
+		}
+		setnoticeContent(value);
+		
 	};
 
 	const renderNameEdit = () => {
@@ -149,8 +155,7 @@ const GroupNotice = () => {
 								type="text"
 								multiline={true}
 								rows={3}
-								autoFocus
-								defaultValue={groupNotices}
+								value={noticeContent}
 								disabled={disabledStatus}
 								className={classes.inputStyle}
 								onChange={handleNoticeChange}
