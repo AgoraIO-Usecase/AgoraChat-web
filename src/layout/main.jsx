@@ -4,7 +4,7 @@ import './login.css'
 import { loginWithToken } from '../api/loginChat'
 import getGroupInfo from '../api/groupChat/getGroupInfo'
 import WebIM from '../utils/WebIM';
-import { EaseApp } from 'chat-uikit'
+import { EaseApp } from 'uikit-reaction'
 import { createHashHistory } from 'history'
 import store from '../redux/store'
 import { setMyUserInfo} from '../redux/actions'
@@ -72,6 +72,7 @@ export default function Main() {
         <div className='main-container'>
             <EaseApp
                 header={<Header />}
+                isShowReaction={true}
                 onChatAvatarClick={handleClickSessionInfoDialog}
                 onAvatarChange={handleClickGroupMemberInfoDialog}
                 customMessageList={[{name: i18next.t("Report"), value: 'report'}]}

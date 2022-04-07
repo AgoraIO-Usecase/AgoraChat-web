@@ -2,6 +2,7 @@
     "translation": {
         "login-Login": "Log in",
         "login-UserID": "User ID",
+        "login-Password": "User Password",
         "login-NickName": "Displayed Profile Name",
         "Add Contact": "Add Contact",
         "accept": "Accept",

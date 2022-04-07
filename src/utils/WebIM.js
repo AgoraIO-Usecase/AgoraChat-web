@@ -1,8 +1,8 @@
 
 
-import { EaseApp } from "chat-uikit";
+import { EaseApp } from "uikit-reaction";
 
-const WebIM = EaseApp.getSdk({ appkey: "71117440#417715" });
+const WebIM = EaseApp.getSdk({ appkey: "5101220107132865#test" });
 
 export default WebIM;
 

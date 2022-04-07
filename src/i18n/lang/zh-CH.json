@@ -2,6 +2,7 @@
     "translation": {
         "login-Login": "登录",
         "login-UserID": "用户 ID",
+        "login-Password": "用户密码",
         "login-NickName": "昵称",
         "Add Contact": "添加好友",
         "accept": "接受",

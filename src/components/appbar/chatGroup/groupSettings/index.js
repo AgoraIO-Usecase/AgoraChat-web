@@ -333,7 +333,7 @@ const GroupSettingsDialog = ({ open, onClose, currentGroupId }) => {
 
 	return (
 		<CommonDialog
-			open={open}
+			open={Boolean(open)}
 			onClose={onClose}
 			title={i18next.t("Group Settings")}
 			content={renderSetting()}
