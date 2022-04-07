@@ -2,6 +2,7 @@ import React, { useState,useEffect } from 'react';
 import Header from '../components/appbar'
 import './login.css'
 import { loginWithToken } from '../api/loginChat'
+import getGroupInfo from '../api/groupChat/getGroupInfo'
 import WebIM from '../utils/WebIM';
 import { EaseApp } from 'chat-uikit'
 import { createHashHistory } from 'history'
@@ -9,6 +10,7 @@ import store from '../redux/store'
 import { setMyUserInfo} from '../redux/actions'
 import SessionInfoPopover from '../components/appbar/sessionInfo'
 import GroupMemberInfoPopover from '../components/appbar/chatGroup/memberInfo'
+import GroupSettingsDialog from '../components/appbar/chatGroup/groupSettings'
 import { Report } from '../components/report';
 import i18next from "i18next";
 
@@ -33,15 +35,21 @@ export default function Main() {
     const [groupMemberInfoAddEl, setGroupMemberInfoAddEl] = useState(null)
     const [memberInfo, setMemberInfo] = useState({})
 
+    const [groupSettingAddEl, setGroupSettingAddEl] = useState(null)
+    const [currentGroupId, setCurrentGroupId] = useState("");
+
     const [isShowReport, setShowReport] = useState(false)
     const [currentMsg, setCurrentMsg] = useState({})
     // session avatar click
     const handleClickSessionInfoDialog = (e,res) => {
-        // TODO 
-        let isSingleChat = res.chatType === "singleChat"
-        if (isSingleChat) {
+        let {chatType,to} = res
+        if (chatType === "singleChat") {
             setSessionInfoAddEl(e.target);
             setSessionInfo(res)
+        } else if (chatType === "groupChat"){
+            getGroupInfo(to)
+            setGroupSettingAddEl(e.target)
+            setCurrentGroupId(to)
         }
     }
 
@@ -77,6 +85,10 @@ export default function Main() {
                 open={groupMemberInfoAddEl}
                 onClose={() => setGroupMemberInfoAddEl(null)}
                 memberInfo={memberInfo}/>
+            <GroupSettingsDialog 
+                open={groupSettingAddEl}
+                onClose={() => setGroupSettingAddEl(null)}
+                currentGroupId={currentGroupId} />
             <Report open={isShowReport} onClose={() => {setShowReport(false)}} currentMsg={currentMsg}/>
         </div>
     )
