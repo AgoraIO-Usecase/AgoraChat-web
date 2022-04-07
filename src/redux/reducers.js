@@ -30,7 +30,19 @@ let defaultState = {
         index: 0,
         ext: ''
     },
-    presenceList: []
+    presenceList: [],
+    muteDataObj: {},
+    globalSilentMode: {
+        global: {},
+        single: {},
+        group: {},
+        threading: {}
+    },
+    unread: {
+        singleChat: {},
+        groupChat: {},
+        chatRoom: {},
+    }
 };
 
 const reducer = (state = defaultState, action) => {
@@ -211,6 +223,29 @@ const reducer = (state = defaultState, action) => {
             return {
                 ...state,
                 presenceList: data
+            }
+        case 'SET_MUTE_DATA_OBJ':
+            console.log(data,'SET_MUTE_DATA_OBJ')
+            return {
+                ...state,
+                muteDataObj: { ...state.muteDataObj, ...data}
+            }
+        case 'SET_GLOBAL_SILENT_MODE':
+            console.log(data,'SET_GLOBAL_SILENT_MODE')
+            for (let item in data) {
+                for (let val in data[item]) {
+                    state.globalSilentMode[item][val] = {...state.globalSilentMode[item][val], ...data[item][val]}
+                }
+            }
+            return {
+                ...state,
+                globalSilentMode: { ...state.globalSilentMode }
+            }
+        case 'SET_UNREAD':
+            console.log(data, 'SET_UNREAD')
+            return {
+                ...state,
+                unread: { ...state.unread, ...data}
             }
         default:
             break;

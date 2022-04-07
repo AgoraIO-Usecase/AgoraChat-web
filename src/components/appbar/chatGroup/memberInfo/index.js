@@ -107,7 +107,9 @@ const GroupMemberInfoPopover = ({ open, onClose, memberInfo, presenceList }) => 
 		let conversationItem = {
 			conversationType: "singleChat",
 			conversationId: from,
-			ext: presenceExt || presenceList[0].ext
+			ext: {
+				ext: presenceExt || presenceList[0].ext
+			}
 		};
 		EaseApp.addConversationItem(conversationItem);
 		onClose();

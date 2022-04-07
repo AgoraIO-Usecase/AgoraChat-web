@@ -81,7 +81,7 @@ export default function Header() {
 
     const handleClickMore = (e) => {
         setAddEl(e.currentTarget);
-        getGroups();
+        // getGroups();
     }
 
     const newChatDialog = () => {

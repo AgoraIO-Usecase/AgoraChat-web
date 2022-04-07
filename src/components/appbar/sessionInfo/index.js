@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from 'react-redux'
 import i18next from "i18next";
-import { Popover, Box, Avatar, Button, Tooltip, Select, MenuItem } from "@material-ui/core";
+import { Popover, Box, Avatar, Button, Tooltip, Select } from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import {
@@ -9,8 +9,8 @@ import {
 	deleteContact,
 } from "../../../api/contactsChat/getContacts";
 import CommonDialog from "../../common/dialog";
-import { handlerTime, getMillisecond, computedItervalTime } from '../../../utils/notification'
-import { setNotDisturbDuration, getNotDisturbDuration, getNotDisturbDurationByLimit } from '../../../api/notificationPush'
+import { handlerTime, getMillisecond, computedItervalTime, timeIntervalToMinutesOrHours, setTimeVSNowTime } from '../../../utils/notification'
+import { setSilentModeForConversation, getSilentModeForConversation } from '../../../api/notificationPush'
 
 import avatarImg from "../../../assets/avatar1.png";
 import blockIcon from "../../../assets/block@2x.png";
@@ -23,6 +23,8 @@ import donotdisturbIcon from '../../../assets/Do_not_Disturb.png'
 import customIcon from '../../../assets/custom.png'
 import leaveIcon from '../../../assets/leave.png'
 import muteIcon from '../../../assets/mute@2x.png'
+import unmuteIcon from '../../../assets/unmute.png'
+import grayMuteIcon from '../../../assets/gray@2x.png'
 
 const useStyles = makeStyles((theme) => {
 	return {
@@ -199,12 +201,13 @@ const SessionInfoPopover = ({ open, onClose, sessionInfo }) => {
 	const classes = useStyles();
 	const presenceList = useSelector((state) => state?.presenceList) || []
 	const [usePresenceExt, setPresenceExt] = useState('')
-	const [notifyText, setNotifyText] = useState('Mute this Contact')
+	const [notifyText, setNotifyText] = useState(0)
 	const [notifyDialogText, setNotifyDialogText] = useState('Mute this Contact')
 	const [openTurnOff, setOpenTurnOff] = useState(false)
 	const [muteTimeText, setMuteTimeText] = useState(null)
 	const [unmuteTimeText, setUnmuteTimeText] = useState(null)
-
+	const muteDataObj = useSelector((state) => state?.muteDataObj) || {}
+  console.log('muteDataObj=sessioinfo', muteDataObj, sessionInfo)
 	let { to } = sessionInfo
 	let presenceExt = ''
 	presenceList.forEach(item => {
@@ -216,7 +219,6 @@ const SessionInfoPopover = ({ open, onClose, sessionInfo }) => {
 		setPresenceExt(presenceExt)
 	}, [presenceExt])
 	const setUserNotification = () => {
-		onClose()
 		setOpenTurnOff(true)
 	}
 	const handleTurnOffClose = () => {
@@ -227,6 +229,7 @@ const SessionInfoPopover = ({ open, onClose, sessionInfo }) => {
 			setNotifyDialogText('Mute this Contact')
 			setMuteTimeText(null)
 			setUnmuteTimeText(null)
+			setOpenTurnOff(true)
 		} else {
 			if (notifyText !== 5) {
 				let str = ''
@@ -235,14 +238,22 @@ const SessionInfoPopover = ({ open, onClose, sessionInfo }) => {
 				setMuteTimeText('Mute Until ' + str)
 			}
 			setNotifyDialogText('Unmute this Contact')
+			console.log(radioList[notifyText].time, 'radioList[notifyText].time')
 			const params = {
-				duration:  getMillisecond(radioList[notifyText].time),
-				type: 'DEFAULT',
-				interval: computedItervalTime(radioList[notifyText].time)
+				// duration:  getMillisecond(radioList[notifyText].time),
+				// interval: computedItervalTime(radioList[notifyText].time),
+				// userId: to,
+				conversationId: to,
+				type: 'singleChat',
+				options: {
+					paramType: 1,
+          // remindType: event.target.value,
+					duration: getMillisecond(radioList[notifyText].time)
+				}
 			}
 			setNotDisturb(params)
+			handleTurnOffClose()
 		}
-		handleTurnOffClose()
 	}
 	const handleSelectChange = (event) => {
 		console.log(event.target.value)
@@ -250,26 +261,48 @@ const SessionInfoPopover = ({ open, onClose, sessionInfo }) => {
 	}
 
 	const setNotDisturb = (params) => {
-		setNotDisturbDuration(params).then(res => {
-			console.log(res, 'setNotDisturbDuration')
+		console.log(params, 'setSilentModeForConversation')
+		setSilentModeForConversation(params).then(res => {
+			console.log(res, 'setSilentModeForConversation')
 		})
 	}
-	const getNotDisturb = () => {
-		getNotDisturbDuration({}).then(res => {
-			console.log(res, 'getNotDisturbDuration')
-			const type = res.type || 'DEFAULT'
-			// setNotifyText(type)
+	const getNotDisturb = (userId) => {
+		getSilentModeForConversation({conversationId: userId, type: 'singleChat'}).then(res => {
+			console.log(res, 'getSilentModeForConversation')
+			if (res.ignoreDuration) {
+				if (setTimeVSNowTime(res, true)) {
+					setNotifyDialogText('Mute this Contact')
+				} else {
+					setCheckedDefaultValue(res.ignoreDuration, 0, true)
+				}
+			}
+			if (Object.keys(muteDataObj[to]).length) {
+				setNotifyDialogText('Unmute this Contact')
+			}
 		})
+	}
+	const setCheckedDefaultValue = (time, index, flag) => {
+		let str = ''
+		if (index < 4) {
+			str = handlerTime(time, flag)
+		} else {
+			let list = handlerTime(24).split(',')
+			str = `${list[0]}, ${list[1]}, 08:00`
+		}
+		setNotifyDialogText(str)
 	}
 	useEffect(() => {
-		// getNotDisturb()
-	}, [])
+		if (to) {
+			getNotDisturb(to)
+		}
+	}, [to])
 
 	function renderTurnOffContent() {
 		if (notifyDialogText === 'Mute this Contact') {
 			return (
 				<div className={classes.contentBox}>
 					<Select
+						native
 						value={notifyText}
 						className={classes.notifySelect}
 						onChange={handleSelectChange}
@@ -278,7 +311,7 @@ const SessionInfoPopover = ({ open, onClose, sessionInfo }) => {
 						{
 							radioList.map((item, index) => {
 								return (
-									<MenuItem key={index} value={item.value}>{item.title}</MenuItem>
+									<option key={index} value={item.value}>{item.title}</option>
 								)
 							})
 						}
@@ -336,7 +369,12 @@ const SessionInfoPopover = ({ open, onClose, sessionInfo }) => {
 								<img alt="" src={statusImgObj[usePresenceExt] || customIcon} className={classes.imgStyle} />
 							</div>
 						</Tooltip>
-						<Typography className={classes.nameText}>{to}</Typography>
+						<Typography className={classes.nameText}>
+							{to}
+							{
+								muteDataObj[to] ? <img style={{ width: "16px", marginLeft: '2px' }} src={grayMuteIcon} alt="" /> : null
+							}
+						</Typography>
 						<Typography className={classes.idText}>
 							AgoraID:{to}
 						</Typography>
@@ -345,7 +383,9 @@ const SessionInfoPopover = ({ open, onClose, sessionInfo }) => {
 						className={classes.infoBtn}
 						onClick={() => setUserNotification()}
 					>
-						<img src={muteIcon} alt="chat" style={{ width: "30px" }} />
+						{
+							muteDataObj[to] ? <img src={unmuteIcon} alt="chat" style={{ width: "30px" }} /> : <img src={muteIcon} alt="chat" style={{ width: "30px" }} />
+						}
 						<Typography className={classes.infoBtnText}>
 							<div>
 								{i18next.t(notifyDialogText)}
@@ -378,6 +418,7 @@ const SessionInfoPopover = ({ open, onClose, sessionInfo }) => {
 				</Box>
 			</Popover>
 			<CommonDialog
+				style={{zIndex: 1301}}
 				open={openTurnOff}
 				onClose={handleTurnOffClose}
 				title={i18next.t(notifyDialogText)}

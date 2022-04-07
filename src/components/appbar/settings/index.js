@@ -20,8 +20,8 @@ import { setMyUserInfo } from '../../../redux/actions'
 import store from '../../../redux/store'
 
 import { removeFromBlackList } from '../../../api/contactsChat/getContacts'
-import { handlerTime, getMillisecond, computedItervalTime, timeIntervalToMinutesOrHours } from '../../../utils/notification'
-import { setNotDisturbDuration, getNotDisturbDuration, getNotDisturbDurationByLimit, getNotDisturbUserAndGroupDuration, selectTranslationLanguage, getTranslationLanguage } from '../../../api/notificationPush'
+import { handlerTime, getMillisecond, computedItervalTime, timeIntervalToMinutesOrHours, setTimeVSNowTime, getLocalStorageData } from '../../../utils/notification'
+import { setSilentModeForAll, getSilentModeForAll, getSilentModeForConversations, setPushPerformLanguage, getPushPerformLanguage } from '../../../api/notificationPush'
 
 const useStyles = makeStyles((theme) => {
     return {
@@ -250,11 +250,6 @@ const useStyles = makeStyles((theme) => {
 const AVATARS = [avater1, avater2, avater3]
 const selectList = [
     {
-        id: 0,
-        value: 'DEFAULT',
-        label: 'Default'
-    },
-    {
         id: 1,
         value: 'ALL',
         label: 'All Message'
@@ -309,13 +304,17 @@ export default function Setting({ open, onClose }) {
     const [nickName, setNickName] = useState('')
     const [avatarIndex, setAvatarIndex] = useState(null)
     const [addEl, setAddEl] = useState(null)
-    const [notifyText, setNotifyText] = useState('DEFAULT');
+    const [notifyText, setNotifyText] = useState('ALL');
     const [defaultValue, setDefaultValue] = useState('')
     const [showRadio, setShowRadio] = useState(false)
     const [checkedValue, setCheckedValue] = useState('')
     const [textSwitch, setTextSwitch] = useState(false)
     const [soundSwitch, setSoundSwitch] = useState(false)
     const [openTurnOff, setopenTurnOff] = useState(false)
+    const [selectDisabled, setSelectDisabled] = useState(false)
+    const [turnOffBtnFlag, setTurnOffBtnFlag] = useState(false)
+    // const [millisecond, setMillisecond] = useState(0)
+    // const [itervalTime, setItervalTime] = useState('')
 
     const myUserInfo = useSelector(state => state?.myUserInfo)
     const blackList = useSelector(state => state?.blackList) || []
@@ -415,49 +414,61 @@ export default function Setting({ open, onClose }) {
         console.log(event.target.value, 'event.target.value')
         setNotifyText(event.target.value)
         const params = {
-            userId: myUserInfo.agoraId,
-            type: event.target.value,
-            interval: '',
-            duration: 0
+            options: {
+                paramType: 0,
+                remindType: event.target.value,
+            }
         }
         setNotDisturb(params)
         // const params1 = {
         //     limit: 1
         // }
-        // getNotDisturbDurationByLimit(params1).then(res => {
-        //     console.log(res, 'getNotDisturbDurationByLimit')
+        // getSilentModeForConversations({usersId: 'lu1,lu2,lu3', groupsId: '123,1234,12345'}).then(res => {
+        //     console.log(res, 'getSilentModeForConversations')
         // })
-        // getNotDisturbUserAndGroupDuration({usersId: 'lu1,lu2,lu3', groupsId: '123,1234,12345'}).then(res => {
-        //     console.log(res, 'getNotDisturbUserAndGroupDuration')
+        // setPushPerformLanguage({language: 'EU'}).then(res => {
+        //     console.log(res, 'setPushPerformLanguage')
         // })
-        // selectTranslationLanguage({language: 'EU'}).then(res => {
-        //     console.log(res, 'selectTranslationLanguage')
-        // })
-        // getTranslationLanguage({}).then(res => {
-        //     console.log(res, 'getTranslationLanguage')
+        // getPushPerformLanguage({}).then(res => {
+        //     console.log(res, 'getPushPerformLanguage')
         // })
     }
     const setNotDisturb = (params) => {
-        setNotDisturbDuration(params).then(res => {
-            console.log(res, 'setNotDisturbDuration')
+        setSilentModeForAll(params).then(res => {
+            console.log(res, 'setSilentModeForAll')
         })
     }
 
-    const getNotDisturb = (userId) => {
-        getNotDisturbDuration({userId}).then(res => {
-            console.log(res, 'getNotDisturbDuration')
-            const type = res.type || 'DEFAULT'
-            setNotifyText(type)
-            setDefaultValue(radioList[timeIntervalToMinutesOrHours(res.ignoreInterval)])
-            setCheckedDefaultValue(res.ignoreDuration, radioList[timeIntervalToMinutesOrHours(res.ignoreInterval)], true)
+    const getNotDisturb = () => {
+        getSilentModeForAll().then(res => {
+            console.log(res, 'getSilentModeForAll')
+            const type = res.type
+            if (type) {
+                setNotifyText(type)
+                setSelectDisabled(true)
+            }
+            if (res.ignoreDuration) {
+                if (setTimeVSNowTime(res, true)) {
+                    setCheckedValue('')
+                } else {
+                    setCheckedDefaultValue(res.ignoreDuration, 0, true)
+                    setTurnOffBtnFlag(true)
+                }
+            }
         })
     }
-    const userId = myUserInfo?.agoraId
+
     useEffect(() => {
-        if (userId) {
-            getNotDisturb(userId)
+        if (open) {
+            getNotDisturb()
         }
-    }, [userId])
+        if (getLocalStorageData().sound) {
+            setSoundSwitch(getLocalStorageData().sound)
+        }
+        if (getLocalStorageData().previewText) {
+            setTextSwitch(getLocalStorageData().previewText)
+        }
+    }, [open])
     const handleChangeRadio = (event) => {
         console.log(event.target.value, 'event.target.value')
         setDefaultValue(event.target.value)
@@ -486,33 +497,63 @@ export default function Setting({ open, onClose }) {
             setCheckedDefaultValue(radioList[radioIndex].time, radioIndex)
         }
         setShowRadio(false)
-        const params = {
-            duration:  getMillisecond(radioList[radioIndex].time),
-            type: notifyText,
-            interval: computedItervalTime(radioList[radioIndex].time),
-            userId: myUserInfo.agoraId
+        // setMillisecond(getMillisecond(radioList[radioIndex].time))
+        // setItervalTime(computedItervalTime(radioList[radioIndex].time))
+        let params = {
+            options: {
+                paramType: 1,
+                duration: getMillisecond(radioList[radioIndex].time)
+            }
+        }
+        if (false) {
+            const timeList = computedItervalTime(radioList[radioIndex].time).split('-')
+            const one = timeList[0].split(':')
+            const two = timeList[1].split(':')
+            params = {
+                options: {
+                    paramType: 2,
+                    startTime: {
+                        hours: Number(one[0]),
+                        minutes: Number(one[1])
+                    },
+                    endTime: {
+                        hours: Number(two[0]),
+                        minutes: Number(two[0])
+                    }
+                }
+            }
         }
         console.log(params, 'params')
         setNotDisturb(params)
+        setSelectDisabled(true)
+        setTurnOffBtnFlag(true)
     }
 
     const handleSwitchChange = (e, val) => {
         console.log(e, val)
         const checked = e.target.checked
+        const soundPreviewText = {
+            sound: soundSwitch,
+            previewText: textSwitch
+        }
         if (val) {
             setSoundSwitch(checked)
+            soundPreviewText['sound'] = checked
         } else {
             setTextSwitch(checked)
+            soundPreviewText['previewText'] = checked
         }
+        localStorage.setItem('soundPreviewText', JSON.stringify(soundPreviewText))
     }
 
     const handleTurnOffClose = () => {
         setopenTurnOff(false)
     }
     const handlerOkay = () => {
-        setCheckedValue('')
+        setTurnOffBtnFlag(false)
         setShowRadio(true)
         handleTurnOffClose()
+        setSelectDisabled(false)
     }
     function infoTabPanel() {
         return (
@@ -654,6 +695,19 @@ export default function Setting({ open, onClose }) {
                                     className={classes.notifySelect}
                                     onChange={handleSelectChange}
                                     variant="outlined"
+                                    // disabled={selectDisabled}
+                                    renderValue={(selected) => {
+                                        if (selected.length === 0) {
+                                          return <em>Please Select</em>
+                                        }
+                                        let tempStr = ''
+                                        selectList.forEach(item => {
+                                            if (item.value === selected) {
+                                                tempStr = item.label
+                                            }
+                                        })
+                                        return tempStr || <em>Please Select</em>
+                                    }}
                                 >
                                     {
                                         selectList.map(item=> {
@@ -673,7 +727,7 @@ export default function Setting({ open, onClose }) {
                                         }
                                     </div>
                                     {
-                                        checkedValue ?
+                                        checkedValue && turnOffBtnFlag ?
                                         <span onClick={handlerTurnOffBtn} className={classes.turnStyle}>Turn Off</span>
                                         : <img className={`${classes.arrowImg} ${showRadio ? classes.arrowUpImg : classes.arrowDownImg}`} alt="" onClick={handlerArrowImg} src={arrow} />
                                     }
@@ -703,7 +757,7 @@ export default function Setting({ open, onClose }) {
                         </div>
                         <div className={classes.bottomStyle + ' ' + classes.previewStyle + ' ' + classes.bottomItem + ' ' + classes.flexBox}>
                             <span className={classes.notifySubTitle}>{i18next.t('Show Preview Text')}</span>
-                            <Switch className={`${classes.switchStyle} ${textSwitch ? classes.switchOpenStyle : ''}`} onChange={(e) => handleSwitchChange(e, 0)}></Switch>
+                            <Switch checked={textSwitch} className={`${classes.switchStyle} ${textSwitch ? classes.switchOpenStyle : ''}`} onChange={(e) => handleSwitchChange(e, 0)}></Switch>
                         </div>
                     </div>
                 </div>
@@ -711,7 +765,7 @@ export default function Setting({ open, onClose }) {
                     <div className={classes.notifyTitle}>{i18next.t('Notification Sounds')}</div>
                     <div className={classes.bottomStyle + ' ' + classes.alertStyle + ' ' + classes.flexBox}>
                         <span className={classes.notifySubTitle}>{i18next.t('Alert Sound')}</span>
-                        <Switch className={`${classes.switchStyle} ${soundSwitch ? classes.switchOpenStyle : ''}`} onChange={(e) => handleSwitchChange(e, 1)}></Switch>
+                        <Switch checked={soundSwitch} className={`${classes.switchStyle} ${soundSwitch ? classes.switchOpenStyle : ''}`} onChange={(e) => handleSwitchChange(e, 1)}></Switch>
                     </div>
                 </div>
                 <CommonDialog

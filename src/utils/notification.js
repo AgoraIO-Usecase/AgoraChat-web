@@ -1,18 +1,23 @@
-const options = {
-  requireInteraction: true, // 是否自动消失
-  body: 'Liz: "Hi there!"', // 展示的具体内容
-  tag: '1eee4', // 唯一值供记录用
+import store from '../redux/store'
+import { setMuteDataObj, setUnread } from '../redux/actions'
+import { EaseApp } from "luleiyu-agora-chat"
+
+let options = {
+  requireInteraction: false, // 是否自动消失
+  body: 'new message', // 展示的具体内容
+  tag: '', // 唯一值供记录用
   // body: 'https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimg.jj20.com%2Fup%2Fallimg%2Ftp01%2F1ZZQ20QJS6-0-lp.jpg&refer=http%3A%2F%2Fimg.jj20.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1648367265&t=c26344538c227e42c92ac1b26d4f9c65',
-  icon: 'https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimg.jj20.com%2Fup%2Fallimg%2Ftp01%2F1ZZQ20QJS6-0-lp.jpg&refer=http%3A%2F%2Fimg.jj20.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1648367265&t=c26344538c227e42c92ac1b26d4f9c65',
+  icon: '/Favicon@2x.png',
   // icon: '/logo192.png',
-  image: 'https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimg.jj20.com%2Fup%2Fallimg%2Ftp01%2F1ZZQ20QJS6-0-lp.jpg&refer=http%3A%2F%2Fimg.jj20.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1648367265&t=c26344538c227e42c92ac1b26d4f9c65',
-  data: '你猜猜', // 附带的数据，可以在展示时获取，然后用做具体的情况使用
-  lang: 'en-US', // 语言
-  dir: 'rtl', // 文字方向
-  renotify: true, // 允许覆盖
+  image: '',
+  data: '', // 附带的数据，可以在展示时获取，然后用做具体的情况使用
+  lang: '', // 语言
+  dir: 'auto', // 文字方向
+  renotify: false, // 允许覆盖
   silent: false, // 静音属性为true时不能和vibrate一起使用
-  badge: 'https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimg.jj20.com%2Fup%2Fallimg%2F1114%2F113020142315%2F201130142315-1-1200.jpg&refer=http%3A%2F%2Fimg.jj20.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1648367265&t=2c1f9cf6b828120b81f18776a6c42c3d',
+  badge: '',
   vibrate: [200, 100, 200], // 设备震动频率
+  sound: '',
   // actions: [
   //     {
   //         action: '',
@@ -21,62 +26,73 @@ const options = {
   //     }
   // ]
 }
-export const checkBrowerNotifyStatus = () => {
-  return new Promise((resolve, reject) => {
-    // 先检查浏览器是否支持
-    if (!('Notification' in window)) {
-      alert("This browser does not support desktop notification")
-      resolve('denied')
-    } else if (Notification.permission !== 'denied') {
-      // 否则我们需要向用户获取权限
-      Notification.requestPermission().then(function (permission) {
-        console.log(permission)
-        resolve(permission)
-      })
-    } else if (Notification.permission === 'denied') {
-      alert("Please set browser support notification")
-      resolve('denied')
-    } else {
-      resolve('denied')
-    }
-  })
-}
-export const notification = () => {
-  checkBrowerNotifyStatus().then(res => {
-    // 检查用户是否同意接受通知
-    if (Notification?.permission === "granted") {
-      // If it's okay let's create a notification
-      var notification = new Notification("Hi there!", options);
-      notification.onclick = (res) => {
-        console.log(res, 'notification.onclick')
+export const checkBrowerNotifyStatus = (showFlag, params, iconTitle) => {
+  // 先检查浏览器是否支持
+  if (!('Notification' in window)) {
+    alert("This browser does not support desktop notification")
+  } else if (Notification.permission !== 'denied') {
+    // 否则我们需要向用户获取权限
+    Notification.requestPermission().then(e => {
+      console.log(e, 'checkBrowerNotifyStatus')
+      if (e === 'granted' && showFlag) {
+        notification(params, iconTitle)
+      } else {
+        alert("Please set browser support notification")
       }
-      notification.addEventListener('click', e => {
-        console.log(e, 'notification.addEventListener')
-      })
-      console.log(notification, 'notification')
-      notification.addEventListener('display', e => {
-        console.log(e, 'notification.ondisplay')
-      })
-      notification.addEventListener('close', e => {
-        console.log(e)
-      })
-      notification.addEventListener('show', e => {
-        console.log(e)
-      })
-      notification.addEventListener('error', e => {
-        console.log(e)
-      })
-      notification.ondisplay = (res) => {
-        console.log(res, 'notification.ondisplay')
-      }
-      changeIcon()
-    }
-  })
+    })
+  } else if (Notification.permission === 'denied') {
+    alert("Please set browser support notification")
+  }
 }
-const changeIcon = () => {
+export const notification = (params, iconTitle) => {
+  options = {...options, ...params}
+  // 检查用户是否同意接受通知
+  if (Notification?.permission === "granted") {
+    const bodyList = options.body.split('?')
+    options.body = bodyList[0]
+    var notification = new Notification(options.title || 'New Message', options);
+    const session = {}
+    notification.onclick = (res) => {
+      bodyList[1]?.split('&')?.forEach(item => {
+        const [ first, second ] = item?.split('=')
+        session[first] = second
+      })
+      const { sessionType, sessionId } = session
+      if (sessionType && sessionId) {
+        const { unread } = store.getState()
+        unread[sessionType][sessionId] = 0
+        store.dispatch(setUnread(unread))
+      }
+      console.log(res, 'notification.onclick')
+    }
+    notification.addEventListener('click', e => {
+      console.log(e, 'notification.addEventListener')
+    })
+    console.log(notification, 'notification')
+    notification.addEventListener('display', e => {
+      console.log(e, 'notification.ondisplay')
+    })
+    notification.addEventListener('close', e => {
+      console.log(e)
+    })
+    notification.addEventListener('show', e => {
+      console.log(e)
+    })
+    notification.addEventListener('error', e => {
+      console.log(e)
+    })
+    notification.ondisplay = (res) => {
+      console.log(res, 'notification.ondisplay')
+    }
+    changeIcon(iconTitle)
+  } else {
+    checkBrowerNotifyStatus(true, params, iconTitle)
+  }
+}
+export const changeIcon = (iconTitle = {}) => {
   const changeFavicon = link => {
     let $favicon = document.querySelector('link[rel="icon"]');
-    console.log($favicon)
+    // console.log($favicon)
     // If a <link rel="icon"> element already exists,
     // change its href to the given link.
     if ($favicon !== null) {
@@ -89,9 +105,9 @@ const changeIcon = () => {
       document.head.appendChild($favicon);
     }
   };
-  let icon = '../assets/Online.png'; // 图片地址
+  let icon = iconTitle.iconLink || '/Favicon@2x.png'; // 图片地址
   changeFavicon(icon); // 动态修改网站图标
-  let title = '(12)new messaage'; // 网站标题
+  let title = iconTitle.title || 'agora chat'; // 网站标题
   document.title = title; // 动态修改网站标题
 }
 export const notify = () => {
@@ -115,10 +131,13 @@ export const notify = () => {
 }
 
 export const handlerTime = (time, flag) => {
+  let timeList = ''
   if (!flag) {
     time = getMillisecond(time)
+    timeList = new Date(new Date().getTime() + (time)).toString().split(' ')
+  } else {
+    timeList = new Date(time).toString().split(' ')
   }
-  const timeList = new Date(new Date().getTime() + (time)).toString().split(' ')
   return `${timeList[1]} ${timeList[2]}, ${timeList[3]}, ${timeList[4].substring(0,5)}`
 }
 
@@ -143,6 +162,8 @@ export const computedItervalTime = (time) => {
   if (time === 8) {
     if (toLocaleString(new Date()) === '00:00') {
       return '24:00-08:00'
+    } else {
+      return toLocaleString(new Date()) + '-' + toLocaleString(new Date(new Date().getTime() + getMillisecond(time)))
     }
   } else if (time === 'none') {
     return '00:00-24:00'
@@ -167,10 +188,15 @@ export const timeIntervalToMinutesOrHours = (timeStr, selfFlag) => {
       timeList.push(Number(val))
     })
   })
+  console.log(timeList, 'timeList') // 16, 30, 00, 30
   if (timeList.length === 6) {
     return 4
   }
-  const hours = timeList[2] - timeList[0]
+  let hours = 0
+  if (timeList[2] === 0) {
+    timeList[2] = 24
+  }
+  hours = timeList[2] - timeList[0]
   let minutes = 0
   if (timeList[3] < timeList[1]) {
     minutes = timeList[3] + 60 - timeList[1]
@@ -207,4 +233,36 @@ export const timeIntervalToMinutesOrHours = (timeStr, selfFlag) => {
       }
     }
   }
+}
+
+export function setTimeVSNowTime (setterObj, falseFlag) {
+  const nowTime = new Date().getTime()
+  if (falseFlag) {
+    return (nowTime - setterObj.ignoreDuration) >= 0
+  }
+  if ((nowTime - setterObj.ignoreDuration) >= 0) {
+    const collectObj = {
+      [setterObj.id]: false
+    }
+    const collectObj1 = {
+      [setterObj.id]: {
+        muteFlag: false
+      }
+    }
+    store.dispatch(setMuteDataObj(collectObj))
+    EaseApp.changePresenceStatus(collectObj1)
+  }
+}
+
+export function getLocalStorageData () {
+  return localStorage.getItem('soundPreviewText') ? JSON.parse(localStorage.getItem('soundPreviewText')) : {}
+}
+
+export const playSound = () => {
+  const agoraChatSoundId = window.document.getElementById('agoraChatSoundId')
+  console.log(agoraChatSoundId, 'agoraChatSoundId')
+  agoraChatSoundId.play()
+}
+export const randomNumber = () => {
+  return parseInt(Math.random()+new Date().getTime())
 }

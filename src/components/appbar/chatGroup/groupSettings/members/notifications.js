@@ -3,8 +3,8 @@ import { useSelector } from "react-redux";
 import { MenuItem, Select, RadioGroup, FormControlLabel, Radio } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import i18next from "i18next";
-import { handlerTime, getMillisecond, computedItervalTime } from '../../../../../utils/notification'
-import { setNotDisturbGroupDuration, getNotDisturbGroupDuration, getNotDisturbGroupDurationByLimit } from '../../../../../api/notificationPush'
+import { handlerTime, getMillisecond, computedItervalTime, timeIntervalToMinutesOrHours, setTimeVSNowTime } from '../../../../../utils/notification'
+import { setSilentModeForConversation, getSilentModeForConversation, getSilentModeForConversations } from '../../../../../api/notificationPush'
 import muteIcon from '../../../../../assets/go@2x.png'
 import CommonDialog from "../../../../common/dialog";
 
@@ -144,21 +144,99 @@ const radioList = [
       time: 'none'
   }
 ]
-const Notifications = () => {
+const selectList = [
+  {
+    id: 0,
+    value: 'DEFAULT',
+    label: 'Default'
+  },
+  {
+    id: 1,
+    value: 'ALL',
+    label: 'All Message'
+  },
+  {
+    id: 2,
+    value: 'AT',
+    label: 'Only @Metion'
+  },
+  {
+    id: 3,
+    value: 'NONE',
+    label: 'Nothing'
+  }
+]
+const Notifications = (props) => {
+  const { showMuteImgOrNot, useScene, useComponent } = props
   const classes = useStyles()
   const state = useSelector((state) => state)
   const groupsInfo = state?.groups?.groupsInfo || {}
   const groupId = groupsInfo?.id
-  const groupList = state?.groups?.groupList || [];
+  // const groupList = state?.groups?.groupList || [];
   const [notifyText, setNotifyText] = useState('DEFAULT')
   const [defaultValue, setDefaultValue] = useState('')
   const [showRadio, setShowRadio] = useState(false)
   const [muteTimeText, setMuteTimeText] = useState(null)
   const [openTurnOff, setopenTurnOff] = useState(false)
+  // const [selectDisabled, setSelectDisabled] = useState(false)
+  // const [millisecond, setMillisecond] = useState(0)
+  // const [itervalTime, setItervalTime] = useState('')
+  const [turnOffBtnFlag, setTurnOffBtnFlag] = useState(false)
 
+  const getNotDisturbGroup = (groupId) => {
+    console.log(groupId, 'groupId=conversationId')
+    getSilentModeForConversation({conversationId: groupId, type: useScene }).then(res => {
+      console.log(res, 'getNotDisturbDuration')
+      const type = res.type
+      if (type) {
+        setNotifyText(type)
+        // setSelectDisabled(true)
+      }
+      if (res.ignoreDuration) {
+        if (setTimeVSNowTime(res, true)) {
+          setMuteTimeText(null)
+          showMuteImgOrNot(false)
+        } else {
+          setCheckedDefaultValue(res.ignoreDuration, 0, true)
+          setTurnOffBtnFlag(true)
+          showMuteImgOrNot(true)
+        }
+      }
+      // if (res.ignoreInterval) {
+      //   setDefaultValue(radioList[timeIntervalToMinutesOrHours(res.ignoreInterval)].value)
+      //   setTurnOffBtnFlag(true)
+      //   showMuteImgOrNot(true)
+      // }
+      // if (res.ignoreInterval && res.ignoreDuration) {
+      //   setCheckedDefaultValue(res.ignoreDuration, timeIntervalToMinutesOrHours(res.ignoreInterval), true)
+      //   showMuteImgOrNot(true)
+      // } else {
+      //   showMuteImgOrNot(false)
+      // }
+    })
+  }
+  useEffect(() => {
+      if (groupId) {
+        getNotDisturbGroup(groupId)
+      }
+  }, [groupId])
   const handleSelectChange = (event) => {
     console.log(event.target.value, 'event.target.value')
     setNotifyText(event.target.value)
+    const params = {
+      // groupId,
+      // type: event.target.value,
+      // interval: itervalTime,
+      // duration: millisecond
+      conversationId: groupId,
+      type: useScene,
+      options: {
+        paramType: 0,
+        remindType: event.target.value,
+        // duration:  getMillisecond(radioList[radioIndex].time)
+      }
+    }
+    setNotDisturbGroup(params)
   }
   const handleChangeRadio = (event) => {
     console.log(event.target.value, 'event.target.value')
@@ -167,50 +245,64 @@ const Notifications = () => {
   const handlerShowRadio = () => {
     setShowRadio(!showRadio)
   }
+  const setCheckedDefaultValue = (time, index, flag) => {
+    let str = ''
+    if (index < 4) {
+        str = handlerTime(time, flag)
+    } else {
+        let list = handlerTime(24).split(',')
+        str = `${list[0]}, ${list[1]}, 08:00`
+    }
+    setMuteTimeText(str)
+  }
   const handlerDone = () => {
     const radioIndex = Number(defaultValue)
     if (defaultValue === '5') {
       setMuteTimeText('You Turn it Unmute')
     } else {
-      let str = ''
-      if (radioIndex < 4) {
-        str = handlerTime(radioList[radioIndex].time)
-      } else {
-        let list = handlerTime(24).split(',')
-        str = `${list[0]}, ${list[1]}, 08:00`
-      }
-      setMuteTimeText(str)
+      setCheckedDefaultValue(radioList[radioIndex].time, radioIndex)
     }
     setShowRadio(false)
+    // setMillisecond(getMillisecond(radioList[radioIndex].time))
+    // setItervalTime(computedItervalTime(radioList[radioIndex].time))
     const params = {
-      groupId,
-      duration:  getMillisecond(radioList[radioIndex].time),
-      type: notifyText,
-      interval: computedItervalTime(radioList[radioIndex].time)
+      // groupId,
+      // duration:  getMillisecond(radioList[radioIndex].time),
+      // type: notifyText,
+      // interval: computedItervalTime(radioList[radioIndex].time)
+      conversationId: groupId,
+      type: useScene,
+      options: {
+        paramType: 1,
+        // remindType: event.target.value,
+        duration:  getMillisecond(radioList[radioIndex].time)
+      }
     }
     setNotDisturbGroup(params)
+    setTurnOffBtnFlag(true)
+    showMuteImgOrNot(true)
   }
   const setNotDisturbGroup = (params) => {
-    setNotDisturbGroupDuration(params).then(res => {
+    setSilentModeForConversation(params).then(res => {
       console.log(res)
     })
   }
-  useEffect(() => {
-    getNotDisturbGroupDuration({groupId}).then(res => {
-      console.log(res, 'getNotDisturbDuration')
-      const type = res.type || 'DEFAULT'
-      setNotifyText(type)
-    })
-  }, [groupId])
 
-  useEffect(() => {
-    getNotDisturbGroupByLimit(groupList.length)
-  }, [groupList.length])
-  const getNotDisturbGroupByLimit = (val) => {
-    getNotDisturbGroupDurationByLimit({limit: val || 1}).then(res => {
-      console.log(res)
-    })
-  }
+  // useEffect(() => {
+  //   getNotDisturbGroupByLimit(groupList)
+  // }, [groupList.length])
+  // const getNotDisturbGroupByLimit = (list) => {
+  //   const conversationList = []
+  //   list.forEach(item => {
+  //     conversationList.push({
+  //       id: item.groupid,
+  //       type: useScene
+  //     })
+  //   })
+  //   getSilentModeForConversations({conversationList}).then(res => {
+  //     console.log(res)
+  //   })
+  // }
 
   const handlerTurnOffBtn = () => {
     setopenTurnOff(true)
@@ -219,15 +311,16 @@ const Notifications = () => {
     setopenTurnOff(false)
   }
   const handlerOkay = () => {
-    setMuteTimeText('')
     setShowRadio(true)
     handleTurnOffClose()
+    setTurnOffBtnFlag(false)
+    // setSelectDisabled(false)
   }
 
   function renderTurnOffContent() {
     return (
       <div className={classes.contentBox}>
-        {defaultValue === '5' ? 'You have muted this Group.' : <span>You have muted this Group until <span className={classes.unmuteTimeStyle}>{muteTimeText}</span>.</span>}
+        {defaultValue === '5' ? `You have muted this ${useComponent}.` : <span>You have muted this {useComponent} until <span className={classes.unmuteTimeStyle}>{muteTimeText}</span>.</span>}
       </div>
     )
   }
@@ -244,12 +337,12 @@ const Notifications = () => {
   return (
     <div className={classes.root}>
       <div className={classes.topBox}>
-        <div className={classes.titleBox + ' ' + classes.cursorStyle}>
-          <span className={classes.titleStyle}>Mute this Group { muteTimeText ? <span className={classes.notifyPrayTitle}>Until {muteTimeText}</span> : null}</span>
+        <div className={classes.titleBox}>
+          <span className={classes.titleStyle}>Mute this {useComponent} { muteTimeText ? <span className={classes.notifyPrayTitle}>Until {muteTimeText}</span> : null}</span>
           {
-            muteTimeText ?
-            <span onClick={handlerTurnOffBtn} className={classes.turnStyle}>Unmute</span>
-            : <img onClick={handlerShowRadio} className={`${classes.imgStyle} ${showRadio ? classes.imgUpStyle : classes.imgDownStyle}`} alt="" src={muteIcon} />
+            muteTimeText && turnOffBtnFlag?
+            <span onClick={handlerTurnOffBtn} className={classes.turnStyle + ' ' + classes.cursorStyle}>Unmute</span>
+            : <img onClick={handlerShowRadio} className={`${classes.imgStyle + ' ' + classes.cursorStyle} ${showRadio ? classes.imgUpStyle : classes.imgDownStyle}`} alt="" src={muteIcon} />
           }
         </div>
         {
@@ -279,20 +372,24 @@ const Notifications = () => {
       <div className={classes.topBox + ' ' + classes.titleBox}>
         <div className={classes.titleStyle}>Frequency</div>
         <Select
-          value={notifyText}
-          className={classes.notifySelect}
-          onChange={handleSelectChange}
-          variant="outlined"
+            value={notifyText}
+            className={classes.notifySelect}
+            onChange={handleSelectChange}
+            variant="outlined"
         >
-          <MenuItem value={1}>All Message</MenuItem>
-          <MenuItem value={2}>Only @Metion</MenuItem>
-          <MenuItem value={3}>Nothing</MenuItem>
+          {
+            selectList.map(item=> {
+              return (
+                <MenuItem key={item.value} value={item.value}>{item.label}</MenuItem>
+              )
+            })
+          }
         </Select>
       </div>
       <CommonDialog
           open={openTurnOff}
           onClose={handleTurnOffClose}
-          title={i18next.t("Unmute this Group?")}
+          title={i18next.t(`Unmute this ${useComponent}?`)}
           content={renderTurnOffContent()}
           footer={renderTurnOffFooter()}
       ></CommonDialog>

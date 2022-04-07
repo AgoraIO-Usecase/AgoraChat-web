@@ -7,12 +7,13 @@ import WebIM from '../utils/WebIM';
 import { EaseApp } from 'luleiyu-agora-chat'
 import { createHashHistory } from 'history'
 import store from '../redux/store'
-import { setMyUserInfo} from '../redux/actions'
+import { setMyUserInfo, setUnread} from '../redux/actions'
 
 import SessionInfoPopover from '../components/appbar/sessionInfo'
 import GroupMemberInfoPopover from '../components/appbar/chatGroup/memberInfo'
 import { truncate } from 'lodash';
 import { subFriendStatus } from '../api/presence'
+import map3 from '../assets/notify.mp3'
 
 // import { notify } from '../utils/notification'
 
@@ -58,6 +59,13 @@ export default function Main() {
             })
         }
     }
+    const handleonConversationClick = (session) => {
+        console.log(session, 'handleonConversationClick')
+        const { sessionType, sessionId } = session
+        const { unread } = store.getState()
+        unread[sessionType][sessionId] = 0
+        store.dispatch(setUnread(unread))
+    }
     // notify()
     return (
         <div className='main-container'>
@@ -65,6 +73,7 @@ export default function Main() {
                 header={<Header />}
                 onChatAvatarClick={handleClickSessionInfoDialog}
                 onAvatarChange={handleClickGroupMemberInfoDialog}
+                onConversationClick={handleonConversationClick}
             />
             <SessionInfoPopover 
                 open={sessionInfoAddEl}
@@ -75,6 +84,7 @@ export default function Main() {
                 onClose={() => setGroupMemberInfoAddEl(null)}
                 memberInfo={memberInfo}
                 presenceList={presenceList}/>
+            <audio id="agoraChatSoundId" src={map3}></audio>
         </div>
     )
 }

@@ -102,7 +102,8 @@ function AddressBookDialog(props) {
     const classes = useStyles();
     const constacts = useSelector((state) => state?.constacts) || []
     const presenceList = useSelector((state) => state?.presenceList) || []
-    console.log(presenceList, 'presenceList=presenceList')
+    const muteDataObj = useSelector((state) => state?.muteDataObj) || {}
+    console.log(presenceList, 'presenceList=presenceList', muteDataObj)
     const [userInfoObj, setUserInfoObj] = useState({})
     let userAvatars = {
         1: avatarIcon1,
@@ -126,11 +127,14 @@ function AddressBookDialog(props) {
     const [contactList, setContactList] = useState([])
     const handleClick = (itemData) => {
         // uikit
-        console.log(itemData, 'itemData')
+        console.log(itemData, 'itemData', muteDataObj[itemData.name])
         let conversationItem = {
 			conversationType: "singleChat",
 			conversationId: itemData.name,
-            ext: itemData?.presence?.ext,
+            ext: {
+                ext: itemData?.presence?.ext,
+                muteFlag: muteDataObj[itemData.name]
+            }
 		};
         EaseApp.addConversationItem(conversationItem);
         onClose()

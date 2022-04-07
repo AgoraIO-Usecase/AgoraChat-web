@@ -33,7 +33,8 @@ import editIcon from "../../../../assets/edit@2x.png";
 import allowSearchIcon from "../../../../assets/allow_search@2x.png";
 import transferIcon from "../../../../assets/transfer@2x.png";
 import deleteIcon from "../../../../assets/red@2x.png";
-import muteIcon from '../../../../assets/mute@2x.png'
+import muteIcon from '../../../../assets/unmute.png'
+import muteGrayIcon from '../../../../assets/gray@2x.png'
 
 const useStyles = makeStyles((theme) => {
 	return {
@@ -127,6 +128,11 @@ const useStyles = makeStyles((theme) => {
 		},
 		deleteGroupBox:{
 			padding:"6px 12px"
+		},
+		muteImgstyle: {
+			width: '20px',
+			height: '20px',
+			verticalAlign: 'text-top',
 		}
 	};
 });
@@ -139,10 +145,13 @@ const GroupSettingsDialog = ({ open, onClose, currentGroupId }) => {
 	const loginUser = WebIM.conn.context?.userId;
 	const isOwner = loginUser === groupsInfo?.owner;
 	const [value, setValue] = useState(0);
+	const [muteFlag, setmuteFlag] = useState(false);
 	const handleChange = (event, newValue) => {
 		setValue(newValue);
 	};
-
+	const showMuteImgOrNot = (flag) => {
+		setmuteFlag(flag)
+	}
 	const renderSetting = () => {
 		const memberLabel = () => {
 			return (
@@ -251,6 +260,9 @@ const GroupSettingsDialog = ({ open, onClose, currentGroupId }) => {
 						/>
 						<Typography className={classes.gNameText}>
 							{groupsInfo?.name}
+							{
+								muteFlag ? <img alt="" className={classes.muteImgstyle} src={muteGrayIcon} /> : null
+							}
 						</Typography>
 						<Typography className={classes.gAppIdText}>
 							GroupID:{groupsInfo?.id}{" "}
@@ -374,7 +386,7 @@ const GroupSettingsDialog = ({ open, onClose, currentGroupId }) => {
 						index={4}
 						className={classes.content}
 					>
-						<Notifications />
+						<Notifications showMuteImgOrNot={showMuteImgOrNot} useScene="groupChat" useComponent="Group" />
 					</TabPanel>
 					<TabPanel
 						value={value}
