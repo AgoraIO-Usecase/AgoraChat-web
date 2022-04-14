@@ -76,7 +76,7 @@ export default function Main() {
                 isShowReaction={true}
                 onChatAvatarClick={handleClickSessionInfoDialog}
                 onAvatarChange={handleClickGroupMemberInfoDialog}
-                customMessageList={[{name: i18next.t("Report"), value: 'report'}]}
+                customMessageList={[{name: i18next.t("Report"), value: 'report', position: 'others'}]}
                 customMessageClick={onMessageEventClick}
             />
             <SessionInfoPopover 
