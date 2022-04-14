@@ -31,6 +31,7 @@ export function Report(props) {
     const [textValue, setTextValue] = useState('')
     const classes = useStyles();
     const handleChange = (event) => {
+        if(event.target.value.length > 150) {return}
         setValue(event.target.value)
     }
 
@@ -48,7 +49,6 @@ export function Report(props) {
     }
 
     const handleTextChange = (e)=>{
-        console.log(e.target.value)
         setTextValue(e.target.value)
     }
 
@@ -67,11 +67,11 @@ export function Report(props) {
                 <TextareaAutosize
                     style={{ margin: '0 10%' }}
                     minRows={4}
-                    maxRows={6}
+                    maxRows={4}
                     onChange={handleTextChange}
                     value={textValue}
                     aria-label="maximum height"
-                    placeholder="Maximum 4 rows"
+                    placeholder="Report reasons"
                     defaultValue=""
                 />
                 <div style={{ margin: '45px auto' }}>
