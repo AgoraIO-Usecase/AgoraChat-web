@@ -14,10 +14,10 @@ let options = {
   lang: '', // 语言
   dir: 'auto', // 文字方向
   renotify: false, // 允许覆盖
-  silent: false, // 静音属性为true时不能和vibrate一起使用
-  badge: '',
-  vibrate: [200, 100, 200], // 设备震动频率
-  sound: '',
+  // silent: false, // 静音属性为true时不能和vibrate一起使用
+  // badge: '',
+  // vibrate: [200, 100, 200], // 设备震动频率
+  // sound: '',
   // actions: [
   //     {
   //         action: '',
@@ -25,6 +25,56 @@ let options = {
   //         icon: ''
   //     }
   // ]
+}
+function twoMethod (params, iconTitle) {
+  console.log('%c twoMethod', 'font-size:20px;color:red;')
+  options = {...options, ...params}
+  const bodyList = options.body.split('?')
+  options.body = bodyList[0]
+  var notification = new Notification(options.title || 'New Message', options);
+  const session = {}
+  notification.onclick = (res) => {
+    bodyList[1]?.split('&')?.forEach(item => {
+      const [ first, second ] = item?.split('=')
+      session[first] = second
+    })
+    const { sessionType, sessionId } = session
+    if (sessionType && sessionId) {
+      const { unread } = store.getState()
+      unread[sessionType][sessionId].fakeNum = 0
+      store.dispatch(setUnread(unread))
+      changeTitle()
+    }
+    console.log(res, 'notification.onclick')
+    changeIcon(iconTitle)
+  }
+  notification.addEventListener('show', e => {
+    console.log(e)
+    setTimeout(notification.close.bind(notification), 2000)
+  })
+}
+export function notifyMe (params, iconTitle) {
+  // 先检查浏览器是否支持
+  if (!("Notification" in window)) {
+    alert("This browser does not support desktop notification");
+  }
+  // 检查用户是否同意接受通知
+  else if (Notification.permission === "granted") {
+    console.log('%c Notification', 'font-size:20px;color:red;')
+    twoMethod(params, iconTitle)
+    // var notification = new Notification('New Message', {body: params.body});
+  }
+  // 否则我们需要向用户获取权限
+  else if (Notification.permission !== "denied") {
+    Notification.requestPermission().then(function (permission) {
+      // 如果用户接受权限，我们就可以发起一条消息
+      if (permission === "granted") {
+        console.log('%c granted', 'font-size:20px;color:red;')
+        twoMethod(params, iconTitle)
+        // var notification = new Notification('New Message', {body: params.body});
+      }
+    });
+  }
 }
 export const checkBrowerNotifyStatus = (showFlag, params, iconTitle) => {
   // 先检查浏览器是否支持
@@ -36,7 +86,7 @@ export const checkBrowerNotifyStatus = (showFlag, params, iconTitle) => {
       console.log(e, 'checkBrowerNotifyStatus')
       if (e === 'granted' && showFlag) {
         notification(params, iconTitle)
-      } else {
+      } else if (e !== 'granted') {
         alert("Please set browser support notification")
       }
     })
@@ -45,6 +95,7 @@ export const checkBrowerNotifyStatus = (showFlag, params, iconTitle) => {
   }
 }
 export const notification = (params, iconTitle) => {
+  console.log('notification', iconTitle)
   options = {...options, ...params}
   // 检查用户是否同意接受通知
   if (Notification?.permission === "granted") {
@@ -60,36 +111,36 @@ export const notification = (params, iconTitle) => {
       const { sessionType, sessionId } = session
       if (sessionType && sessionId) {
         const { unread } = store.getState()
-        unread[sessionType][sessionId] = 0
+        unread[sessionType][sessionId].fakeNum = 0
         store.dispatch(setUnread(unread))
+        changeTitle()
       }
       console.log(res, 'notification.onclick')
     }
-    notification.addEventListener('click', e => {
-      console.log(e, 'notification.addEventListener')
-    })
-    console.log(notification, 'notification')
-    notification.addEventListener('display', e => {
-      console.log(e, 'notification.ondisplay')
-    })
-    notification.addEventListener('close', e => {
-      console.log(e)
-    })
+    console.log(notification, 'notification', iconTitle)
+    // notification.addEventListener('display', e => {
+    //   console.log(e, 'notification.ondisplay')
+    // })
+    // notification.addEventListener('close', e => {
+    //   console.log(e)
+    // })
     notification.addEventListener('show', e => {
       console.log(e)
+      setTimeout(notification.close.bind(notification), 2000)
     })
-    notification.addEventListener('error', e => {
-      console.log(e)
-    })
-    notification.ondisplay = (res) => {
-      console.log(res, 'notification.ondisplay')
-    }
+    // notification.addEventListener('error', e => {
+    //   console.log(e)
+    // })
+    // notification.ondisplay = (res) => {
+    //   console.log(res, 'notification.ondisplay')
+    // }
     changeIcon(iconTitle)
   } else {
     checkBrowerNotifyStatus(true, params, iconTitle)
   }
 }
 export const changeIcon = (iconTitle = {}) => {
+  console.log(iconTitle, 'changeIcon')
   const changeFavicon = link => {
     let $favicon = document.querySelector('link[rel="icon"]');
     // console.log($favicon)
@@ -107,9 +158,24 @@ export const changeIcon = (iconTitle = {}) => {
   };
   let icon = iconTitle.iconLink || '/Favicon@2x.png'; // 图片地址
   changeFavicon(icon); // 动态修改网站图标
-  let title = iconTitle.title || 'agora chat'; // 网站标题
+  changeTitle()
+}
+
+export const changeTitle = () => {
+  const { unread } = store.getState()
+  let num = 0
+  for (let item in unread) {
+    for (let val in unread[item]) {
+      if (val) {
+        num += unread[item][val].fakeNum
+      }
+    }
+  }
+  console.log(num)
+  const title = num === 0 ? 'agora chat' : `(${num}) new message` // 网站标题
   document.title = title; // 动态修改网站标题
 }
+
 export const notify = () => {
   checkBrowerNotifyStatus().then(res => {
     if (Notification?.permission === 'default') {
@@ -148,7 +214,7 @@ export const getMillisecond = (time) => {
     case '8AM':
       return timeNowToTomorrow8AM()
     case 'none':
-      return 24 * 60 * 60 * 1000
+      return 30 * 24 * 60 * 60 * 1000
     default:
       return time * 60 * 60 * 1000
   }
@@ -264,5 +330,5 @@ export const playSound = () => {
   agoraChatSoundId.play()
 }
 export const randomNumber = () => {
-  return parseInt(Math.random()+new Date().getTime())
+  return parseInt(Math.random() * 10000 +new Date().getTime())
 }

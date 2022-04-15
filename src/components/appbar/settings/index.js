@@ -291,11 +291,11 @@ const radioList = [
         value: '4',
         time: '8AM',
     },
-    {
-        title: 'Until I turn it off',
-        value: '5',
-        time: 'none',
-    }
+    // {
+    //     title: 'Until I turn it off',
+    //     value: '5',
+    //     time: 'none',
+    // }
 ]
 export default function Setting({ open, onClose }) {
     const classes = useStyles();
@@ -499,28 +499,10 @@ export default function Setting({ open, onClose }) {
         setShowRadio(false)
         // setMillisecond(getMillisecond(radioList[radioIndex].time))
         // setItervalTime(computedItervalTime(radioList[radioIndex].time))
-        let params = {
+        const params = {
             options: {
                 paramType: 1,
                 duration: getMillisecond(radioList[radioIndex].time)
-            }
-        }
-        if (false) {
-            const timeList = computedItervalTime(radioList[radioIndex].time).split('-')
-            const one = timeList[0].split(':')
-            const two = timeList[1].split(':')
-            params = {
-                options: {
-                    paramType: 2,
-                    startTime: {
-                        hours: Number(one[0]),
-                        minutes: Number(one[1])
-                    },
-                    endTime: {
-                        hours: Number(two[0]),
-                        minutes: Number(two[0])
-                    }
-                }
             }
         }
         console.log(params, 'params')
@@ -554,6 +536,15 @@ export default function Setting({ open, onClose }) {
         setShowRadio(true)
         handleTurnOffClose()
         setSelectDisabled(false)
+        setCheckedValue('')
+        setDefaultValue('')
+        const params = {
+            options: {
+                paramType: 1,
+                duration: 0
+            }
+        }
+        setNotDisturb(params)
     }
     function infoTabPanel() {
         return (

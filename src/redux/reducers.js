@@ -42,7 +42,8 @@ let defaultState = {
         singleChat: {},
         groupChat: {},
         chatRoom: {},
-    }
+    },
+    currentSessionId: ''
 };
 
 const reducer = (state = defaultState, action) => {
@@ -233,9 +234,7 @@ const reducer = (state = defaultState, action) => {
         case 'SET_GLOBAL_SILENT_MODE':
             console.log(data,'SET_GLOBAL_SILENT_MODE')
             for (let item in data) {
-                for (let val in data[item]) {
-                    state.globalSilentMode[item][val] = {...state.globalSilentMode[item][val], ...data[item][val]}
-                }
+                state.globalSilentMode[item] = {...state.globalSilentMode[item], ...data[item]}
             }
             return {
                 ...state,
@@ -243,9 +242,20 @@ const reducer = (state = defaultState, action) => {
             }
         case 'SET_UNREAD':
             console.log(data, 'SET_UNREAD')
+            for (let item in data) {
+                for (let val in data[item]) {
+                    state.unread[item][val] = { ...state.unread[item][val], ...data[item][val] }
+                }
+            }
             return {
                 ...state,
-                unread: { ...state.unread, ...data}
+                unread: { ...state.unread }
+            }
+        case 'SET_CURRENT_SESSION_ID':
+            console.log(data, 'SET_UNREAD')
+            return {
+                ...state,
+                currentSessionId: data
             }
         default:
             break;

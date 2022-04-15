@@ -1,50 +1,68 @@
 import WebIM from '../../utils/WebIM'
 import store from '../../redux/store'
-import { setMuteDataObj, setGlobalSilentMode } from '../../redux/actions'
+import { setMuteDataObj, setGlobalSilentMode, setUnread } from '../../redux/actions'
 import { EaseApp } from "luleiyu-agora-chat"
-import { setTimeVSNowTime } from '../../utils/notification'
+import { setTimeVSNowTime, changeTitle } from '../../utils/notification'
 
 function silentModeRedux (type, data) {
   store.dispatch(setGlobalSilentMode({[type]: data}))
 }
 
-function refreshSilentModeStatus (data) {
-  const { muteDataObj, constacts, groups: { groupList } } = store.getState()  
-  if ((data.ignoreDuration && !setTimeVSNowTime(data, true)) || data.type === 'NONE') {
+function refreshUserGroupStatus (params) {
+  const { constacts, groups: { groupList } } = store.getState()
+  const conversationList = []
+  constacts.forEach(item => {
+    conversationList.push({
+      id: item,
+      type: 'singleChat'
+    })
+  })
+  groupList.forEach(item => {
+    conversationList.push({
+      id: item.groupid,
+      type: 'groupChat'
+    })
+  })
+  getSilentModeForConversations({conversationList}, params)
+}
+
+function refreshSilentModeStatus (data, payload) {
+  const { muteDataObj } = store.getState()
+  if (data.ignoreDuration && !setTimeVSNowTime(data, true)) {
     const collectObj= {}
     const collectObj1= {}
     for (let item in muteDataObj) {
-      collectObj[item]= true
-      collectObj1[item]= {
+      collectObj[item] = true
+      collectObj1[item] = {
         muteFlag: true
       }
     }
     store.dispatch(setMuteDataObj(collectObj))
     EaseApp.changePresenceStatus(collectObj1)
-  } else {
-    if (data.type !== 'NONE') {
-      const conversationList = []
-      constacts.forEach(item => {
-        conversationList.push({
-          id: item,
-          type: 'singleChat'
-        })
-      })
-      groupList.forEach(item => {
-        conversationList.push({
-          id: item.groupid,
-          type: 'groupChat'
-        })
-      })
-      getSilentModeForConversations({conversationList})
+    const { unread } = store.getState()
+    for (let item in unread) {
+      for (let val in unread[item]) {
+        if (!unread[item][val]) {
+          unread[item][val] = {
+            realNum: 0,
+            fakeNum: 0
+          }
+        }
+        unread[item][val].fakeNum = 0
+      }
     }
+    console.log(unread, 'unread')
+    store.dispatch(setUnread(unread))
+    changeTitle()
+  } else {
+    refreshUserGroupStatus(payload)
   }
 }
 
-function setSilentModeAllFalse (data) {
+function setSilentModeAllFalse (data, payload) {
   const { myUserInfo: { agoraId } } = store.getState()
   silentModeRedux('global', { [agoraId]: data })
-  refreshSilentModeStatus(data)
+  refreshSilentModeStatus(data, payload)
 }
 
 // 设置当前登录用户的免打扰设置。
@@ -57,7 +75,8 @@ function setSilentModeAllFalse (data) {
 export const setSilentModeForAll = (payload) => {
   return new Promise((resolve, reject) => {
     WebIM.conn.setSilentModeForAll(payload).then(res => {
-      setSilentModeAllFalse(res.data)
+      payload.type = 'global'
+      setSilentModeAllFalse(res.data, payload)
       resolve(res.data)
     }).catch(err => {
       reject(err)
@@ -74,7 +93,11 @@ export const setSilentModeForAll = (payload) => {
 export const getSilentModeForAll = () => {
   return new Promise((resolve, reject) => {
     WebIM.conn.getSilentModeForAll().then(res => {
-      setSilentModeAllFalse(res.data)
+      const data = {
+        type: res.data.type || 'ALL',
+        ...res.data
+      }
+      setSilentModeAllFalse(data)
       resolve(res.data)
     }).catch(err => {
       reject(err)
@@ -93,26 +116,7 @@ export const getSilentModeForConversation = (payload) => {
   return new Promise((resolve, reject) => {
     WebIM.conn.getSilentModeForConversation(payload).then(res => {
       console.log(res, 'publishNewPresence')
-      const data = res.data
-      let type = payload.type
-      if (type === 'singleChat') {
-        type = 'single'
-      } else if (type === 'groupChat') {
-        type = 'group'
-      } else if (type === 'threadingChat') {
-        type = 'threading'
-      }
-      if (!data.type && (!data.ignoreDuration || setTimeVSNowTime(data, true))) {
-        let { globalSilentMode: { global }, myUserInfo: { agoraId } } = store.getState()
-        silentModeRedux(type, {[payload.conversationId]: global[agoraId]})
-      } else {
-        silentModeRedux(type, {[payload.conversationId]: res.data})
-      }
-      // const tempObj = {}
-      // res.data.forEach(item => {
-      //   tempObj[item.user] = item.value
-      // })
-      // store.dispatch(setMuteDataObj(tempObj))
+      refreshUserGroupStatus()
       resolve(res.data)
     }).catch(err => {
       reject(err)
@@ -132,33 +136,7 @@ export const setSilentModeForConversation = (payload) => {
   return new Promise((resolve, reject) => {
     WebIM.conn.setSilentModeForConversation(payload).then(res => {
       console.log(res, 'publishNewPresence', payload)
-      const data = res.data
-      const groupId = payload.conversationId
-      const collectObj= {}
-      const collectObj1= {}
-      if (data.ignoreDuration && !setTimeVSNowTime(data, true)) {
-        collectObj[groupId] = true
-        collectObj1[groupId] = {
-          muteFlag: true
-        }
-      } else {
-        collectObj[groupId] = false
-        collectObj1[groupId] = {
-          muteFlag: false
-        }
-      }
-      console.log(collectObj, collectObj1, 'collectObj1', setTimeVSNowTime(data, true))
-      store.dispatch(setMuteDataObj(collectObj))
-      EaseApp.changePresenceStatus(collectObj1)
-      let type = payload.type
-      if (type === 'singleChat') {
-        type = 'single'
-      } else if (type === 'groupChat') {
-        type = 'group'
-      } else if (type === 'threadingChat') {
-        type = 'threading'
-      }
-      silentModeRedux(type, {[payload.conversationId]: data})
+      refreshUserGroupStatus(payload)
       resolve(res.data)
     }).catch(err => {
       reject(err)
@@ -195,10 +173,10 @@ export const clearRemindTypeForConversation = (payload) => {
  * @param {conversationList} array // 会话列表
  * @returns 
  */
-export const getSilentModeForConversations = (payload) => {
+export const getSilentModeForConversations = (payload, params = {type: '', options:{}}) => {
   return new Promise((resolve, reject) => {
     WebIM.conn.getSilentModeForConversations(payload).then(res => {
-      const { globalSilentMode: { global } } = store.getState()
+      const { globalSilentMode: { global }, myUserInfo: { agoraId }, unread } = store.getState()
       console.log(res, 'publishNewPresence')
       const data = res.data
       const tempData = {}
@@ -221,26 +199,54 @@ export const getSilentModeForConversations = (payload) => {
       }
       const collectObj = {}
       const collectObj1 = {}
+      const {type, options: { duration }} = params
+      console.log(params, global, tempObj, 'params, global, tempObj')
       for (let item in tempObj) {
-        if ((global.ignoreDuration && !setTimeVSNowTime(global, true)) || (global.type && global.type === 'NONE')) {
-          collectObj[item]= true
-          collectObj1[item]= {
+        // 全局存在时间并时间没过期，单聊，群组存在时间并没过期，单聊，群组存在类型并为none
+        if ((global[agoraId].ignoreDuration && !setTimeVSNowTime(global[agoraId], true)) || (tempObj[item].ignoreDuration && !setTimeVSNowTime(tempObj[item], true)) || (tempObj[item].type && tempObj[item].type === 'NONE') || ((!tempObj[item].type || (tempObj[item].type && tempObj[item].type === 'DEFAULT')) && global[agoraId].type === 'NONE')) {
+          collectObj[item] = true
+          collectObj1[item] = {
             muteFlag: true
           }
-        } else {
-          if (tempObj[item].ignoreDuration || (data.type && data.type !== 'NONE')) {
-            collectObj[item] = !setTimeVSNowTime(tempObj[item], true)
-            collectObj1[item] = {
-              muteFlag: !setTimeVSNowTime(tempObj[item], true)
-            }
-          } else {
-            collectObj[item] = false
-            collectObj1[item] = {
-              muteFlag: false
-            }
+          console.log(item, 'tempObj=true')
+          if (unread['singleChat'][item]) {
+            unread['singleChat'][item].fakeNum = 0
+          } else if (unread['groupChat'][item]) {
+            unread['groupChat'][item].fakeNum = 0
+          } else if (unread['chatRoom'][item]) {
+            unread['chatRoom'][item].fakeNum = 0
           }
+          console.log(unread, 'unread')
+          store.dispatch(setUnread(unread))
+        } else {
+          console.log(item, 'tempObj=false')
+          // 全局没时间或时间过期，单聊，群组没时间或时间过期，单聊，群组没类型或类型不是none,全局类型，总而言之，就是只考虑类型了。
+          // if (tempObj[item].type === 'ALL' || ((!tempObj[item].type || tempObj[item].type === 'DEFAULT') && (global.type === 'DEFAULT' || global.type === 'ALL'))) {
+          //   collectObj[item] = false
+          //   collectObj1[item] = {
+          //     muteFlag: false
+          //   }
+          // } else if (tempObj[item].type === 'AT') {
+
+          // } else {
+
+          // }
+          collectObj[item] = false
+          collectObj1[item] = {
+            muteFlag: false
+          }
+          if (unread['singleChat'][item]) {
+            unread['singleChat'][item].fakeNum = unread['singleChat'][item].realNum
+          } else if (unread['groupChat'][item]) {
+            unread['groupChat'][item].fakeNum = unread['groupChat'][item].realNum
+          } else if (unread['chatRoom'][item]) {
+            unread['chatRoom'][item].fakeNum = unread['chatRoom'][item].realNum
+          }
+          console.log(unread, 'unread')
+          store.dispatch(setUnread(unread))
         }
       }
+      changeTitle()
       store.dispatch(setMuteDataObj(collectObj))
       EaseApp.changePresenceStatus(collectObj1)
       resolve(res.data)

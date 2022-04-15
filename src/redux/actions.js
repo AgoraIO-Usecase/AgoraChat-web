@@ -136,3 +136,8 @@ export const setUnread = (data) => {
     console.log(data,'setUnread')
     return { type: "SET_UNREAD", data }
 }
+
+export const setCurrentSessionId = (data) => {
+    console.log(data,'setCurrentSessionId')
+    return { type: "SET_CURRENT_SESSION_ID", data }
+}

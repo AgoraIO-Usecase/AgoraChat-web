@@ -138,11 +138,11 @@ const radioList = [
       value: '4',
       time: '8AM'
   },
-  {
-      title: 'Until I turn it Unmute',
-      value: '5',
-      time: 'none'
-  }
+  // {
+  //     title: 'Until I turn it Unmute',
+  //     value: '5',
+  //     time: 'none'
+  // }
 ]
 const selectList = [
   {
@@ -191,6 +191,8 @@ const Notifications = (props) => {
       if (type) {
         setNotifyText(type)
         // setSelectDisabled(true)
+      } else {
+        setNotifyText('DEFAULT')
       }
       if (res.ignoreDuration) {
         if (setTimeVSNowTime(res, true)) {
@@ -224,16 +226,11 @@ const Notifications = (props) => {
     console.log(event.target.value, 'event.target.value')
     setNotifyText(event.target.value)
     const params = {
-      // groupId,
-      // type: event.target.value,
-      // interval: itervalTime,
-      // duration: millisecond
       conversationId: groupId,
       type: useScene,
       options: {
         paramType: 0,
-        remindType: event.target.value,
-        // duration:  getMillisecond(radioList[radioIndex].time)
+        remindType: event.target.value
       }
     }
     setNotDisturbGroup(params)
@@ -263,19 +260,12 @@ const Notifications = (props) => {
       setCheckedDefaultValue(radioList[radioIndex].time, radioIndex)
     }
     setShowRadio(false)
-    // setMillisecond(getMillisecond(radioList[radioIndex].time))
-    // setItervalTime(computedItervalTime(radioList[radioIndex].time))
     const params = {
-      // groupId,
-      // duration:  getMillisecond(radioList[radioIndex].time),
-      // type: notifyText,
-      // interval: computedItervalTime(radioList[radioIndex].time)
       conversationId: groupId,
       type: useScene,
       options: {
         paramType: 1,
-        // remindType: event.target.value,
-        duration:  getMillisecond(radioList[radioIndex].time)
+        duration: getMillisecond(radioList[radioIndex].time)
       }
     }
     setNotDisturbGroup(params)
@@ -314,7 +304,17 @@ const Notifications = (props) => {
     setShowRadio(true)
     handleTurnOffClose()
     setTurnOffBtnFlag(false)
-    // setSelectDisabled(false)
+    setDefaultValue('')
+    setMuteTimeText('')
+    const params = {
+      conversationId: groupId,
+      type: useScene,
+      options: {
+        paramType: 1,
+        duration: 0
+      }
+    }
+    setNotDisturbGroup(params)
   }
 
   function renderTurnOffContent() {

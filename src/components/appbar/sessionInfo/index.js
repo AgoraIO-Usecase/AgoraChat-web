@@ -191,11 +191,11 @@ const radioList = [
 		value: 4,
 		time: 24
 	},
-	{
-		title: 'Until I turn it Unmute',
-		value: 5,
-		time: 'none'
-	}
+	// {
+	// 	title: 'Until I turn it Unmute',
+	// 	value: 5,
+	// 	time: 'none'
+	// }
 ]
 const SessionInfoPopover = ({ open, onClose, sessionInfo }) => {
 	const classes = useStyles();
@@ -230,6 +230,15 @@ const SessionInfoPopover = ({ open, onClose, sessionInfo }) => {
 			setMuteTimeText(null)
 			setUnmuteTimeText(null)
 			setOpenTurnOff(true)
+			const params = {
+				conversationId: to,
+				type: 'singleChat',
+				options: {
+					paramType: 1,
+					duration: 0
+				}
+			}
+			setNotDisturb(params)
 		} else {
 			if (notifyText !== 5) {
 				let str = ''
@@ -240,14 +249,10 @@ const SessionInfoPopover = ({ open, onClose, sessionInfo }) => {
 			setNotifyDialogText('Unmute this Contact')
 			console.log(radioList[notifyText].time, 'radioList[notifyText].time')
 			const params = {
-				// duration:  getMillisecond(radioList[notifyText].time),
-				// interval: computedItervalTime(radioList[notifyText].time),
-				// userId: to,
 				conversationId: to,
 				type: 'singleChat',
 				options: {
 					paramType: 1,
-          // remindType: event.target.value,
 					duration: getMillisecond(radioList[notifyText].time)
 				}
 			}
