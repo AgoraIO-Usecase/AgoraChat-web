@@ -7,6 +7,9 @@
         "accept": "Accept",
         "Successfully send the application": "Successfully send the application",
         "Send Contact Adding Request": "Send Contact Adding Request",
-        "Send": "Send"
+        "Send": "Send",
+        "Edit Thread Name": "Edit Thread Name",
+        "Leave this Thread?": "Leave this Thread?",
+        "Disband this Thread?": "Disband this Thread?"
     }
 }

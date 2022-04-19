@@ -9,6 +9,7 @@ import { getToken } from "../api/loginChat";
 import { agreeInviteGroup } from "../api/groupChat/addGroup";
 import { getGroupMuted } from "../api/groupChat/groupMute";
 import { getGroupWrite } from "../api/groupChat/groupWhite";
+import { handlerThreadChangedMsg } from "../api/thread/index";
 
 import i18next from "i18next";
 import { message } from "../components/common/alert";
@@ -78,7 +79,7 @@ const initListen = () => {
 				WebIM.conn.renewToken(accessToken);
 				console.log("reset token success");
 			});
-		},
+		}
 	});
 
 	WebIM.conn.addEventHandler("REQUESTS", {
@@ -159,6 +160,12 @@ const initListen = () => {
 			console.log("onDisconnected");
 		},
 	});
+
+	WebIM.conn.addEventHandler("Thread",{
+		onMultiDeviceEvent:(message)=>{
+			handlerThreadChangedMsg(message)
+		}
+	})
 };
 
 export default initListen;

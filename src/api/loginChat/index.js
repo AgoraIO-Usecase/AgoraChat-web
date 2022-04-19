@@ -6,9 +6,13 @@ export const getToken = (agoraId, nickName) => {
 }
 
 export const loginWithToken = (agoraId, agoraToken) => {
+    // let options = {
+    //     user: agoraId,
+    //     agoraToken: agoraToken
+    // };
     let options = {
-        user: agoraId,
-        agoraToken: agoraToken
+        user: 'wy10',
+        pwd: '1',
     };
 
     WebIM.conn.open(options)

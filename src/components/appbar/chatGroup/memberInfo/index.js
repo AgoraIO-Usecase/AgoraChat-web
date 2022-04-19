@@ -4,7 +4,8 @@ import i18next from "i18next";
 import { Popover, Box, Avatar, Button } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
-import { EaseApp } from "chat-uikit";
+// import { EaseApp } from "chat-uikit";
+import { EaseApp } from "wy-chat";
 import { addContact } from "../../../../api/contactsChat/getContacts";
 import avatarImg from '../../../../assets/avatar1.png'
 import newChatIcon from '../../../../assets/newchat@2x.png'
