@@ -1,7 +1,7 @@
 import React, { useState,useEffect } from 'react';
 import Header from '../components/appbar'
 import './login.css'
-import { loginWithToken } from '../api/loginChat'
+import { loginWithToken, loginWithPassword } from '../api/loginChat'
 import WebIM from '../utils/WebIM';
 // import { EaseApp } from 'chat-uikit'
 import { EaseApp } from "wy-chat";
@@ -25,7 +25,11 @@ export default function Main() {
         let webimAuthObj = {}
         if (webimAuth && WebIM.conn.logOut) {
             webimAuthObj = JSON.parse(webimAuth)
-            loginWithToken(webimAuthObj.agoraId, webimAuthObj.accessToken)
+            if(webimAuthObj.password){
+                loginWithPassword(webimAuthObj.agoraId, webimAuthObj.password)
+            }else{
+                loginWithToken(webimAuthObj.agoraId, webimAuthObj.accessToken)
+            }
             store.dispatch(setMyUserInfo({ agoraId: webimAuthObj.agoraId, nickName: webimAuthObj.nickName }))
         }else if (WebIM.conn.logOut) {
             history.push('/login')  
