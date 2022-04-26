@@ -146,12 +146,11 @@ const presenceList = [
 const PresencePopover = (props) => {
   const useClasses = useStyles();
   const presenceObj = useSelector(state => state?.statusObj)
-
   useEffect(() => {
     presenceList.forEach((item, index) => {
       item.checked = false
     })
-    if (presenceObj?.index) {
+    if (presenceObj?.index || presenceObj?.index === 0) {
       presenceList[presenceObj.index].checked = true
       if (presenceObj.index === 4) {
         presenceList[presenceObj.index].title = presenceObj.ext

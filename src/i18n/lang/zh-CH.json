@@ -2,11 +2,13 @@
     "translation": {
         "login-Login": "登录",
         "login-UserID": "用户 ID",
+        "login-Password": "用户密码",
         "login-NickName": "昵称",
         "Add Contact": "添加好友",
         "accept": "接受",
         "Successfully send the application": "好友申请发送成功",
         "Send Contact Adding Request": "发送添加好友请求",
-        "Send": "发送"
+        "Send": "发送",
+        "Report": "举报"
     }
 }

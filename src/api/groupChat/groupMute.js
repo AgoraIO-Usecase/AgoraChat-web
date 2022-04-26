@@ -14,7 +14,7 @@ export const getGroupMuted = (groupId, type) => {
     })
 }
 
-export const onChangeGroipMute = (groupId, userName, type) => {
+export const onChangeGroipMute = (groupId, userName, type,onClose) => {
     let options = {
         username: userName,
         muteDuration: 886400000,
@@ -31,5 +31,6 @@ export const onChangeGroipMute = (groupId, userName, type) => {
             getGroupMuted(groupId, type)
         })
     }
+    onClose && onClose();
 }
 

@@ -41,6 +41,11 @@ export const groupAllowAction = (data) => {
 export const groupsNoticeAction = (data) => {
     return { type: 'GROUPS_NOTICE_ACITON', data };
 }
+
+export const groupsFilesAction = (data,option) => {
+	return { type: "GROUPS_FILES_ACITON", data, option };
+};
+
 // set user info
 export const setMyUserInfo = (data) => {
     console.log('setMyUserInfo --', data)

@@ -42,7 +42,8 @@ const useStyles = makeStyles((theme) => {
             alignItems: 'center'
         },
         gInputBaseWidth: {
-            width: '360px'
+            width: '360px',
+            marginTop:"10px"
         },
         gDescriptionLenth: {
             display: 'flex',
@@ -100,6 +101,7 @@ const useStyles = makeStyles((theme) => {
 
 const CreateGroup = () => {
     const classes = useStyles();
+    let descMaxLength = 300;
     const [groupNameValue, setGroupNameValue] = useState('')
     const [groupDescriptionValue, setGroupDescriptionValue] = useState('')
     // const [groupMaximumValue, setGroupMaximumValue] = useState('')
@@ -125,7 +127,14 @@ const CreateGroup = () => {
     }
     // Group Description
     const handleDescriptionChange = (event) => {
-        setGroupDescriptionValue(event.target.value)
+        let value = event.target.value;
+        if (value.length > descMaxLength) {
+            message.error(
+              i18next.t("The group description exceeded the upper limit")
+            );
+            return;
+        } 
+        setGroupDescriptionValue(value)
     }
     //
     // const handleMaximumChange = (event) => {
@@ -161,92 +170,131 @@ const CreateGroup = () => {
     }
 
     return (
-        <Box>
-            {showAddMemberDialog ?
-                <AddGroupMemberDialog
-                    groupInfoData={groupInfoData}
-                    onClearValue={handleClearValue}
-                    open={showAddMemberDialog} 
-                    onClose={handleSelectUserDialogClose}
+      <Box>
+        {showAddMemberDialog ? (
+          <AddGroupMemberDialog
+            groupInfoData={groupInfoData}
+            onClearValue={handleClearValue}
+            open={showAddMemberDialog}
+            onClose={handleSelectUserDialogClose}
+          />
+        ) : (
+          <Box>
+            <Box className={classes.inputBox}>
+              <Box className={classes.gNameBox}>
+                <Typography className={classes.gNameText}>GroupName</Typography>
+                <InputBase
+                  type="text"
+                  max={20}
+                  className={classes.gInputBaseWidth}
+                  placeholder={i18next.t("groupName")}
+                  value={groupNameValue}
+                  onChange={handleNameChange}
                 />
-                : <Box>
-                    <Box className={classes.inputBox}>
-                        <Box className={classes.gNameBox}>
-                            <Typography className={classes.gNameText}>GroupName</Typography>
-                            <InputBase
-                                type="text"
-                                max={20}
-                                className={classes.gInputBaseWidth}
-                                placeholder={i18next.t('groupName')}
-                                value={groupNameValue}
-                                onChange={handleNameChange} />
-                            {showGroupNamelimit && <Typography className={classes.gNameLimit}>{i18next.t('Only 20 characters')}</Typography>}
-                        </Box>
-                        <Box className={classes.gDescriptionBox}>
-                            <Box className={classes.gDescription}>
-                                <Typography className={classes.gNameText}>Group Description</Typography>
-                                <InputBase
-                                    type="text"
-                                    multiline={true}
-                                    maxRows={3}
-                                    style={{
-                                        height: '60px', 
-                                        overflowX: 'hidden',
-                                        overflowY: 'scroll'
-                                    }}
-                                    className={classes.gInputBaseWidth}
-                                    placeholder={i18next.t('Not required')}
-                                    value={groupDescriptionValue}
-                                    onChange={handleDescriptionChange} />
-                            </Box>
-                            <Box className={classes.gDescriptionLenth}>
-                                {groupDescriptionValue.length}/300
-                            </Box>
-                        </Box>
-                        <Box style={{ color:'#CCCCCC', pointerEvents: 'none' }}>
-                            <Box className={classes.gInfoSetting}>
-                                <Typography className={classes.gNameText}>Maximum Mumber</Typography>
-                                <InputBase
-                                    type="number"
-                                    value={200}
-                                    style={{ color:'#CCCCCC'}}
-                                    placeholder={i18next.t('No More Than 2000')}
-                                    // onChange={groupMaximumValue} 
-                                    />
-                            </Box>
-                        </Box>
-                    </Box>
-                    <Box className={classes.gSetting}>
-                        <Typography className={classes.gNameText}>Set to a Public Group</Typography>
-                        <Switch
-                            checked={groupPublicChecked}
-                            onChange={handleGrooupPublicChange}
-                            color="primary"
-                        />
-                    </Box>
-                    <Box className={classes.gSetting} key={groupPublicChecked} style={{ color: groupPublicChecked ? 'rgba(0, 0, 0, 0.87)' : '#CCCCCC', pointerEvents: groupPublicChecked? 'all' : 'none'}}>
-                        <Typography className={classes.gNameText}>Authorizated to join</Typography>
-                        <Switch
-                            checked={groupPublicChecked ? groupApprovalChecked : true }
-                            onChange={handleGrooupApprovalChange}
-                            color="primary"
-                        />
-                    </Box>
-                    <Box className={classes.gInvite} style={{ color: groupPublicChecked ? '#CCCCCC' : 'rgba(0, 0, 0, 0.87)', pointerEvents: groupPublicChecked ? 'none' : 'all' }}>
-                        <Typography className={classes.gNameText}>Allow Members to Invite</Typography>
-                        <Switch
-                            checked={groupPublicChecked ? false : groupInviteChecked}
-                            onChange={handleGroupInviteChange}
-                            color="primary"
-                        />
-                    </Box>
-                    <Box className={classes.gNext} onClick={() => handleSelectUserDialog()}>
-                        <Typography className={classes.gNameText} style={{color: '#005FFF'}}>{i18next.t('Next')}</Typography>
-                        <img src={go_icon} alt="" className={classes.gNextImg} />
-                    </Box>
-                </Box>}
-        </Box>
-    )
+                {showGroupNamelimit && (
+                  <Typography className={classes.gNameLimit}>
+                    {i18next.t("Only 20 characters")}
+                  </Typography>
+                )}
+              </Box>
+              <Box className={classes.gDescriptionBox}>
+                <Box className={classes.gDescription}>
+                  <Typography className={classes.gNameText}>
+                    Group Description
+                  </Typography>
+                  <InputBase
+                    type="text"
+                    multiline={true}
+                    maxRows={3}
+                    style={{
+                      height: "60px",
+                      overflowX: "hidden",
+                      overflowY: "scroll",
+                    }}
+                    className={classes.gInputBaseWidth}
+                    placeholder={i18next.t("Not required")}
+                    value={groupDescriptionValue}
+                    onChange={handleDescriptionChange}
+                  />
+                </Box>
+                <Box className={classes.gDescriptionLenth}>
+                  {groupDescriptionValue.length}/{descMaxLength}
+                </Box>
+              </Box>
+              <Box style={{ color: "#CCCCCC", pointerEvents: "none" }}>
+                <Box className={classes.gInfoSetting}>
+                  <Typography className={classes.gNameText}>
+                    Maximum Mumber
+                  </Typography>
+                  <InputBase
+                    type="number"
+                    value={200}
+                    style={{ color: "#CCCCCC" }}
+                    placeholder={i18next.t("No More Than 2000")}
+                    // onChange={groupMaximumValue}
+                  />
+                </Box>
+              </Box>
+            </Box>
+            <Box className={classes.gSetting}>
+              <Typography className={classes.gNameText}>
+                Set to a Public Group
+              </Typography>
+              <Switch
+                checked={groupPublicChecked}
+                onChange={handleGrooupPublicChange}
+                color="primary"
+              />
+            </Box>
+            <Box
+              className={classes.gSetting}
+              key={groupPublicChecked}
+              style={{
+                color: groupPublicChecked ? "rgba(0, 0, 0, 0.87)" : "#CCCCCC",
+                pointerEvents: groupPublicChecked ? "all" : "none",
+              }}
+            >
+              <Typography className={classes.gNameText}>
+                Authorizated to join
+              </Typography>
+              <Switch
+                checked={groupPublicChecked ? groupApprovalChecked : true}
+                onChange={handleGrooupApprovalChange}
+                color="primary"
+              />
+            </Box>
+            <Box
+              className={classes.gInvite}
+              style={{
+                color: groupPublicChecked ? "#CCCCCC" : "rgba(0, 0, 0, 0.87)",
+                pointerEvents: groupPublicChecked ? "none" : "all",
+              }}
+            >
+              <Typography className={classes.gNameText}>
+                Allow Members to Invite
+              </Typography>
+              <Switch
+                checked={groupPublicChecked ? false : groupInviteChecked}
+                onChange={handleGroupInviteChange}
+                color="primary"
+              />
+            </Box>
+            <Box
+              className={classes.gNext}
+              onClick={() => handleSelectUserDialog()}
+            >
+              <Typography
+                className={classes.gNameText}
+                style={{ color: "#005FFF" }}
+              >
+                {i18next.t("Next")}
+              </Typography>
+              <img src={go_icon} alt="" className={classes.gNextImg} />
+            </Box>
+          </Box>
+        )}
+      </Box>
+    );
 }
 
 export default CreateGroup;
