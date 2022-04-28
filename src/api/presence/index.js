@@ -24,6 +24,7 @@ export const subFriendStatus = (payload) => {
   payload.expiry = 10000000
   return new Promise((resolve) => {
     WebIM.conn.subscribePresence(payload).then(res => {
+      const tempArr = []
       res.result.forEach(item => {
         let extFlag = false
         Object.values(item.status).forEach(val => {
@@ -33,6 +34,20 @@ export const subFriendStatus = (payload) => {
         })
         if (!extFlag) {
           item.ext = 'Offline'
+        }
+        if (item.uid) {
+          tempArr.push(item.uid)
+        }
+      })
+      const notInNames = []
+      payload.usernames.forEach(val => {
+        if (!tempArr.includes(val)) {
+          notInNames.push(val)
+        }
+      })
+      res.result.forEach(item => {
+        if (!item.uid) {
+          item.uid = notInNames.shift()
         }
       })
       store.dispatch(setPresenceList(res.result))
