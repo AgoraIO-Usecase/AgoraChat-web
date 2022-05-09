@@ -83,7 +83,7 @@ export default function Main() {
                 onChatAvatarClick={handleClickSessionInfoDialog}
                 onAvatarChange={handleClickGroupMemberInfoDialog}
                 onEditThreadPanel={changeEditPanelStatus}
-                isShowReaction
+                // isShowReaction
             />
             <SessionInfoPopover 
                 open={sessionInfoAddEl}

@@ -162,7 +162,7 @@ const ThreadDialog = () => {
         if (currentEditPage === 'EditThread') {
             return (
                 <div className={classes.changeName}>
-                    <input className={classes.changeNameInput} value={inputValue} onChange={handleNameChange}></input>
+                    <input className={classes.changeNameInput} value={inputValue} onChange={handleNameChange} maxLength={64}></input>
                     <img src={deleteIcon} className={classes.deleteIcon} onClick={clearInputValue} alt="deleteIcon"></img>
                 </div>
             )

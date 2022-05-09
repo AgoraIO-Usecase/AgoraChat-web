@@ -8,7 +8,7 @@ export const getThreadMembers = (threadId, isScroll) => {
     let state = store.getState();
     let options = {
         chatThreadId: threadId,
-        pageSize: 6,
+        pageSize: 20,
         cursor: isScroll==='isScroll'? state.thread?.cursor || '':'',
     };
     WebIM.conn.getChatThreadMembers(options).then((res) => {
