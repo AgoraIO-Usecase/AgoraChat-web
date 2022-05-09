@@ -91,3 +91,7 @@ export const closeGroupChatAction = (data) => {
 	return { type: "CLOSE_GROUP_CHAT_ACTION", data };
 };
 
+//set thread info
+export const setThreadInfo = (data) => {
+    return { type: 'SET_THREAD_INFO',data}
+}
