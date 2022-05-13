@@ -45,7 +45,7 @@ export function Report(props) {
             setTextValue('')
             setValue('adult')
             onClose()
-        }).catch(error){
+        }).catch((error) => {
             if(error.type == 505){
                 message.error('Service not open.')
             }else{
@@ -54,7 +54,7 @@ export function Report(props) {
             setTextValue('')
             setValue('adult')
             onClose()
-        }
+        }) 
     }
 
     const handleTextChange = (e)=>{
