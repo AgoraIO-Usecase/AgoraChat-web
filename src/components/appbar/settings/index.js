@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import CommonDialog from "../../common/dialog";
 import i18next, { use } from "i18next";
-import { Avatar, Button, TextField, List, ListItem, ListItemAvatar, Menu, MenuItem, Switch, Select, RadioGroup, FormControlLabel, Radio } from "@material-ui/core";
+import { Avatar, Button, TextField, List, ListItem, ListItemAvatar, Menu, MenuItem, Box, Switch, Select, RadioGroup, FormControlLabel, Radio } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import editIcon from '../../../assets/white@2x.png'
@@ -18,6 +18,7 @@ import arrow from '../../../assets/go@2x.png'
 import { useSelector } from 'react-redux'
 import { setMyUserInfo } from '../../../redux/actions'
 import store from '../../../redux/store'
+import { message } from "../../common/alert";
 
 import { removeFromBlackList } from '../../../api/contactsChat/getContacts'
 import { handlerTime, getMillisecond, computedItervalTime, timeIntervalToMinutesOrHours, setTimeVSNowTime, getLocalStorageData } from '../../../utils/notification'
@@ -25,85 +26,84 @@ import { setSilentModeForAll, getSilentModeForAll, getSilentModeForConversations
 
 const useStyles = makeStyles((theme) => {
     return {
-        root: {
-            display: "flex",
-            alignItems: "center",
-            width: '680px',
-            minHeight: theme.spacing(30),
-            // paddingBottom: theme.spacing(4),
-            // margin: "16px 24px",
-        },
-        gridItem: {
-            display: "flex",
-            alignItems: "center",
-        },
+      root: {
+        display: "flex",
+        alignItems: "center",
+        width: "680px",
+        minHeight: theme.spacing(30),
+        // paddingBottom: theme.spacing(4),
+        // margin: "16px 24px",
+      },
+      gridItem: {
+        display: "flex",
+        alignItems: "center",
+      },
 
-        settingInfoBox: {
-            width: '280px',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            marginBottom: '10px',
-            '& div:nth-last-child(2)': {
-                marginTop: '-12px',
-                fontSize: '20px',
-                fontWeight: '600'
-            },
-            '& div:nth-last-child(1)': {
-                color: '#999999',
-                fontSize: '12px'
-            }
+      settingInfoBox: {
+        width: "280px",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        marginBottom: "10px",
+        "& div:nth-last-child(2)": {
+          marginTop: "-12px",
+          fontSize: "20px",
+          fontWeight: "600",
         },
+        "& div:nth-last-child(1)": {
+          color: "#999999",
+          fontSize: "12px",
+        },
+      },
 
-        settingMenuBox: {
-            display: 'flex',
-            flexDirection: 'column'
-        },
+      settingMenuBox: {
+        display: "flex",
+        flexDirection: "column",
+      },
 
-        tabsInfo: {
-            height: '462px'
-        },
-        avatarEditIcon: {
-            position: 'relative',
-            top: '-60px',
-            width: '24px',
-            height: '24px',
-            cursor: 'pointer'
-        },
+      tabsInfo: {
+        height: "462px",
+      },
+      avatarEditIcon: {
+        position: "relative",
+        top: "-60px",
+        width: "24px",
+        height: "24px",
+        cursor: "pointer",
+      },
 
-        infoPanel: {
-            width: '100%',
-            height: '450px',
-            backgroundColor: '#EDEFF2',
-            padding: '6px 8px',
-            display: 'flex'
+      infoPanel: {
+        width: "100%",
+        height: "450px",
+        backgroundColor: "#EDEFF2",
+        padding: "6px 8px",
+        display: "flex",
+      },
+      infoItem: {
+        backgroundColor: "#F4F5F7",
+        borderRadius: "16px",
+        height: "55px",
+        width: "100%",
+        lineHeight: "55px",
+        padding: "0 16px",
+        boxSizing: "border-box",
+        position: "relative",
+        "& span:nth-child(3)": {
+          color: "#005FFF",
+          position: "absolute",
+          right: "8px",
+          cursor: "pointer",
         },
-        infoItem: {
-            backgroundColor: '#F4F5F7',
-            borderRadius: '16px',
-            height: '55px',
-            width: '100%',
-            lineHeight: '55px',
-            padding: '0 16px',
-            boxSizing: 'border-box',
-            position: 'relative',
-            '& span:nth-child(3)': {
-                color: '#005FFF',
-                position: 'absolute',
-                right: '8px',
-                cursor: 'pointer'
-            },
-            '& span:nth-child(2)': {
-                fontSize: '16px',
-                marginLeft: '16px'
-            }
+        "& span:nth-child(2)": {
+          fontSize: "16px",
+          marginLeft: "16px",
         },
+      },
 
-
-        privacyItemInfo: {
-            display: 'flex',
-            alignItems: 'center'
-        },
+      privacyItemInfo: {
+        display: "flex",
+        alignItems: "center",
+      },
 
         aboutItem: {
             background: '#F4F5F7',
@@ -111,6 +111,24 @@ const useStyles = makeStyles((theme) => {
             lineHeight: '50px',
             margin: '2px 0',
             padding: '0 8px'
+        },
+        textfieldStyle:{
+            width:"100%"
+        },
+        numberBox: {
+            height: "20px",
+            display: "flex",
+            justifyContent: "flex-end",
+            marginTop: "5px",
+            padding: "5px",
+        },
+        numberStyle: {
+            fontFamily: "PingFang SC",
+            fontWeight: "400",
+            style: "normal",
+            fontSize: "14px",
+            LineHeight: "20px",
+            color: "#CCCCCC",
         },
         notificationPanel: {
             width: '100%',
@@ -327,6 +345,7 @@ export default function Setting({ open, onClose }) {
         }
     }, [myUserInfo])
 
+    let maxLength = 12;
     const handleClose = () => {
         onClose();
     };
@@ -350,7 +369,12 @@ export default function Setting({ open, onClose }) {
         setEditStatus(false)
     }
     const handleEditChange = (e) => {
-        setNickName(e.target.value)
+        let value = e.target.value;
+        if (value.length === 0 || value.length > 12) {
+            message.error(`${i18next.t("Nickname is empty or exceeds the limit")}`);
+            return;
+        } 
+        setNickName(e.target.value);
     }
 
     const handlePrivacyItemMoreClick = (e) => {
@@ -548,27 +572,33 @@ export default function Setting({ open, onClose }) {
     }
     function infoTabPanel() {
         return (
-            < div className={
-                classes.infoPanel
-            } >
-                {editStatus ?
-                    (<TextField
-                        onBlur={handleEditBlur}
-                        onChange={handleEditChange}
-                        id="filled-helperText"
-                        label="NickName"
-                        defaultValue={nickName}
-                        variant="filled"
-                        fullWidth
-                    />) :
-                    (<div className={classes.infoItem}>
-                        <span>NickName</span>
-                        <span>{nickName}</span>
-                        <span onClick={handleEditClick}>Edit</span>
-                    </div>)
-                }
-            </div >
-        )
+          <div className={classes.infoPanel}>
+            {editStatus ? (
+              <Box className={classes.textfieldStyle}>
+                <TextField
+                  onBlur={handleEditBlur}
+                  onChange={handleEditChange}
+                  id="filled-helperText"
+                  label="NickName"
+                  defaultValue={nickName}
+                  variant="filled"
+                  fullWidth
+                />
+                <Box className={classes.numberBox}>
+                  <Typography className={classes.numberStyle}>
+                    {nickName.length}/{maxLength}
+                  </Typography>
+                </Box>
+              </Box>
+            ) : (
+              <div className={classes.infoItem}>
+                <span>NickName</span>
+                <span>{nickName}</span>
+                <span onClick={handleEditClick}>Edit</span>
+              </div>
+            )}
+          </div>
+        );
     }
 
     function aboutTabPanel() {
@@ -577,7 +607,7 @@ export default function Setting({ open, onClose }) {
                 classes.infoPanel
             }>
                 <div style={{ flex: 1 }}>
-                    <div className={classes.aboutItem}>SDK version: 1.0.3</div>
+                    <div className={classes.aboutItem}>SDK version: 4.0.5</div>
                     <div className={classes.aboutItem}>uikit version: 1.0.3</div>
                 </div>
             </div>

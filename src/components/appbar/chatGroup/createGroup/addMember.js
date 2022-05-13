@@ -2,9 +2,7 @@
 import React, { useState, useEffect } from 'react'
 import i18next from "i18next";
 import store from '../../../../redux/store'
-// import { EaseApp } from "chat-uikit";
-import { EaseApp } from "luleiyu-agora-chat";
-// import { EaseApp } from "agora-chat-uikit";
+import { EaseApp } from "uikit-reaction";
 import CommonDialog from '../../../common/dialog'
 import createGroup from '../../../../api/groupChat/createGroup'
 import { Box, Checkbox, List, ListItem, InputBase } from '@material-ui/core';
@@ -171,7 +169,6 @@ const AddGroupMemberDialog = ({ groupInfoData, onClearValue, open, onClose }) =>
         } else if (!(e.target.checked)) {
             let groupMembers2 = _.pull(groupMembers, val)
             setGroupMembers([...groupMembers2])
-            console.log('groupMembers2', groupMembers)
             contactsObjs.forEach((value) => {
                 if (value.id === val) {
                     value.checked = false
@@ -186,11 +183,9 @@ const AddGroupMemberDialog = ({ groupInfoData, onClearValue, open, onClose }) =>
         setGroupMembers(newGroupAry)
         contactsObjs.forEach((value) => {
             if (value.id === val) {
-                console.log('1111')
                 value.checked = false
             }
         })
-        console.log('contactsObjs', contactsObjs)
         setContactsObjs([...contactsObjs])
 
     }

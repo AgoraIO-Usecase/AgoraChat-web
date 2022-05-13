@@ -2,11 +2,17 @@
     "translation": {
         "login-Login": "Log in",
         "login-UserID": "User ID",
+        "login-Password": "User Password",
         "login-NickName": "Displayed Profile Name",
         "Add Contact": "Add Contact",
         "accept": "Accept",
         "Successfully send the application": "Successfully send the application",
         "Send Contact Adding Request": "Send Contact Adding Request",
-        "Send": "Send"
+        "Send": "Send",
+        "Report": "Report",
+        "Confirm": "Confirm",
+        "Cancel": "Cancel",
+        "Custom Status": "Custom Status",
+        "Custom Status Is Not Empty": "Custom Status Is Not Empty"
     }
 }

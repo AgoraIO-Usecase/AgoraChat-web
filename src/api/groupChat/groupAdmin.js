@@ -14,7 +14,7 @@ export const getGroupAdmins = (groupId) => {
     })
 }
 
-export const onChengeGroupAdmin = (groupId, userName, type) => {
+export const onChengeGroupAdmin = (groupId, userName, type,onClose) => {
     let options = {
         groupId: groupId,
         username: userName
@@ -30,5 +30,5 @@ export const onChengeGroupAdmin = (groupId, userName, type) => {
             getGroupAdmins(groupId)
         })
     }
-
+    onClose && onClose();
 }

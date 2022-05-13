@@ -149,7 +149,7 @@ const PresencePopover = (props) => {
     presenceList.forEach((item, index) => {
       item.checked = false
     })
-    if (presenceObj?.index) {
+    if (presenceObj?.index || presenceObj?.index === 0) {
       presenceList[presenceObj.index].checked = true
       if (presenceObj.index === 4) {
         presenceList[presenceObj.index].title = presenceObj.ext
@@ -167,7 +167,7 @@ const PresencePopover = (props) => {
   const handleModalClose = (val) => {
     if (val === 1) {
       if (!useInputValue) {
-        message.warn('自定义状态不能为空')
+        message.warn(i18next.t('Custom Status Is Not Empty'))
       return
       } else {
         const params = {
@@ -311,13 +311,13 @@ const PresencePopover = (props) => {
       >
         <div className={useClasses.modalStyle}>
           <div id="modal-modal-title">
-            Custom Status
+          {i18next.t('Custom Status')}
           </div>
           <div id="modal-modal-description" className={useClasses.modalBottom}>
             <Input className={useClasses.inputStyle} placeholder="Custom Status" onChange={handlerInput} />
             <div className={useClasses.bottomBtn}>
-              <Button variant="outlined" color="inherit" onClick={handleModalClose}>取消</Button>
-              <Button className={useClasses.rightBtn} variant="contained" color="primary" onClick={() => handleModalClose(1)}>确定</Button>
+              <Button variant="outlined" color="inherit" onClick={handleModalClose}>{i18next.t('Cancel')}</Button>
+              <Button className={useClasses.rightBtn} variant="contained" color="primary" onClick={() => handleModalClose(1)}>{i18next.t('Confirm')}</Button>
             </div>
           </div>
         </div>

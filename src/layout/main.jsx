@@ -2,16 +2,19 @@ import React, { useEffect, useState } from 'react';
 import Header from '../components/appbar'
 import './login.css'
 import { loginWithToken } from '../api/loginChat'
+import getGroupInfo from '../api/groupChat/getGroupInfo'
 import WebIM from '../utils/WebIM';
 // import { EaseApp } from 'agora-chat-uikit'
-import { EaseApp } from 'luleiyu-agora-chat'
+import { EaseApp } from 'uikit-reaction'
 import { createHashHistory } from 'history'
 import store from '../redux/store'
 import { setMyUserInfo, setUnread, setCurrentSessionId } from '../redux/actions'
 
 import SessionInfoPopover from '../components/appbar/sessionInfo'
 import GroupMemberInfoPopover from '../components/appbar/chatGroup/memberInfo'
-import { truncate } from 'lodash';
+import GroupSettingsDialog from '../components/appbar/chatGroup/groupSettings'
+import { Report } from '../components/report';
+import i18next from "i18next";
 import { subFriendStatus } from '../api/presence'
 import map3 from '../assets/notify.mp3'
 
@@ -25,26 +28,35 @@ export default function Main() {
         let webimAuthObj = {}
         if (webimAuth && WebIM.conn.logOut) {
             webimAuthObj = JSON.parse(webimAuth)
-            loginWithToken(webimAuthObj.agoraId, webimAuthObj.nickName) // accessToken
+            loginWithToken(webimAuthObj.agoraId, webimAuthObj.accessToken) // accessToken
             store.dispatch(setMyUserInfo({ agoraId: webimAuthObj.agoraId, nickName: webimAuthObj.nickName }))
         }else if (WebIM.conn.logOut) {
             history.push('/login')  
         }
     }, [])
-
+    const state = store.getState();
     const [sessionInfoAddEl, setSessionInfoAddEl] = useState(null)
     const [sessionInfo, setSessionInfo] = useState({});
 
     const [groupMemberInfoAddEl, setGroupMemberInfoAddEl] = useState(null)
     const [memberInfo, setMemberInfo] = useState({})
     const [presenceList, setPresenceList] = useState([])
+
+    const [groupSettingAddEl, setGroupSettingAddEl] = useState(null)
+    const [currentGroupId, setCurrentGroupId] = useState("");
+
+    const [isShowReport, setShowReport] = useState(false)
+    const [currentMsg, setCurrentMsg] = useState({})
     // session avatar click
     const handleClickSessionInfoDialog = (e,res) => {
-        // TODO 
-        let isSingleChat = res.chatType === "singleChat"
-        if (isSingleChat) {
+        let {chatType,to} = res
+        if (chatType === "singleChat") {
             setSessionInfoAddEl(e.target);
             setSessionInfo(res)
+        } else if (chatType === "groupChat"){
+            getGroupInfo(to)
+            setGroupSettingAddEl(e.target)
+            setCurrentGroupId(to)
         }
     }
 
@@ -59,6 +71,7 @@ export default function Main() {
             })
         }
     }
+
     const handleonConversationClick = (session) => {
         console.log(session, 'handleonConversationClick')
         const { sessionType, sessionId } = session
@@ -75,14 +88,24 @@ export default function Main() {
         store.dispatch(setUnread(unread))
         changeTitle()
     }
-    // notify()
+
+    const onMessageEventClick = (e,data,msg) => {
+        if(data.value === 'report'){
+            setShowReport(true)
+            setCurrentMsg(msg)
+        }        
+    }
+
     return (
         <div className='main-container'>
             <EaseApp
+                isShowReaction={true}
                 header={<Header />}
                 onChatAvatarClick={handleClickSessionInfoDialog}
                 onAvatarChange={handleClickGroupMemberInfoDialog}
                 onConversationClick={handleonConversationClick}
+                customMessageList={[{name: i18next.t("Report"), value: 'report', position: 'others'}]}
+                customMessageClick={onMessageEventClick}
             />
             <SessionInfoPopover 
                 open={sessionInfoAddEl}
@@ -93,6 +116,11 @@ export default function Main() {
                 onClose={() => setGroupMemberInfoAddEl(null)}
                 memberInfo={memberInfo}
                 presenceList={presenceList}/>
+            <GroupSettingsDialog 
+                open={groupSettingAddEl}
+                onClose={() => setGroupSettingAddEl(null)}
+                currentGroupId={currentGroupId} />
+            <Report open={isShowReport} onClose={() => {setShowReport(false)}} currentMsg={currentMsg}/>
             <audio id="agoraChatSoundId" src={map3}></audio>
         </div>
     )

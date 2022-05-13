@@ -207,7 +207,6 @@ const SessionInfoPopover = ({ open, onClose, sessionInfo }) => {
 	const [muteTimeText, setMuteTimeText] = useState(null)
 	const [unmuteTimeText, setUnmuteTimeText] = useState(null)
 	const muteDataObj = useSelector((state) => state?.muteDataObj) || {}
-  console.log('muteDataObj=sessioinfo', muteDataObj, sessionInfo)
 	let { to } = sessionInfo
 	let presenceExt = ''
 	presenceList.forEach(item => {
@@ -342,8 +341,8 @@ const SessionInfoPopover = ({ open, onClose, sessionInfo }) => {
 		} else {
 			return (
 				<div className={classes.btnBox}>
-					<span className={classes.turnOffBtnStyle} onClick={handleTurnOffClose}>Cancel</span>
-					<span className={classes.btnStyle + ' ' + classes.rightBtn} onClick={() => handlerOkay(1)}>Okay</span>
+					<span className={classes.turnOffBtnStyle} onClick={handleTurnOffClose}>{i18next.t('Cancel')}</span>
+					<span className={classes.btnStyle + ' ' + classes.rightBtn} onClick={() => handlerOkay(1)}>{i18next.t('Okay')}</span>
 				</div>
 			)
 		}

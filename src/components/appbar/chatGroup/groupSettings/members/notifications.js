@@ -328,8 +328,8 @@ const Notifications = (props) => {
   function renderTurnOffFooter() {
     return (
       <div className={classes.btnBox}>
-        <span className={classes.turnOffBtnStyle} onClick={handleTurnOffClose}>Cancel</span>
-        <span className={classes.btnStyle + ' ' + classes.rightBtn} onClick={handlerOkay}>Okay</span>
+        <span className={classes.turnOffBtnStyle} onClick={handleTurnOffClose}>{i18next.t('Cancel')}</span>
+        <span className={classes.btnStyle + ' ' + classes.rightBtn} onClick={handlerOkay}>{i18next.t('Okay')}</span>
       </div>
     )
   }

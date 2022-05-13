@@ -5,10 +5,8 @@ import { setPresenceList } from '../../redux/actions'
 export const publishNewPresence = (payload) => {
   return new Promise((resolve, reject) => {
     WebIM.conn.publishPresence(payload).then(res => {
-      console.log(res, 'publishNewPresence')
       resolve(res)
     }).catch(err => {
-      console.log(err, 'publishNewPresence')
       reject(err)
     })
   })
@@ -16,7 +14,6 @@ export const publishNewPresence = (payload) => {
 
 export const getAllFriendsStatus = (payload) => {
   WebIM.conn.getSubscribedPresenceList(payload).then(res => {
-    console.log(res, 'getAllFriendsStatus');
   });
 }
 
@@ -24,6 +21,7 @@ export const subFriendStatus = (payload) => {
   payload.expiry = 10000000
   return new Promise((resolve) => {
     WebIM.conn.subscribePresence(payload).then(res => {
+      const tempArr = []
       res.result.forEach(item => {
         let extFlag = false
         Object.values(item.status).forEach(val => {
@@ -34,6 +32,20 @@ export const subFriendStatus = (payload) => {
         if (!extFlag) {
           item.ext = 'Offline'
         }
+        if (item.uid) {
+          tempArr.push(item.uid)
+        }
+      })
+      const notInNames = []
+      payload.usernames.forEach(val => {
+        if (!tempArr.includes(val)) {
+          notInNames.push(val)
+        }
+      })
+      res.result.forEach(item => {
+        if (!item.uid) {
+          item.uid = notInNames.shift()
+        }
       })
       store.dispatch(setPresenceList(res.result))
       resolve(res.result)
@@ -43,15 +55,12 @@ export const subFriendStatus = (payload) => {
 
 export const unsubFriendStatus = (payload) => {
   WebIM.conn.unsubscribePresence(payload).then(res => {
-    console.log(res, 'unsubFriendStatus');
   });
 }
 
 export const getSubPresence = (payload) => {
-  console.log(payload, 'payload==getSubPresence')
   return new Promise((resolve, reject) => {
     WebIM.conn.getPresenceStatus(payload).then(res => {
-      console.log(res, 'payload==getSubPresence')
       resolve(res)
     }).catch(err => {
       reject(err)

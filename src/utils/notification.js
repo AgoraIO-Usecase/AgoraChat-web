@@ -27,7 +27,6 @@ let options = {
   // ]
 }
 function twoMethod (params, iconTitle) {
-  console.log('%c twoMethod', 'font-size:20px;color:red;')
   options = {...options, ...params}
   const bodyList = options.body.split('?')
   options.body = bodyList[0]
@@ -45,31 +44,23 @@ function twoMethod (params, iconTitle) {
       store.dispatch(setUnread(unread))
       changeTitle()
     }
-    console.log(res, 'notification.onclick')
     changeIcon(iconTitle)
   }
   notification.addEventListener('show', e => {
-    console.log(e)
     setTimeout(notification.close.bind(notification), 2000)
   })
 }
 export function notifyMe (params, iconTitle) {
-  // 先检查浏览器是否支持
   if (!("Notification" in window)) {
     alert("This browser does not support desktop notification");
   }
-  // 检查用户是否同意接受通知
   else if (Notification.permission === "granted") {
-    console.log('%c Notification', 'font-size:20px;color:red;')
     twoMethod(params, iconTitle)
     // var notification = new Notification('New Message', {body: params.body});
   }
-  // 否则我们需要向用户获取权限
   else if (Notification.permission !== "denied") {
     Notification.requestPermission().then(function (permission) {
-      // 如果用户接受权限，我们就可以发起一条消息
       if (permission === "granted") {
-        console.log('%c granted', 'font-size:20px;color:red;')
         twoMethod(params, iconTitle)
         // var notification = new Notification('New Message', {body: params.body});
       }
@@ -77,13 +68,10 @@ export function notifyMe (params, iconTitle) {
   }
 }
 export const checkBrowerNotifyStatus = (showFlag, params, iconTitle) => {
-  // 先检查浏览器是否支持
   if (!('Notification' in window)) {
     alert("This browser does not support desktop notification")
   } else if (Notification.permission !== 'denied') {
-    // 否则我们需要向用户获取权限
     Notification.requestPermission().then(e => {
-      console.log(e, 'checkBrowerNotifyStatus')
       if (e === 'granted' && showFlag) {
         notification(params, iconTitle)
       } else if (e !== 'granted') {
@@ -95,9 +83,7 @@ export const checkBrowerNotifyStatus = (showFlag, params, iconTitle) => {
   }
 }
 export const notification = (params, iconTitle) => {
-  console.log('notification', iconTitle)
   options = {...options, ...params}
-  // 检查用户是否同意接受通知
   if (Notification?.permission === "granted") {
     const bodyList = options.body.split('?')
     options.body = bodyList[0]
@@ -115,35 +101,18 @@ export const notification = (params, iconTitle) => {
         store.dispatch(setUnread(unread))
         changeTitle()
       }
-      console.log(res, 'notification.onclick')
     }
-    console.log(notification, 'notification', iconTitle)
-    // notification.addEventListener('display', e => {
-    //   console.log(e, 'notification.ondisplay')
-    // })
-    // notification.addEventListener('close', e => {
-    //   console.log(e)
-    // })
     notification.addEventListener('show', e => {
-      console.log(e)
       setTimeout(notification.close.bind(notification), 2000)
     })
-    // notification.addEventListener('error', e => {
-    //   console.log(e)
-    // })
-    // notification.ondisplay = (res) => {
-    //   console.log(res, 'notification.ondisplay')
-    // }
     changeIcon(iconTitle)
   } else {
     checkBrowerNotifyStatus(true, params, iconTitle)
   }
 }
 export const changeIcon = (iconTitle = {}) => {
-  console.log(iconTitle, 'changeIcon')
   const changeFavicon = link => {
     let $favicon = document.querySelector('link[rel="icon"]');
-    // console.log($favicon)
     // If a <link rel="icon"> element already exists,
     // change its href to the given link.
     if ($favicon !== null) {
@@ -171,7 +140,6 @@ export const changeTitle = () => {
       }
     }
   }
-  console.log(num)
   const title = num === 0 ? 'agora chat' : `(${num}) new message` // 网站标题
   document.title = title; // 动态修改网站标题
 }
@@ -185,11 +153,9 @@ export const notify = () => {
     } else if (Notification?.permission === 'granted') {
       var n = new Notification("'New message from Liz", options);
       n.onclick = function () {
-        console.log('2222')
         // this.close();
       };
       n.onclose = function () {
-        console.log('Notification closed');
       };
       changeIcon()
     }
@@ -254,7 +220,6 @@ export const timeIntervalToMinutesOrHours = (timeStr, selfFlag) => {
       timeList.push(Number(val))
     })
   })
-  console.log(timeList, 'timeList') // 16, 30, 00, 30
   if (timeList.length === 6) {
     return 4
   }
@@ -326,7 +291,6 @@ export function getLocalStorageData () {
 
 export const playSound = () => {
   const agoraChatSoundId = window.document.getElementById('agoraChatSoundId')
-  console.log(agoraChatSoundId, 'agoraChatSoundId')
   agoraChatSoundId.play()
 }
 export const randomNumber = () => {

@@ -3,8 +3,7 @@ import CommonDialog from '../../common/dialog'
 import { Box, ListItemAvatar, Avatar, ListItem, List } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
-// import { EaseApp } from "agora-chat-uikit";
-import { EaseApp } from "luleiyu-agora-chat";
+import { EaseApp } from "uikit-reaction";
 import { useSelector } from 'react-redux'
 
 import avatarIcon1 from '../../../assets/avatar1.png'
@@ -103,7 +102,6 @@ function AddressBookDialog(props) {
     const constacts = useSelector((state) => state?.constacts) || []
     const presenceList = useSelector((state) => state?.presenceList) || []
     const muteDataObj = useSelector((state) => state?.muteDataObj) || {}
-    console.log(presenceList, 'presenceList=presenceList', muteDataObj)
     const [userInfoObj, setUserInfoObj] = useState({})
     let userAvatars = {
         1: avatarIcon1,
@@ -127,7 +125,6 @@ function AddressBookDialog(props) {
     const [contactList, setContactList] = useState([])
     const handleClick = (itemData) => {
         // uikit
-        console.log(itemData, 'itemData', muteDataObj[itemData.name])
         let conversationItem = {
 			conversationType: "singleChat",
 			conversationId: itemData.name,
@@ -257,7 +254,6 @@ function AddressBookDialog(props) {
         };
         someArr.sort((a, b) => a.region.charCodeAt(0) - b.region.charCodeAt(0))
         if (lastObj) { someArr.push(lastObj) }
-        console.log(presenceList, 'presenceList=presenceList')
         someArr.forEach(item => {
             item.brands.forEach(val => {
                 presenceList.length && presenceList.forEach(innerItem => {

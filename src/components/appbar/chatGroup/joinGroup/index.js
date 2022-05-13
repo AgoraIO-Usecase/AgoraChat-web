@@ -62,7 +62,7 @@ const JoinGroup = () => {
         <Box>
             <Box className={classes.searchBox}>
                 <img src={search_icon} alt="" className={classes.searchImg} />
-                <InputBase type="search" type='number' placeholder={i18next.t('Search')} className={classes.inputSearch} onChange={hangleInputValue} />
+                <InputBase type="number" placeholder={i18next.t('Search')} className={classes.inputSearch} onChange={hangleInputValue} />
             </Box>
             {inputValue.length > 0 && <Box className={classes.joinBox}>
                 <Typography>{`GroupID: ${inputValue}`}</Typography>

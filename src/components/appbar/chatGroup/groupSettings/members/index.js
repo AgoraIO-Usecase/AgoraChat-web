@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => {
         gUserBox: {
             height: '585px',
             overflowY: 'scroll',
-            overflowS: 'hidden',
+            overflowX: 'hidden',
         },
         menus: {
             color: '#000000',
