@@ -123,26 +123,21 @@ export const presenceStatusImg = ext => {
 }
 
 export const setPresenceList = (data) => {
-    console.log(data,'setPresenceList')
     return { type: "SET_PRESENCE_LIST", data }
 }
 
 export const setMuteDataObj = (data) => {
-    console.log(data,'setMuteDataObj')
     return { type: "SET_MUTE_DATA_OBJ", data }
 }
 
 export const setGlobalSilentMode = (data) => {
-    console.log(data,'setGlobalSilentMode')
     return { type: "SET_GLOBAL_SILENT_MODE", data }
 }
 
 export const setUnread = (data) => {
-    console.log(data,'setUnread')
     return { type: "SET_UNREAD", data }
 }
 
 export const setCurrentSessionId = (data) => {
-    console.log(data,'setCurrentSessionId')
     return { type: "SET_CURRENT_SESSION_ID", data }
 }

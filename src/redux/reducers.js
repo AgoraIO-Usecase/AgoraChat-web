@@ -239,19 +239,16 @@ const reducer = (state = defaultState, action) => {
                 statusObj: data
             }
         case 'SET_PRESENCE_LIST':
-            console.log(data,'SET_PRESENCE_LIST')
             return {
                 ...state,
                 presenceList: data
             }
         case 'SET_MUTE_DATA_OBJ':
-            console.log(data,'SET_MUTE_DATA_OBJ')
             return {
                 ...state,
                 muteDataObj: { ...state.muteDataObj, ...data}
             }
         case 'SET_GLOBAL_SILENT_MODE':
-            console.log(data,'SET_GLOBAL_SILENT_MODE')
             for (let item in data) {
                 state.globalSilentMode[item] = {...state.globalSilentMode[item], ...data[item]}
             }
@@ -260,7 +257,6 @@ const reducer = (state = defaultState, action) => {
                 globalSilentMode: { ...state.globalSilentMode }
             }
         case 'SET_UNREAD':
-            console.log(data, 'SET_UNREAD')
             for (let item in data) {
                 for (let val in data[item]) {
                     state.unread[item][val] = { ...state.unread[item][val], ...data[item][val] }
@@ -271,7 +267,6 @@ const reducer = (state = defaultState, action) => {
                 unread: { ...state.unread }
             }
         case 'SET_CURRENT_SESSION_ID':
-            console.log(data, 'SET_UNREAD')
             return {
                 ...state,
                 currentSessionId: data
