@@ -2,7 +2,7 @@
 
 import { EaseApp } from "uikit-reaction";
 
-const WebIM = EaseApp.getSdk({ appkey: "41117440#383391" });
+const WebIM = EaseApp.getSdk({ appkey: "easemob-demo#eastmd1" });
 
 export default WebIM;
 
