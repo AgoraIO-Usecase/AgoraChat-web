@@ -23,7 +23,9 @@ const getGroupInfo = (groupId, type) => {
             getGroupBlock(id)
             getGroupWrite(id)
             getGroupFiles(id);
-        }
+        }else if (type === 'thread'){
+			getGroupAdmins(id)
+		}
         store.dispatch(groupsInfoAction(res.data[0]))
     })
 }

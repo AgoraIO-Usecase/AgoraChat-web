@@ -1,28 +1,41 @@
 import React, { useState,useEffect } from 'react';
 import Header from '../components/appbar'
 import './login.css'
-import { loginWithToken } from '../api/loginChat'
 import getGroupInfo from '../api/groupChat/getGroupInfo'
 import WebIM from '../utils/WebIM';
-import { EaseApp } from 'uikit-reaction'
+// import { EaseApp } from 'uikit-reaction'
+import { loginWithToken, loginWithPassword } from '../api/loginChat'
+// import { EaseApp } from 'chat-uikit'
+import { EaseApp } from "wy-chat";
 import { createHashHistory } from 'history'
 import store from '../redux/store'
-import { setMyUserInfo} from '../redux/actions'
+import { setMyUserInfo, setThreadInfo} from '../redux/actions'
 import SessionInfoPopover from '../components/appbar/sessionInfo'
 import GroupMemberInfoPopover from '../components/appbar/chatGroup/memberInfo'
 import GroupSettingsDialog from '../components/appbar/chatGroup/groupSettings'
 import { Report } from '../components/report';
 import i18next from "i18next";
 
+import { truncate } from 'lodash';
+import EditThreadPanel from '../components/thread/components/editThreadPanel'
+import ThreadMembers from '../components/thread/components/threadMembers';
+import ThreadDialog from '../components/thread/components/threadDialog'
 const history = createHashHistory()
 
 export default function Main() {
+    //support edit thread 
+    EaseApp.thread.setShowThread(true)
+    EaseApp.thread.setHasThreadEditPanel(true)
     useEffect(() => {
         const webimAuth = sessionStorage.getItem('webim_auth')
         let webimAuthObj = {}
         if (webimAuth && WebIM.conn.logOut) {
             webimAuthObj = JSON.parse(webimAuth)
-            loginWithToken(webimAuthObj.agoraId, webimAuthObj.accessToken)
+            if(webimAuthObj.password){
+                loginWithPassword(webimAuthObj.agoraId, webimAuthObj.password)
+            }else{
+                loginWithToken(webimAuthObj.agoraId, webimAuthObj.accessToken)
+            }
             store.dispatch(setMyUserInfo({ agoraId: webimAuthObj.agoraId, nickName: webimAuthObj.nickName }))
         }else if (WebIM.conn.logOut) {
             history.push('/login')  
@@ -68,6 +81,23 @@ export default function Main() {
         }        
     }
 
+    const [clickEditPanelEl,setClickEditPanelEl] = useState(null);
+    const [membersPanelEl,setmembersPanelEl] = useState(null);
+    const changeEditPanelStatus = (e,info) =>{
+        if(e){
+            setClickEditPanelEl(e.currentTarget)
+            store.dispatch(setThreadInfo(info))
+        }
+        else{
+            setClickEditPanelEl(e)
+        }
+    }
+    const onchangeEditPanelStatus = (e,type)=>{
+        store.dispatch(setThreadInfo({currentEditPage:type}))
+        if(type === 'Members'){
+            setmembersPanelEl(e.currentTarget)
+        }
+    }
     return (
         <div className='main-container'>
             <EaseApp
@@ -78,6 +108,8 @@ export default function Main() {
                 onAvatarChange={handleClickGroupMemberInfoDialog}
                 customMessageList={[{name: i18next.t("Report"), value: 'report', position: 'others'}]}
                 customMessageClick={onMessageEventClick}
+                onEditThreadPanel={changeEditPanelStatus}
+                // isShowReaction
             />
             <SessionInfoPopover 
                 open={sessionInfoAddEl}
@@ -92,6 +124,12 @@ export default function Main() {
                 onClose={() => setGroupSettingAddEl(null)}
                 currentGroupId={currentGroupId} />
             <Report open={isShowReport} onClose={() => {setShowReport(false)}} currentMsg={currentMsg}/>
+            <EditThreadPanel 
+                anchorEl={clickEditPanelEl} 
+                onClose={() => setClickEditPanelEl(null)} 
+                onchangeEditPanelStatus = {onchangeEditPanelStatus}/>
+            <ThreadMembers membersPanelEl={membersPanelEl}/>
+            <ThreadDialog/>
         </div>
     )
 }

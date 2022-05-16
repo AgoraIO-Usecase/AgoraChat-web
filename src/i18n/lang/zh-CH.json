@@ -9,6 +9,9 @@
         "Successfully send the application": "好友申请发送成功",
         "Send Contact Adding Request": "发送添加好友请求",
         "Send": "发送",
-        "Report": "举报"
+        "Report": "举报",
+        "Edit Thread Name": "编辑子区名称",
+        "Leave this Thread?": "离开该子区？",
+        "Disband this Thread?": "解散该子区？"
     }
 }
