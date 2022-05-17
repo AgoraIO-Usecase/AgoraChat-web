@@ -11,7 +11,7 @@ const getContacts = () => {
         const payload = {
             usernames: res.data
         }
-        if (payload.length) {
+        if (payload.usernames.length) {
             subFriendStatus(payload)
         }
         const conversationList = []

@@ -25,6 +25,17 @@ let defaultState = {
     isFetching: false,
     isSearching: false,
     isShowGroupChat: false,
+		thread: {
+			groupId:'',
+			threadId:'',
+			threadName:'',
+			threadOwner:'',
+			membersList: [],
+			isLast: false,
+			cursor:'',
+			isAdmin:false,
+			currentEditPage:''
+		},
     statusObj: {
         statusImg: onlineIcon,
         index: 0,
@@ -271,6 +282,20 @@ const reducer = (state = defaultState, action) => {
                 ...state,
                 currentSessionId: data
             }
+
+				case 'SET_THREAD_INFO':
+					let threadInfo = data;
+					if(data.isScroll === 'isScroll'){
+						data.data.membersList = state.thread.membersList.concat(data.data.membersList)
+						threadInfo = data.data
+					}
+					return {
+						...state,
+						thread:{
+							...state.thread,
+							...threadInfo
+						}
+					}
         default:
             break;
     }

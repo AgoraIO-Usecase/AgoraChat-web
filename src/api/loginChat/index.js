@@ -49,6 +49,7 @@ export const loginWithPassword = (agoraId, password) => {
 
 export function logout() {
     WebIM.conn.close()
+    window.document.title = 'agora chat'
 }
 
 

@@ -11,7 +11,13 @@ import CommonDialog from "../../../../common/dialog";
 const useStyles = makeStyles((theme) => {
   return {
     root: {
-
+      width: '540px',
+      height: '508px',
+      paddingTop: '10px',
+      boxSizing: 'border-box',
+      background: 'rgb(237, 239, 242)',
+      borderBottomLeftRadius: '16px',
+      borderBottomRightRadius: '16px',
     },
     topBox: {
       background: '#F4F5F7',
@@ -169,9 +175,9 @@ const selectList = [
 const Notifications = (props) => {
   const { showMuteImgOrNot, useScene, useComponent } = props
   const classes = useStyles()
-  const state = useSelector((state) => state)
-  const groupsInfo = state?.groups?.groupsInfo || {}
-  const groupId = groupsInfo?.id
+  // const state = useSelector((state) => state)
+  // const groupsInfo = state?.groups?.groupsInfo || {}
+  // const groupId = groupsInfo?.id
   // const groupList = state?.groups?.groupList || [];
   const [notifyText, setNotifyText] = useState('DEFAULT')
   const [defaultValue, setDefaultValue] = useState('')
@@ -185,7 +191,7 @@ const Notifications = (props) => {
 
   const getNotDisturbGroup = (groupId) => {
     console.log(groupId, 'groupId=conversationId')
-    getSilentModeForConversation({conversationId: groupId, type: useScene }).then(res => {
+    getSilentModeForConversation({conversationId: groupId, type: useScene, flag: useComponent }).then(res => {
       console.log(res, 'getNotDisturbDuration')
       const type = res.type
       if (type) {
@@ -218,15 +224,15 @@ const Notifications = (props) => {
     })
   }
   useEffect(() => {
-      if (groupId) {
-        getNotDisturbGroup(groupId)
+      if (props.groupId) {
+        getNotDisturbGroup(props.groupId)
       }
-  }, [groupId])
+  }, [props.groupId])
   const handleSelectChange = (event) => {
     console.log(event.target.value, 'event.target.value')
     setNotifyText(event.target.value)
     const params = {
-      conversationId: groupId,
+      conversationId: props.groupId,
       type: useScene,
       options: {
         paramType: 0,
@@ -261,7 +267,7 @@ const Notifications = (props) => {
     }
     setShowRadio(false)
     const params = {
-      conversationId: groupId,
+      conversationId: props.groupId,
       type: useScene,
       options: {
         paramType: 1,
@@ -307,7 +313,7 @@ const Notifications = (props) => {
     setDefaultValue('')
     setMuteTimeText('')
     const params = {
-      conversationId: groupId,
+      conversationId: props.groupId,
       type: useScene,
       options: {
         paramType: 1,
@@ -335,7 +341,7 @@ const Notifications = (props) => {
   }
 
   return (
-    <div className={classes.root}>
+    <div className={`${useComponent === 'Thread' ? classes.root : ''}`}>
       <div className={classes.topBox}>
         <div className={classes.titleBox}>
           <span className={classes.titleStyle}>Mute this {useComponent} { muteTimeText ? <span className={classes.notifyPrayTitle}>Until {muteTimeText}</span> : null}</span>

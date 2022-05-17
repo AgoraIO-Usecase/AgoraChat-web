@@ -8,7 +8,7 @@ import WebIM from '../utils/WebIM';
 import { EaseApp } from 'uikit-reaction'
 import { createHashHistory } from 'history'
 import store from '../redux/store'
-import { setMyUserInfo, setUnread, setCurrentSessionId } from '../redux/actions'
+import { setMyUserInfo, setUnread, setCurrentSessionId, setThreadInfo } from '../redux/actions'
 
 import SessionInfoPopover from '../components/appbar/sessionInfo'
 import GroupMemberInfoPopover from '../components/appbar/chatGroup/memberInfo'
@@ -20,9 +20,17 @@ import map3 from '../assets/notify.mp3'
 
 import { changeTitle } from '../utils/notification'
 
+import { truncate } from 'lodash';
+import EditThreadPanel from '../components/thread/components/editThreadPanel'
+import ThreadMembers from '../components/thread/components/threadMembers';
+import ThreadDialog from '../components/thread/components/threadDialog'
+import { getSilentModeForConversation } from '../api/notificationPush'
 const history = createHashHistory()
 
 export default function Main() {
+    //support edit thread 
+    EaseApp.thread.setShowThread(true)
+    EaseApp.thread.setHasThreadEditPanel(true)
     useEffect(() => {
         const webimAuth = sessionStorage.getItem('webim_auth')
         let webimAuthObj = {}
@@ -100,6 +108,29 @@ export default function Main() {
         }        
     }
 
+    const [clickEditPanelEl,setClickEditPanelEl] = useState(null);
+    const [membersPanelEl,setmembersPanelEl] = useState(null);
+    const changeEditPanelStatus = (e,info) =>{
+        if(e){
+            setClickEditPanelEl(e.currentTarget)
+            store.dispatch(setThreadInfo(info))
+        }
+        else{
+            setClickEditPanelEl(e)
+        }
+    }
+    const onchangeEditPanelStatus = (e,type)=>{
+        store.dispatch(setThreadInfo({currentEditPage:type}))
+        if(type === 'Members'){
+            setmembersPanelEl(e.currentTarget)
+        }
+    }
+    const onOpenThreadPanel = (obj) => {
+        console.log(obj, 'onOpenThreadPanel')
+        getSilentModeForConversation({conversationId: obj.id, type: 'groupChat', flag: 'Thread' }).then(res => {
+            console.log(res, 'getNotDisturbDuration')
+        })
+    }
     return (
         <div className='main-container'>
             <EaseApp
@@ -110,6 +141,9 @@ export default function Main() {
                 onConversationClick={handleonConversationClick}
                 customMessageList={[{name: i18next.t("Report"), value: 'report', position: 'others'}]}
                 customMessageClick={onMessageEventClick}
+                onEditThreadPanel={changeEditPanelStatus}
+                onOpenThreadPanel={onOpenThreadPanel}
+                // isShowReaction
             />
             <SessionInfoPopover 
                 open={sessionInfoAddEl}
@@ -125,6 +159,12 @@ export default function Main() {
                 onClose={() => setGroupSettingAddEl(null)}
                 currentGroupId={currentGroupId} />
             <Report open={isShowReport} onClose={() => {setShowReport(false)}} currentMsg={currentMsg}/>
+            <EditThreadPanel 
+                anchorEl={clickEditPanelEl} 
+                onClose={() => setClickEditPanelEl(null)} 
+                onchangeEditPanelStatus = {onchangeEditPanelStatus}/>
+            <ThreadMembers membersPanelEl={membersPanelEl}/>
+            <ThreadDialog/>
             <audio id="agoraChatSoundId" src={map3}></audio>
         </div>
     )

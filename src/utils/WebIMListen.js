@@ -11,6 +11,7 @@ import { agreeInviteGroup } from '../api/groupChat/addGroup'
 import { getGroupMuted } from "../api/groupChat/groupMute";
 import { getGroupWrite } from "../api/groupChat/groupWhite";
 import { notification, getLocalStorageData, playSound, randomNumber, setTimeVSNowTime, checkBrowerNotifyStatus, notifyMe } from './notification'
+import { handlerThreadChangedMsg } from "../api/thread/index";
 
 import i18next from "i18next";
 import { message } from '../components/common/alert'
@@ -40,6 +41,10 @@ function publicNotify (message, msgType, iconTitle = {}, body = 'You Have A New 
             break
         default:
             break
+    }
+    console.log(group[to], threading[to], 'threading[to]')
+    if (sessionType === 'groupChat' && !group[to]) {
+        sessionType = 'threading'
     }
     if (sessionType === 'singleChat' && ((single[from]?.ignoreDuration && !setTimeVSNowTime(single[from], true)) || (single[from]?.type && single[from]?.type === 'NONE') || (!single[from].type && global[agoraId].type === 'NONE'))) {
         return
@@ -263,6 +268,37 @@ const initListen = () => {
             console.log("onVideoMessage", message);
             publicNotify(message, 'video')
         },
+        onChatThreadChange:(message) =>{
+			console.log("onChatThreadChange",message)
+            // const {lastMessage: { chatType, from, msg, type, to, time, url } } = message
+            // const obj = {
+            //     from,
+            //     data: msg,
+            //     type: chatType,
+            //     to,
+            //     time,
+            //     url
+            // }
+            // switch (type) {
+            //     case 'txt':
+            //         publicNotify(obj, 'text')
+            //         break;
+            //     case 'img':
+            //         publicNotify(obj, 'img')
+            //         break;
+            //     case 'file':
+            //         publicNotify(obj, 'file')
+            //         break;
+            //     case 'video':
+            //         publicNotify(obj, 'video')
+            //         break;
+            //     case 'audio':
+            //         publicNotify(obj, 'audio')
+            //         break;
+            //     default:
+            //         break;
+            // }
+		},
     })
 
     WebIM.conn.addEventHandler('REQUESTS', {
@@ -347,6 +383,12 @@ const initListen = () => {
 			console.log("onDisconnected");
 		},
 	});
+
+	WebIM.conn.addEventHandler("Thread",{
+		onMultiDeviceEvent:(message)=>{
+			handlerThreadChangedMsg(message)
+		}
+	})
 };
 
 export default initListen;

@@ -13,6 +13,9 @@
         "Confirm": "确定",
         "Cancel": "取消",
         "Custom Status": "自定义状态",
-        "Custom Status Is Not Empty": "自定义状态不能为空"
+        "Custom Status Is Not Empty": "自定义状态不能为空",
+        "Edit Thread Name": "编辑子区名称",
+        "Leave this Thread?": "离开该子区？",
+        "Disband this Thread?": "解散该子区？"
     }
 }

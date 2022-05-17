@@ -141,3 +141,7 @@ export const setUnread = (data) => {
 export const setCurrentSessionId = (data) => {
     return { type: "SET_CURRENT_SESSION_ID", data }
 }
+//set thread info
+export const setThreadInfo = (data) => {
+    return { type: 'SET_THREAD_INFO',data}
+}

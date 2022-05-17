@@ -13,6 +13,9 @@
         "Confirm": "Confirm",
         "Cancel": "Cancel",
         "Custom Status": "Custom Status",
-        "Custom Status Is Not Empty": "Custom Status Is Not Empty"
+        "Custom Status Is Not Empty": "Custom Status Is Not Empty",
+        "Edit Thread Name": "Edit Thread Name",
+        "Leave this Thread?": "Leave this Thread?",
+        "Disband this Thread?": "Disband this Thread?"
     }
 }

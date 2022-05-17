@@ -4,6 +4,8 @@ import { Box, ListItemAvatar, Avatar, ListItem, List } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import { EaseApp } from "uikit-reaction";
+// import { EaseApp } from "chat-uikit";
+// import { EaseApp } from "wy-chat";
 import { useSelector } from 'react-redux'
 
 import avatarIcon1 from '../../../assets/avatar1.png'

@@ -9,7 +9,7 @@ function silentModeRedux (type, data) {
 }
 
 function refreshUserGroupStatus (params) {
-  const { constacts, groups: { groupList } } = store.getState()
+  const { constacts, groups: { groupList }, thread: { threadId } } = store.getState()
   const conversationList = []
   constacts.forEach(item => {
     conversationList.push({
@@ -23,6 +23,13 @@ function refreshUserGroupStatus (params) {
       type: 'groupChat'
     })
   })
+  if (threadId || params?.flag === 'Thread') {
+    conversationList.unshift({
+      id: threadId || params.conversationId,
+      type: 'groupChat',
+      flagType: 'threading'
+    })
+  }
   getSilentModeForConversations({conversationList}, params)
 }
 
@@ -94,7 +101,7 @@ export const getSilentModeForAll = () => {
 export const getSilentModeForConversation = (payload) => {
   return new Promise((resolve, reject) => {
     WebIM.conn.getSilentModeForConversation(payload).then(res => {
-      refreshUserGroupStatus()
+      refreshUserGroupStatus(payload)
       resolve(res.data)
     }).catch(err => {
       reject(err)
@@ -135,13 +142,16 @@ export const getSilentModeForConversations = (payload, params = {type: '', optio
       const data = res.data
       const tempData = {}
       if (payload.conversationList[0]?.flagType === 'threading') {
+        console.log(payload.conversationList, 'payload.conversationList')
         payload.conversationList.forEach(item => {
+          console.log(data.group[item.id], 'data.group[item.id]')
           tempData[item.id] = data.group[item.id]
         })
       }
       if (Object.keys(data.user).length) {
         silentModeRedux('single', {...data.user})
       }
+      console.log(tempData, 'tempData')
       if (Object.keys(tempData).length) {
         silentModeRedux('threading', {...tempData})
       } else {
@@ -153,7 +163,7 @@ export const getSilentModeForConversations = (payload, params = {type: '', optio
       }
       const collectObj = {}
       const collectObj1 = {}
-      const {type, options: { duration }} = params
+      // const {type, options: { duration }} = params
       for (let item in tempObj) {
         if ((global[agoraId].ignoreDuration && !setTimeVSNowTime(global[agoraId], true)) || (tempObj[item].ignoreDuration && !setTimeVSNowTime(tempObj[item], true)) || (tempObj[item].type && tempObj[item].type === 'NONE') || ((!tempObj[item].type || (tempObj[item].type && tempObj[item].type === 'DEFAULT')) && global[agoraId].type === 'NONE')) {
           collectObj[item] = true

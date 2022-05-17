@@ -5,6 +5,8 @@ import { Box, InputBase, List, ListItem, Button, Avatar } from '@material-ui/cor
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import { EaseApp } from "uikit-reaction";
+// import { EaseApp } from "chat-uikit";
+// import { EaseApp } from "wy-chat";
 import store from '../../../../redux/store'
 import { searchAddedGroupAction, searchLoadAction } from '../../../../redux/actions'
 import GroupSettingsDialog from '../groupSettings'

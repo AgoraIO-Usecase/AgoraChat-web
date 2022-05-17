@@ -1,6 +1,6 @@
 import store from '../redux/store'
 import { setMuteDataObj, setUnread } from '../redux/actions'
-import { EaseApp } from "luleiyu-agora-chat"
+import { EaseApp } from "uikit-reaction"
 
 let options = {
   requireInteraction: false, // 是否自动消失

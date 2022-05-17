@@ -138,6 +138,7 @@ const GroupSettingsDialog = ({ open, onClose, currentGroupId }) => {
 	const groupNotice = state?.groups?.groupNotice;
 	const loginUser = WebIM.conn.context?.userId;
 	const isOwner = loginUser === groupsInfo?.owner;
+	const groupId = groupsInfo?.id
 	const [value, setValue] = useState(0);
 	const [muteFlag, setmuteFlag] = useState(false);
 	const handleChange = (event, newValue) => {
@@ -398,7 +399,7 @@ const GroupSettingsDialog = ({ open, onClose, currentGroupId }) => {
 						index={3}
 						className={classes.content}
 					>
-						<Notifications showMuteImgOrNot={showMuteImgOrNot} useScene="groupChat" useComponent="Group" />
+						<Notifications showMuteImgOrNot={showMuteImgOrNot} groupId={groupId} useScene="groupChat" useComponent="Group" />
 					</TabPanel>
 					<TabPanel
 						value={value}
