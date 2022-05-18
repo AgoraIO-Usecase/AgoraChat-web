@@ -143,10 +143,7 @@ export const getSilentModeForConversations = (payload, params = {type: '', optio
       const tempData = {}
       if (payload.conversationList[0]?.flagType === 'threading') {
         console.log(payload.conversationList, 'payload.conversationList')
-        payload.conversationList.forEach(item => {
-          console.log(data.group[item.id], 'data.group[item.id]')
-          tempData[item.id] = data.group[item.id]
-        })
+        tempData[payload.conversationList[0].id] = data.group[payload.conversationList[0].id]
       }
       if (Object.keys(data.user).length) {
         silentModeRedux('single', {...data.user})
