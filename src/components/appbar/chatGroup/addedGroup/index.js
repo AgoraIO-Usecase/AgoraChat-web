@@ -93,7 +93,7 @@ const AddedGroups = ({ onClose }) => {
     const [currentGroupId, setCurrentGroupId] = useState('')
 
     const [renderGroups, setRenderGroups] = useState([...groupList])
-
+    const muteDataObj = useSelector((state) => state?.muteDataObj) || {}
     useEffect(() => {
         setRenderGroups(groupList)
     }, [groupList])
@@ -130,6 +130,9 @@ const AddedGroups = ({ onClose }) => {
         let conversationItem = {
 			conversationType: "groupChat",
 			conversationId: itemData,
+            ext: {
+                muteFlag: muteDataObj[itemData]
+            }
 		};
         EaseApp.addConversationItem(conversationItem);
         onClose();

@@ -3,9 +3,25 @@ import store from '../../redux/store'
 import { message } from "../../components/common/alert";
 import i18next from "i18next";
 import { contactsAciton, setBlackList, updateRequestStatus, searchLoadAction } from '../../redux/actions'
+import { subFriendStatus } from '../presence/index'
+import { getSilentModeForConversations } from '../notificationPush/index'
 
 const getContacts = () => {
     WebIM.conn.getRoster().then((res) => {
+        const payload = {
+            usernames: res.data
+        }
+        if (payload.usernames.length) {
+            subFriendStatus(payload)
+        }
+        const conversationList = []
+        res.data.forEach(item => {
+            conversationList.push({
+                id: item,
+                type: 'singleChat'
+            })
+        })
+        getSilentModeForConversations({conversationList})
         store.dispatch(contactsAciton(res.data))
         store.dispatch(searchLoadAction(false))
     });
