@@ -15,6 +15,7 @@ import GroupNotice from './notice'
 // import GroupFiles from "./files";
 import GroupChatInfo from "./info";
 import TransFerOwner from "./transfer";
+import Notifications from './members/notifications'
 import { closeGroup } from "../../../../api/groupChat/closeGroup";
 
 import groupAvatar from "../../../../assets/groupAvatar.png";
@@ -26,6 +27,8 @@ import editIcon from "../../../../assets/edit@2x.png";
 import allowSearchIcon from "../../../../assets/allow_search@2x.png";
 import transferIcon from "../../../../assets/transfer@2x.png";
 import deleteIcon from "../../../../assets/red@2x.png";
+import muteIcon from '../../../../assets/unmute.png'
+import muteGrayIcon from '../../../../assets/gray@2x.png'
 
 const useStyles = makeStyles((theme) => {
 	return {
@@ -119,6 +122,11 @@ const useStyles = makeStyles((theme) => {
 		},
 		deleteGroupBox:{
 			padding:"6px 12px"
+		},
+		muteImgstyle: {
+			width: '20px',
+			height: '20px',
+			verticalAlign: 'text-top',
 		}
 	};
 });
@@ -130,11 +138,15 @@ const GroupSettingsDialog = ({ open, onClose, currentGroupId }) => {
 	const groupNotice = state?.groups?.groupNotice;
 	const loginUser = WebIM.conn.context?.userId;
 	const isOwner = loginUser === groupsInfo?.owner;
+	const groupId = groupsInfo?.id
 	const [value, setValue] = useState(0);
+	const [muteFlag, setmuteFlag] = useState(false);
 	const handleChange = (event, newValue) => {
 		setValue(newValue);
 	};
-
+	const showMuteImgOrNot = (flag) => {
+		setmuteFlag(flag)
+	}
 	const renderSetting = () => {
 		const memberLabel = () => {
 			return (
@@ -174,6 +186,34 @@ const GroupSettingsDialog = ({ open, onClose, currentGroupId }) => {
 					></img>
 					<Typography className={classes.menus}>
 						{i18next.t("Group Notice")}
+					</Typography>
+				</Button>
+			);
+		};
+		const notificationsLabel = () => {
+			return (
+				<Button className={classes.membersBox}>
+					<img
+						src={muteIcon}
+						alt="files"
+						className={classes.iconStyle}
+					></img>
+					<Typography className={classes.menus}>
+						{i18next.t("Notifications")}
+					</Typography>
+				</Button>
+			);
+		};
+		const groupFileLabel = () => {
+			return (
+				<Button className={classes.membersBox}>
+					<img
+						src={filesIcon}
+						alt="files"
+						className={classes.iconStyle}
+					></img>
+					<Typography className={classes.menus}>
+						Group File
 					</Typography>
 				</Button>
 			);
@@ -222,97 +262,131 @@ const GroupSettingsDialog = ({ open, onClose, currentGroupId }) => {
 		};
 		return (
       <Box className={classes.root}>
-        <Box className={classes.gSettingleft}>
-          <Box className={classes.gInfoBox}>
-            <img src={groupAvatar} alt="" className={classes.gAvatar} />
-            <Typography className={classes.gNameText}>
-              {groupsInfo?.name}
-            </Typography>
-            <Typography className={classes.gAppIdText}>
-              GroupID:{groupsInfo?.id}{" "}
-            </Typography>
-            <Typography className={classes.gDescriptionText}>
-              {groupNotice}
-            </Typography>
-          </Box>
-          <Tabs
-            orientation="vertical"
-            variant="scrollable"
-            value={value}
-            onChange={handleChange}
-            aria-label="Vertical tabs example"
-            style={{ maxWidth: "none" }}
-          >
-            <Tab
-              label={memberLabel()}
-              {...a11yProps(0)}
-              className={classes.itemBox}
-            />
-            <Tab
-              label={addMembersLabel()}
-              {...a11yProps(1)}
-              className={classes.itemBox}
-            />
-            <Tab
-              label={groupNoticeLabel()}
-              {...a11yProps(2)}
-              className={classes.itemBox}
-            />
+				<Box className={classes.gSettingleft}>
+					<Box className={classes.gInfoBox}>
+						<img
+							src={groupAvatar}
+							alt=""
+							className={classes.gAvatar}
+						/>
+						<Typography className={classes.gNameText}>
+							{groupsInfo?.name}
+							{
+								muteFlag ? <img alt="" className={classes.muteImgstyle} src={muteGrayIcon} /> : null
+							}
+						</Typography>
+						<Typography className={classes.gAppIdText}>
+							GroupID:{groupsInfo?.id}{" "}
+						</Typography>
+						<Typography className={classes.gDescriptionText}>
+							{groupNotice}
+						</Typography>
+					</Box>
+					<Tabs
+						orientation="vertical"
+						variant="scrollable"
+						value={value}
+						onChange={handleChange}
+						aria-label="Vertical tabs example"
+						style={{ maxWidth: "none" }}
+					>
+						<Tab
+							label={memberLabel()}
+							{...a11yProps(0)}
+							className={classes.itemBox}
+						/>
+						<Tab
+							label={addMembersLabel()}
+							{...a11yProps(1)}
+							className={classes.itemBox}
+						/>
+						<Tab
+							label={groupNoticeLabel()}
+							{...a11yProps(2)}
+							className={classes.itemBox}
+						/>
             {/* <Tab
 							label={groupFileLabel()}
 							{...a11yProps(3)}
 							className={classes.itemBox}
 						/> */}
             <Tab
-              label={groupInfoLabel()}
-              {...a11yProps(3)}
-              className={classes.itemBox}
-            />
-            {isOwner ? (
+							label={notificationsLabel()}
+							{...a11yProps(3)}
+							className={classes.itemBox}
+						/>
+						<Tab
+							label={groupInfoLabel()}
+							{...a11yProps(4)}
+							className={classes.itemBox}
+						/>
+						{isOwner ? (
               <Tab
                 label={transFerLabel()}
-                {...a11yProps(4)}
+                {...a11yProps(5)}
                 className={classes.itemBox}
               />
             ) : null}
           </Tabs>
-          <Box className={classes.deleteGroupBox}>
-            <Button className={classes.membersBox}>
-              <img
-                src={deleteIcon}
-                alt="delete"
-                className={classes.iconStyle}
-              ></img>
-              {isOwner ? (
-                <Typography
-                  className={classes.gCloseText}
-                  onClick={() =>
-                    closeGroup(currentGroupId, "dissolve", onClose)
-                  }
-                >
-                  {i18next.t("Disband this Group")}
-                </Typography>
-              ) : (
-                <Typography
-                  className={classes.gCloseText}
-                  onClick={() => closeGroup(currentGroupId, "quit", onClose)}
-                >
-                  {i18next.t("Leave the Group")}
-                </Typography>
-              )}
-            </Button>
-          </Box>
-        </Box>
-        <Box className={classes.gSettingRight}>
-          <TabPanel value={value} index={0} className={classes.content}>
-            <Members />
-          </TabPanel>
-          <TabPanel value={value} index={1} className={classes.content}>
-            <AddMembers onClose={onClose}/>
-          </TabPanel>
-          <TabPanel value={value} index={2} className={classes.content}>
-            <GroupNotice />
-          </TabPanel>
+					<Box className={classes.deleteGroupBox}>
+						<Button className={classes.membersBox}>
+							<img
+								src={deleteIcon}
+								alt="delete"
+								className={classes.iconStyle}
+							></img>
+							{isOwner ? (
+								<Typography
+									className={classes.gCloseText}
+									onClick={() =>
+										closeGroup(
+											currentGroupId,
+											"dissolve",
+											onClose
+										)
+									}
+								>
+									{i18next.t("Disband this Group")}
+								</Typography>
+							) : (
+								<Typography
+									className={classes.gCloseText}
+									onClick={() =>
+										closeGroup(
+											currentGroupId,
+											"quit",
+											onClose
+										)
+									}
+								>
+									{i18next.t("Leave the Group")}
+								</Typography>
+							)}
+						</Button>
+					</Box>
+				</Box>
+				<Box className={classes.gSettingRight}>
+					<TabPanel
+						value={value}
+						index={0}
+						className={classes.content}
+					>
+						<Members />
+					</TabPanel>
+					<TabPanel
+						value={value}
+						index={1}
+						className={classes.content}
+					>
+						<AddMembers onClose={onClose}/>
+					</TabPanel>
+					<TabPanel
+						value={value}
+						index={2}
+						className={classes.content}
+					>
+						<GroupNotice />
+					</TabPanel>
           {/* <TabPanel
 						value={value}
 						index={3}
@@ -320,15 +394,31 @@ const GroupSettingsDialog = ({ open, onClose, currentGroupId }) => {
 					>
 						<GroupFiles onClose={onClose} />
 					</TabPanel> */}
-          <TabPanel value={value} index={3} className={classes.content}>
-            <GroupChatInfo />
-          </TabPanel>
-          <TabPanel value={value} index={4} className={classes.content}>
-            <TransFerOwner onClose={onClose} />
-          </TabPanel>
-        </Box>
-      </Box>
-    );
+          <TabPanel
+						value={value}
+						index={3}
+						className={classes.content}
+					>
+						<Notifications showMuteImgOrNot={showMuteImgOrNot} groupId={groupId} useScene="groupChat" useComponent="Group" />
+					</TabPanel>
+					<TabPanel
+						value={value}
+						index={4}
+						className={classes.content}
+					>
+						<GroupChatInfo />
+					</TabPanel>
+					<TabPanel
+						value={value}
+						index={5}
+						className={classes.content}
+					>
+						<TransFerOwner onClose={onClose} />
+					</TabPanel>
+
+				</Box>
+			</Box>
+		);
 	};
 
 	return (

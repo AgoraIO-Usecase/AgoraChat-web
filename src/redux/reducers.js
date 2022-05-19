@@ -1,41 +1,59 @@
 import _ from 'lodash'
-
+import onlineIcon from '../assets/Online.png'
 let defaultState = {
 	constacts: [],
-	groups: {
-		groupList: [],
-		publicGroups: [],
-		groupsInfo: [],
-		groupAdmins: [],
-		groupMuteList: [],
-		groupBlockList: [],
-		groupAllowList: [],
-		groupNotices: "",
-		groupFiles: []
-	},
-	sessionList: [],
-	requests: { contact: [], group: [] },
-	// requests: { group: [{ name: 'zdzd', group: '123456', status: 'pedding', time: '', type: 'apply' }], contact: [{ name: 'zdzd', status: 'pedding', time: '' }] },
-	blackList: [],
-	myUserInfo: {
-		agoraId: null,
-		nickName: null,
-		avatarIndex: null,
-	},
-	isFetching: false,
-	isSearching: false,
-	isShowGroupChat: false,
-	thread: {
-		groupId:'',
-		threadId:'',
-		threadName:'',
-		threadOwner:'',
-		membersList: [],
-		isLast: false,
-		cursor:'',
-		isAdmin:false,
-		currentEditPage:''
-	}
+    groups: {
+        groupList: [],
+        publicGroups: [],
+        groupsInfo: [],
+        groupAdmins: [],
+        groupMuteList: [],
+        groupBlockList: [],
+        groupAllowList: [],
+        groupNotices: '',
+    },
+    sessionList: [],
+    requests: { contact: [], group: [] },
+    // requests: { group: [{ name: 'zdzd', group: '123456', status: 'pedding', time: '', type: 'apply' }], contact: [{ name: 'zdzd', status: 'pedding', time: '' }] },
+    blackList: [],
+    myUserInfo: {
+        agoraId: null,
+        nickName: null,
+        avatarIndex: null
+    },
+    isFetching: false,
+    isSearching: false,
+    isShowGroupChat: false,
+		thread: {
+			groupId:'',
+			threadId:'',
+			threadName:'',
+			threadOwner:'',
+			membersList: [],
+			isLast: false,
+			cursor:'',
+			isAdmin:false,
+			currentEditPage:''
+		},
+    statusObj: {
+        statusImg: onlineIcon,
+        index: 0,
+        ext: ''
+    },
+    presenceList: [],
+    muteDataObj: {},
+    globalSilentMode: {
+        global: {},
+        single: {},
+        group: {},
+        threading: {}
+    },
+    unread: {
+        singleChat: {},
+        groupChat: {},
+        chatRoom: {},
+    },
+    currentSessionId: ''
 };
 
 const reducer = (state = defaultState, action) => {
@@ -227,6 +245,45 @@ const reducer = (state = defaultState, action) => {
 				...state,
 				isShowGroupChat: data,
 			};
+		case 'PRESENCE_STATUS_IMG':
+			return {
+				...state,
+				statusObj: data
+			}
+		case 'SET_PRESENCE_LIST':
+			return {
+				...state,
+				presenceList: data
+			}
+		case 'SET_MUTE_DATA_OBJ':
+			return {
+				...state,
+				muteDataObj: { ...state.muteDataObj, ...data}
+			}
+		case 'SET_GLOBAL_SILENT_MODE':
+			for (let item in data) {
+				state.globalSilentMode[item] = {...state.globalSilentMode[item], ...data[item]}
+			}
+			return {
+				...state,
+				globalSilentMode: { ...state.globalSilentMode }
+			}
+		case 'SET_UNREAD':
+			for (let item in data) {
+				for (let val in data[item]) {
+					state.unread[item][val] = { ...state.unread[item][val], ...data[item][val] }
+				}
+			}
+			return {
+				...state,
+				unread: { ...state.unread }
+			}
+		case 'SET_CURRENT_SESSION_ID':
+			return {
+				...state,
+				currentSessionId: data
+			}
+
 		case 'SET_THREAD_INFO':
 			let threadInfo = data;
 			if(data.isScroll === 'isScroll'){

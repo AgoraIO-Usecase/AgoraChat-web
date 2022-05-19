@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux'
 import i18next from "i18next";
-import { Popover, Box, Avatar, Button } from '@material-ui/core';
+import { Popover, Box, Avatar, Button, Tooltip } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 // import { EaseApp } from "uikit-reaction";
@@ -12,6 +12,13 @@ import avatarImg from '../../../../assets/avatar1.png'
 import newChatIcon from '../../../../assets/newchat@2x.png'
 import addContactIcon from '../../../../assets/addcontact@2x.png'
 
+import offlineImg from '../../../../assets/Offline.png'
+import onlineIcon from '../../../../assets/Online.png'
+import busyIcon from '../../../../assets/Busy.png'
+import donotdisturbIcon from '../../../../assets/Do_not_Disturb.png'
+import customIcon from '../../../../assets/custom.png'
+import leaveIcon from '../../../../assets/leave.png'
+
 const useStyles = makeStyles((theme) => {
     return ({
         root: {
@@ -20,7 +27,8 @@ const useStyles = makeStyles((theme) => {
             background: '#FFFFFF'
         },
         infoBox: {
-            textAlign: 'center'
+            textAlign: 'center',
+						position: 'relative',
         },
         avatarImg: {
             width: '100px',
@@ -56,27 +64,65 @@ const useStyles = makeStyles((theme) => {
             fontSize: '14px',
             character: '0',
             color: '#000000'
-        }
+        },
+				imgBox: {
+					borderRadius: '50%',
+					width: '32px',
+					height: '32px',
+					background: '#fff',
+					textAlign: 'center',
+					position: 'absolute',
+					left: '196px',
+					bottom: '80px',
+				},
+				imgStyle: {
+					width: '30px',
+					height: '30px',
+					borderRadius: '50%',
+				}
     })
 });
 
 
-const GroupMemberInfoPopover = ({ open, onClose, memberInfo }) => {
+const GroupMemberInfoPopover = ({ open, onClose, memberInfo, presenceList }) => {
 	const classes = useStyles();
 	const state = useSelector((state) => state);
+	const [usePresenceExt, setPresenceExt] = useState(null)
 	const constacts = state?.constacts || [];
 	let { from } = memberInfo
+	const presenceListRedux = useSelector((state) => state?.presenceList) || []
+
+	let presenceExt = ''
+	presenceListRedux.forEach(item => {
+		if (item.uid === from) {
+			presenceExt = item.ext
+		}
+	})
+
+	useEffect(() => {
+		setPresenceExt(presenceExt)
+	}, [presenceExt])
 
 	const handleClickChat = (userId) => {
 		// uikit
 		let conversationItem = {
 			conversationType: "singleChat",
 			conversationId: from,
+			ext: {
+				ext: presenceExt || presenceList[0].ext
+			}
 		};
 		EaseApp.addConversationItem(conversationItem);
 		onClose();
 	};
-
+	const statusImgObj = {
+		'Offline': offlineImg,
+		'Online': onlineIcon,
+		'Busy': busyIcon,
+		'Do not Disturb': donotdisturbIcon,
+		'Leave': leaveIcon,
+		'': onlineIcon
+	}
 	return (
 		<Popover
 			open={Boolean(open)}
@@ -97,6 +143,11 @@ const GroupMemberInfoPopover = ({ open, onClose, memberInfo }) => {
 						src={avatarImg}
 						className={classes.avatarImg}
 					></Avatar>
+					<Tooltip title={usePresenceExt || presenceList[0]?.ext} placement="bottom-end">
+						<div className={classes.imgBox}>
+							<img alt="" src={statusImgObj[usePresenceExt] || statusImgObj[presenceList[0]?.ext] || customIcon} className={classes.imgStyle} />
+						</div>
+					</Tooltip>
 					<Typography className={classes.nameText}>{from}</Typography>
 					<Typography className={classes.idText}>
 						AgoraID:{from}
