@@ -24,7 +24,7 @@ import { truncate } from 'lodash';
 import EditThreadPanel from '../components/thread/components/editThreadPanel'
 import ThreadMembers from '../components/thread/components/threadMembers';
 import ThreadDialog from '../components/thread/components/threadDialog'
-import { getSilentModeForConversation } from '../api/notificationPush'
+// import { getSilentModeForConversation } from '../api/notificationPush'
 const history = createHashHistory()
 
 export default function Main() {
@@ -123,12 +123,12 @@ export default function Main() {
             setmembersPanelEl(e.currentTarget)
         }
     }
-    const onOpenThreadPanel = (obj) => {
-        console.log(obj, 'onOpenThreadPanel')
-        getSilentModeForConversation({conversationId: obj.id, type: 'groupChat', flag: 'Thread' }).then(res => {
-            console.log(res, 'getNotDisturbDuration')
-        })
-    }
+    // const onOpenThreadPanel = (obj) => {
+    //     console.log(obj, 'onOpenThreadPanel')
+    //     getSilentModeForConversation({conversationId: obj.id, type: 'groupChat', flag: 'Thread' }).then(res => {
+    //         console.log(res, 'getNotDisturbDuration')
+    //     })
+    // }
     return (
         <div className='main-container'>
             <EaseApp
@@ -140,7 +140,7 @@ export default function Main() {
                 customMessageList={[{name: i18next.t("Report"), value: 'report', position: 'others'}]}
                 customMessageClick={onMessageEventClick}
                 onEditThreadPanel={changeEditPanelStatus}
-                onOpenThreadPanel={onOpenThreadPanel}
+                // onOpenThreadPanel={onOpenThreadPanel}
                 // isShowReaction
             />
             <SessionInfoPopover 
