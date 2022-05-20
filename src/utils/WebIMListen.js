@@ -45,6 +45,7 @@ function publicNotify (message, msgType, iconTitle = {}, body = 'You Have A New 
     console.log(group[to], threading[to], 'threading[to]')
     if (sessionType === 'groupChat' && !group[to]) {
         sessionType = 'threading'
+        return
     }
     if (sessionType === 'singleChat' && ((single[from]?.ignoreDuration && !setTimeVSNowTime(single[from], true)) || (single[from]?.type && single[from]?.type === 'NONE') || (!single[from].type && global[agoraId].type === 'NONE'))) {
         return

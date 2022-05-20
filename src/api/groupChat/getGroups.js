@@ -12,19 +12,19 @@ const getGroups = () => {
                 id: item.groupid,
                 type: 'groupChat'
             })
-            WebIM.conn.getChatThreads({parentId: item.groupid}).then(res => {
-                const conversationList1 = []
-                res.entities.forEach(val => {
-                    conversationList1.push({
-                        id: val.id,
-                        type: 'groupChat',
-                        flagType: 'threading'
-                    })
-                })
-                if (conversationList1.length) {
-                    getSilentModeForConversations({conversationList: conversationList1})
-                }
-            })
+            // WebIM.conn.getChatThreads({parentId: item.groupid}).then(res => {
+            //     const conversationList1 = []
+            //     res.entities.forEach(val => {
+            //         conversationList1.push({
+            //             id: val.id,
+            //             type: 'groupChat',
+            //             flagType: 'threading'
+            //         })
+            //     })
+            //     if (conversationList1.length) {
+            //         getSilentModeForConversations({conversationList: conversationList1})
+            //     }
+            // })
         })
         if (conversationList.length) {
             getSilentModeForConversations({conversationList})
