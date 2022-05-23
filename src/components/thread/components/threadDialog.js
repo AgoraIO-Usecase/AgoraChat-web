@@ -9,6 +9,7 @@ import i18next from "i18next";
 import { changeThreadName, leaveThread, destroyThread } from '../../../api/thread'
 import Dialog from '@mui/material/Dialog';
 import Slide from '@mui/material/Slide';
+import Notifications from '../../appbar/chatGroup/groupSettings/members/notifications'
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
@@ -154,6 +155,9 @@ const ThreadDialog = () => {
             title = i18next.t("Disband this Thread")
             btn2Text = 'Disband'
             break;
+        case "Notifications":
+            title = i18next.t("Thread Notifications")
+            break;
         default:
             title = '';
             break;
@@ -178,9 +182,12 @@ const ThreadDialog = () => {
     }
     const [showDialog, setShowDialog] = useState(false);
     useEffect(() => {
-        setShowDialog(currentEditPage === 'EditThread' || currentEditPage === 'DisbandThread' || currentEditPage === 'LeaveThread')
+        setShowDialog(currentEditPage === 'EditThread' || currentEditPage === 'DisbandThread' || currentEditPage === 'LeaveThread'  || currentEditPage === 'Notifications')
     }, [currentEditPage])
 
+    const showMuteImgOrNot = (flag) => {
+		// setmuteFlag(flag)
+	}
     return (
         <Dialog
             open={showDialog}
@@ -188,14 +195,23 @@ const ThreadDialog = () => {
             onClose={closeDialog}
             aria-describedby="alert-dialog-slide-description"
         >
-            {showDialog && <div className={classes.dialog}>
-                <div className={classes.dialogHeader}>
-                    <div className={classes.title}>{title}</div>
-                    <img src={closeIcon} className={classes.icon} onClick={closeDialog} alt='close'></img>
+            {
+                showDialog &&
+                <div className={classes.dialog}>
+                    <div className={classes.dialogHeader}>
+                        <div className={classes.title}>{title}</div>
+                        <img src={closeIcon} className={classes.icon} onClick={closeDialog} alt='close'></img>
+                    </div>
+                    {
+                        currentEditPage === 'Notifications' ?
+                            <Notifications showMuteImgOrNot={showMuteImgOrNot} groupId={threadId} useScene="groupChat" useComponent="Thread" />
+                        : <>
+                            {renderContent()}
+                            {renderButtons()}
+                        </>
+                    }
                 </div>
-                {renderContent()}
-                {renderButtons()}
-            </div>}
+            }
         </Dialog>
     );
 }

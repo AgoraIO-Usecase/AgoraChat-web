@@ -9,17 +9,22 @@ import { loginWithToken, loginWithPassword } from '../api/loginChat'
 import { EaseApp } from "wy-chat";
 import { createHashHistory } from 'history'
 import store from '../redux/store'
-import { setMyUserInfo, setThreadInfo} from '../redux/actions'
+import { setMyUserInfo, setUnread, setCurrentSessionId, setThreadInfo } from '../redux/actions'
 import SessionInfoPopover from '../components/appbar/sessionInfo'
 import GroupMemberInfoPopover from '../components/appbar/chatGroup/memberInfo'
 import GroupSettingsDialog from '../components/appbar/chatGroup/groupSettings'
 import { Report } from '../components/report';
 import i18next from "i18next";
+import { subFriendStatus } from '../api/presence'
+import map3 from '../assets/notify.mp3'
+
+import { changeTitle } from '../utils/notification'
 
 import { truncate } from 'lodash';
 import EditThreadPanel from '../components/thread/components/editThreadPanel'
 import ThreadMembers from '../components/thread/components/threadMembers';
 import ThreadDialog from '../components/thread/components/threadDialog'
+// import { getSilentModeForConversation } from '../api/notificationPush'
 const history = createHashHistory()
 
 export default function Main() {
@@ -47,7 +52,7 @@ export default function Main() {
 
     const [groupMemberInfoAddEl, setGroupMemberInfoAddEl] = useState(null)
     const [memberInfo, setMemberInfo] = useState({})
-
+    const [presenceList, setPresenceList] = useState([])
     const [groupSettingAddEl, setGroupSettingAddEl] = useState(null)
     const [currentGroupId, setCurrentGroupId] = useState("");
 
@@ -69,9 +74,29 @@ export default function Main() {
     const handleClickGroupMemberInfoDialog = (e,res) => {
         let isGroupChat = res.chatType === "groupChat"
         if (isGroupChat) {
-            setGroupMemberInfoAddEl(e.target);
-            setMemberInfo(res)
+            subFriendStatus({usernames: [res.from]}).then(val => {
+                setPresenceList(val)
+                setMemberInfo(res)
+                setGroupMemberInfoAddEl(e.target);
+            })
         }
+    }
+
+    const handleonConversationClick = (session) => {
+        console.log(session, 'handleonConversationClick')
+        const { sessionType, sessionId } = session
+        store.dispatch(setCurrentSessionId(sessionId))
+        const { unread } = store.getState()
+        console.log(unread, 'main')
+        if (!unread[sessionType][sessionId]) {
+            unread[sessionType][sessionId] = {}
+        }
+        unread[sessionType][sessionId] = {
+            realNum: 0,
+            fakeNum: 0
+        }
+        store.dispatch(setUnread(unread))
+        changeTitle()
     }
 
     const onMessageEventClick = (e,data,msg) => {
@@ -98,17 +123,24 @@ export default function Main() {
             setmembersPanelEl(e.currentTarget)
         }
     }
+    // const onOpenThreadPanel = (obj) => {
+    //     console.log(obj, 'onOpenThreadPanel')
+    //     getSilentModeForConversation({conversationId: obj.id, type: 'groupChat', flag: 'Thread' }).then(res => {
+    //         console.log(res, 'getNotDisturbDuration')
+    //     })
+    // }
     return (
         <div className='main-container'>
             <EaseApp
                 isShowReaction={true}
                 header={<Header />}
-                isShowReaction={true}
                 onChatAvatarClick={handleClickSessionInfoDialog}
                 onAvatarChange={handleClickGroupMemberInfoDialog}
+                onConversationClick={handleonConversationClick}
                 customMessageList={[{name: i18next.t("Report"), value: 'report', position: 'others'}]}
                 customMessageClick={onMessageEventClick}
                 onEditThreadPanel={changeEditPanelStatus}
+                // onOpenThreadPanel={onOpenThreadPanel}
                 // isShowReaction
             />
             <SessionInfoPopover 
@@ -118,7 +150,8 @@ export default function Main() {
             <GroupMemberInfoPopover 
                 open={groupMemberInfoAddEl}
                 onClose={() => setGroupMemberInfoAddEl(null)}
-                memberInfo={memberInfo}/>
+                memberInfo={memberInfo}
+                presenceList={presenceList}/>
             <GroupSettingsDialog 
                 open={groupSettingAddEl}
                 onClose={() => setGroupSettingAddEl(null)}
@@ -130,6 +163,7 @@ export default function Main() {
                 onchangeEditPanelStatus = {onchangeEditPanelStatus}/>
             <ThreadMembers membersPanelEl={membersPanelEl}/>
             <ThreadDialog/>
+            <audio id="agoraChatSoundId" src={map3}></audio>
         </div>
     )
 }
