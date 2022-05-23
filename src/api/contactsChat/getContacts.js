@@ -50,13 +50,14 @@ export const addFromBlackList = (userId) => {
      store.dispatch(setBlackList(blackList));
 }
 
-export const removeFromBlackList = (userId) => {
+export const removeFromBlackList = (userId, onClose) => {
     WebIM.conn.removeFromBlackList({
         name: [userId]
     });
     let { blackList } = store.getState()
     blackList = blackList.filter((v) => v !== userId)
     store.dispatch(setBlackList(blackList))
+    onClose && onClose();
 }
 
 export const deleteContact = (userId, onClose) => {
