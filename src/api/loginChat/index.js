@@ -5,7 +5,7 @@ import { message } from '../../components/common/alert'
 
 
 export const getToken = (agoraId, nickName) => {
-    return postData('https://a71.easemob.com/app/chat/user/login', { "userAccount": agoraId, "userNickname": nickName })
+    return postData('https://a1.easemob.com/app/chat/user/login', { "userAccount": agoraId, "userNickname": nickName })
 }
 
 export const loginWithToken = (agoraId, agoraToken) => {

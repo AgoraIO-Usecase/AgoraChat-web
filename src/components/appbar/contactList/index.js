@@ -129,7 +129,7 @@ function AddressBookDialog(props) {
         // uikit
         let conversationItem = {
 			conversationType: "singleChat",
-			conversationId: itemData,
+			conversationId: itemData.name,
             ext: {
                 ext: itemData?.presence?.ext,
                 muteFlag: muteDataObj[itemData.name]
