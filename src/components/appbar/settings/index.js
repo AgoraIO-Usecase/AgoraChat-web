@@ -20,7 +20,7 @@ import { setMyUserInfo } from '../../../redux/actions'
 import store from '../../../redux/store'
 import { message } from "../../common/alert";
 
-import { removeFromBlackList } from '../../../api/contactsChat/getContacts'
+import { removeFromBlackList, deleteContact } from '../../../api/contactsChat/getContacts'
 import { handlerTime, getMillisecond, computedItervalTime, timeIntervalToMinutesOrHours, setTimeVSNowTime, getLocalStorageData } from '../../../utils/notification'
 import { setSilentModeForAll, getSilentModeForAll, getSilentModeForConversations, setPushPerformLanguage, getPushPerformLanguage } from '../../../api/notificationPush'
 
@@ -378,12 +378,12 @@ export default function Setting({ open, onClose }) {
         setAddEl(e.currentTarget)
     }
 
-    const unblockContact = (target) => {
-        removeFromBlackList(target.value)
+    const handleUnblockContact = (target) => {
+        removeFromBlackList(target.value, handleCloseMenu)
     }
 
-    const deleteContact = (target) => {
-        deleteContact(target.value)
+    const handleDeleteContact = (target) => {
+        deleteContact(target.value, handleCloseMenu )
     }
 
     const handleCheckAvatar = (index) => {
@@ -447,6 +447,9 @@ export default function Setting({ open, onClose }) {
         })
     }
 
+    const handleCloseMenu = () => {
+        setAddEl(null)
+    }
     const getNotDisturb = () => {
         getSilentModeForAll().then(res => {
             console.log(res, 'getSilentModeForAll')
@@ -633,15 +636,15 @@ export default function Setting({ open, onClose }) {
                     anchorEl={addEl}
                     keepMounted
                     open={Boolean(addEl)}
-                    onClose={() => setAddEl(null)}
+                    onClose={handleCloseMenu}
                 >
-                    <MenuItem onClick={unblockContact.bind(this, addEl)}>
+                    <MenuItem onClick={handleUnblockContact.bind(this, addEl)}>
                         <Typography variant="inherit" noWrap style={{ display: 'flex', alignItems: 'center' }}>
                             <RemoveCircleOutlineIcon style={{ width: '30px', height: '30px', marginRight: '8px' }} />
                             Unblock
                         </Typography>
                     </MenuItem>
-                    <MenuItem onClick={deleteContact.bind(this, addEl)}>
+                    <MenuItem onClick={handleDeleteContact.bind(this, addEl)}>
                         <Typography variant="inherit" noWrap style={{ display: 'flex', alignItems: 'center', color: '#FF14CC' }}>
                             <img src={deleteContactIcon} alt='deleteContact' style={{ width: '30px', height: '30px', marginRight: '8px' }} />
                             Delete Contact
