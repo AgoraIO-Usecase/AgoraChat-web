@@ -5,6 +5,7 @@ import i18next from "i18next";
 import store from "../../../../../redux/store";
 import WebIM from '../../../../../utils/WebIM'
 import { modifyGroupInfo } from "../../../../../api/groupChat/getGroupInfo";
+import { message } from "../../../../common/alert";
 
 const useStyles = makeStyles((theme) => {
 	return {
@@ -122,7 +123,12 @@ const GroupChatInfo = () => {
 		owner === currentLoginUser || admin.includes(currentLoginUser);
 
 	const handleNameChange = (e) => {
-		setNameValue(e.target.value)
+		let value = e.target.value;
+		if (value.length === 0 || value.length > 20) {
+			message.error(`${i18next.t("Group name is empty or exceeds the limit")}`);
+			return;
+		} 
+		setNameValue(value)
 	}
 
 	const handleDescChange = (e) => {

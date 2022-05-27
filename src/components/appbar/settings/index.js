@@ -571,7 +571,7 @@ export default function Setting({ open, onClose }) {
                 />
                 <Box className={classes.numberBox}>
                   <Typography className={classes.numberStyle}>
-                    {nickName.length}/{maxLength}
+                    {nickName?.length}/{maxLength}
                   </Typography>
                 </Box>
               </Box>
