@@ -18,6 +18,7 @@ const createGroup = (
 		groupPublicChecked,
 		groupApprovalChecked,
 		groupInviteChecked,
+		groupMaximumValue
 	} = groupInfo;
 	let options = {
 		data: {
@@ -28,6 +29,7 @@ const createGroup = (
 			approval: groupApprovalChecked,
 			allowinvites: groupInviteChecked,
 			inviteNeedConfirm: false,
+			maxusers: groupMaximumValue
 		},
 	};
 	WebIM.conn.createGroupNew(options).then((res) => {

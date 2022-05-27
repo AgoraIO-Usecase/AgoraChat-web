@@ -1,5 +1,7 @@
 import React, { useState,useEffect } from 'react';
 import Header from '../components/appbar'
+import ThirdSticket from '../components/appbar/thirdSticket'
+import ThirdGifs from '../components/appbar/thirdGifs'
 import './login.css'
 import getGroupInfo from '../api/groupChat/getGroupInfo'
 import WebIM from '../utils/WebIM';
@@ -134,6 +136,8 @@ export default function Main() {
             <EaseApp
                 isShowReaction={true}
                 header={<Header />}
+                thridPartyStickets={<ThirdSticket />}
+                thridPartyGifs={<ThirdGifs />}
                 onChatAvatarClick={handleClickSessionInfoDialog}
                 onAvatarChange={handleClickGroupMemberInfoDialog}
                 onConversationClick={handleonConversationClick}

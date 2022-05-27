@@ -191,6 +191,7 @@ function AddressBookDialog(props) {
                                                         >
                                                         </Avatar>
                                                     </ListItemAvatar>
+                                                    {/* <img className={classes.statusImg} alt="" src={statusImgObj[user?.presence?.ext] || customIcon} /> */}
                                                     <Box>
                                                         <Typography className={classes.itemName}>
                                                             {user.name}

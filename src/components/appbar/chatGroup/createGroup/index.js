@@ -55,7 +55,7 @@ const useStyles = makeStyles((theme) => {
         },
         gInfoSetting: {
             display: 'flex',
-            justifyContent: 'space-between',
+            // justifyContent: 'space-between',
             alignItems: 'center',
         },
         gMumberInput: {
@@ -104,7 +104,7 @@ const CreateGroup = () => {
     let descMaxLength = 300;
     const [groupNameValue, setGroupNameValue] = useState('')
     const [groupDescriptionValue, setGroupDescriptionValue] = useState('')
-    // const [groupMaximumValue, setGroupMaximumValue] = useState('')
+    const [groupMaximumValue, setGroupMaximumValue] = useState(200)
     const [groupPublicChecked, setGroupPublicChecked] = useState(true);
     const [groupApprovalChecked, setGroupApprovalChecked] = useState(true)
     const [groupInviteChecked, setGroupInviteChecked] = useState(false);
@@ -137,9 +137,12 @@ const CreateGroup = () => {
         setGroupDescriptionValue(value)
     }
     //
-    // const handleMaximumChange = (event) => {
-    //     setGroupMaximumValue(event.target.value)
-    // }
+    const handleMaximumChange = (event) => {
+      if (Number(event.target.value) > 2000) {
+          return
+      }
+      setGroupMaximumValue(event.target.value)
+    }
 
     // Group Type： prublic/private
     const handleGrooupPublicChange = (event) => {
@@ -158,7 +161,7 @@ const CreateGroup = () => {
             return;
         }
         setShowAddMemberDialog(true);
-        setGroupInfoData({ groupNameValue, groupDescriptionValue, groupPublicChecked, groupApprovalChecked, groupInviteChecked })
+        setGroupInfoData({ groupNameValue, groupDescriptionValue, groupPublicChecked, groupApprovalChecked, groupInviteChecked, groupMaximumValue })
     }
     const handleSelectUserDialogClose = () => {
         setShowAddMemberDialog(false);
