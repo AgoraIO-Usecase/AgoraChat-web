@@ -56,6 +56,10 @@ const useStyles = makeStyles((theme) => {
 			fontSize: "20px",
 			character: "0",
 			color: "#0D0D0D",
+			width:"100%",
+			overflow: "hidden",
+			textOverflow: "ellipsis",
+			whiteSpace: "nowrap",
 		},
 		gAppIdText: {
 			typeface: "Ping Fang SC",
