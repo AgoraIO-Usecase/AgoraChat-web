@@ -4,7 +4,7 @@ import i18next from "i18next";
 import store from '../../../../redux/store'
 // import { EaseApp } from "uikit-reaction";
 // import { EaseApp } from "chat-uikit";
-import { EaseApp } from "wy-chat";
+import { EaseApp } from "chat-uikit2";
 import CommonDialog from '../../../common/dialog'
 import createGroup from '../../../../api/groupChat/createGroup'
 import { Box, Checkbox, List, ListItem, InputBase } from '@material-ui/core';
@@ -49,12 +49,13 @@ const useStyles = makeStyles((theme) => {
             color: '#999999'
         },
         gDescriptionText: {
-            typeface: 'Ping Fang SC',
-            fontWeight: 'Regular(400)',
+            fontFamily: 'Ping Fang SC',
+            fontWeight: '400',
             fontSize: '12px',
             character: '0',
-            lineHeight: '16(1.333)',
-            color: '#000000'
+            lineHeight: '16px',
+            color: '#000000',
+            wordBreak: "break-all"
         },
         gUserBox: {
             width: '100%',
