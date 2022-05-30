@@ -174,6 +174,9 @@ const initListen = () => {
                 case 'subscribed':
                     getContacts();
                     break;
+                case 'unsubscribed':
+                    getContacts();
+                    break;
                 case 'joinPublicGroupSuccess':
                 case 'direct_joined':
                     getGroups();
