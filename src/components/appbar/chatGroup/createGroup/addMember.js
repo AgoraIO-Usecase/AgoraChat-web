@@ -153,6 +153,7 @@ const AddGroupMemberDialog = ({ groupInfoData, onClearValue, open, onClose }) =>
 		let conversationItem = {
 			conversationType: "groupChat",
 			conversationId: itemData,
+            conversationName: groupNameValue,
 		};
 		EaseApp.addConversationItem(conversationItem);
 		onClose();
