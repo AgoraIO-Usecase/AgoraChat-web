@@ -82,7 +82,7 @@ export default function Header() {
         // getGroups();
     }
 
-    const newChatDialog = () => {
+    const handleNewChatDialog = () => {
         setShowContact(true)
         setAddEl(null)
     }
@@ -90,10 +90,22 @@ export default function Header() {
 
     function handleAddFriendDialogClose() {
         setShowAddFriend(false)
+        setAddEl(null)
     }
 
     function addFriend() {
         setShowAddFriend(true)
+        setAddEl(null)
+    }
+
+    function handleRequestsDialog() {
+        setShowRequest(true)
+        setAddEl(null)
+    }
+
+    function handlleSettingDialog(params) {
+        setShowUserSetting(true)
+        setAddEl(null)
     }
 
     function createGroupDialog() {
@@ -131,7 +143,7 @@ export default function Header() {
                     open={Boolean(addEl)}
                     onClose={() => setAddEl(null)}
                 >
-                    <MenuItem onClick={newChatDialog}>
+                    <MenuItem onClick={handleNewChatDialog}>
                         <Typography variant="inherit" noWrap style={{ display: 'flex', alignItems: 'center' }}>
                             <img src={newChatIcon} alt='new chat' style={{ width: '30px' }} />
                             New Chat
@@ -149,7 +161,7 @@ export default function Header() {
                             Add Contact
                     </Typography>
                     </MenuItem>
-                    <MenuItem onClick={() => setShowRequest(true)} style={{ justifyContent: 'space-between' }}>
+                    <MenuItem onClick={handleRequestsDialog} style={{ justifyContent: 'space-between' }}>
                         <Typography variant="inherit" noWrap style={{ display: 'flex', alignItems: 'center' }}>
                             <img src={requestsIcon} alt='new chat' style={{ width: '30px' }} />
                             Requests
@@ -157,7 +169,7 @@ export default function Header() {
                         {unDealRequestsNum > 0 ? <p style={{ width: '12px', height: '12px', background: '#FF14CC', borderRadius: '6px' }}></p> : null}
 
                     </MenuItem>
-                    <MenuItem onClick={() => setShowUserSetting(true)}>
+                    <MenuItem onClick={handlleSettingDialog}>
                         <Typography variant="inherit" noWrap style={{ display: 'flex', alignItems: 'center' }}>
                             <img src={settingsIcon} alt='new chat' style={{ width: '30px' }} />
                             Settings
