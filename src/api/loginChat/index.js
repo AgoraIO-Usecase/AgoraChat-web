@@ -5,7 +5,7 @@ import { message } from '../../components/common/alert'
 
 
 export const getToken = (agoraId, nickName) => {
-    return postData('https://a1.easemob.com/app/chat/user/login', { "userAccount": agoraId, "userNickname": nickName })
+    return postData('https://a41.easemob.com/app/chat/user/login', { "userAccount": agoraId, "userNickname": nickName })
 }
 
 export const loginWithToken = (agoraId, agoraToken) => {
@@ -41,9 +41,9 @@ export const loginWithPassword = (agoraId, password) => {
         const { accessToken } = res
         store.dispatch(setMyUserInfo({ agoraId, password }))
         sessionStorage.setItem('webim_auth', JSON.stringify({ agoraId, password, accessToken }))
-    }).catch((err)=>{
+    }).catch((err) => {
         store.dispatch(setFetchingStatus(false))
-        message.error('login fail.')
+        // message.error('login fail.')
     })
 }
 
