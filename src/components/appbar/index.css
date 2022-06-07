@@ -24,8 +24,16 @@
     font-weight: 800;
 }
 
+.chatlist-header-title img{
+    width: 114.29px;
+    height: 20.21px;
+}
+
 .chatlist-header-more {
-    transform: rotate(90deg);
     cursor: pointer;
     position: relative;
+}
+.chatlist-header-more img{
+    width: 32px;
+    height: 32px;
 }

@@ -18,6 +18,8 @@ import logoutIcon from '../../assets/logout@2x.png'
 import avater1 from '../../assets/avatar1.png'
 import avater2 from '../../assets/avatar2.png'
 import avater3 from '../../assets/avatar3.png'
+import AgoraChat from '../../assets/AgoraChat@2x.png'
+import menuIcon from '../../assets/menu@2x.png'
 import store from '../../redux/store'
 import { setMyUserInfo, closeGroupChatAction } from '../../redux/actions'
 import { logout } from '../../api/loginChat'
@@ -131,8 +133,11 @@ export default function Header() {
                 {/* <div className='chatlist-header-avatar'></div> */}
                 <Avatar style={{ width: 40, height: 40 }} src={avatarUrl} ></Avatar>
                 <PresenceStatus style={{position: 'absolute', bottom: '10px', left: '40px'}} />
-                <div className='chatlist-header-title'>AgoraChat</div>
-                <div className='chatlist-header-more' onClick={handleClickMore}>...
+                <div className='chatlist-header-title'>
+                    <img src={AgoraChat} alt="agora chat"/>
+                </div>
+                <div className='chatlist-header-more' onClick={handleClickMore}>
+                    <img src={menuIcon} alt="menu"/>
                 {unDealRequestsNum > 0 ? <p style={{ width: '6px', height: '6px', background: '#FF14CC', borderRadius: '3px', position: 'absolute', top: '-12px', left: '-5px' }}></p> : null}
                 </div>
 
