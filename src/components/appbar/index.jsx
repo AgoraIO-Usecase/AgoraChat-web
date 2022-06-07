@@ -18,6 +18,10 @@ import logoutIcon from '../../assets/logout@2x.png'
 import avater1 from '../../assets/avatar1.png'
 import avater2 from '../../assets/avatar2.png'
 import avater3 from '../../assets/avatar3.png'
+import avater4 from '../../assets/avatar4.png'
+import avater5 from '../../assets/avatar5.png'
+import avater6 from '../../assets/avatar6.png'
+import avater7 from '../../assets/avatar7.png'
 import AgoraChat from '../../assets/AgoraChat@2x.png'
 import menuIcon from '../../assets/menu@2x.png'
 import store from '../../redux/store'
@@ -29,7 +33,7 @@ import getGroups from '../../api/groupChat/getGroups'
 import PresenceStatus from './presence/index'
 import { useSelector } from "react-redux";
 
-const AVATARS = [avater1, avater2, avater3]
+const AVATARS = [avater1, avater2, avater3, avater4, avater5, avater6, avater7]
 export default function Header() {
     const [addEl, setAddEl] = useState(null)
     const [showAddFriend, setShowAddFriend] = useState(false)

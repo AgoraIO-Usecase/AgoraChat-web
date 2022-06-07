@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import CommonDialog from "../../common/dialog";
 import i18next, { use } from "i18next";
 import { Avatar, Button, TextField, List, ListItem, ListItemAvatar, Menu, MenuItem, Box, Switch, Select, RadioGroup, FormControlLabel, Radio } from "@material-ui/core";
+import ListItemButton from '@mui/material/ListItemButton';
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import editIcon from '../../../assets/white@2x.png'
@@ -12,8 +13,21 @@ import deleteContactIcon from '../../../assets/deletecontact@2x.png'
 import avater1 from '../../../assets/avatar1.png'
 import avater2 from '../../../assets/avatar2.png'
 import avater3 from '../../../assets/avatar3.png'
+import avater4 from '../../../assets/avatar4.png'
+import avater5 from '../../../assets/avatar5.png'
+import avater6 from '../../../assets/avatar6.png'
+import avater7 from '../../../assets/avatar7.png'
+import avaterSelect from '../../../assets/avatar_select@2x.png'
+
 import CheckIcon from '@material-ui/icons/Check';
 import arrow from '../../../assets/go@2x.png'
+
+import aboutIcon from '../../../assets/about@2x.png'
+import privacyIcon from '../../../assets/privacy@2x.png'
+import notificationsIcon from '../../../assets/notifications@2x.png'
+import generalIcon from '../../../assets/general@2x.png'
+import infoIcon from '../../../assets/info@2x.png'
+
 
 import { useSelector } from 'react-redux'
 import { setMyUserInfo } from '../../../redux/actions'
@@ -26,246 +40,256 @@ import { setSilentModeForAll, getSilentModeForAll, getSilentModeForConversations
 
 const useStyles = makeStyles((theme) => {
     return {
-      root: {
-        display: "flex",
-        alignItems: "center",
-        width: "680px",
-        minHeight: theme.spacing(30),
-        // paddingBottom: theme.spacing(4),
-        // margin: "16px 24px",
-      },
-      gridItem: {
-        display: "flex",
-        alignItems: "center",
-      },
-
-      settingInfoBox: {
-        width: "280px",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        marginBottom: "10px",
-        "& div:nth-last-child(2)": {
-          marginTop: "-12px",
-          fontSize: "20px",
-          fontWeight: "600",
+        root: {
+            display: "flex",
+            alignItems: "center",
+            width: "680px",
+            minHeight: theme.spacing(30),
+            // paddingBottom: theme.spacing(4),
+            // margin: "16px 24px",
         },
-        "& div:nth-last-child(1)": {
-          color: "#999999",
-          fontSize: "12px",
+        gridItem: {
+            display: "flex",
+            alignItems: "center",
         },
-      },
 
-      settingMenuBox: {
-        display: "flex",
-        flexDirection: "column",
-      },
-
-      tabsInfo: {
-        height: "462px",
-      },
-      avatarEditIcon: {
-        position: "relative",
-        top: "-60px",
-        width: "24px",
-        height: "24px",
-        cursor: "pointer",
-      },
-
-      infoPanel: {
-        width: "100%",
-        height: "450px",
-        backgroundColor: "#EDEFF2",
-        padding: "6px 8px",
-        display: "flex",
-      },
-      infoItem: {
-        backgroundColor: "#F4F5F7",
-        borderRadius: "16px",
-        height: "55px",
-        width: "100%",
-        lineHeight: "55px",
-        padding: "0 16px",
-        boxSizing: "border-box",
-        position: "relative",
-        "& span:nth-child(3)": {
-          color: "#005FFF",
-          position: "absolute",
-          right: "8px",
-          cursor: "pointer",
+        settingInfoBox: {
+            width: "280px",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            marginBottom: "10px",
+            "& div:nth-last-child(2)": {
+                marginTop: "-12px",
+                fontSize: "20px",
+                fontWeight: "600",
+            },
+            "& div:nth-last-child(1)": {
+                color: "#999999",
+                fontSize: "12px",
+            },
         },
-        "& span:nth-child(2)": {
-          fontSize: "16px",
-          marginLeft: "16px",
+
+        settingMenuBox: {
+            display: "flex",
+            flexDirection: "column",
         },
-      },
 
-      privacyItemInfo: {
-        display: "flex",
-        alignItems: "center",
-      },
+        tabsInfo: {
+            height: "462px",
+        },
+        avatarEditIcon: {
+            position: "relative",
+            top: "-60px",
+            width: "24px",
+            height: "24px",
+            cursor: "pointer",
+        },
 
-      aboutItem: {
-        background: '#F4F5F7',
-        height: '50px',
-        lineHeight: '50px',
-        margin: '2px 0',
-        padding: '0 8px'
-    },
-    textfieldStyle:{
-        width:"100%"
-    },
-    numberBox: {
-        height: "20px",
-        display: "flex",
-        justifyContent: "flex-end",
-        marginTop: "5px",
-        padding: "5px",
-    },
-    numberStyle: {
-        fontFamily: "PingFang SC",
-        fontWeight: "400",
-        style: "normal",
-        fontSize: "14px",
-        LineHeight: "20px",
-        color: "#CCCCCC",
-    },
-    notificationPanel: {
-        width: '100%',
-        height: '450px',
-        backgroundColor: '#EDEFF2',
-        padding: '6px 8px',
-        overflow: 'auto',
-    },
-    notificationItem: {
-        backgroundColor: '#F4F5F7',
-        borderRadius: '16px',
-        width: '100%',
-        boxSizing: 'border-box',
-    },
-    notifyTitle: {
-        fontWeight: '600',
-        fontSize: '16px',
-        lineHeight: '54px',
-        color: '#0D0D0D',
-        borderBottom: '1px solid #E6E6E6',
-        height: '54px',
-        padding: '0 16px',
-    },
-    notifySubTitle: {
-        fontWeight: '600',
-        fontSize: '14px',
-        lineHeight: '22px',
-        color: '#0D0D0D',
-    },
-    selectAndRadio: {
-        margin: '0 16px',
-    },
-    arrowImg: {
-        width: '20px',
-        height: '20px',
-        cursor: 'pointer',
-    },
-    arrowDownImg: {
-        transform: 'rotate(90deg)',
-    },
-    arrowUpImg: {
-        transform: 'rotate(-90deg)',
-    },
-    notifySelect: {
-        background: '#fff',
-        width: '160px',
-        height: '40px',
-    },
-    radioColor: {
-        '&.Mui-checked': {
-            color: '#005FFF',
-        }
-    },
-    previewStyle: {
-        borderTop: '1px solid #E6E6E6'
-    },
-    bottomStyle: {
-        height: '52px',
-    },
-    alertStyle: {
-        margin: '0 16px',
-    },
-    bottomItem: {
-        marginTop: '10px',
-    },
-    flexBox: {
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-    },
-    notifyPrayTitle: {
-        color: 'rgb(153, 153, 153)',
-        fontSize: '14px',
-        fontWeight: '600',
-        marginLeft: '5px',
-    },
-    btnBox: {
-        width: '100%',
-        textAlign: 'right'
-    },
-    btnStyle: {
-        background: '#114EFF',
-        borderRadius: '26px',
-        width: '84px',
-        height: '28px',
-        color: '#fff',
-        display: 'inline-block',
-        textAlign: 'center',
-        lineHeight: '28px',
-        cursor: 'pointer',
-    },
-    turnStyle: {
-        fontWeight: '500',
-        fontSize: '14px',
-        textAlign: 'right',
-        color: '#114EFF',
-        cursor: 'pointer',
-    },
-    switchStyle: {
-        '& .Mui-checked': {
+        infoPanel: {
+            width: "100%",
+            height: "450px",
+            backgroundColor: "#EDEFF2",
+            padding: "6px 8px",
+            display: "flex",
+            flexFlow: 'wrap',
+            alignContent: 'flexStart'
+        },
+        infoItem: {
+            backgroundColor: "#F4F5F7",
+            borderRadius: "16px",
+            height: "55px",
+            width: "100%",
+            lineHeight: "55px",
+            padding: "0 16px",
+            boxSizing: "border-box",
+            position: "relative",
+            "& span:nth-child(3)": {
+                color: "#005FFF",
+                position: "absolute",
+                right: "8px",
+                cursor: "pointer",
+            },
+            "& span:nth-child(2)": {
+                fontSize: "16px",
+                marginLeft: "16px",
+            },
+        },
+
+        privacyItemInfo: {
+            display: "flex",
+            alignItems: "center",
+        },
+
+        aboutItem: {
+            background: '#F4F5F7',
+            height: '50px',
+            lineHeight: '50px',
+            margin: '2px 0',
+            padding: '0 8px'
+        },
+        textfieldStyle: {
+            width: "100%"
+        },
+        numberBox: {
+            height: "20px",
+            display: "flex",
+            justifyContent: "flex-end",
+            marginTop: "5px",
+            padding: "5px",
+        },
+        numberStyle: {
+            fontFamily: "PingFang SC",
+            fontWeight: "400",
+            style: "normal",
+            fontSize: "14px",
+            LineHeight: "20px",
+            color: "#CCCCCC",
+        },
+        notificationPanel: {
+            width: '100%',
+            height: '450px',
+            backgroundColor: '#EDEFF2',
+            padding: '6px 8px',
+            overflow: 'auto',
+        },
+        notificationItem: {
+            backgroundColor: '#F4F5F7',
+            borderRadius: '16px',
+            width: '100%',
+            boxSizing: 'border-box',
+        },
+        notifyTitle: {
+            fontWeight: '600',
+            fontSize: '16px',
+            lineHeight: '54px',
+            color: '#0D0D0D',
+            borderBottom: '1px solid #E6E6E6',
+            height: '54px',
+            padding: '0 16px',
+        },
+        notifySubTitle: {
+            fontWeight: '600',
+            fontSize: '14px',
+            lineHeight: '22px',
+            color: '#0D0D0D',
+        },
+        selectAndRadio: {
+            margin: '0 16px',
+        },
+        arrowImg: {
+            width: '20px',
+            height: '20px',
+            cursor: 'pointer',
+        },
+        arrowDownImg: {
+            transform: 'rotate(90deg)',
+        },
+        arrowUpImg: {
+            transform: 'rotate(-90deg)',
+        },
+        notifySelect: {
+            background: '#fff',
+            width: '160px',
+            height: '40px',
+        },
+        radioColor: {
+            '&.Mui-checked': {
+                color: '#005FFF',
+            }
+        },
+        previewStyle: {
+            borderTop: '1px solid #E6E6E6'
+        },
+        bottomStyle: {
+            height: '52px',
+        },
+        alertStyle: {
+            margin: '0 16px',
+        },
+        bottomItem: {
+            marginTop: '10px',
+        },
+        flexBox: {
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+        },
+        notifyPrayTitle: {
+            color: 'rgb(153, 153, 153)',
+            fontSize: '14px',
+            fontWeight: '600',
+            marginLeft: '5px',
+        },
+        btnBox: {
+            width: '100%',
+            textAlign: 'right'
+        },
+        btnStyle: {
+            background: '#114EFF',
+            borderRadius: '26px',
+            width: '84px',
+            height: '28px',
             color: '#fff',
+            display: 'inline-block',
+            textAlign: 'center',
+            lineHeight: '28px',
+            cursor: 'pointer',
+        },
+        turnStyle: {
+            fontWeight: '500',
+            fontSize: '14px',
+            textAlign: 'right',
+            color: '#114EFF',
+            cursor: 'pointer',
+        },
+        switchStyle: {
+            '& .Mui-checked': {
+                color: '#fff',
+            }
+        },
+        switchOpenStyle: {
+            '& .MuiSwitch-track': {
+                background: 'rgb(49, 78, 238) !important',
+                opacity: '1 !important',
+            }
+        },
+        contentBox: {
+            margin: '20px',
+            fontSize: '14px',
+            width: '540px',
+        },
+        turnOffBtnStyle: {
+            width: '84px',
+            height: '36px',
+            color: '#000',
+            display: 'inline-block',
+            textAlign: 'center',
+            lineHeight: '36px',
+            cursor: 'pointer',
+            fontSize: '14px',
+        },
+        rightBtn: {
+            margin: '0px 20px 20px 10px',
+            fontSize: '14px',
+        },
+        unmuteTimeStyle: {
+            color: '#0D0D0D',
+            fontSize: '16px',
+            fontWeight: 'normal',
+        },
+        menuIcon: {
+            width: '30px',
+            height: '30px'
+        },
+        menuBtn: {
+            justifyContent: 'start',
+            textTransform: 'none'
         }
-    },
-    switchOpenStyle: {
-        '& .MuiSwitch-track': {
-            background: 'rgb(49, 78, 238) !important',
-            opacity: '1 !important',
-        }
-    },
-    contentBox: {
-        margin: '20px',
-        fontSize: '14px',
-        width: '540px',
-    },
-    turnOffBtnStyle: {
-        width: '84px',
-        height: '36px',
-        color: '#000',
-        display: 'inline-block',
-        textAlign: 'center',
-        lineHeight: '36px',
-        cursor: 'pointer',
-        fontSize: '14px',
-    },
-    rightBtn: {
-        margin: '0px 20px 20px 10px',
-        fontSize: '14px',
-    },
-    unmuteTimeStyle: {
-        color: '#0D0D0D',
-        fontSize: '16px',
-        fontWeight: 'normal',
-    },
-}
+    }
 })
 
-const AVATARS = [avater1, avater2, avater3]
+const AVATARS = [avater1, avater2, avater3, avater4, avater5, avater6, avater7]
 const selectList = [
     {
         id: 1,
@@ -348,13 +372,13 @@ export default function Setting({ open, onClose }) {
     };
 
     const handleMenuClick = (e) => {
-        if (e.target.innerHTML === 'info') {
+        if (e.target.innerHTML.includes('Info')) {
             setTabIndex(1)
-        } else if (e.target.innerHTML === 'privacy') {
+        } else if (e.target.innerHTML.includes('Privacy')) {
             setTabIndex(2)
-        } else if (e.target.innerHTML === 'about') {
+        } else if (e.target.innerHTML.includes('About')) {
             setTabIndex(3)
-        } else if (e.target.innerHTML === 'Notifications') {
+        } else if (e.target.innerHTML.includes('Notifications')) {
             setTabIndex(4)
         }
     }
@@ -370,7 +394,7 @@ export default function Setting({ open, onClose }) {
         if (value.length === 0 || value.length > 12) {
             message.error(`${i18next.t("Nickname is empty or exceeds the limit")}`);
             return;
-        } 
+        }
         setNickName(e.target.value);
     }
 
@@ -383,7 +407,7 @@ export default function Setting({ open, onClose }) {
     }
 
     const handleDeleteContact = (target) => {
-        deleteContact(target.value, handleCloseMenu )
+        deleteContact(target.value, handleCloseMenu)
     }
 
     const handleCheckAvatar = (index) => {
@@ -407,12 +431,24 @@ export default function Setting({ open, onClose }) {
                     <div>{nickName}</div>
                     <div>AgoraID: {myUserInfo?.agoraId}</div>
                 </div>
-                <div className={classes.settingMenuBox} onClick={handleMenuClick}>
-                    <Button key={0} style={{ justifyContent: 'start' }} >info</Button>
-                    <Button key={3} style={{ justifyContent: 'start' }} >Notifications</Button>
-                    <Button key={1} style={{ justifyContent: 'start' }} >privacy</Button>
-                    <Button key={2} style={{ justifyContent: 'start' }}>about</Button>
-                </div>
+                <List className={classes.settingMenuBox} onClick={handleMenuClick}>
+                    <ListItemButton key={0} className={classes.menuBtn} selected={tabIndex === 1}>
+                        <img src={infoIcon} alt="info" className={classes.menuIcon} />
+                        Info
+                    </ListItemButton>
+                    <ListItemButton key={3} className={classes.menuBtn} selected={tabIndex === 4}>
+                        <img src={notificationsIcon} alt="notifications" className={classes.menuIcon} />
+                        Notifications
+                    </ListItemButton>
+                    <ListItemButton key={1} className={classes.menuBtn} selected={tabIndex === 2}>
+                        <img src={privacyIcon} alt="privacy" className={classes.menuIcon} />
+                        Privacy
+                    </ListItemButton>
+                    <ListItemButton key={2} className={classes.menuBtn} selected={tabIndex === 3}>
+                        <img src={aboutIcon} alt="about" className={classes.menuIcon} />
+                        About
+                    </ListItemButton>
+                </List>
             </div>
         )
     }
@@ -557,32 +593,32 @@ export default function Setting({ open, onClose }) {
     }
     function infoTabPanel() {
         return (
-          <div className={classes.infoPanel}>
-            {editStatus ? (
-              <Box className={classes.textfieldStyle}>
-                <TextField
-                  onBlur={handleEditBlur}
-                  onChange={handleEditChange}
-                  id="filled-helperText"
-                  label="NickName"
-                  defaultValue={nickName}
-                  variant="filled"
-                  fullWidth
-                />
-                <Box className={classes.numberBox}>
-                  <Typography className={classes.numberStyle}>
-                    {nickName?.length}/{maxLength}
-                  </Typography>
-                </Box>
-              </Box>
-            ) : (
-              <div className={classes.infoItem}>
-                <span>NickName</span>
-                <span>{nickName}</span>
-                <span onClick={handleEditClick}>Edit</span>
-              </div>
-            )}
-          </div>
+            <div className={classes.infoPanel}>
+                {editStatus ? (
+                    <Box className={classes.textfieldStyle}>
+                        <TextField
+                            onBlur={handleEditBlur}
+                            onChange={handleEditChange}
+                            id="filled-helperText"
+                            label="NickName"
+                            defaultValue={nickName}
+                            variant="filled"
+                            fullWidth
+                        />
+                        <Box className={classes.numberBox}>
+                            <Typography className={classes.numberStyle}>
+                                {nickName?.length}/{maxLength}
+                            </Typography>
+                        </Box>
+                    </Box>
+                ) : (
+                    <div className={classes.infoItem}>
+                        <span>NickName</span>
+                        <span>{nickName}</span>
+                        <span onClick={handleEditClick}>Edit</span>
+                    </div>
+                )}
+            </div>
         );
     }
 
@@ -661,7 +697,14 @@ export default function Setting({ open, onClose }) {
                 {AVATARS.map((value, index) => {
                     return (<div style={{ width: '117px', height: '117px', margin: '5px', borderRadius: '4px', overflow: 'hidden' }} onClick={() => { handleCheckAvatar(index) }} key={value}>
                         <img src={value} alt='avatar1' style={{ width: '100%' }} />
-                        {avatarIndex === index ? <CheckIcon style={{ fontSize: 50, color: '#fff', position: 'relative', top: '-80px', right: '-40px' }} /> : null}
+                        {
+                            avatarIndex === index ? <img src={avaterSelect} alt="select" style={{
+                                position: 'relative',
+                                top: '-119px',
+                                right: '0',
+                                width: '117px'
+                            }} /> : null
+                        }
                     </div>)
                 })}
             </div>
@@ -703,7 +746,7 @@ export default function Setting({ open, onClose }) {
                                     // disabled={selectDisabled}
                                     renderValue={(selected) => {
                                         if (selected.length === 0) {
-                                          return <em>Please Select</em>
+                                            return <em>Please Select</em>
                                         }
                                         let tempStr = ''
                                         selectList.forEach(item => {
@@ -715,7 +758,7 @@ export default function Setting({ open, onClose }) {
                                     }}
                                 >
                                     {
-                                        selectList.map(item=> {
+                                        selectList.map(item => {
                                             return (
                                                 <MenuItem key={item.value} value={item.value}>{item.label}</MenuItem>
                                             )
@@ -733,8 +776,8 @@ export default function Setting({ open, onClose }) {
                                     </div>
                                     {
                                         checkedValue && turnOffBtnFlag ?
-                                        <span onClick={handlerTurnOffBtn} className={classes.turnStyle}>Turn Off</span>
-                                        : <img className={`${classes.arrowImg} ${showRadio ? classes.arrowUpImg : classes.arrowDownImg}`} alt="" onClick={handlerArrowImg} src={arrow} />
+                                            <span onClick={handlerTurnOffBtn} className={classes.turnStyle}>Turn Off</span>
+                                            : <img className={`${classes.arrowImg} ${showRadio ? classes.arrowUpImg : classes.arrowDownImg}`} alt="" onClick={handlerArrowImg} src={arrow} />
                                     }
                                 </div>
                                 {showRadio ?
