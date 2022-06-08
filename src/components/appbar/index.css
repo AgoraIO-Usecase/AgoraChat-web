@@ -29,3 +29,6 @@
     cursor: pointer;
     position: relative;
 }
+.MuiDialog-paperWidthSm {
+    border-radius: 12px;
+}

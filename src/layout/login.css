@@ -88,3 +88,14 @@
 .main-container {
     flex: 1;
 }
+.sign-up-box {
+    color: #ccc;
+    text-align: center;
+    margin-top: 20px;
+    font-size: 14px;
+}
+.sign-up {
+    color: #114EFF;
+    margin-left: 5px;
+    cursor: pointer;
+}

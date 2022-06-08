@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import CommonDialog from "../../../common/dialog";
 import i18next from "i18next";
@@ -29,6 +29,8 @@ import transferIcon from "../../../../assets/transfer@2x.png";
 import deleteIcon from "../../../../assets/red@2x.png";
 import muteIcon from '../../../../assets/unmute.png'
 import muteGrayIcon from '../../../../assets/gray@2x.png'
+import { setTimeVSNowTime } from '../../../../utils/notification'
+import { getSilentModeForConversation } from '../../../../api/notificationPush'
 
 const useStyles = makeStyles((theme) => {
 	return {
@@ -128,9 +130,8 @@ const useStyles = makeStyles((theme) => {
 			padding:"6px 12px"
 		},
 		muteImgstyle: {
-			width: '20px',
-			height: '20px',
-			verticalAlign: 'text-top',
+			width: '12.86px',
+			height: '12.86px',
 		}
 	};
 });
@@ -150,6 +151,22 @@ const GroupSettingsDialog = ({ open, onClose, currentGroupId }) => {
 	};
 	const showMuteImgOrNot = (flag) => {
 		setmuteFlag(flag)
+	}
+	useEffect(() => {
+		if (groupId) {
+			getNotDisturbGroup(groupId)
+		}
+	}, [groupId])
+	const getNotDisturbGroup = (groupId) => {
+		getSilentModeForConversation({conversationId: groupId, type: 'groupChat', flag: 'Group' }).then(res => {
+			if (res.ignoreDuration) {
+				if (setTimeVSNowTime(res, true)) {
+					setmuteFlag(false)
+				} else {
+					setmuteFlag(true)
+				}
+			}
+		})
 	}
 	const renderSetting = () => {
 		const memberLabel = () => {

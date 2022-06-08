@@ -14,7 +14,8 @@ import avater2 from '../../../assets/avatar2.png'
 import avater3 from '../../../assets/avatar3.png'
 import CheckIcon from '@material-ui/icons/Check';
 import arrow from '../../../assets/go@2x.png'
-
+import checkgrayIcon from '../../../assets/check_gray.png'
+import muteIcon from '../../../assets/go@2x.png'
 import { useSelector } from 'react-redux'
 import { setMyUserInfo } from '../../../redux/actions'
 import store from '../../../redux/store'
@@ -162,9 +163,10 @@ const useStyles = makeStyles((theme) => {
         margin: '0 16px',
     },
     arrowImg: {
-        width: '20px',
-        height: '20px',
+        width: '15px',
+        height: '15px',
         cursor: 'pointer',
+        marginRight: '10px',
     },
     arrowDownImg: {
         transform: 'rotate(90deg)',
@@ -183,7 +185,8 @@ const useStyles = makeStyles((theme) => {
         }
     },
     previewStyle: {
-        borderTop: '1px solid #E6E6E6'
+        borderTop: '1px solid #E6E6E6',
+        width: '97%',
     },
     bottomStyle: {
         height: '52px',
@@ -198,6 +201,9 @@ const useStyles = makeStyles((theme) => {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
+    },
+    cursorStyle: {
+        cursor: 'pointer'
     },
     notifyPrayTitle: {
         color: 'rgb(153, 153, 153)',
@@ -219,6 +225,8 @@ const useStyles = makeStyles((theme) => {
         textAlign: 'center',
         lineHeight: '28px',
         cursor: 'pointer',
+        fontSize: '14px',
+        fontWeight: '600',
     },
     turnStyle: {
         fontWeight: '500',
@@ -228,19 +236,22 @@ const useStyles = makeStyles((theme) => {
         cursor: 'pointer',
     },
     switchStyle: {
-        '& .Mui-checked': {
-            color: '#fff',
-        }
+        // '& .Mui-checked': {
+        //     color: '#fff',
+        // }
+    },
+    switchStyleMargin: {
+        marginRight: '-10px',
     },
     switchOpenStyle: {
-        '& .MuiSwitch-track': {
-            background: 'rgb(49, 78, 238) !important',
-            opacity: '1 !important',
-        }
+        // '& .MuiSwitch-track': {
+        //     background: 'rgb(49, 78, 238) !important',
+        //     opacity: '1 !important',
+        // }
     },
     contentBox: {
         margin: '20px',
-        fontSize: '14px',
+        fontSize: '16px',
         width: '540px',
     },
     turnOffBtnStyle: {
@@ -251,17 +262,108 @@ const useStyles = makeStyles((theme) => {
         textAlign: 'center',
         lineHeight: '36px',
         cursor: 'pointer',
-        fontSize: '14px',
+        fontSize: '16px',
+        fontWeight: '600',
     },
     rightBtn: {
         margin: '0px 20px 20px 10px',
-        fontSize: '14px',
+        fontSize: '16px',
+        background: '#114EFF',
+        borderRadius: '26px',
+        height: '36px',
+        width: '84px',
+        color: '#fff',
+        textAlign: 'center',
+        display: 'inline-block',
+        lineHeight: '36px',
+        cursor: 'pointer',
+        fontWeight: '600',
     },
     unmuteTimeStyle: {
         color: '#0D0D0D',
         fontSize: '16px',
-        fontWeight: 'normal',
+        fontWeight: '500',
     },
+    imgStyle: {
+        width: '15px',
+        height: '15px',
+    },
+    imgUpStyle: {
+        transform: 'rotate(-90deg)',
+    },
+    imgDownStyle: {
+        transform: 'rotate(90deg)',
+    },
+    mySelect: {
+        position: 'relative',
+        background: '#FFFFFF',
+        borderRadius: '10px',
+        height: '40px',
+        width: '162px',
+    },
+    selectTop: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        padding: '0 10px',
+        boxSizing: 'border-box',
+        cursor: 'pointer',
+    },
+    selectDefaultText: {
+        fontFamily: 'Roboto',
+        fontStyle: 'normal',
+        fontWeight: '500',
+        fontSize: '14px',
+        color: '#000000',
+        lineHeight: '40px',
+    },
+    selectBottom: {
+        width: '178px',
+        position: 'absolute',
+        top: '46px',
+        left: '-6px',
+        background: '#F4F5F7',
+        boxShadow: '0px 24px 36px rgba(0, 0, 0, 0.2), 8px 0px 24px rgba(0, 0, 0, 0.16)',
+        borderRadius: '12px',
+        padding: '8px 8px 0px 8px',
+        boxSizing: 'border-box',
+        zIndex: '1',
+    },
+    selectTextlist: {
+        height: '39px',
+        width: '162px',
+        borderRadius: '8px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        padding: '0 10px',
+        boxSizing: 'border-box',
+        marginBottom: '8px',
+        cursor: 'pointer',
+        '&:hover': {
+            background: '#FFFFFF',
+        }
+    },
+    selectChecked: {
+        background: '#FFFFFF',
+    },
+    selectOption: {
+        fontFamily: 'Roboto',
+        fontStyle: 'normal',
+        fontWeight: '500',
+        fontSize: '14px',
+        lineHeight: '39px',
+        color: '#000000',
+    },
+    checkedStyle: {
+        width: '15px',
+        verticalAlign: 'middle'
+    },
+    commonDialog: {
+        '& .MuiDialog-paperWidthSm': {
+            borderRadius: '12px'
+        }
+    }
 }
 })
 
@@ -270,17 +372,20 @@ const selectList = [
     {
         id: 1,
         value: 'ALL',
-        label: 'All Message'
+        label: 'All Message',
+        checked: true
     },
     {
         id: 2,
         value: 'AT',
-        label: 'Only @Metion'
+        label: 'Only @Metion',
+        checked: false
     },
     {
         id: 3,
         value: 'NONE',
-        label: 'Nothing'
+        label: 'Nothing',
+        checked: false
     }
 ]
 const radioList = [
@@ -323,7 +428,7 @@ export default function Setting({ open, onClose }) {
     const [avatarIndex, setAvatarIndex] = useState(null)
     const [addEl, setAddEl] = useState(null)
     const [notifyText, setNotifyText] = useState('ALL');
-    const [defaultValue, setDefaultValue] = useState('')
+    const [defaultValue, setDefaultValue] = useState('0')
     const [showRadio, setShowRadio] = useState(false)
     const [checkedValue, setCheckedValue] = useState('')
     const [textSwitch, setTextSwitch] = useState(false)
@@ -333,6 +438,8 @@ export default function Setting({ open, onClose }) {
     const [turnOffBtnFlag, setTurnOffBtnFlag] = useState(false)
     const myUserInfo = useSelector(state => state?.myUserInfo)
     const blackList = useSelector(state => state?.blackList) || []
+    const [showSelectOption, setShowSelectOption] = useState(false)
+    const [selectContent, setSelectContent] = useState('All Message')
     useEffect(() => {
         if (myUserInfo) {
             setNickName(myUserInfo.nickName)
@@ -430,16 +537,24 @@ export default function Setting({ open, onClose }) {
             return notificationTabPanel()
         }
     }
-    const handleSelectChange = (event) => {
-        console.log(event.target.value, 'event.target.value')
-        setNotifyText(event.target.value)
+    const handleSelectChange = (item) => {
+        const value = item.value
+        selectList.forEach(item => {
+            if (item.value === value) {
+              item.checked = true
+              setSelectContent(item.label)
+            } else {
+              item.checked = false
+            }
+        })
         const params = {
             options: {
                 paramType: 0,
-                remindType: event.target.value,
+                remindType: value,
             }
         }
         setNotDisturb(params)
+        setShowSelectOption(false)
     }
     const setNotDisturb = (params) => {
         setSilentModeForAll(params).then(res => {
@@ -455,16 +570,36 @@ export default function Setting({ open, onClose }) {
             console.log(res, 'getSilentModeForAll')
             const type = res.type
             if (type) {
+                selectList.forEach(item => {
+                    if (item.value === type) {
+                      item.checked = true
+                      setSelectContent(item.label)
+                    } else {
+                      item.checked = false
+                    }
+                })
                 setNotifyText(type)
                 setSelectDisabled(true)
+            } else {
+                selectList.forEach(item => {
+                    if (item.value === 'All Message') {
+                      item.checked = true
+                      setSelectContent(item.label)
+                    } else {
+                      item.checked = false
+                    }
+                })
             }
             if (res.ignoreDuration) {
                 if (setTimeVSNowTime(res, true)) {
                     setCheckedValue('')
+                    setShowRadio(true)
                 } else {
                     setCheckedDefaultValue(res.ignoreDuration, 0, true)
                     setTurnOffBtnFlag(true)
                 }
+            } else {
+                setShowRadio(true)
             }
         })
     }
@@ -485,9 +620,16 @@ export default function Setting({ open, onClose }) {
         setDefaultValue(event.target.value)
     }
     const handlerArrowImg = () => {
+        if (turnOffBtnFlag) {
+            return
+        }
         setShowRadio(!showRadio)
     }
-    const handlerTurnOffBtn = () => {
+    const handlerTurnOffBtn = (e) => {
+        e.stopPropagation()
+        e.preventDefault()
+        e.cancelBubble = true // IE
+        e.returnValue = false // IE
         setopenTurnOff(true)
     }
     const setCheckedDefaultValue = (time, index, flag) => {
@@ -554,6 +696,9 @@ export default function Setting({ open, onClose }) {
             }
         }
         setNotDisturb(params)
+    }
+    const handlerSelectBox = () => {
+        setShowSelectOption(!showSelectOption)
     }
     function infoTabPanel() {
         return (
@@ -679,7 +824,7 @@ export default function Setting({ open, onClose }) {
         return (
             <div className={classes.btnBox}>
                 <span className={classes.turnOffBtnStyle} onClick={handleTurnOffClose}>Cancel</span>
-                <span className={classes.btnStyle + ' ' + classes.rightBtn} onClick={handlerOkay}>Okay</span>
+                <span className={classes.rightBtn} onClick={handlerOkay}>Okay</span>
             </div>
         )
     }
@@ -695,36 +840,30 @@ export default function Setting({ open, onClose }) {
                         <div>
                             <div className={classes.flexBox}>
                                 <span className={classes.notifySubTitle}>{i18next.t('Notifications Settings')}</span>
-                                <Select
-                                    value={notifyText}
-                                    className={classes.notifySelect}
-                                    onChange={handleSelectChange}
-                                    variant="outlined"
-                                    // disabled={selectDisabled}
-                                    renderValue={(selected) => {
-                                        if (selected.length === 0) {
-                                          return <em>Please Select</em>
-                                        }
-                                        let tempStr = ''
-                                        selectList.forEach(item => {
-                                            if (item.value === selected) {
-                                                tempStr = item.label
-                                            }
-                                        })
-                                        return tempStr || <em>Please Select</em>
-                                    }}
-                                >
+                                <div className={classes.mySelect}>
+                                    <div className={classes.selectTop} onClick={handlerSelectBox}>
+                                        <span className={classes.selectDefaultText}>{selectContent}</span>
+                                        <img className={`${classes.imgStyle} ${showSelectOption ? classes.imgUpStyle : classes.imgDownStyle}`} alt="" src={muteIcon} />
+                                    </div>
                                     {
-                                        selectList.map(item=> {
+                                        showSelectOption &&
+                                        <div className={classes.selectBottom}>
+                                        {
+                                            selectList.map(item => {
                                             return (
-                                                <MenuItem key={item.value} value={item.value}>{item.label}</MenuItem>
+                                                <div key={item.value} onClick={() => handleSelectChange(item)} className={`${classes.selectTextlist} ${item.checked ? classes.selectChecked : ''}`}>
+                                                <span className={classes.selectOption} value={item.value}>{item.label}</span>
+                                                {item.checked ? <img alt="" className={classes.checkedStyle} src={checkgrayIcon} /> : ''}
+                                                </div>
                                             )
-                                        })
+                                            })
+                                        }
+                                        </div>
                                     }
-                                </Select>
+                                </div>
                             </div>
                             <div className={classes.bottomItem}>
-                                <div className={classes.flexBox}>
+                                <div className={`${classes.flexBox} ${!turnOffBtnFlag ? classes.cursorStyle : ''}`} onClick={handlerArrowImg}>
                                     <div>
                                         <span className={classes.notifySubTitle}>{i18next.t('Do not Disturb')}</span>
                                         {
@@ -733,8 +872,8 @@ export default function Setting({ open, onClose }) {
                                     </div>
                                     {
                                         checkedValue && turnOffBtnFlag ?
-                                        <span onClick={handlerTurnOffBtn} className={classes.turnStyle}>Turn Off</span>
-                                        : <img className={`${classes.arrowImg} ${showRadio ? classes.arrowUpImg : classes.arrowDownImg}`} alt="" onClick={handlerArrowImg} src={arrow} />
+                                        <span onClick={(e) => handlerTurnOffBtn(e)} className={classes.turnStyle}>Turn Off</span>
+                                        : <img className={`${classes.arrowImg} ${showRadio ? classes.arrowUpImg : classes.arrowDownImg}`} alt="" src={arrow} />
                                     }
                                 </div>
                                 {showRadio ?
@@ -762,7 +901,7 @@ export default function Setting({ open, onClose }) {
                         </div>
                         <div className={classes.bottomStyle + ' ' + classes.previewStyle + ' ' + classes.bottomItem + ' ' + classes.flexBox}>
                             <span className={classes.notifySubTitle}>{i18next.t('Show Preview Text')}</span>
-                            <Switch checked={textSwitch} className={`${classes.switchStyle} ${textSwitch ? classes.switchOpenStyle : ''}`} onChange={(e) => handleSwitchChange(e, 0)}></Switch>
+                            <Switch checked={textSwitch} color="primary" className={`${classes.switchStyle} ${classes.switchStyleMargin} ${textSwitch ? classes.switchOpenStyle : ''}`} onChange={(e) => handleSwitchChange(e, 0)}></Switch>
                         </div>
                     </div>
                 </div>
@@ -770,7 +909,7 @@ export default function Setting({ open, onClose }) {
                     <div className={classes.notifyTitle}>{i18next.t('Notification Sounds')}</div>
                     <div className={classes.bottomStyle + ' ' + classes.alertStyle + ' ' + classes.flexBox}>
                         <span className={classes.notifySubTitle}>{i18next.t('Alert Sound')}</span>
-                        <Switch checked={soundSwitch} className={`${classes.switchStyle} ${soundSwitch ? classes.switchOpenStyle : ''}`} onChange={(e) => handleSwitchChange(e, 1)}></Switch>
+                        <Switch checked={soundSwitch} color="primary" className={`${classes.switchStyle} ${soundSwitch ? classes.switchOpenStyle : ''}`} onChange={(e) => handleSwitchChange(e, 1)}></Switch>
                     </div>
                 </div>
                 <CommonDialog
@@ -779,6 +918,7 @@ export default function Setting({ open, onClose }) {
                     title={i18next.t("Turn off Do Not Disturb?")}
                     content={renderTurnOffContent()}
                     footer={renderTurnOffFooter()}
+                    className={classes.commonDialog}
                 ></CommonDialog>
             </div>
         )

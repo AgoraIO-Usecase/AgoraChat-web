@@ -25,7 +25,8 @@ import leaveIcon from '../../../assets/leave.png'
 import muteIcon from '../../../assets/mute@2x.png'
 import unmuteIcon from '../../../assets/unmute.png'
 import grayMuteIcon from '../../../assets/gray@2x.png'
-
+import checkgrayIcon from '../../../assets/check_gray.png'
+import upAndDown from '../../../assets/go@2x.png'
 const useStyles = makeStyles((theme) => {
 	return {
 		root: {
@@ -76,18 +77,19 @@ const useStyles = makeStyles((theme) => {
 		},
 		imgBox: {
 			borderRadius: '50%',
-      width: '32px',
-      height: '32px',
+      width: '24px',
+      height: '24px',
       background: '#fff',
       textAlign: 'center',
 			position: 'absolute',
-			left: '196px',
-			bottom: '80px',
+			left: '189px',
+			bottom: '70px',
+			lineHeight: '34px'
 		},
 		imgStyle: {
 			borderRadius: '50%',
-			width: '30px',
-			height: '30px'
+			width: '22px',
+			height: '22px'
 		},
 		btnBox: {
 			width: '100%',
@@ -110,7 +112,7 @@ const useStyles = makeStyles((theme) => {
 		},
 		contentBox: {
 			margin: '20px',
-			fontSize: '14px',
+			fontSize: '16px',
 		},
 		turnOffBtnStyle: {
 			width: '84px',
@@ -124,7 +126,17 @@ const useStyles = makeStyles((theme) => {
 		},
 		rightBtn: {
 			margin: '0px 20px 20px 10px',
-			fontSize: '14px',
+			fontSize: '16px',
+			background: '#114EFF',
+			borderRadius: '26px',
+			height: '36px',
+			width: '84px',
+			color: '#fff',
+			textAlign: 'center',
+			display: 'inline-block',
+			lineHeight: '36px',
+			cursor: 'pointer',
+			fontWeight: '600',
 		},
 		notifySelect: {
 			background: '#fff',
@@ -140,6 +152,8 @@ const useStyles = makeStyles((theme) => {
 			lineHeight: '36px',
 			cursor: 'pointer',
 			borderRadius: '26px',
+			fontSize: '14px',
+    	fontWeight: '600',
 		},
 		timeMuteStyle: {
 			color: '#999999',
@@ -149,12 +163,98 @@ const useStyles = makeStyles((theme) => {
 		unmuteTimeStyle: {
 			color: '#0D0D0D',
 			fontSize: '16px',
-			fontWeight: 'normal',
+			fontWeight: '500',
 		},
 		contentStyle: {
       display: 'inline-block',
       width: '540px',
     },
+		commonDialog: {
+			'& .MuiDialog-paper': {
+				overflow: 'inherit'
+			},
+			'& .MuiDialogContent-root': {
+				overflow: 'inherit'
+			},
+			'& .MuiDialog-paperWidthSm': {
+					borderRadius: '12px'
+			}
+		},
+    mySelect: {
+			position: 'relative',
+			background: '#F4F5F7',
+			borderRadius: '10px',
+			height: '54px',
+			width: '308px',
+    },
+    selectTop: {
+			display: 'flex',
+			alignItems: 'center',
+			justifyContent: 'space-between',
+			padding: '0 10px',
+			boxSizing: 'border-box',
+			cursor: 'pointer',
+    },
+    selectDefaultText: {
+			fontFamily: 'Roboto',
+			fontStyle: 'normal',
+			fontWeight: '500',
+			fontSize: '18px',
+			color: '#000000',
+			lineHeight: '54px',
+    },
+    selectBottom: {
+			width: '332px',
+			position: 'absolute',
+			top: '60px',
+			left: '-12px',
+			background: '#F4F5F7',
+			boxShadow: '0px 24px 36px rgba(0, 0, 0, 0.2), 8px 0px 24px rgba(0, 0, 0, 0.16)',
+			borderRadius: '12px',
+			padding: '12px 12px 0px 12px',
+			boxSizing: 'border-box',
+			zIndex: '1',
+    },
+    selectTextlist: {
+			height: '48px',
+			width: '308px',
+			borderRadius: '8px',
+			display: 'flex',
+			alignItems: 'center',
+			justifyContent: 'space-between',
+			padding: '0 10px',
+			boxSizing: 'border-box',
+			marginBottom: '8px',
+			cursor: 'pointer',
+			'&:hover': {
+					background: '#FFFFFF',
+			}
+    },
+    selectChecked: {
+			background: '#FFFFFF',
+    },
+    selectOption: {
+			fontFamily: 'Roboto',
+			fontStyle: 'normal',
+			fontWeight: '500',
+			fontSize: '18px',
+			lineHeight: '48px',
+			color: '#000000',
+    },
+    checkedStyle: {
+			width: '17px',
+			verticalAlign: 'middle'
+    },
+		arrowImgStyle: {
+			width: '17px',
+			height: '17px',
+		},
+		imgUpStyle: {
+			transform: 'rotate(-90deg)',
+		},
+		imgDownStyle: {
+			transform: 'rotate(90deg)',
+		},
 	};
 });
 const statusImgObj = {
@@ -169,27 +269,32 @@ const radioList = [
 	{
 		title: 'For 15 minutes',
 		value: 0,
-		time: 15
+		time: 15,
+		checked: true
 	},
 	{
 		title: 'For 1 hour',
 		value: 1,
-		time: 1
+		time: 1,
+		checked: false
 	},
 	{
 		title: 'For 3 hours',
 		value: 2,
-		time: 3
+		time: 3,
+		checked: false
 	},
 	{
 		title: 'For 8 hours',
 		value: 3,
-		time: 8
+		time: 8,
+		checked: false
 	},
 	{
 		title: 'For 24 hours',
 		value: 4,
-		time: 24
+		time: 24,
+		checked: false
 	},
 	// {
 	// 	title: 'Until I turn it Unmute',
@@ -207,6 +312,8 @@ const SessionInfoPopover = ({ open, onClose, sessionInfo }) => {
 	const [muteTimeText, setMuteTimeText] = useState(null)
 	const [unmuteTimeText, setUnmuteTimeText] = useState(null)
 	const muteDataObj = useSelector((state) => state?.muteDataObj) || {}
+	const [showSelectOption, setShowSelectOption] = useState(false)
+	const [selectContent, setSelectContent] = useState('For 15 minutes')
 	let { to } = sessionInfo
 	let presenceExt = ''
 	presenceList.forEach(item => {
@@ -228,7 +335,8 @@ const SessionInfoPopover = ({ open, onClose, sessionInfo }) => {
 			setNotifyDialogText('Mute this Contact')
 			setMuteTimeText(null)
 			setUnmuteTimeText(null)
-			setOpenTurnOff(true)
+			handleTurnOffClose()
+			onClose()
 			const params = {
 				conversationId: to,
 				type: 'singleChat',
@@ -238,6 +346,7 @@ const SessionInfoPopover = ({ open, onClose, sessionInfo }) => {
 				}
 			}
 			setNotDisturb(params)
+
 		} else {
 			if (notifyText !== 5) {
 				let str = ''
@@ -259,9 +368,18 @@ const SessionInfoPopover = ({ open, onClose, sessionInfo }) => {
 			handleTurnOffClose()
 		}
 	}
-	const handleSelectChange = (event) => {
-		console.log(event.target.value)
-		setNotifyText(event.target.value)
+	const handleSelectChange = (item) => {
+		const value = item.value
+		setNotifyText(value)
+		radioList.forEach(item => {
+			if (item.value === value) {
+				item.checked = true
+				setSelectContent(item.title)
+			} else {
+				item.checked = false
+			}
+		})
+		setShowSelectOption(false)
 	}
 
 	const setNotDisturb = (params) => {
@@ -278,11 +396,12 @@ const SessionInfoPopover = ({ open, onClose, sessionInfo }) => {
 					setNotifyDialogText('Mute this Contact')
 				} else {
 					setCheckedDefaultValue(res.ignoreDuration, 0, true)
+					// setNotifyDialogText('Unmute this Contact')
 				}
 			}
-			if (Object.keys(muteDataObj[to]).length) {
-				setNotifyDialogText('Unmute this Contact')
-			}
+			// if (Object.keys(muteDataObj[to]).length) {
+			// 	setNotifyDialogText('Unmute this Contact')
+			// }
 		})
 	}
 	const setCheckedDefaultValue = (time, index, flag) => {
@@ -293,33 +412,45 @@ const SessionInfoPopover = ({ open, onClose, sessionInfo }) => {
 			let list = handlerTime(24).split(',')
 			str = `${list[0]}, ${list[1]}, 08:00`
 		}
-		setNotifyDialogText(str)
+		setMuteTimeText(str)
+		setUnmuteTimeText(str)
+		setNotifyDialogText('Unmute this Contact')
 	}
 	useEffect(() => {
 		if (to) {
 			getNotDisturb(to)
 		}
 	}, [to])
-
+	const handlerSelectBox = () => {
+		setShowSelectOption(!showSelectOption)
+	}
 	function renderTurnOffContent() {
 		if (notifyDialogText === 'Mute this Contact') {
 			return (
 				<div className={classes.contentBox}>
-					<Select
-						native
-						value={notifyText}
-						className={classes.notifySelect}
-						onChange={handleSelectChange}
-						variant="outlined"
-					>
-						{
-							radioList.map((item, index) => {
-								return (
-									<option key={index} value={item.value}>{item.title}</option>
-								)
-							})
-						}
-					</Select>
+					<div className={classes.flexBox}>
+						<div className={classes.mySelect}>
+								<div className={classes.selectTop} onClick={handlerSelectBox}>
+										<span className={classes.selectDefaultText}>{selectContent}</span>
+										<img className={`${classes.arrowImgStyle} ${showSelectOption ? classes.imgUpStyle : classes.imgDownStyle}`} alt="" src={upAndDown} />
+								</div>
+								{
+									showSelectOption &&
+									<div className={classes.selectBottom}>
+									{
+										radioList.map(item => {
+											return (
+												<div key={item.value} onClick={() => handleSelectChange(item)} className={`${classes.selectTextlist} ${item.checked ? classes.selectChecked : ''}`}>
+												<span className={classes.selectOption} value={item.value}>{item.title}</span>
+												{item.checked ? <img alt="" className={classes.checkedStyle} src={checkgrayIcon} /> : ''}
+												</div>
+											)
+										})
+									}
+									</div>
+								}
+						</div>
+					</div>
 				</div>
 			)
 		} else {
@@ -342,7 +473,7 @@ const SessionInfoPopover = ({ open, onClose, sessionInfo }) => {
 			return (
 				<div className={classes.btnBox}>
 					<span className={classes.turnOffBtnStyle} onClick={handleTurnOffClose}>{i18next.t('Cancel')}</span>
-					<span className={classes.btnStyle + ' ' + classes.rightBtn} onClick={() => handlerOkay(1)}>{i18next.t('Okay')}</span>
+					<span className={classes.rightBtn} onClick={() => handlerOkay(1)}>{i18next.t('Okay')}</span>
 				</div>
 			)
 		}
@@ -428,6 +559,7 @@ const SessionInfoPopover = ({ open, onClose, sessionInfo }) => {
 				title={i18next.t(notifyDialogText)}
 				content={renderTurnOffContent()}
 				footer={renderTurnOffFooter()}
+				className={classes.commonDialog}
 			></CommonDialog>
 		</>
 	);

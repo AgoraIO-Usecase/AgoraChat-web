@@ -23,43 +23,65 @@ import Loading from '../../common/loading'
 
 const useStyles = makeStyles((theme) => {
   return ({
+    popoverStyle: {
+      '& .MuiPopover-paper': {
+        borderRadius: '12px',
+        width: '240px',
+        height: '238px',
+        padding: '10px',
+        boxSizing: 'border-box',
+        top: '34px !important',
+        left: '72px !important',
+      }
+    },
     nameText: {
       fontSize: '14px',
-      color: '#0D0D0D',
-      marginLeft: '8px',
+      color: '#000',
+      marginLeft: '10px',
       overflow: 'hidden',
       display: 'inline-block',
       width: '140px'
     },
     imgBox: {
       borderRadius: '50%',
-      width: '20px',
-      height: '20px',
+      width: '17px',
+      height: '17px',
       background: 'rgb(240, 242, 243)',
       textAlign: 'center',
-      lineHeight: '25px',
+      lineHeight: '20px',
       cursor: 'pointer',
     },
     imgStyle: {
-      width: '18px',
-      height: '18px',
+      width: '14.29px',
+      height: '14.29px',
       borderRadius: '50%',
       // verticalAlign: 'middle'
+    },
+    imgStyle1: {
+      width: '15px',
+      height: '15px',
+      borderRadius: '50%',
     },
     statusBox: {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'space-between',
-      width: '200px',
-      padding: '5px',
-      height: '30px',
-      cursor: 'pointer'
+      width: '224px',
+      borderRadius: '8px',
+      padding: '0 5px',
+      height: '38px',
+      cursor: 'pointer',
+      marginBottom: '8px',
+      boxSizing: 'border-box',
+      '&:hover': {
+        background: '#F6F7F8',
+      }
     },
     leftBox: {
       display: 'inline-box'
     },
     checkedStyle: {
-      width: '30px',
+      width: '15px',
       verticalAlign: 'middle'
     },
     modalStyle: {
@@ -71,7 +93,13 @@ const useStyles = makeStyles((theme) => {
       background: '#fff',
       textAlign: 'center',
       height: '200px',
-      paddingTop: '10px'
+      paddingTop: '10px',
+      borderRadius: '12px',
+      outline: '0 none',
+      '& #modal-modal-title': {
+        fontSize: '18px',
+        color: '#000',
+      }
     },
     modalBottom: {
       marginTop: '30px'
@@ -271,10 +299,11 @@ const PresencePopover = (props) => {
   return (
     <div className={props.className} style={{...props.style}}>
       <div className={useClasses.imgBox} onClick={handlePopoverClick}>
-        <img aria-describedby={id} src={presenceObj?.statusImg} className={useClasses.imgStyle} alt="" />
+        <img aria-describedby={id} src={presenceObj?.statusImg} className={useClasses.imgStyle1} alt="" />
       </div>
       <Popover
         id={id}
+        className={useClasses.popoverStyle}
         open={openPopover}
         anchorEl={usePopoverAnchorEl}
         onClose={handlePopoverClose}
