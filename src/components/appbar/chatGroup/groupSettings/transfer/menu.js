@@ -1,13 +1,14 @@
-import React, { memo } from "react";
+import React, { useState,memo } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Popover, List, ListItem, Typography } from "@material-ui/core";
 import i18next from "i18next";
 
 import {
 	transferOwner,
-	closeGroup,
 } from "../../../../../api/groupChat/closeGroup";
 import store from '../../../../../redux/store'
+import ConfirmDialog from '../../../../common/confirmDialog'
+
 import transferIcon from "../../../../../assets/transfer@2x.png";
 import leaveIcon from "../../../../../assets/leave@2x.png";
 
@@ -32,17 +33,23 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-const Menu = ({ open, onClose,userId }) => {
+const Menu = ({ open, onClose, userId }) => {
 	const classes = useStyles();
+	const [confirmStatus, setConfirmStatus] = useState(null)
 	const state = store.getState();
 	const groupId = state?.groups?.groupsInfo.id;
 
 	const handleTransFer = () => {
-		transferOwner(groupId, userId, onClose);
+		setConfirmStatus(true);
 	}
 
 	const handleTransFerLeave = () => {
-		transferOwner(groupId, userId, onClose, 'quit')
+		setConfirmStatus(true);
+	}
+
+	const handleConfirmDialogClose = () => {
+		setConfirmStatus(null);
+		onClose();
 	}
 
 	return (
@@ -85,6 +92,13 @@ const Menu = ({ open, onClose,userId }) => {
 					</Typography>
 				</ListItem>
 			</List>
+			<ConfirmDialog
+				anchorEl={confirmStatus}
+				onClose={handleConfirmDialogClose}
+				id={userId}
+				type={"transfer"}
+				apiType={"quit"}
+			/>
 		</Popover>
 	);
 };

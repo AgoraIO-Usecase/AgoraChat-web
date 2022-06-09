@@ -4,15 +4,13 @@ import i18next from "i18next";
 import { Popover, Box, Avatar, Button, Tooltip, Select } from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
-import {
-	addFromBlackList,
-	deleteContact,
-} from "../../../api/contactsChat/getContacts";
+import { addFromBlackList } from "../../../api/contactsChat/getContacts";
 import CommonDialog from "../../common/dialog";
 import { handlerTime, getMillisecond, computedItervalTime, timeIntervalToMinutesOrHours, setTimeVSNowTime } from '../../../utils/notification'
 import { setSilentModeForConversation, getSilentModeForConversation } from '../../../api/notificationPush'
+import ConfirmDialog from '../../common/confirmDialog'
 
-import avatarImg from "../../../assets/avatar1.png";
+import avatarImg from "../../../assets/avatar2.png";
 import blockIcon from "../../../assets/block@2x.png";
 import deleteIcon from "../../../assets/red@2x.png";
 
@@ -206,6 +204,7 @@ const SessionInfoPopover = ({ open, onClose, sessionInfo }) => {
 	const [openTurnOff, setOpenTurnOff] = useState(false)
 	const [muteTimeText, setMuteTimeText] = useState(null)
 	const [unmuteTimeText, setUnmuteTimeText] = useState(null)
+	const [confirmStatus, setConfirmStatus] = useState(null)
 	const muteDataObj = useSelector((state) => state?.muteDataObj) || {}
 	let { to } = sessionInfo
 	let presenceExt = ''
@@ -347,6 +346,16 @@ const SessionInfoPopover = ({ open, onClose, sessionInfo }) => {
 			)
 		}
 	}
+
+	const handleConfirmDialogChange = (e) => {
+		// setConfirmStatus(e.currentTarget)
+		setConfirmStatus(true)
+		onClose()
+	}
+
+	const handleConfirmDialogClose = () => {
+		setConfirmStatus(null)
+	}
 	return (
 		<>
 			<Popover
@@ -408,7 +417,7 @@ const SessionInfoPopover = ({ open, onClose, sessionInfo }) => {
 					</Button>
 					<Button
 						className={classes.infoBtn}
-						onClick={() => deleteContact(to, onClose)}
+						onClick = {handleConfirmDialogChange}
 					>
 						<img
 							src={deleteIcon}
@@ -429,6 +438,13 @@ const SessionInfoPopover = ({ open, onClose, sessionInfo }) => {
 				content={renderTurnOffContent()}
 				footer={renderTurnOffFooter()}
 			></CommonDialog>
+
+			<ConfirmDialog 
+				anchorEl={confirmStatus} 
+				onClose={handleConfirmDialogClose} 
+				type={"contact"}
+				id={to}
+			/>
 		</>
 	);
 };
