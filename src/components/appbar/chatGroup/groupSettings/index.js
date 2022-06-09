@@ -16,7 +16,7 @@ import GroupNotice from './notice'
 import GroupChatInfo from "./info";
 import TransFerOwner from "./transfer";
 import Notifications from './members/notifications'
-import { closeGroup } from "../../../../api/groupChat/closeGroup";
+import ConfirmDialog from '../../../common/confirmDialog'
 
 import groupAvatar from "../../../../assets/groupAvatar.png";
 import membersIcon from "../../../../assets/members@2x.png";
@@ -138,11 +138,13 @@ const useStyles = makeStyles((theme) => {
 const GroupSettingsDialog = ({ open, onClose, currentGroupId }) => {
 	const classes = useStyles();
 	const state = useSelector((state) => state);
+	const [confirmStatus, setConfirmStatus] = useState(null)
 	const groupsInfo = state?.groups?.groupsInfo || {};
 	const groupNotice = state?.groups?.groupNotice;
 	const loginUser = WebIM.conn.context?.userId;
 	const isOwner = loginUser === groupsInfo?.owner;
 	const groupId = groupsInfo?.id
+	const groupName = groupsInfo?.name
 	const [value, setValue] = useState(0);
 	const [muteFlag, setmuteFlag] = useState(false);
 	const handleChange = (event, newValue) => {
@@ -150,6 +152,15 @@ const GroupSettingsDialog = ({ open, onClose, currentGroupId }) => {
 	};
 	const showMuteImgOrNot = (flag) => {
 		setmuteFlag(flag)
+	}
+
+	const handleConfirmDialogChange = (e) => {
+		setConfirmStatus(true)
+		onClose()
+	}
+
+	const handleConfirmDialogClose = () => {
+		setConfirmStatus(null)
 	}
 	const renderSetting = () => {
 		const memberLabel = () => {
@@ -342,26 +353,14 @@ const GroupSettingsDialog = ({ open, onClose, currentGroupId }) => {
 							{isOwner ? (
 								<Typography
 									className={classes.gCloseText}
-									onClick={() =>
-										closeGroup(
-											currentGroupId,
-											"dissolve",
-											onClose
-										)
-									}
+									onClick={handleConfirmDialogChange}
 								>
 									{i18next.t("Disband this Group")}
 								</Typography>
 							) : (
 								<Typography
 									className={classes.gCloseText}
-									onClick={() =>
-										closeGroup(
-											currentGroupId,
-											"quit",
-											onClose
-										)
-									}
+									onClick={handleConfirmDialogChange}
 								>
 									{i18next.t("Leave the Group")}
 								</Typography>
@@ -421,6 +420,11 @@ const GroupSettingsDialog = ({ open, onClose, currentGroupId }) => {
 					</TabPanel>
 
 				</Box>
+				<ConfirmDialog 
+					anchorEl={confirmStatus}
+					onClose={handleConfirmDialogClose}
+					type={"group"}
+				/>
 			</Box>
 		);
 	};
