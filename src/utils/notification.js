@@ -1,6 +1,6 @@
 import store from '../redux/store'
 import { setMuteDataObj, setUnread } from '../redux/actions'
-import { EaseApp } from "wy-chat"
+import { EaseApp } from "chat-uikit2"
 
 let options = {
   requireInteraction: false, // 是否自动消失
