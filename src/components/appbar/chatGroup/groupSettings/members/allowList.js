@@ -20,7 +20,14 @@ const useStyles = makeStyles((theme) => {
             color: '#999999',
             fontSize: '14px',
             textAlign: 'center'
-        }
+        },
+        gMemberAvatar: {
+            width: "36px",
+            height: "36px",
+            borderRadius: "20px",
+            backgroundColor: "rgb(238, 171, 159)",
+            marginRight: '10px',
+        },
     })
 });
 
@@ -36,6 +43,11 @@ const AllowList = () => {
                     let owner = item === groupOwner
                     return <ListItem key={key}>
                         <Button className={classes.gUserName}>
+                            <Box
+                                className={
+                                classes.gMemberAvatar
+                                }
+                            ></Box>
                             < ListItemText>
                                 {item}
                             </ListItemText>
@@ -43,7 +55,7 @@ const AllowList = () => {
                         {owner && <ListItemText className={classes.gOwner}>{i18next.t('owner')}</ListItemText>}
                     </ListItem>
                 })}
-            </List> : <Typography className={classes.noDataText}>暂无数据</Typography>}
+            </List> : <Typography className={classes.noDataText}></Typography>}
         </Box>
     )
 }

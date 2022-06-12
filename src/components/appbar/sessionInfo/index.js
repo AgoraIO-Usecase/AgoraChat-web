@@ -27,6 +27,8 @@ import unmuteIcon from '../../../assets/unmute.png'
 import grayMuteIcon from '../../../assets/gray@2x.png'
 import checkgrayIcon from '../../../assets/check_gray.png'
 import upAndDown from '../../../assets/go@2x.png'
+import ConfirmDialog from "../../common/confirmDialog"
+
 const useStyles = makeStyles((theme) => {
 	return {
 		root: {
@@ -62,9 +64,10 @@ const useStyles = makeStyles((theme) => {
 			width: "100%",
 			textTransform: "none",
 			marginTop: "5px",
-			marginLeft: "8px",
+			// marginLeft: "8px",
 			display: "flex",
 			justifyContent: "flex-start",
+			borderRadius: '8px',
 		},
 		infoBtnText: {
 			Typeface: "Ping Fang SC",
@@ -255,6 +258,12 @@ const useStyles = makeStyles((theme) => {
 		imgDownStyle: {
 			transform: 'rotate(90deg)',
 		},
+		selfMsginfoPopover: {
+			'& .MuiPopover-paper': {
+				padding: '8px',
+				boxSizing: 'border-box',
+			}
+		}
 	};
 });
 const statusImgObj = {
@@ -314,6 +323,9 @@ const SessionInfoPopover = ({ open, onClose, sessionInfo }) => {
 	const muteDataObj = useSelector((state) => state?.muteDataObj) || {}
 	const [showSelectOption, setShowSelectOption] = useState(false)
 	const [selectContent, setSelectContent] = useState('For 15 minutes')
+	const [secondSure, setSecondSure] = useState(false)
+	const [GroupStatus, setGroupStatus] = useState('')
+	const [groupContent, setgroupContent] = useState('')
 	let { to } = sessionInfo
 	let presenceExt = ''
 	presenceList.forEach(item => {
@@ -478,6 +490,24 @@ const SessionInfoPopover = ({ open, onClose, sessionInfo }) => {
 			)
 		}
 	}
+	const showSecondDialog = (val) => {
+		setGroupStatus(val)
+		if (val === 1) {
+			setgroupContent('Make To Block')
+		} else {
+			setgroupContent('Delete Contact')
+		}
+		setSecondSure(true)
+		onClose()
+	}
+	const confirmQuitGroup = () => {
+		if (GroupStatus === 1) {
+			addFromBlackList(to)
+		} else {
+			deleteContact(to, onClose)
+		}
+		setSecondSure(false)
+	}
 	return (
 		<>
 			<Popover
@@ -492,6 +522,7 @@ const SessionInfoPopover = ({ open, onClose, sessionInfo }) => {
 					vertical: "top",
 					horizontal: "left",
 				}}
+				className={classes.selfMsginfoPopover}
 			>
 				<Box className={classes.root}>
 					<Box className={classes.infoBox}>
@@ -530,16 +561,16 @@ const SessionInfoPopover = ({ open, onClose, sessionInfo }) => {
 					</Button>
 					<Button
 						className={classes.infoBtn}
-						onClick={() => addFromBlackList(to)}
+						onClick={() => showSecondDialog(1)}
 					>
 						<img src={blockIcon} alt="chat" style={{ width: "30px" }} />
 						<Typography className={classes.infoBtnText}>
-							{i18next.t("Black")}
+							{i18next.t("Block")}
 						</Typography>
 					</Button>
 					<Button
 						className={classes.infoBtn}
-						onClick={() => deleteContact(to, onClose)}
+						onClick={() => showSecondDialog(2)}
 					>
 						<img
 							src={deleteIcon}
@@ -561,6 +592,14 @@ const SessionInfoPopover = ({ open, onClose, sessionInfo }) => {
 				footer={renderTurnOffFooter()}
 				className={classes.commonDialog}
 			></CommonDialog>
+			<ConfirmDialog
+				open={Boolean(secondSure)}
+				onClose={() => setSecondSure(false)}
+				confirmMethod={() => confirmQuitGroup()}
+				confirmContent={{
+					content: groupContent
+				}}
+			></ConfirmDialog>
 		</>
 	);
 };

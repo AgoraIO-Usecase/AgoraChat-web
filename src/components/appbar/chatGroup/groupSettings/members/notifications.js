@@ -193,7 +193,10 @@ const useStyles = makeStyles((theme) => {
         '& .MuiDialog-paperWidthSm': {
             borderRadius: '12px'
         }
-    }
+    },
+    groupsettingnotify: {
+      padding: '16px',
+    },
   }
 })
 const radioList = [
@@ -459,7 +462,7 @@ const Notifications = (props) => {
     setShowSelectOption(!showSelectOption)
   }
   return (
-    <div className={`${useComponent === 'Thread' ? classes.root : ''}`}>
+    <div className={`${useComponent === 'Thread' ? classes.root : classes.groupsettingnotify}`}>
       <div className={classes.topBox}>
         <div onClick={handlerShowRadio} className={classes.titleBox}>
           <span className={classes.titleStyle}>Mute this {useComponent} { muteTimeText ? <span className={classes.notifyPrayTitle}>Until {muteTimeText}</span> : null}</span>

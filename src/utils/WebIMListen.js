@@ -10,6 +10,7 @@ import { getToken } from '../api/loginChat'
 import { agreeInviteGroup } from '../api/groupChat/addGroup'
 import { getGroupMuted } from "../api/groupChat/groupMute";
 import { getGroupWrite } from "../api/groupChat/groupWhite";
+import getGroupInfo from '../api/groupChat/getGroupInfo'
 import { notification, getLocalStorageData, playSound, randomNumber, setTimeVSNowTime, checkBrowerNotifyStatus, notifyMe } from './notification'
 import { handlerThreadChangedMsg } from "../api/thread/index";
 
@@ -212,12 +213,17 @@ const initListen = () => {
                     const tempArr = []
                     const obj = {}
                     let extFlag = false
+                    let device = ''
                     item.statusDetails.forEach(val => {
                         if (val.status === 1) {
                             extFlag = true
+                            device = val.device('webim') ? 'Web' : 'Mobile'
                         }
                         obj[val.device] = val.status.toString()
                     })
+                    if (!device) {
+                        device = item.statusDetails.length ? (item.statusDetails[0].device.includes('webim') ? 'Web' : 'Mobile') : ''
+                    }
                     if (!extFlag) {
                         item.ext = 'Offline'
                     }
@@ -226,7 +232,8 @@ const initListen = () => {
                         ext: item.ext,
                         last_time: item.lastTime,
                         uid: item.userId,
-                        status: obj
+                        status: obj,
+                        device
                     })
                     if (presenceList.findIndex(val => val.uid === item.userId) !== -1) {
                         presenceList.forEach(val => {
@@ -240,7 +247,8 @@ const initListen = () => {
                     const newArr = presenceList
                     store.dispatch(setPresenceList(newArr))
                     EaseApp.changePresenceStatus({[item.userId]: {
-                        ext: item.ext
+                        ext: item.ext,
+                        device
                     }})
                 }
                 else{
@@ -321,7 +329,14 @@ const initListen = () => {
 				getGroupWrite(msg.gid);
 			} else if (msg.type === "rmUserFromGroupWhiteList") {
 				getGroupWrite(msg.gid);
-			}
+			} else if (msg.type === "update") {
+                getGroupInfo(msg.gid)
+            } else if (msg.type === 'leave' || msg.type === 'leaveGroup' || msg.type === 'deleteGroupChat') {
+                // EaseApp.deleteSessionAndMessage({})
+            } else if (msg.type === 'removedFromGroup') {
+                EaseApp.deleteSessionAndMessage({sessionType: 'groupChat', sessionId: msg.gid})
+                getGroups();
+            }
             // checkBrowerNotifyStatus(false)
 		},
 	});

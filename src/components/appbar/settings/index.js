@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import CommonDialog from "../../common/dialog";
 import i18next, { use } from "i18next";
-import { Avatar, Button, TextField, List, ListItem, ListItemAvatar, Menu, MenuItem, Box, Switch, Select, RadioGroup, FormControlLabel, Radio } from "@material-ui/core";
+import { Avatar, Button, TextField, List, ListItem, ListItemAvatar, Menu, MenuItem, Box, Switch, Select, RadioGroup, FormControlLabel, Radio, InputBase } from "@material-ui/core";
+import ListItemButton from '@mui/material/ListItemButton';
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import editIcon from '../../../assets/white@2x.png'
@@ -12,10 +13,24 @@ import deleteContactIcon from '../../../assets/deletecontact@2x.png'
 import avater1 from '../../../assets/avatar1.png'
 import avater2 from '../../../assets/avatar2.png'
 import avater3 from '../../../assets/avatar3.png'
+import avater4 from '../../../assets/avatar4.png'
+import avater5 from '../../../assets/avatar5.png'
+import avater6 from '../../../assets/avatar6.png'
+import avater7 from '../../../assets/avatar7.png'
+import avaterSelect from '../../../assets/avatar_select@2x.png'
+
 import CheckIcon from '@material-ui/icons/Check';
 import arrow from '../../../assets/go@2x.png'
 import checkgrayIcon from '../../../assets/check_gray.png'
 import muteIcon from '../../../assets/go@2x.png'
+
+import aboutIcon from '../../../assets/about@2x.png'
+import privacyIcon from '../../../assets/privacy@2x.png'
+import notificationsIcon from '../../../assets/notifications@2x.png'
+import generalIcon from '../../../assets/general@2x.png'
+import infoIcon from '../../../assets/info@2x.png'
+import rearchIcon from "../../../assets/search@2x.png";
+
 import { useSelector } from 'react-redux'
 import { setMyUserInfo } from '../../../redux/actions'
 import store from '../../../redux/store'
@@ -24,350 +39,448 @@ import { message } from "../../common/alert";
 import { removeFromBlackList, deleteContact } from '../../../api/contactsChat/getContacts'
 import { handlerTime, getMillisecond, computedItervalTime, timeIntervalToMinutesOrHours, setTimeVSNowTime, getLocalStorageData } from '../../../utils/notification'
 import { setSilentModeForAll, getSilentModeForAll, getSilentModeForConversations, setPushPerformLanguage, getPushPerformLanguage } from '../../../api/notificationPush'
+import ConfirmDialog from "../../common/confirmDialog"
 
 const useStyles = makeStyles((theme) => {
     return {
-      root: {
-        display: "flex",
-        alignItems: "center",
-        width: "680px",
-        minHeight: theme.spacing(30),
-        // paddingBottom: theme.spacing(4),
-        // margin: "16px 24px",
-      },
-      gridItem: {
-        display: "flex",
-        alignItems: "center",
-      },
-
-      settingInfoBox: {
-        width: "280px",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        marginBottom: "10px",
-        "& div:nth-last-child(2)": {
-          marginTop: "-12px",
-          fontSize: "20px",
-          fontWeight: "600",
+        root: {
+            display: "flex",
+            alignItems: "center",
+            width: "680px",
+            minHeight: theme.spacing(30),
+            // paddingBottom: theme.spacing(4),
+            // margin: "16px 24px",
         },
-        "& div:nth-last-child(1)": {
-          color: "#999999",
-          fontSize: "12px",
+        gridItem: {
+            display: "flex",
+            alignItems: "center",
         },
-      },
 
-      settingMenuBox: {
-        display: "flex",
-        flexDirection: "column",
-      },
-
-      tabsInfo: {
-        height: "462px",
-      },
-      avatarEditIcon: {
-        position: "relative",
-        top: "-60px",
-        width: "24px",
-        height: "24px",
-        cursor: "pointer",
-      },
-
-      infoPanel: {
-        width: "100%",
-        height: "450px",
-        backgroundColor: "#EDEFF2",
-        padding: "6px 8px",
-        display: "flex",
-      },
-      infoItem: {
-        backgroundColor: "#F4F5F7",
-        borderRadius: "16px",
-        height: "55px",
-        width: "100%",
-        lineHeight: "55px",
-        padding: "0 16px",
-        boxSizing: "border-box",
-        position: "relative",
-        "& span:nth-child(3)": {
-          color: "#005FFF",
-          position: "absolute",
-          right: "8px",
-          cursor: "pointer",
+        settingInfoBox: {
+            width: "280px",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            marginBottom: "10px",
+            "& div:nth-last-child(2)": {
+                marginTop: "-12px",
+                fontSize: "20px",
+                fontWeight: "600",
+            },
+            "& div:nth-last-child(1)": {
+                color: "#999999",
+                fontSize: "12px",
+            },
         },
-        "& span:nth-child(2)": {
-          fontSize: "16px",
-          marginLeft: "16px",
+
+        settingMenuBox: {
+            display: "flex",
+            flexDirection: "column",
         },
-      },
 
-      privacyItemInfo: {
-        display: "flex",
-        alignItems: "center",
-      },
+        tabsInfo: {
+            height: "462px",
+        },
+        avatarEditIcon: {
+            position: "relative",
+            top: "-60px",
+            width: "24px",
+            height: "24px",
+            cursor: "pointer",
+        },
 
-      aboutItem: {
-        background: '#F4F5F7',
-        height: '50px',
-        lineHeight: '50px',
-        margin: '2px 0',
-        padding: '0 8px'
-    },
-    textfieldStyle:{
-        width:"100%"
-    },
-    numberBox: {
-        height: "20px",
-        display: "flex",
-        justifyContent: "flex-end",
-        marginTop: "5px",
-        padding: "5px",
-    },
-    numberStyle: {
-        fontFamily: "PingFang SC",
-        fontWeight: "400",
-        style: "normal",
-        fontSize: "14px",
-        LineHeight: "20px",
-        color: "#CCCCCC",
-    },
-    notificationPanel: {
-        width: '100%',
-        height: '450px',
-        backgroundColor: '#EDEFF2',
-        padding: '6px 8px',
-        overflow: 'auto',
-    },
-    notificationItem: {
-        backgroundColor: '#F4F5F7',
-        borderRadius: '16px',
-        width: '100%',
-        boxSizing: 'border-box',
-    },
-    notifyTitle: {
-        fontWeight: '600',
-        fontSize: '16px',
-        lineHeight: '54px',
-        color: '#0D0D0D',
-        borderBottom: '1px solid #E6E6E6',
-        height: '54px',
-        padding: '0 16px',
-    },
-    notifySubTitle: {
-        fontWeight: '600',
-        fontSize: '14px',
-        lineHeight: '22px',
-        color: '#0D0D0D',
-    },
-    selectAndRadio: {
-        margin: '0 16px',
-    },
-    arrowImg: {
-        width: '15px',
-        height: '15px',
-        cursor: 'pointer',
-        marginRight: '10px',
-    },
-    arrowDownImg: {
-        transform: 'rotate(90deg)',
-    },
-    arrowUpImg: {
-        transform: 'rotate(-90deg)',
-    },
-    notifySelect: {
-        background: '#fff',
-        width: '160px',
-        height: '40px',
-    },
-    radioColor: {
-        '&.Mui-checked': {
-            color: '#005FFF',
-        }
-    },
-    previewStyle: {
-        borderTop: '1px solid #E6E6E6',
-        width: '97%',
-    },
-    bottomStyle: {
-        height: '52px',
-    },
-    alertStyle: {
-        margin: '0 16px',
-    },
-    bottomItem: {
-        marginTop: '10px',
-    },
-    flexBox: {
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-    },
-    cursorStyle: {
-        cursor: 'pointer'
-    },
-    notifyPrayTitle: {
-        color: 'rgb(153, 153, 153)',
-        fontSize: '14px',
-        fontWeight: '600',
-        marginLeft: '5px',
-    },
-    btnBox: {
-        width: '100%',
-        textAlign: 'right'
-    },
-    btnStyle: {
-        background: '#114EFF',
-        borderRadius: '26px',
-        width: '84px',
-        height: '28px',
-        color: '#fff',
-        display: 'inline-block',
-        textAlign: 'center',
-        lineHeight: '28px',
-        cursor: 'pointer',
-        fontSize: '14px',
-        fontWeight: '600',
-    },
-    turnStyle: {
-        fontWeight: '500',
-        fontSize: '14px',
-        textAlign: 'right',
-        color: '#114EFF',
-        cursor: 'pointer',
-    },
-    switchStyle: {
-        // '& .Mui-checked': {
-        //     color: '#fff',
-        // }
-    },
-    switchStyleMargin: {
-        marginRight: '-10px',
-    },
-    switchOpenStyle: {
-        // '& .MuiSwitch-track': {
-        //     background: 'rgb(49, 78, 238) !important',
-        //     opacity: '1 !important',
-        // }
-    },
-    contentBox: {
-        margin: '20px',
-        fontSize: '16px',
-        width: '540px',
-    },
-    turnOffBtnStyle: {
-        width: '84px',
-        height: '36px',
-        color: '#000',
-        display: 'inline-block',
-        textAlign: 'center',
-        lineHeight: '36px',
-        cursor: 'pointer',
-        fontSize: '16px',
-        fontWeight: '600',
-    },
-    rightBtn: {
-        margin: '0px 20px 20px 10px',
-        fontSize: '16px',
-        background: '#114EFF',
-        borderRadius: '26px',
-        height: '36px',
-        width: '84px',
-        color: '#fff',
-        textAlign: 'center',
-        display: 'inline-block',
-        lineHeight: '36px',
-        cursor: 'pointer',
-        fontWeight: '600',
-    },
-    unmuteTimeStyle: {
-        color: '#0D0D0D',
-        fontSize: '16px',
-        fontWeight: '500',
-    },
-    imgStyle: {
-        width: '15px',
-        height: '15px',
-    },
-    imgUpStyle: {
-        transform: 'rotate(-90deg)',
-    },
-    imgDownStyle: {
-        transform: 'rotate(90deg)',
-    },
-    mySelect: {
-        position: 'relative',
-        background: '#FFFFFF',
-        borderRadius: '10px',
-        height: '40px',
-        width: '162px',
-    },
-    selectTop: {
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        padding: '0 10px',
-        boxSizing: 'border-box',
-        cursor: 'pointer',
-    },
-    selectDefaultText: {
-        fontFamily: 'Roboto',
-        fontStyle: 'normal',
-        fontWeight: '500',
-        fontSize: '14px',
-        color: '#000000',
-        lineHeight: '40px',
-    },
-    selectBottom: {
-        width: '178px',
-        position: 'absolute',
-        top: '46px',
-        left: '-6px',
-        background: '#F4F5F7',
-        boxShadow: '0px 24px 36px rgba(0, 0, 0, 0.2), 8px 0px 24px rgba(0, 0, 0, 0.16)',
-        borderRadius: '12px',
-        padding: '8px 8px 0px 8px',
-        boxSizing: 'border-box',
-        zIndex: '1',
-    },
-    selectTextlist: {
-        height: '39px',
-        width: '162px',
-        borderRadius: '8px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        padding: '0 10px',
-        boxSizing: 'border-box',
-        marginBottom: '8px',
-        cursor: 'pointer',
-        '&:hover': {
+        infoPanel: {
+            width: "100%",
+            height: "450px",
+            backgroundColor: "#EDEFF2",
+            padding: "6px 8px",
+            // display: "flex",
+            flexFlow: 'wrap',
+            alignContent: 'flexStart',
+        },
+        infoItem: {
+            backgroundColor: "#F4F5F7",
+            borderRadius: "16px",
+            height: "55px",
+            width: "100%",
+            lineHeight: "55px",
+            padding: "0 16px",
+            boxSizing: "border-box",
+            position: "relative",
+            fontWeight: '600',
+            "& span:nth-child(3)": {
+                color: "#005FFF",
+                position: "absolute",
+                right: "8px",
+                cursor: "pointer",
+            },
+            "& span:nth-child(2)": {
+                fontSize: "16px",
+                marginLeft: "16px",
+            },
+        },
+
+        privacyItemInfo: {
+            display: "flex",
+            alignItems: "center",
+        },
+
+        aboutItem: {
+            background: '#F4F5F7',
+            height: '50px',
+            lineHeight: '50px',
+            margin: '2px 0',
+            padding: '0 8px',
+            '& a': {
+                textDecoration: 'none',
+                color: '#114EFF',
+            }
+        },
+        textfieldStyle: {
+            width: "100%"
+        },
+        numberBox: {
+            height: "20px",
+            display: "flex",
+            justifyContent: "flex-end",
+            marginTop: "5px",
+            padding: "5px",
+        },
+        numberStyle: {
+            fontFamily: "PingFang SC",
+            fontWeight: "400",
+            style: "normal",
+            fontSize: "14px",
+            LineHeight: "20px",
+            color: "#CCCCCC",
+        },
+        notificationPanel: {
+            width: '100%',
+            height: '450px',
+            backgroundColor: '#EDEFF2',
+            padding: '6px 8px',
+            overflow: 'auto',
+        },
+        notificationItem: {
+            backgroundColor: '#F4F5F7',
+            borderRadius: '16px',
+            width: '100%',
+            boxSizing: 'border-box',
+        },
+        notifyTitle: {
+            fontWeight: '600',
+            fontSize: '16px',
+            lineHeight: '54px',
+            color: '#0D0D0D',
+            borderBottom: '1px solid #E6E6E6',
+            height: '54px',
+            padding: '0 16px',
+        },
+        notifySubTitle: {
+            fontWeight: '600',
+            fontSize: '14px',
+            lineHeight: '22px',
+            color: '#0D0D0D',
+        },
+        selectAndRadio: {
+            margin: '0 16px',
+        },
+        arrowImg: {
+            width: '20px',
+            height: '20px',
+            cursor: 'pointer',
+            marginRight: '10px',
+        },
+        arrowDownImg: {
+            transform: 'rotate(90deg)',
+        },
+        arrowUpImg: {
+            transform: 'rotate(-90deg)',
+        },
+        notifySelect: {
+            background: '#fff',
+            width: '160px',
+            height: '40px',
+        },
+        radioColor: {
+            '&.Mui-checked': {
+                color: '#005FFF',
+            }
+        },
+        previewStyle: {
+            borderTop: '1px solid #E6E6E6',
+            width: '97%',
+        },
+        bottomStyle: {
+            height: '52px',
+        },
+        alertStyle: {
+            margin: '0 16px',
+        },
+        bottomItem: {
+            marginTop: '10px',
+        },
+        flexBox: {
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+        },
+        cursorStyle: {
+            cursor: 'pointer'
+        },
+        notifyPrayTitle: {
+            color: 'rgb(153, 153, 153)',
+            fontSize: '14px',
+            fontWeight: '600',
+            marginLeft: '5px',
+        },
+        btnBox: {
+            width: '100%',
+            textAlign: 'right'
+        },
+        btnStyle: {
+            background: '#114EFF',
+            borderRadius: '26px',
+            width: '84px',
+            height: '28px',
+            color: '#fff',
+            display: 'inline-block',
+            textAlign: 'center',
+            lineHeight: '28px',
+            cursor: 'pointer',
+            fontSize: '14px',
+            fontWeight: '600',
+        },
+        turnStyle: {
+            fontWeight: '500',
+            fontSize: '14px',
+            textAlign: 'right',
+            color: '#114EFF',
+            cursor: 'pointer',
+        },
+        switchStyle: {
+            // '& .Mui-checked': {
+            //     color: '#fff',
+            // }
+        },
+        switchStyleMargin: {
+            marginRight: '-10px',
+        },
+        switchOpenStyle: {
+            // '& .MuiSwitch-track': {
+            //     background: 'rgb(49, 78, 238) !important',
+            //     opacity: '1 !important',
+            // }
+        },
+        contentBox: {
+            margin: '20px',
+            fontSize: '14px',
+            width: '540px',
+        },
+        turnOffBtnStyle: {
+            width: '84px',
+            height: '36px',
+            color: '#000',
+            display: 'inline-block',
+            textAlign: 'center',
+            lineHeight: '36px',
+            cursor: 'pointer',
+            fontSize: '16px',
+            fontWeight: '600',
+        },
+        rightBtn: {
+            margin: '0px 20px 20px 10px',
+            fontSize: '14px',
+            background: '#114EFF',
+            borderRadius: '26px',
+            height: '36px',
+            width: '84px',
+            color: '#fff',
+            textAlign: 'center',
+            display: 'inline-block',
+            lineHeight: '36px',
+            cursor: 'pointer',
+            fontWeight: '600',
+        },
+        unmuteTimeStyle: {
+            color: '#0D0D0D',
+            fontSize: '16px',
+            fontWeight: '500',
+        },
+        menuIcon: {
+            width: '30px',
+            height: '30px'
+        },
+        menuBtn: {
+            justifyContent: 'start',
+            textTransform: 'none',
+            borderRadius: '8px !important',
+        },
+        imgStyle: {
+            width: '15px',
+            height: '15px',
+        },
+        imgUpStyle: {
+            transform: 'rotate(-90deg)',
+        },
+        imgDownStyle: {
+            transform: 'rotate(90deg)',
+        },
+        mySelect: {
+            position: 'relative',
             background: '#FFFFFF',
-        }
-    },
-    selectChecked: {
-        background: '#FFFFFF',
-    },
-    selectOption: {
-        fontFamily: 'Roboto',
-        fontStyle: 'normal',
-        fontWeight: '500',
-        fontSize: '14px',
-        lineHeight: '39px',
-        color: '#000000',
-    },
-    checkedStyle: {
-        width: '15px',
-        verticalAlign: 'middle'
-    },
-    commonDialog: {
-        '& .MuiDialog-paperWidthSm': {
-            borderRadius: '12px'
+            borderRadius: '10px',
+            height: '40px',
+            width: '162px',
+        },
+        selectTop: {
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            padding: '0 10px',
+            boxSizing: 'border-box',
+            cursor: 'pointer',
+        },
+        selectDefaultText: {
+            fontFamily: 'Roboto',
+            fontStyle: 'normal',
+            fontWeight: '500',
+            fontSize: '14px',
+            color: '#000000',
+            lineHeight: '40px',
+        },
+        selectBottom: {
+            width: '178px',
+            position: 'absolute',
+            top: '46px',
+            left: '-6px',
+            background: '#F4F5F7',
+            boxShadow: '0px 24px 36px rgba(0, 0, 0, 0.2), 8px 0px 24px rgba(0, 0, 0, 0.16)',
+            borderRadius: '12px',
+            padding: '8px 8px 0px 8px',
+            boxSizing: 'border-box',
+            zIndex: '1',
+        },
+        selectTextlist: {
+            height: '39px',
+            width: '162px',
+            borderRadius: '8px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            padding: '0 10px',
+            boxSizing: 'border-box',
+            marginBottom: '8px',
+            cursor: 'pointer',
+            '&:hover': {
+                background: '#FFFFFF',
+            }
+        },
+        selectChecked: {
+            background: '#FFFFFF',
+        },
+        selectOption: {
+            fontFamily: 'Roboto',
+            fontStyle: 'normal',
+            fontWeight: '500',
+            fontSize: '14px',
+            lineHeight: '39px',
+            color: '#000000',
+        },
+        checkedStyle: {
+            width: '15px',
+            verticalAlign: 'middle'
+        },
+        commonDialog: {
+            '& .MuiDialog-paperWidthSm': {
+                borderRadius: '12px'
+            }
+        },
+        infoSwitchItem: {
+            backgroundColor: "#F4F5F7",
+            borderRadius: "16px",
+            height: "55px",
+            width: "100%",
+            boxSizing: "border-box",
+            display: 'flex',
+            alignItems: 'center',
+            textAlign: 'left',
+            lineHeight: '55px',
+            paddingLeft: '14px',
+            position: 'relative',
+            marginTop: '16px',
+        },
+        switchMargin: {
+            position: 'absolute',
+            right: '-5px',
+        },
+        textStyle: {
+			fontFamily: "Roboto",
+			fontWeight: "400",
+			fontSize: "12px",
+			lineHeight: "16",
+			color: "#000000",
+			width: "100%",
+			padding: "5px",
+		},
+		imgSearchStyle: {
+			width: "25px",
+			cursor: "pointer",
+            marginRight: '5px',
+		},
+        blockedListBox: {
+            display: 'flex',
+            justifyContent: 'spance-between',
+            alignItems: 'center',
+            padding: '12px',
+            height: '54px',
+            background: '#F4F5F7',
+            borderTopLeftRadius: '16px',
+            borderTopRightRadius: '16px',
+            width: '100%',
+            boxSizing: 'border-box',
+            borderBottom: '1px solid #E6E6E6'
+        },
+        blockText: {
+            color: '#000',
+            fontWeight: 600,
+            fontSize: '16px',
+            width: '290px',
+        },
+        searchBox: {
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+        },
+        cancelBtn: {
+            fontSize: '14px',
+            color: '#114EFF',
+            cursor: 'pointer',
+        },
+        listBoxBlock: {
+            background: '#F4F5F7',
+            borderBottomLeftRadius: '16px',
+            borderBottomRightRadius: '16px',
+        },
+        listItemBlock: {
+            padding: '0',
+            borderRadius: '12px',
+            '& .MuiButton-root:hover': {
+                background: '#fff',
+                borderRadius: '12px',
+            }
+        },
+        inputBox: {
+            width: '310px',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginRight: '10px',
         }
     }
-}
 })
 
-const AVATARS = [avater1, avater2, avater3]
+const AVATARS = [avater1, avater2, avater3, avater4, avater5, avater6, avater7]
 const selectList = [
     {
         id: 1,
@@ -427,6 +540,7 @@ export default function Setting({ open, onClose }) {
     const [nickName, setNickName] = useState('')
     const [avatarIndex, setAvatarIndex] = useState(null)
     const [addEl, setAddEl] = useState(null)
+    const [addElSub, setAddElSub] = useState(null)
     const [notifyText, setNotifyText] = useState('ALL');
     const [defaultValue, setDefaultValue] = useState('0')
     const [showRadio, setShowRadio] = useState(false)
@@ -440,6 +554,14 @@ export default function Setting({ open, onClose }) {
     const blackList = useSelector(state => state?.blackList) || []
     const [showSelectOption, setShowSelectOption] = useState(false)
     const [selectContent, setSelectContent] = useState('All Message')
+    const [deleteSwitch, setDeleteSwitch] = useState(false)
+    const [secondSure, setSecondSure] = useState(false)
+	const [GroupStatus, setGroupStatus] = useState('')
+	const [groupContent, setgroupContent] = useState('')
+    const [showOrClose, setShowOrClose] = useState(true)
+    const [showInput, setShowInput] = useState(false)
+    const [blockList, setblockList] = useState(blackList)
+
     useEffect(() => {
         if (myUserInfo) {
             setNickName(myUserInfo.nickName)
@@ -455,13 +577,13 @@ export default function Setting({ open, onClose }) {
     };
 
     const handleMenuClick = (e) => {
-        if (e.target.innerHTML === 'info') {
+        if (e.target.innerHTML.includes('Info')) {
             setTabIndex(1)
-        } else if (e.target.innerHTML === 'privacy') {
+        } else if (e.target.innerHTML.includes('Privacy')) {
             setTabIndex(2)
-        } else if (e.target.innerHTML === 'about') {
+        } else if (e.target.innerHTML.includes('About')) {
             setTabIndex(3)
-        } else if (e.target.innerHTML === 'Notifications') {
+        } else if (e.target.innerHTML.includes('Notifications')) {
             setTabIndex(4)
         }
     }
@@ -477,12 +599,13 @@ export default function Setting({ open, onClose }) {
         if (value.length === 0 || value.length > 12) {
             message.error(`${i18next.t("Nickname is empty or exceeds the limit")}`);
             return;
-        } 
+        }
         setNickName(e.target.value);
     }
 
     const handlePrivacyItemMoreClick = (e) => {
         setAddEl(e.currentTarget)
+        setAddElSub(e.currentTarget)
     }
 
     const handleUnblockContact = (target) => {
@@ -490,7 +613,7 @@ export default function Setting({ open, onClose }) {
     }
 
     const handleDeleteContact = (target) => {
-        deleteContact(target.value, handleCloseMenu )
+        deleteContact(target.value, handleCloseMenu)
     }
 
     const handleCheckAvatar = (index) => {
@@ -514,12 +637,24 @@ export default function Setting({ open, onClose }) {
                     <div>{nickName}</div>
                     <div>AgoraID: {myUserInfo?.agoraId}</div>
                 </div>
-                <div className={classes.settingMenuBox} onClick={handleMenuClick}>
-                    <Button key={0} style={{ justifyContent: 'start' }} >info</Button>
-                    <Button key={3} style={{ justifyContent: 'start' }} >Notifications</Button>
-                    <Button key={1} style={{ justifyContent: 'start' }} >privacy</Button>
-                    <Button key={2} style={{ justifyContent: 'start' }}>about</Button>
-                </div>
+                <List className={classes.settingMenuBox} onClick={handleMenuClick}>
+                    <ListItemButton key={0} className={classes.menuBtn} selected={tabIndex === 1}>
+                        <img src={infoIcon} alt="info" className={classes.menuIcon} />
+                        Info
+                    </ListItemButton>
+                    <ListItemButton key={3} className={classes.menuBtn} selected={tabIndex === 4}>
+                        <img src={notificationsIcon} alt="notifications" className={classes.menuIcon} />
+                        Notifications
+                    </ListItemButton>
+                    <ListItemButton key={1} className={classes.menuBtn} selected={tabIndex === 2}>
+                        <img src={privacyIcon} alt="privacy" className={classes.menuIcon} />
+                        Privacy
+                    </ListItemButton>
+                    <ListItemButton key={2} className={classes.menuBtn} selected={tabIndex === 3}>
+                        <img src={aboutIcon} alt="about" className={classes.menuIcon} />
+                        About
+                    </ListItemButton>
+                </List>
             </div>
         )
     }
@@ -667,11 +802,15 @@ export default function Setting({ open, onClose }) {
         const checked = e.target.checked
         const soundPreviewText = {
             sound: soundSwitch,
-            previewText: textSwitch
+            previewText: textSwitch,
+            deleteSwitch: deleteSwitch
         }
-        if (val) {
+        if (Number(val) === 1) {
             setSoundSwitch(checked)
             soundPreviewText['sound'] = checked
+        } else if (Number(val) === 2) {
+            setDeleteSwitch(checked)
+            soundPreviewText['deleteSwitch'] = checked
         } else {
             setTextSwitch(checked)
             soundPreviewText['previewText'] = checked
@@ -700,34 +839,82 @@ export default function Setting({ open, onClose }) {
     const handlerSelectBox = () => {
         setShowSelectOption(!showSelectOption)
     }
+    const showSecondDialog = (val) => {
+		setGroupStatus(val)
+		if (val === 1) {
+			setgroupContent('Move To Block')
+		} else {
+			setgroupContent('Delete Contact')
+		}
+		setSecondSure(true)
+        handleCloseMenu()
+	}
+	const confirmQuitGroup = () => {
+		if (GroupStatus === 1) {
+			handleUnblockContact(addElSub)
+		} else {
+			handleDeleteContact(addElSub)
+		}
+		setSecondSure(false)
+	}
+    useEffect(() => {
+        const tempArr = []
+        blackList.forEach(item => {
+            tempArr.push(item)
+        })
+        setblockList(tempArr)
+    }, [blackList])
+    const searchChangeValue = (e) => {
+		console.log(e.target.value, blackList)
+        const value = e.target.value
+        if (!value) {
+            setblockList(blackList)
+            return
+        }
+        const tempArr = []
+        blockList.forEach(item => {
+            if (item.includes(value)) {
+                tempArr.push(item)
+            }
+        })
+        setblockList(tempArr)
+	};
+
+    const closeOrShowBlockList = () => {
+        setShowOrClose(!showOrClose)
+    }
     function infoTabPanel() {
         return (
-          <div className={classes.infoPanel}>
-            {editStatus ? (
-              <Box className={classes.textfieldStyle}>
-                <TextField
-                  onBlur={handleEditBlur}
-                  onChange={handleEditChange}
-                  id="filled-helperText"
-                  label="NickName"
-                  defaultValue={nickName}
-                  variant="filled"
-                  fullWidth
-                />
-                <Box className={classes.numberBox}>
-                  <Typography className={classes.numberStyle}>
-                    {nickName?.length}/{maxLength}
-                  </Typography>
-                </Box>
-              </Box>
-            ) : (
-              <div className={classes.infoItem}>
-                <span>NickName</span>
-                <span>{nickName}</span>
-                <span onClick={handleEditClick}>Edit</span>
-              </div>
-            )}
-          </div>
+            <div className={classes.infoPanel} style={{display: 'block'}}>
+                {editStatus ? (
+                    <Box className={classes.textfieldStyle}>
+                        <TextField
+                            onBlur={handleEditBlur}
+                            onChange={handleEditChange}
+                            id="filled-helperText"
+                            label="NickName"
+                            defaultValue={nickName}
+                            variant="filled"
+                            fullWidth
+                        />
+                        <Box className={classes.numberBox}>
+                            <Typography className={classes.numberStyle}>
+                                {nickName?.length}/{maxLength}
+                            </Typography>
+                        </Box>
+                    </Box>
+                ) : (
+                    <div className={classes.infoItem}>
+                        <span>NickName</span>
+                        <span>{nickName}</span>
+                        <span onClick={handleEditClick}>Edit</span>
+                    </div>
+                )}
+                <div className={classes.infoSwitchItem}>
+                    <span className={classes.notifySubTitle} style={{fontSize: '16px'}}>{i18next.t('Delete the Chat after Leaving Group')}</span>
+                    <Switch checked={deleteSwitch} color="primary" className={classes.switchMargin} onChange={(e) => handleSwitchChange(e, 2)}></Switch>
+                </div>
+            </div>
         );
     }
 
@@ -739,6 +926,7 @@ export default function Setting({ open, onClose }) {
                 <div style={{ flex: 1 }}>
                     <div className={classes.aboutItem}>SDK version: 4.0.5</div>
                     <div className={classes.aboutItem}>uikit version: 1.0.3</div>
+                    <div className={classes.aboutItem}>More: <a href="https://www.agora.io/en/" target="_black">Agora</a></div>
                 </div>
             </div>
         )
@@ -747,34 +935,63 @@ export default function Setting({ open, onClose }) {
     function privacyTabPanel() {
         return (
             <div className={classes.infoPanel}>
-                <List dense sx={{ width: '400px' }} style={{ width: '100%' }}>
-                    {blackList.map((value) => {
-                        const labelId = `label-${value}`;
-                        return (
-                            <ListItem
-                                fullWidth
-                                key={labelId}
-                            >
-                                <Button fullWidth style={{
-                                    display: 'flex',
-                                    'justify-content': 'space-between'
-                                }}>
-                                    <div className={classes.privacyItemInfo}>
-                                        <ListItemAvatar>
-                                            <Avatar
-                                                alt={`Avatar n°${value + 1}`}
-                                            />
-                                        </ListItemAvatar>
-                                        <span>{value}</span>
-                                    </div>
-                                    <IconButton value={value} onClick={handlePrivacyItemMoreClick}>
-                                        <MoreVertIcon />
-                                    </IconButton>
-                                </Button>
-                            </ListItem>
-                        )
-                    })}
-                </List>
+                <div className={classes.blockedListBox}>
+                    {
+                        !showInput && <div className={classes.blockText}>Blocked List</div>
+                    }
+                    <div className={classes.searchBox}>
+                        {
+                            showInput ?
+                            <div className={classes.inputBox}>
+                                <InputBase
+                                    type="search"
+                                    placeholder={i18next.t("User Name")}
+                                    className={classes.textStyle}
+                                    onChange={searchChangeValue}
+                                />
+                                <span className={classes.cancelBtn} onClick={() => setShowInput(false)}>Cancel</span>
+                            </div>
+                            : <img
+                                src={rearchIcon}
+                                alt=""
+                                className={classes.imgSearchStyle}
+                                onClick={() => setShowInput(true)}/>
+                        }
+                    </div>
+                    <img onClick={closeOrShowBlockList} className={`${classes.arrowImg} ${showOrClose ? classes.arrowUpImg : classes.arrowDownImg}`} alt="" src={arrow} />
+                </div>
+                {
+                    showOrClose && <List dense className={classes.listBoxBlock} sx={{ width: '400px' }}>
+                        { blockList.length ? blockList.map((value) => {
+                            const labelId = `label-${value}`;
+                                return (
+                                    <ListItem
+                                        fullWidth
+                                        key={labelId}
+                                        className={classes.listItemBlock}
+                                    >
+                                        <Button fullWidth style={{
+                                            display: 'flex',
+                                            'justify-content': 'space-between'
+                                        }}>
+                                            <div className={classes.privacyItemInfo}>
+                                                <ListItemAvatar>
+                                                    <Avatar
+                                                        alt={`Avatar n°${value + 1}`}
+                                                    />
+                                                </ListItemAvatar>
+                                                <span>{value}</span>
+                                            </div>
+                                            <IconButton value={value} onClick={handlePrivacyItemMoreClick}>
+                                                <MoreVertIcon />
+                                            </IconButton>
+                                        </Button>
+                                    </ListItem>
+                                )
+                            }) : <div style={{textAlign: 'center', height: '100px', paddingTop: '40px'}}>No Data</div>
+                        }
+                    </List>
+                }
 
                 <Menu
                     id="simple-menu"
@@ -783,19 +1000,27 @@ export default function Setting({ open, onClose }) {
                     open={Boolean(addEl)}
                     onClose={handleCloseMenu}
                 >
-                    <MenuItem onClick={handleUnblockContact.bind(this, addEl)}>
+                    <MenuItem onClick={() => showSecondDialog(1)}>
                         <Typography variant="inherit" noWrap style={{ display: 'flex', alignItems: 'center' }}>
                             <RemoveCircleOutlineIcon style={{ width: '30px', height: '30px', marginRight: '8px' }} />
                             Unblock
                         </Typography>
                     </MenuItem>
-                    <MenuItem onClick={handleDeleteContact.bind(this, addEl)}>
+                    <MenuItem onClick={() => showSecondDialog(2)}>
                         <Typography variant="inherit" noWrap style={{ display: 'flex', alignItems: 'center', color: '#FF14CC' }}>
                             <img src={deleteContactIcon} alt='deleteContact' style={{ width: '30px', height: '30px', marginRight: '8px' }} />
                             Delete Contact
                         </Typography>
                     </MenuItem>
                 </Menu>
+                <ConfirmDialog
+                    open={Boolean(secondSure)}
+                    onClose={() => setSecondSure(false)}
+                    confirmMethod={() => confirmQuitGroup()}
+                    confirmContent={{
+                        content: groupContent
+                    }}
+                ></ConfirmDialog>
             </div>
         )
     }
@@ -806,7 +1031,14 @@ export default function Setting({ open, onClose }) {
                 {AVATARS.map((value, index) => {
                     return (<div style={{ width: '117px', height: '117px', margin: '5px', borderRadius: '4px', overflow: 'hidden' }} onClick={() => { handleCheckAvatar(index) }} key={value}>
                         <img src={value} alt='avatar1' style={{ width: '100%' }} />
-                        {avatarIndex === index ? <CheckIcon style={{ fontSize: 50, color: '#fff', position: 'relative', top: '-80px', right: '-40px' }} /> : null}
+                        {
+                            avatarIndex === index ? <img src={avaterSelect} alt="select" style={{
+                                position: 'relative',
+                                top: '-119px',
+                                right: '0',
+                                width: '117px'
+                            }} /> : null
+                        }
                     </div>)
                 })}
             </div>

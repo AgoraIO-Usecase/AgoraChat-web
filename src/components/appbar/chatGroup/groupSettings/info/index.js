@@ -16,8 +16,8 @@ const useStyles = makeStyles((theme) => {
 			display: "flex",
 			justifyContent: "space-between",
 			alignItems: "center",
-			padding: "0 15px",
-			borderRadius: "12px",
+			padding: "0 24px 0 18px !important",
+			// borderRadius: "12px",
 		},
 		titleStyle: {
 			fontFamily: "Ping Fang SC",
@@ -29,6 +29,8 @@ const useStyles = makeStyles((theme) => {
 			marginTop: "20px",
 			borderRadius: "16px",
 			background: "#F4F5F7",
+			margin: '16px 8px',
+    	padding: '8px !important',
 		},
 		nameBox: {
 			height: "60px",

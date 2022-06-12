@@ -95,6 +95,9 @@ const useStyles = makeStyles((theme) => {
         gNextImg: {
             width: '20px',
             height: '20px'
+        },
+        gNameTextPadding: {
+          paddingTop: '12px',
         }
     })
 });
@@ -104,13 +107,14 @@ const CreateGroup = () => {
     let descMaxLength = 300;
     const [groupNameValue, setGroupNameValue] = useState('')
     const [groupDescriptionValue, setGroupDescriptionValue] = useState('')
-    // const [groupMaximumValue, setGroupMaximumValue] = useState('')
+    const [groupMaximumValue, setGroupMaximumValue] = useState(200)
     const [groupPublicChecked, setGroupPublicChecked] = useState(true);
     const [groupApprovalChecked, setGroupApprovalChecked] = useState(true)
     const [groupInviteChecked, setGroupInviteChecked] = useState(false);
     const [showAddMemberDialog, setShowAddMemberDialog] = useState(false)
     const [groupInfoData, setGroupInfoData] = useState({})
     const [showGroupNamelimit, setShowGroupNamelimit] = useState(false)
+    const [inviteNeedConfirm, setInviteNeedConfirm] = useState(false)
 
     // Group Name
     const handleNameChange = (event) => {
@@ -137,9 +141,21 @@ const CreateGroup = () => {
         setGroupDescriptionValue(value)
     }
     //
-    // const handleMaximumChange = (event) => {
-    //     setGroupMaximumValue(event.target.value)
-    // }
+    const handleMaximumChange = (event) => {
+      if (Number(event.target.value).toString() === 'NaN') {
+        message.error(
+          i18next.t("Maximum Mumber Need Number")
+        );
+        return
+      }
+      if (Number(event.target.value) > 2000) {
+        message.error(
+          i18next.t("No More Than 2000")
+        );
+        return
+      }
+      setGroupMaximumValue(event.target.value)
+    }
 
     // Group Type： prublic/private
     const handleGrooupPublicChange = (event) => {
@@ -151,14 +167,17 @@ const CreateGroup = () => {
     const handleGroupInviteChange = (event) => {
         setGroupInviteChecked(event.target.checked);
     };
-
+    
+    const handleInviteNeedConfirm = (event) => {
+      setInviteNeedConfirm(event.target.checked);
+    };
     const handleSelectUserDialog = () => {
         if (groupNameValue.match(/^\s*$/)) {
             message.error(i18next.t('group name cannot be empty'))
             return;
         }
         setShowAddMemberDialog(true);
-        setGroupInfoData({ groupNameValue, groupDescriptionValue, groupPublicChecked, groupApprovalChecked, groupInviteChecked })
+        setGroupInfoData({ groupNameValue, groupDescriptionValue, groupPublicChecked, groupApprovalChecked, groupInviteChecked, groupMaximumValue, inviteNeedConfirm })
     }
     const handleSelectUserDialogClose = () => {
         setShowAddMemberDialog(false);
@@ -182,7 +201,7 @@ const CreateGroup = () => {
           <Box>
             <Box className={classes.inputBox}>
               <Box className={classes.gNameBox}>
-                <Typography className={classes.gNameText}>GroupName</Typography>
+                <Typography className={classes.gNameText + ' ' + classes.gNameTextPadding}>GroupName</Typography>
                 <InputBase
                   type="text"
                   max={20}
@@ -199,7 +218,7 @@ const CreateGroup = () => {
               </Box>
               <Box className={classes.gDescriptionBox}>
                 <Box className={classes.gDescription}>
-                  <Typography className={classes.gNameText}>
+                  <Typography className={classes.gNameText + ' ' + classes.gNameTextPadding}>
                     Group Description
                   </Typography>
                   <InputBase
@@ -221,17 +240,15 @@ const CreateGroup = () => {
                   {groupDescriptionValue.length}/{descMaxLength}
                 </Box>
               </Box>
-              <Box style={{ color: "#CCCCCC", pointerEvents: "none" }}>
+              <Box>
                 <Box className={classes.gInfoSetting}>
                   <Typography className={classes.gNameText}>
                     Maximum Mumber
                   </Typography>
                   <InputBase
-                    type="number"
-                    value={200}
-                    style={{ color: "#CCCCCC" }}
+                    value={groupMaximumValue}
                     placeholder={i18next.t("No More Than 2000")}
-                    // onChange={groupMaximumValue}
+                    onChange={handleMaximumChange}
                   />
                 </Box>
               </Box>
@@ -258,7 +275,7 @@ const CreateGroup = () => {
                 Authorizated to join
               </Typography>
               <Switch
-                checked={groupPublicChecked ? groupApprovalChecked : true}
+                checked={groupPublicChecked ? groupApprovalChecked : false}
                 onChange={handleGrooupApprovalChange}
                 color="primary"
               />
@@ -280,12 +297,35 @@ const CreateGroup = () => {
               />
             </Box>
             <Box
+              className={classes.gInvite}
+              style={{
+                color: !inviteNeedConfirm ? "#CCCCCC" : "rgba(0, 0, 0, 0.87)",
+              }}
+            >
+              <Typography className={classes.gNameText}>
+                Invite Need Confirm
+              </Typography>
+              <Switch
+                checked={inviteNeedConfirm}
+                onChange={handleInviteNeedConfirm}
+                color="primary"
+              />
+            </Box>
+            <Box
               className={classes.gNext}
               onClick={() => handleSelectUserDialog()}
+              style={{
+                color: (groupNameValue && groupMaximumValue) ? "#005FFF" : '#CCCCCC',
+                pointerEvents: (!groupNameValue && !groupMaximumValue) ? "none" : "all",
+              }}
             >
               <Typography
                 className={classes.gNameText}
-                style={{ color: "#005FFF" }}
+                style={{
+                  color: (groupNameValue && groupMaximumValue) ? "#005FFF" : '#CCCCCC',
+                  pointerEvents: (!groupNameValue && !groupMaximumValue) ? "none" : "all",
+                  paddingTop: '0px'
+                }}
               >
                 {i18next.t("Next")}
               </Typography>

@@ -7,13 +7,17 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    /* min-width: 600px; */
+    min-height: 698px;
 }
 
 .login-form {
-    width: 26.4%;
-    height: 48.8%;
     min-width: 300px;
     min-height: 460px;
+    max-width: 380px;
+    max-height: 614px;
+    height: 566px;
+    width: 380px;
     background-color: #FFF;
     border: 1px solid #fff;
     border-radius: 12px;
@@ -21,6 +25,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    position: relative;
 }
 
 .login-form-icon {
@@ -30,6 +35,7 @@
     width: 100px;
     height: 100px;
     margin-top: 15%;
+    margin-bottom: 27px;
 }
 
 .login-form-AC {
@@ -38,7 +44,7 @@
     background-repeat: no-repeat;
     width: 153px;
     height: 27px;
-    margin: 2.6% 0;
+    margin-bottom: 54px;
 }
 
 .login-form-notice {
@@ -54,6 +60,8 @@
     word-break: break-all;
     height: 18px;
     margin: 2% 0;
+    position: absolute;
+    top: 220px;
 }
 
 .login-form-input {
@@ -62,27 +70,35 @@
     background-color: #F2F3F3;
     border: 1px solid #F2F3F3;
     border-radius: 24px;
-    margin: 2% 0;
+    /* margin: 2% 0; */
     font-size: 14px;
-    color: #999999;
-    padding: 0 19px;
+    color: #000;
+    padding: 0 48px 0 19px;
     box-sizing: border-box;
 }
 
 .button {
     background-color: #114EFF;
     color: #fff;
+    font-size: 16px;
+    font-weight: 600;
+    padding: 0 19px;
 }
 
 .button:active {
     background-color: #093ed9;
 }
 
+.button:disabled {
+    background-color: RGBA(17, 78, 255, 0.5);
+}
+
 .login-copyright {
     font-size: 16px;
     color: #fff;
-    position: absolute;
-    bottom: 90px;
+    position: relative;
+    bottom: -90px;
+    /* bottom: 10%; */
 }
 
 .main-container {
@@ -91,11 +107,82 @@
 .sign-up-box {
     color: #ccc;
     text-align: center;
-    margin-top: 20px;
     font-size: 14px;
 }
 .sign-up {
     color: #114EFF;
     margin-left: 5px;
     cursor: pointer;
+}
+.sign-up-form {
+    height: 614px;
+}
+.input-box {
+    position: relative;
+    width: 100%;
+    margin-bottom: 18px;
+}
+.close-btn {
+    position: absolute !important;
+    right: 28px;
+    top: 0px;
+}
+.loading-box {
+    width: 100%;
+    position: relative;
+    margin-bottom: 31px;
+}
+@keyframes rotation {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+.loading-img {
+    animation: rotation 1s linear infinite;
+    width: 20px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    margin-left: -2%;
+    margin-top: -10px;
+}
+.mysignupdialog .MuiBackdrop-root {
+    backdrop-filter: blur(12px);
+    background: rgba(0, 0, 0, .2);
+}
+.mysignupdialog .MuiDialog-paper {
+    border-radius: 12px;
+}
+.mysignupdialog .Component-closeButton-3 {
+    color: #000;
+}
+.footer-btn {
+    text-align: right;
+    height: 100px;
+    width: 540px;
+    border-radius: 12px;
+    padding-top: 50px;
+    box-sizing: border-box;
+}
+.footer-btn span {
+    height: 36px;
+    width: 84px;
+    border-radius: 26px;
+    display: inline-block;
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 36px;
+    text-align: center;
+    color: #000000;
+    cursor: pointer;
+}
+.footer-btn span:nth-child(2) {
+    color: #FFFFFF;
+    margin-right: 23px;
+    background: #114EFF;
 }

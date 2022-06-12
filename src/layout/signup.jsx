@@ -1,13 +1,20 @@
 import React, { useState,useEffect, useCallback } from 'react'
 import './login.css'
 import i18next from "i18next";
-import { getToken, loginWithToken, loginWithPassword, register } from '../api/loginChat'
+import { getToken, loginWithToken, loginWithPassword, signUp } from '../api/loginChat'
 import { createHashHistory } from 'history';
 // import { useHistory } from 'react-router-dom'
 
 import store from '../redux/store'
 import { setMyUserInfo, setFetchingStatus } from '../redux/actions'
 import { message } from '../components/common/alert'
+import { IconButton } from '@material-ui/core';
+import HighlightOffIcon from '@material-ui/icons/HighlightOff'
+import VisibilityIcon from '@material-ui/icons/Visibility'
+import VisibilityOffIcon from '@material-ui/icons/VisibilityOff'
+import loading from '../assets/loading.png'
+import AlertDialogSlide from '../components/common/dialog'
+
 export default function SignUp() {
     const history = createHashHistory()
     const [notice, setNotice] = useState({
@@ -19,44 +26,52 @@ export default function SignUp() {
         agoraId: '',
         nickName: '',
         password: '',
+        passwordTwo: '',
+        showPassword: false,
+        showPassword1: false
     });
+    const [activeType, setActiveType] = useState('password')
+    const [activeType1, setActiveType1] = useState('password')
+    const [disabled, setdisabled] = useState(true)
+    const [loginBtn, setLoginBtn] = useState(i18next.t('SignUp'))
+    const [useDialogOpen, setDialogOpen] = useState(false)
 
     const login = useCallback(() => {
         console.log('value>>>',values);
+        setLoginBtn('')
         if (!values.agoraId) {
+            setLoginBtn(i18next.t('SignUp'))
             return setNotice({ show: true, text: 'agoraId is required' })
-        } else if (!(values.nickName || values.password)) {
+        } else if (!(values.password)) {
             return setNotice({ show: true, text: 'password is required' })
-        } else if (values.nickName.length > 32 || values.agoraId.length > 32) {
-            return setNotice({ show: true, text: 'agoraId is too long' })
+        }  else if (!(values.passwordTwo)) {
+            setLoginBtn(i18next.t('SignUp'))
+            return setNotice({ show: true, text: 'confirm password is required' })
+        } else if (values.agoraId.length > 32) {
+            setLoginBtn(i18next.t('SignUp'))
+            setdisabled(true)
+            return setNotice({ show: true, text: 'Username is too long' })
         } else {
             setNotice({
                 show: false
             })
         }
-        store.dispatch(setFetchingStatus(true))
-        if (values.nickName) {
-            getToken(values.agoraId, values.nickName).then((res) => {
-                const { accessToken } = res
-                loginWithToken(values.agoraId, accessToken)
-                store.dispatch(setMyUserInfo({ agoraId: values.agoraId, nickName: values.nickName }))
-                sessionStorage.setItem('webim_auth', JSON.stringify({ ...values, accessToken }))
-            }).catch(() => {
-                store.dispatch(setFetchingStatus(false))
-                message.error('login fail.')
+        // store.dispatch(setFetchingStatus(true))
+        if (values.password) {
+            signUp(values.agoraId, values.password).then(res => {
+                console.log(res)
+                setDialogOpen(true)
+                store.dispatch(setMyUserInfo({ agoraId, password }))
+                sessionStorage.setItem('webim_auth', JSON.stringify({ agoraId, password }))
+            }).catch(err => {
+                // message.error('Sign Up Fail.')
+                console.log(err)
+                setNotice({ show: true, text: 'Sign Up Fail.' })
+                setdisabled(true)
+            }).finally(_ => {
+                setLoginBtn(i18next.t('SignUp'))
             })
-        } else if (values.password) {
-            register(values.agoraId, values.password)
         }
-        // getToken(values.agoraId, values.nickName).then((res) => {
-        //     const { accessToken } = res
-        //     loginWithToken(values.agoraId, accessToken)
-        //     store.dispatch(setMyUserInfo({ agoraId: values.agoraId, nickName: values.nickName }))
-        //     sessionStorage.setItem('webim_auth', JSON.stringify({ ...values, accessToken }))
-        // }).catch(() => {
-        //     store.dispatch(setFetchingStatus(false))
-        //     message.error('login fail.')
-        // })
     }, [values])
 
     useEffect(() => {
@@ -75,35 +90,133 @@ export default function SignUp() {
     const handleChange = (prop) => (event) => {
         let value = event.target.value
         if (prop === 'agoraId') {
-            value = event.target.value.replace(/[^\w\.\/]/ig, '')
+            value = event.target.value.replace(/[^\w\.\/]/ig, '')   
         }
-        setValues({ ...values, [prop]: value });
+        setValues({ ...values, [prop]: value })
     };
+    const { agoraId , password , passwordTwo } = values
+    useEffect(() => {
+        if (agoraId && password && passwordTwo) {
+            if (password === passwordTwo) {
+                setdisabled(false)
+                setNotice({ show: false})
+            } else {
+                setdisabled(true)
+                setNotice({ show: true, text: 'Passwords do not match' })
+            }
+        } else {
+            setdisabled(true)
+        }
+    }, [agoraId , password , passwordTwo])
     const jumpToLogin = () => {
         history.push('/login')
     }
+    const handleClickClearagoraId = () => {
+        setValues({
+            ...values,
+            agoraId: ''
+        })
+    }
+    const handleClickShowPassword = (num) => {
+        if (num) {
+            setValues({
+                ...values,
+                showPassword1: !values.showPassword1
+            })
+            if (activeType1 === 'password') {
+                setActiveType1('text')
+            } else {
+                setActiveType1('password')
+            }
+        } else {
+            setValues({
+                ...values,
+                showPassword: !values.showPassword,
+            })
+            if (activeType === 'password') {
+                setActiveType('text')
+            } else {
+                setActiveType('password')
+            }
+        }
+    }
+    
+    const handleMouseDownPassword = (event) => {
+        event.preventDefault()
+    }
+    const footerCom = () => {
+        return (
+          <div className='footer-btn'>
+              <span onClick={() => setDialogOpen(false)}>Cancel</span>
+              <span onClick={jumpToLogin}>Login</span>
+          </div>
+        )
+    }
     return (
         <div className='login-container'>
-            <div className='login-form'>
+            <div className='login-form sign-up-form'>
                 <div className='login-form-icon'></div>
                 <div className='login-form-AC'></div>
                 {notice.show ? <div className='login-form-notice'>
                     {notice.text}
                 </div> : null}
-                <input className='login-form-input' 
-                placeholder={i18next.t('login-UserID')} 
-                onChange={handleChange('agoraId')} value={values.agoraId}></input>
-                <input className='login-form-input' placeholder={i18next.t('login-Password')} value={values.password} onChange={handleChange('password')}></input>
-                {/* <input className='login-form-input' placeholder={i18next.t('login-NickName')} value={values.nickName} onChange={handleChange('nickName')}></input> */}
-                <input type='button' className='login-form-input button' value={i18next.t('SignUp')} onClick={login} />
-            </div>
-            <div className='sign-up-box'>
-                {i18next.t('HasAccount')}
-                <span onClick={jumpToLogin} className='sign-up'>{i18next.t('login-Login')}</span>
+                <div className='input-box'>
+                    <input className='login-form-input' 
+                        placeholder={i18next.t('login-UserID')} 
+                        onChange={handleChange('agoraId')}
+                        value={values.agoraId}></input>
+                    {
+                        values.agoraId &&
+                        <IconButton
+                            aria-label="toggle password visibility"
+                            onClick={handleClickClearagoraId}
+                            onMouseDown={handleMouseDownPassword}
+                            className='close-btn'>
+                            <HighlightOffIcon />
+                        </IconButton>
+                    }
+                </div>
+                <div className='input-box'>
+                    <input type={activeType} className='login-form-input' placeholder={i18next.t('login-Password')} value={values.password} onChange={handleChange('password')}></input>
+                    <IconButton
+                        aria-label="toggle password visibility"
+                        className='close-btn'
+                        onClick={() => handleClickShowPassword(0)}
+                        onMouseDown={handleMouseDownPassword}>
+                        {values.showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                    </IconButton>
+                </div>
+                <div className='input-box'>
+                    <input type={activeType1} className='login-form-input' placeholder={i18next.t('ComnfirmPassword')} value={values.passwordTwo} onChange={handleChange('passwordTwo')}></input>
+                    <IconButton
+                        aria-label="toggle password visibility"
+                        className='close-btn'
+                        onClick={() => handleClickShowPassword(1)}
+                        onMouseDown={handleMouseDownPassword}>
+                        {values.showPassword1 ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                    </IconButton>
+                </div>
+                <div className='loading-box'>
+                    <input disabled={disabled} type='button' className='login-form-input button' value={loginBtn} onClick={login} />
+                    {
+                        !loginBtn && <img className='loading-img' src={loading} alt="" />
+                    }
+                </div>
+                <div className='sign-up-box'>
+                    <span onClick={jumpToLogin} className='sign-up'>{i18next.t('BacktoLogin')}</span>
+                </div>
             </div>
             <div className='login-copyright'>
                 © 2022 Agora
             </div>
+            <AlertDialogSlide
+                open={Boolean(useDialogOpen)}
+                onClose={() => setDialogOpen(false)}
+                title={i18next.t('Registration Success')}
+                footer={footerCom()}
+                content={''}
+                className='mysignupdialog'
+            />
         </div>
     )
 }

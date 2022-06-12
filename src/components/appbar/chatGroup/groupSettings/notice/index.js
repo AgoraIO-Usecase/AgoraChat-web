@@ -22,9 +22,9 @@ const useStyles = makeStyles((theme) => {
 			display: "flex",
 			justifyContent: "space-between",
 			alignItems: "center",
-			padding: "0 15px",
+			padding: "0 24px 0 38px !important",
 			position: "relative",
-			borderRadius: "12px",
+			// borderRadius: "12px",
 		},
 		titleStyle: {
 			fontFamily: "Ping Fang SC",

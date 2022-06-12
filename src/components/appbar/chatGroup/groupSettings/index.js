@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import CommonDialog from "../../../common/dialog";
-import i18next from "i18next";
+import i18next, { use } from "i18next";
 import {Box,Tabs,Tab,Button,
 } from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
@@ -31,6 +31,7 @@ import muteIcon from '../../../../assets/unmute.png'
 import muteGrayIcon from '../../../../assets/gray@2x.png'
 import { setTimeVSNowTime } from '../../../../utils/notification'
 import { getSilentModeForConversation } from '../../../../api/notificationPush'
+import ConfirmDialog from "../../../common/confirmDialog"
 
 const useStyles = makeStyles((theme) => {
 	return {
@@ -93,6 +94,9 @@ const useStyles = makeStyles((theme) => {
 			background: "#EDEFF2",
 			width: "100%",
 			height: "100%",
+			'& .MuiBox-root': {
+				padding: '0'
+			}
 		},
 		gSettingRight: {
 			width: "65%",
@@ -132,9 +136,9 @@ const useStyles = makeStyles((theme) => {
 		muteImgstyle: {
 			width: '12.86px',
 			height: '12.86px',
-		}
-	};
-});
+		},
+	}
+})
 
 const GroupSettingsDialog = ({ open, onClose, currentGroupId }) => {
 	const classes = useStyles();
@@ -146,6 +150,10 @@ const GroupSettingsDialog = ({ open, onClose, currentGroupId }) => {
 	const groupId = groupsInfo?.id
 	const [value, setValue] = useState(0);
 	const [muteFlag, setmuteFlag] = useState(false);
+	const [secondSure, setSecondSure] = useState(false)
+	const [GroupStatus, setGroupStatus] = useState('')
+	const [groupContent, setgroupContent] = useState('')
+
 	const handleChange = (event, newValue) => {
 		setValue(newValue);
 	};
@@ -167,6 +175,19 @@ const GroupSettingsDialog = ({ open, onClose, currentGroupId }) => {
 				}
 			}
 		})
+	}
+	const showSecondDialog = (val) => {
+		setGroupStatus(val)
+		if (val === 'dissolve') {
+			setgroupContent('Disband this Group')
+		} else {
+			setgroupContent('Leave the Group')
+		}
+		setSecondSure(true)
+	}
+	const confirmQuitGroup = () => {
+		closeGroup(currentGroupId, GroupStatus, onClose)
+		setSecondSure(false)
 	}
 	const renderSetting = () => {
 		const memberLabel = () => {
@@ -359,26 +380,14 @@ const GroupSettingsDialog = ({ open, onClose, currentGroupId }) => {
 							{isOwner ? (
 								<Typography
 									className={classes.gCloseText}
-									onClick={() =>
-										closeGroup(
-											currentGroupId,
-											"dissolve",
-											onClose
-										)
-									}
+									onClick={() => showSecondDialog('dissolve')}
 								>
 									{i18next.t("Disband this Group")}
 								</Typography>
 							) : (
 								<Typography
 									className={classes.gCloseText}
-									onClick={() =>
-										closeGroup(
-											currentGroupId,
-											"quit",
-											onClose
-										)
-									}
+									onClick={() => showSecondDialog('quit')}
 								>
 									{i18next.t("Leave the Group")}
 								</Typography>
@@ -438,6 +447,14 @@ const GroupSettingsDialog = ({ open, onClose, currentGroupId }) => {
 					</TabPanel>
 
 				</Box>
+				<ConfirmDialog
+					open={Boolean(secondSure)}
+					onClose={() => setSecondSure(false)}
+					confirmMethod={() => confirmQuitGroup()}
+					confirmContent={{
+						content: groupContent
+					}}
+				></ConfirmDialog>
 			</Box>
 		);
 	};

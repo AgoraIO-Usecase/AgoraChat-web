@@ -1,4 +1,4 @@
-import React, { useEffect, useState, memo } from 'react'
+import React, { useEffect, useState, memo, createRef } from 'react'
 import CommonDialog from '../../common/dialog'
 import { Box, ListItemAvatar, Avatar, ListItem, List } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
@@ -47,7 +47,9 @@ const useStyles = makeStyles((theme) => {
             alignItems: 'center',
             boxSizing: 'border-box',
             padding: 0,
-            color: '#0D0D0D'
+            color: '#0D0D0D',
+            borderRadius: '8px',
+            paddingLeft: '10px',
         },
         itemBox: {
             height: '100%',
@@ -115,7 +117,7 @@ function AddressBookDialog(props) {
         usersInfoData.length > 0 && usersInfoData.map((item) => {
             return setUserInfoObj(Object.assign(userInfoObj, { [item.username]: item.userAvatar }))
         })
-    }   
+    }
     let contactsData = constacts.map((user) => {
         return {
             name: user,
@@ -128,13 +130,13 @@ function AddressBookDialog(props) {
     const handleClick = (itemData) => {
         // uikit
         let conversationItem = {
-			conversationType: "singleChat",
-			conversationId: itemData.name,
+            conversationType: "singleChat",
+            conversationId: itemData.name,
             ext: {
                 ext: itemData?.presence?.ext,
                 muteFlag: muteDataObj[itemData.name]
             }
-		};
+        };
         EaseApp.addConversationItem(conversationItem);
         onClose()
     }
@@ -159,12 +161,16 @@ function AddressBookDialog(props) {
         'Leave': leaveIcon,
         '': onlineIcon
     }
+    const inputEl = createRef()
+    useEffect(() => {
+        inputEl.current && inputEl.current.focus()
+    }, [open])
     function renderContent() {
         return (
             <div className={classes.root}>
                 <div className={classes.serchContainer}>
                     <label className={classes.baseInputLabel}>To:</label>
-                    <input className={classes.baseInput} onChange={handleChange} />
+                    <input className={classes.baseInput} onChange={handleChange} ref={inputEl} />
                 </div>
                 <List dense >
                     {contactList.map((userGroup, index) => {

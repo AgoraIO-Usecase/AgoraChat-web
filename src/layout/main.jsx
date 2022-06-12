@@ -36,7 +36,7 @@ export default function Main() {
         let webimAuthObj = {}
         if (webimAuth && WebIM.conn.logOut) {
             webimAuthObj = JSON.parse(webimAuth)
-            if(webimAuthObj.password){
+            if(webimAuthObj.nickName){
                 loginWithPassword(webimAuthObj.agoraId, webimAuthObj.password)
             }else{
                 loginWithToken(webimAuthObj.agoraId, webimAuthObj.accessToken)

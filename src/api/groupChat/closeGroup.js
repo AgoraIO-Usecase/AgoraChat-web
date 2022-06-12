@@ -1,6 +1,8 @@
 import WebIM from "../../utils/WebIM";
 import getGroups from "./getGroups";
 import getGroupInfo from "../groupChat/getGroupInfo";
+import { EaseApp } from 'wy-chat'
+import { getLocalStorageData } from '../../utils/notification'
 export const closeGroup = (groupId, type, onClose) => {
 	let option = {
 		groupId: groupId,
@@ -9,11 +11,17 @@ export const closeGroup = (groupId, type, onClose) => {
 	if (type === "dissolve") {
 		WebIM.conn.dissolveGroup(option).then((res) => {
 			console.log(res);
+			if (getLocalStorageData().deleteSwitch) {
+				EaseApp.deleteSessionAndMessage({sessionType: 'groupChat', sessionId: groupId})
+			}
 			getGroups();
 		});
 	} else if (type === "quit") {
 		WebIM.conn.quitGroup(option).then((res) => {
 			console.log(res);
+			if (getLocalStorageData().deleteSwitch) {
+				EaseApp.deleteSessionAndMessage({sessionType: 'groupChat', sessionId: groupId})
+			}
 			getGroups();
 		});
 	}

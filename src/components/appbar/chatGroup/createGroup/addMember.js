@@ -4,7 +4,7 @@ import i18next from "i18next";
 import store from '../../../../redux/store'
 // import { EaseApp } from "uikit-reaction";
 // import { EaseApp } from "chat-uikit";
-import { EaseApp } from "chat-uikit2";
+import { EaseApp } from "wy-chat";
 import CommonDialog from '../../../common/dialog'
 import createGroup from '../../../../api/groupChat/createGroup'
 import { Box, Checkbox, List, ListItem, InputBase } from '@material-ui/core';
@@ -104,12 +104,20 @@ const useStyles = makeStyles((theme) => {
         memberBox: {
             width: '50%',
             background: '#EDEFF2',
-            padding: '10px'
+            padding: '10px',
+            overflow: 'auto',
         },
         gAvatar: {
             height: '100px',
             width: '100px'
         },
+        marginStyle: {
+			marginLeft: "10px",
+			textOverflow: 'ellipsis',
+			width: '140px',
+			overflow: 'hidden',
+			whiteSpace: 'nowrap',
+		},
     })
 });
 
@@ -153,6 +161,8 @@ const AddGroupMemberDialog = ({ groupInfoData, onClearValue, open, onClose }) =>
 		let conversationItem = {
 			conversationType: "groupChat",
 			conversationId: itemData,
+            conversationName: groupNameValue,
+            firstCrate: true
 		};
 		EaseApp.addConversationItem(conversationItem);
 		onClose();
@@ -216,7 +226,7 @@ const AddGroupMemberDialog = ({ groupInfoData, onClearValue, open, onClose }) =>
                     </Box>
                 </Box>
                 <Box className={classes.gUserBox}>
-                    <Box style={{ width: '50%', background: '#F5F7FA', padding: '10px' }}>
+                    <Box className={classes.memberBox} style={{ width: '50%', background: '#F5F7FA', padding: '10px' }}>
                         <Box className={classes.searchBox}>
                             <InputBase type="search"
                                 placeholder={i18next.t('Your Contacts')}
@@ -235,7 +245,7 @@ const AddGroupMemberDialog = ({ groupInfoData, onClearValue, open, onClose }) =>
                                     <ListItem key={key} onClick={handleSelect(item.id)} className={classes.contactsItem}>
                                         <Box style={{ display: 'flex', alignItems: 'center' }}>
                                             <Box className={classes.gMemberAvatar}></Box>
-                                            <Typography style={{ marginLeft: '10px' }}>{item.id}</Typography>
+                                            <Typography className={classes.marginStyle}>{item.id}</Typography>
                                         </Box>
                                         <Checkbox checked={item.checked} />
                                     </ListItem>
@@ -251,7 +261,7 @@ const AddGroupMemberDialog = ({ groupInfoData, onClearValue, open, onClose }) =>
                                     <ListItem key={key} className={classes.contactsItem}>
                                         <Box style={{ display: 'flex', alignItems: 'center' }}>
                                             <Box className={classes.gMemberAvatar} ></Box>
-                                            <Typography style={{ marginLeft: '10px' }}>{item}</Typography>
+                                            <Typography className={classes.marginStyle}>{item}</Typography>
                                         </Box>
                                         <img src={deldete_icon} alt="" style={{ width: '20px', cursor: 'pointer' }} onClick={deleteGroupMember(item)} />
                                     </ListItem>

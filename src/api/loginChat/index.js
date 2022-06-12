@@ -4,9 +4,16 @@ import { setMyUserInfo, setFetchingStatus } from '../../redux/actions'
 import { message } from '../../components/common/alert'
 import i18next from "i18next";
 import { createHashHistory } from 'history'
+import { reject } from 'lodash';
 const history = createHashHistory()
-export const getToken = (agoraId, nickName) => {
-    return postData('https://a1.easemob.com/app/chat/user/login', { "userAccount": agoraId, "userNickname": nickName })
+export const getToken = (agoraId, password) => {
+    //a1-hsb.easemob.com
+    // a1.easemob.com
+    // a1-test.easemob.com  
+    return postData('https://a1-test.easemob.com/app/chat/user/login', { "userAccount": agoraId, "userPassword": password })
+}
+export const signUp = (agoraId, password) => {
+    return postData('https://a1-test.easemob.com/app/chat/user/register', { "userAccount": agoraId, "userPassword": password })
 }
 
 export const loginWithToken = (agoraId, agoraToken) => {
@@ -15,7 +22,13 @@ export const loginWithToken = (agoraId, agoraToken) => {
         agoraToken: agoraToken
     };
 
-    WebIM.conn.open(options)
+    return new Promise((resolve,reject) => {
+        WebIM.conn.open(options).then(res => {
+            resolve(res)
+        }).catch(err => {
+            reject(err)
+        })
+    })
 }
 
 export function postData(url, data) {
@@ -42,9 +55,9 @@ export const loginWithPassword = (agoraId, password) => {
         const { accessToken } = res
         store.dispatch(setMyUserInfo({ agoraId, password }))
         sessionStorage.setItem('webim_auth', JSON.stringify({ agoraId, password, accessToken }))
-    }).catch((err)=>{
+    }).catch((err) => {
         store.dispatch(setFetchingStatus(false))
-        message.error('login fail.')
+        // message.error('login fail.')
     })
 }
 

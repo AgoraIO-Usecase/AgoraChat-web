@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme) => {
         padding: '10px',
         boxSizing: 'border-box',
         top: '34px !important',
-        left: '72px !important',
+        left: '60px !important',
       }
     },
     nameText: {
@@ -127,6 +127,14 @@ const useStyles = makeStyles((theme) => {
       background: '#114eff',
       color: '#fff',
       margin: '10px'
+    },
+    outImgBox: {
+      width: '30px',
+      height: '30px',
+      cursor: 'pointer',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
     }
   })
 });
@@ -298,8 +306,10 @@ const PresencePopover = (props) => {
   }
   return (
     <div className={props.className} style={{...props.style}}>
-      <div className={useClasses.imgBox} onClick={handlePopoverClick}>
-        <img aria-describedby={id} src={presenceObj?.statusImg} className={useClasses.imgStyle1} alt="" />
+      <div className={useClasses.outImgBox} onClick={handlePopoverClick}>
+        <div className={useClasses.imgBox}>
+          <img aria-describedby={id} src={presenceObj?.statusImg} className={useClasses.imgStyle1} alt="" />
+        </div>
       </div>
       <Popover
         id={id}

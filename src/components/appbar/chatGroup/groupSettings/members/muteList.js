@@ -15,7 +15,14 @@ const useStyles = makeStyles((theme) => {
             color: '#999999',
             fontSize: '14px',
             textAlign: 'center'
-        }
+        },
+        gMemberAvatar: {
+            width: "36px",
+            height: "36px",
+            borderRadius: "20px",
+            backgroundColor: "rgb(238, 171, 159)",
+            marginRight: '10px',
+        },
     })
 });
 
@@ -28,13 +35,18 @@ const MuteList = ({ newMuteList }) => {
                 {newMuteList.map((item, key) => {
                     return <ListItem key={key}>
                         <Button className={classes.gUserName} >
+                            <Box
+                                className={
+                                classes.gMemberAvatar
+                                }
+                            ></Box>
                             < ListItemText>
                                 {item}
                             </ListItemText>
                         </Button>
                     </ListItem>
                 })}
-            </List> : <Typography className={classes.noDataText}>暂无数据</Typography>}
+            </List> : <Typography className={classes.noDataText}></Typography>}
         </Box>
     )
 }

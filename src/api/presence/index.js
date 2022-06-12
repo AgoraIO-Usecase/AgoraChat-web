@@ -24,13 +24,27 @@ export const subFriendStatus = (payload) => {
       const tempArr = []
       res.result.forEach(item => {
         let extFlag = false
-        Object.values(item.status).forEach(val => {
-          if (Number(val) === 1) {
+        item.device = ''
+        // Object.values(item.status).forEach(val => {
+        //   if (Number(val) === 1) {
+        //     extFlag = true
+        //   }
+        // })
+        // if (!extFlag) {
+        //   item.ext = 'Offline'
+        // }
+        const data = item.status
+        for (const val in data) {
+          if (Number(data[val]) === 1) {
             extFlag = true
+            item.device = val.includes('webim') ? 'Web' : 'Mobile'
           }
-        })
+        }
         if (!extFlag) {
           item.ext = 'Offline'
+        }
+        if (!item.device) {
+          item.device = Object.keys(data).length ? (Object.keys(data)[0].includes('webim') ? 'Web' : 'Mobile') : ''
         }
         if (item.uid) {
           tempArr.push(item.uid)
