@@ -18,6 +18,7 @@ import i18next from "i18next";
 
 import { subFriendStatus } from '../api/presence'
 import map3 from '../assets/notify.mp3'
+import ringing from '../assets/ringing.mp3'
 
 import { changeTitle } from '../utils/notification'
 
@@ -166,6 +167,7 @@ export default function Main() {
                 appId="15cb0d28b87b425ea613fc46f7c9f974"
                 getRTCToken={handleGetToken}
                 getIdMap={handleGetIdMap}
+                ringingSource={ringing}
             />
             <SessionInfoPopover 
                 open={sessionInfoAddEl}
