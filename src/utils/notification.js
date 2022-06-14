@@ -1,7 +1,7 @@
 import store from '../redux/store'
 import { setMuteDataObj, setUnread } from '../redux/actions'
-import { EaseApp } from "wy-chat"
-
+// import { EaseApp } from "uikit-reaction"
+import { EaseApp } from "uikit-reaction";
 let options = {
   requireInteraction: false, // 是否自动消失
   body: 'new message', // 展示的具体内容
@@ -26,15 +26,15 @@ let options = {
   //     }
   // ]
 }
-function twoMethod (params, iconTitle) {
-  options = {...options, ...params}
+function twoMethod(params, iconTitle) {
+  options = { ...options, ...params }
   const bodyList = options.body.split('?')
   options.body = bodyList[0]
   var notification = new Notification(options.title || 'New Message', options);
   const session = {}
   notification.onclick = (res) => {
     bodyList[1]?.split('&')?.forEach(item => {
-      const [ first, second ] = item?.split('=')
+      const [first, second] = item?.split('=')
       session[first] = second
     })
     const { sessionType, sessionId } = session
@@ -50,7 +50,7 @@ function twoMethod (params, iconTitle) {
     setTimeout(notification.close.bind(notification), 2000)
   })
 }
-export function notifyMe (params, iconTitle) {
+export function notifyMe(params, iconTitle) {
   if (!("Notification" in window)) {
     alert("This browser does not support desktop notification");
   }
@@ -83,7 +83,7 @@ export const checkBrowerNotifyStatus = (showFlag, params, iconTitle) => {
   }
 }
 export const notification = (params, iconTitle) => {
-  options = {...options, ...params}
+  options = { ...options, ...params }
   if (Notification?.permission === "granted") {
     const bodyList = options.body.split('?')
     options.body = bodyList[0]
@@ -91,7 +91,7 @@ export const notification = (params, iconTitle) => {
     const session = {}
     notification.onclick = (res) => {
       bodyList[1]?.split('&')?.forEach(item => {
-        const [ first, second ] = item?.split('=')
+        const [first, second] = item?.split('=')
         session[first] = second
       })
       const { sessionType, sessionId } = session
@@ -170,11 +170,11 @@ export const handlerTime = (time, flag) => {
   } else {
     timeList = new Date(time).toString().split(' ')
   }
-  return `${timeList[1]} ${timeList[2]}, ${timeList[3]}, ${timeList[4].substring(0,5)}`
+  return `${timeList[1]} ${timeList[2]}, ${timeList[3]}, ${timeList[4].substring(0, 5)}`
 }
 
 export const getMillisecond = (time) => {
-  switch(time) {
+  switch (time) {
     case 15:
       return 15 * 60 * 1000
     case '8AM':
@@ -186,8 +186,8 @@ export const getMillisecond = (time) => {
   }
 }
 
-export function toLocaleString (time) {
-  return time.toLocaleString().split(' ')[1].substr(0,5)
+export function toLocaleString(time) {
+  return time.toLocaleString().split(' ')[1].substr(0, 5)
 }
 
 export const computedItervalTime = (time) => {
@@ -203,10 +203,10 @@ export const computedItervalTime = (time) => {
     return toLocaleString(new Date()) + ':00-08:00:00'
   } else {
     return toLocaleString(new Date()) + '-' + toLocaleString(new Date(new Date().getTime() + getMillisecond(time)))
-  } 
+  }
 }
 
-export function timeNowToTomorrow8AM () {
+export function timeNowToTomorrow8AM() {
   const d = new Date()
   const d0 = new Date(d.getFullYear(), d.getMonth(), d.getDate(), 24)
   const cha = d0.getTime() - d.getTime()
@@ -234,7 +234,7 @@ export const timeIntervalToMinutesOrHours = (timeStr, selfFlag) => {
   } else {
     minutes = timeList[3] - timeList[1]
   }
-  
+
   if (hours < 2 && minutes === 15) {
     // 15分钟
     return 0
@@ -256,7 +256,7 @@ export const timeIntervalToMinutesOrHours = (timeStr, selfFlag) => {
       // 永久
       return 5
     } else if (hours === 0) {
-       // 24个小时
+      // 24个小时
       if (selfFlag) {
         return 4
       } else {
@@ -266,7 +266,7 @@ export const timeIntervalToMinutesOrHours = (timeStr, selfFlag) => {
   }
 }
 
-export function setTimeVSNowTime (setterObj, falseFlag) {
+export function setTimeVSNowTime(setterObj, falseFlag) {
   const nowTime = new Date().getTime()
   if (falseFlag) {
     return (nowTime - setterObj.ignoreDuration) >= 0
@@ -281,11 +281,11 @@ export function setTimeVSNowTime (setterObj, falseFlag) {
       }
     }
     store.dispatch(setMuteDataObj(collectObj))
-    EaseApp.changePresenceStatus(collectObj1)
+    // EaseApp.changePresenceStatus(collectObj1)
   }
 }
 
-export function getLocalStorageData () {
+export function getLocalStorageData() {
   return localStorage.getItem('soundPreviewText') ? JSON.parse(localStorage.getItem('soundPreviewText')) : {}
 }
 
@@ -294,5 +294,5 @@ export const playSound = () => {
   agoraChatSoundId.play()
 }
 export const randomNumber = () => {
-  return parseInt(Math.random() * 10000 +new Date().getTime())
+  return parseInt(Math.random() * 10000 + new Date().getTime())
 }

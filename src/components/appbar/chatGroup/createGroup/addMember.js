@@ -2,9 +2,9 @@
 import React, { useState, useEffect } from 'react'
 import i18next from "i18next";
 import store from '../../../../redux/store'
-// import { EaseApp } from "uikit-reaction";
+import { EaseApp } from "uikit-reaction";
 // import { EaseApp } from "chat-uikit";
-import { EaseApp } from "chat-uikit2";
+// import { EaseApp } from "chat-uikit2";
 import CommonDialog from '../../../common/dialog'
 import createGroup from '../../../../api/groupChat/createGroup'
 import { Box, Checkbox, List, ListItem, InputBase } from '@material-ui/core';
@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme) => {
         gInfoText: {
             textAlign: 'center',
             width: '62%',
-            marginTop:'20%'
+            marginTop: '20%'
         },
         gNameText: {
             typeface: 'Ping Fang SC',
@@ -149,15 +149,15 @@ const AddGroupMemberDialog = ({ groupInfoData, onClearValue, open, onClose }) =>
 
     // click group 
     const handleClickSession = (itemData) => {
-		// uikit
-		let conversationItem = {
-			conversationType: "groupChat",
-			conversationId: itemData,
+        // uikit
+        let conversationItem = {
+            conversationType: "groupChat",
+            conversationId: itemData,
             conversationName: groupNameValue,
-		};
-		EaseApp.addConversationItem(conversationItem);
-		onClose();
-	};
+        };
+        EaseApp.addConversationItem(conversationItem);
+        onClose();
+    };
 
     const handleSelect = (val) => (e) => {
         if (e.target.checked) {
@@ -196,12 +196,12 @@ const AddGroupMemberDialog = ({ groupInfoData, onClearValue, open, onClose }) =>
 
     const handleCreateGroup = () => {
         createGroup(
-			groupInfoData,
-			groupMembers,
-			onClearValue,
-			onClose,
-			handleClickSession
-		);
+            groupInfoData,
+            groupMembers,
+            onClearValue,
+            onClose,
+            handleClickSession
+        );
     }
     let throttled = _.throttle(handleCreateGroup, 3000, { 'trailing': false });
 

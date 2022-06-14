@@ -1,14 +1,14 @@
 import WebIM from '../../utils/WebIM'
 import store from '../../redux/store'
 import { setMuteDataObj, setGlobalSilentMode, setUnread } from '../../redux/actions'
-import { EaseApp } from "wy-chat"
+import { EaseApp } from "uikit-reaction"
 import { setTimeVSNowTime, changeTitle } from '../../utils/notification'
 
-function silentModeRedux (type, data) {
-  store.dispatch(setGlobalSilentMode({[type]: data}))
+function silentModeRedux(type, data) {
+  store.dispatch(setGlobalSilentMode({ [type]: data }))
 }
 
-function refreshUserGroupStatus (params) {
+function refreshUserGroupStatus(params) {
   const { constacts, groups: { groupList }, thread: { threadId } } = store.getState()
   const conversationList = []
   constacts.forEach(item => {
@@ -30,14 +30,14 @@ function refreshUserGroupStatus (params) {
       flagType: 'threading'
     })
   }
-  getSilentModeForConversations({conversationList}, params)
+  getSilentModeForConversations({ conversationList }, params)
 }
 
-function refreshSilentModeStatus (data, payload) {
+function refreshSilentModeStatus(data, payload) {
   const { muteDataObj } = store.getState()
   if (data.ignoreDuration && !setTimeVSNowTime(data, true)) {
-    const collectObj= {}
-    const collectObj1= {}
+    const collectObj = {}
+    const collectObj1 = {}
     for (let item in muteDataObj) {
       collectObj[item] = true
       collectObj1[item] = {
@@ -45,7 +45,7 @@ function refreshSilentModeStatus (data, payload) {
       }
     }
     store.dispatch(setMuteDataObj(collectObj))
-    EaseApp.changePresenceStatus(collectObj1)
+    // EaseApp.changePresenceStatus(collectObj1)
     const { unread } = store.getState()
     for (let item in unread) {
       for (let val in unread[item]) {
@@ -65,7 +65,7 @@ function refreshSilentModeStatus (data, payload) {
   }
 }
 
-function setSilentModeAllFalse (data, payload) {
+function setSilentModeAllFalse(data, payload) {
   const { myUserInfo: { agoraId } } = store.getState()
   silentModeRedux('global', { [agoraId]: data })
   refreshSilentModeStatus(data, payload)
@@ -135,7 +135,7 @@ export const clearRemindTypeForConversation = (payload) => {
   })
 }
 
-export const getSilentModeForConversations = (payload, params = {type: '', options:{}}) => {
+export const getSilentModeForConversations = (payload, params = { type: '', options: {} }) => {
   return new Promise((resolve, reject) => {
     WebIM.conn.getSilentModeForConversations(payload).then(res => {
       const { globalSilentMode: { global }, myUserInfo: { agoraId }, unread } = store.getState()
@@ -150,13 +150,13 @@ export const getSilentModeForConversations = (payload, params = {type: '', optio
         })
       }
       if (Object.keys(data.user).length) {
-        silentModeRedux('single', {...data.user})
+        silentModeRedux('single', { ...data.user })
       }
       console.log(tempData, 'tempData')
       if (Object.keys(tempData).length) {
-        silentModeRedux('threading', {...tempData})
+        silentModeRedux('threading', { ...tempData })
       } else {
-        silentModeRedux('group', {...data.group})
+        silentModeRedux('group', { ...data.group })
       }
       const tempObj = {
         ...data.user,
@@ -206,7 +206,7 @@ export const getSilentModeForConversations = (payload, params = {type: '', optio
       }
       changeTitle()
       store.dispatch(setMuteDataObj(collectObj))
-      EaseApp.changePresenceStatus(collectObj1)
+      // EaseApp.changePresenceStatus(collectObj1)
       resolve(res.data)
     }).catch(err => {
       reject(err)

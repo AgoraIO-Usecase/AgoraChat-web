@@ -16,7 +16,7 @@ import { handlerThreadChangedMsg } from "../api/thread/index";
 import i18next from "i18next";
 import { message } from '../components/common/alert'
 
-import { EaseApp } from "wy-chat"
+import { EaseApp } from "uikit-reaction"
 
 function publicNotify (message, msgType, iconTitle = {}, body = 'You Have A New Message') {
     const { chatType, from, data, type, to, time, url} = message
