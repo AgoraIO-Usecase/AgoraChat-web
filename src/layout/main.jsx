@@ -3,10 +3,8 @@ import Header from '../components/appbar'
 import './login.css'
 import getGroupInfo from '../api/groupChat/getGroupInfo'
 import WebIM from '../utils/WebIM';
-import { EaseApp } from 'uikit-reaction'
 import { loginWithToken, loginWithPassword } from '../api/loginChat'
-// import { EaseApp } from 'chat-uikit'
-// import { EaseApp } from "chat-uikit";
+import { EaseApp } from 'chat-uikit2'
 import { createHashHistory } from 'history'
 import store from '../redux/store'
 import { setMyUserInfo, setUnread, setCurrentSessionId, setThreadInfo } from '../redux/actions'

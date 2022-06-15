@@ -1,6 +1,7 @@
 import WebIM from '../../utils/WebIM'
 // import { EaseApp } from "chat-uikit";
-import { EaseApp } from "uikit-reaction";
+
+import { EaseApp } from "chat-uikit2";
 import store from '../../redux/store'
 import { message } from "../../components/common/alert"
 import { setThreadInfo } from "../../redux/actions";
