@@ -40,7 +40,7 @@ const useStyles = makeStyles((theme) => {
             fontSize: '14px',
             fontWeight: '500',
             typeface: 'Ping Fang SC',
-            textTransform: ' none',
+            textTransform: 'none',
             character:'0',
         },
         content: {

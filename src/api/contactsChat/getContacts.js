@@ -6,7 +6,7 @@ import { contactsAciton, setBlackList, updateRequestStatus, searchLoadAction } f
 import { subFriendStatus } from '../presence/index'
 import { getSilentModeForConversations } from '../notificationPush/index'
 
-import { EaseApp } from "chat-uikit2";
+import { EaseApp } from "uikit-reaction";
 
 const getContacts = () => {
     WebIM.conn.getRoster().then((res) => {
