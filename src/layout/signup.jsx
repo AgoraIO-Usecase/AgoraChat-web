@@ -8,13 +8,11 @@ import { createHashHistory } from 'history';
 import store from '../redux/store'
 import { setMyUserInfo, setFetchingStatus } from '../redux/actions'
 import { message } from '../components/common/alert'
-import { IconButton } from '@material-ui/core';
-import HighlightOffIcon from '@material-ui/icons/HighlightOff'
-import VisibilityIcon from '@material-ui/icons/Visibility'
-import VisibilityOffIcon from '@material-ui/icons/VisibilityOff'
 import loading from '../assets/loading.png'
 import AlertDialogSlide from '../components/common/dialog'
-
+import closeIcon from '../assets/Xmark@2x.png'
+import eyeOpen from '../assets/eye@2x.png'
+import eyeClose from '../assets/eye_slash@2x.png'
 export default function SignUp() {
     const history = createHashHistory()
     const [notice, setNotice] = useState({
@@ -167,34 +165,51 @@ export default function SignUp() {
                         value={values.agoraId}></input>
                     {
                         values.agoraId &&
-                        <IconButton
-                            aria-label="toggle password visibility"
+                        <img
+                            src={closeIcon}
+                            alt="close"
                             onClick={handleClickClearagoraId}
                             onMouseDown={handleMouseDownPassword}
-                            className='close-btn'>
-                            <HighlightOffIcon />
-                        </IconButton>
+                            className='close-btn' />
                     }
                 </div>
                 <div className='input-box'>
                     <input type={activeType} className='login-form-input' placeholder={i18next.t('login-Password')} value={values.password} onChange={handleChange('password')}></input>
-                    <IconButton
-                        aria-label="toggle password visibility"
-                        className='close-btn'
+                    {
+                        values.showPassword?
+                        <img
+                        src={eyeClose}
+                        alt="close"
                         onClick={() => handleClickShowPassword(0)}
-                        onMouseDown={handleMouseDownPassword}>
-                        {values.showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
-                    </IconButton>
+                        onMouseDown={handleMouseDownPassword}
+                        className='close-btn' />
+                        :
+                        <img
+                            src={eyeOpen}
+                            alt="close"
+                            onClick={() => handleClickShowPassword(0)}
+                            onMouseDown={handleMouseDownPassword}
+                            className='close-btn' />
+                    }
                 </div>
                 <div className='input-box'>
                     <input type={activeType1} className='login-form-input' placeholder={i18next.t('ComnfirmPassword')} value={values.passwordTwo} onChange={handleChange('passwordTwo')}></input>
-                    <IconButton
-                        aria-label="toggle password visibility"
-                        className='close-btn'
+                    {
+                        values.showPassword1?
+                        <img
+                        src={eyeClose}
+                        alt="close"
                         onClick={() => handleClickShowPassword(1)}
-                        onMouseDown={handleMouseDownPassword}>
-                        {values.showPassword1 ? <VisibilityOffIcon /> : <VisibilityIcon />}
-                    </IconButton>
+                        onMouseDown={handleMouseDownPassword}
+                        className='close-btn' />
+                        :
+                        <img
+                            src={eyeOpen}
+                            alt="close"
+                            onClick={() => handleClickShowPassword(1)}
+                            onMouseDown={handleMouseDownPassword}
+                            className='close-btn' />
+                    }
                 </div>
                 <div className='loading-box'>
                     <input disabled={disabled} type='button' className='login-form-input button' value={loginBtn} onClick={login} />

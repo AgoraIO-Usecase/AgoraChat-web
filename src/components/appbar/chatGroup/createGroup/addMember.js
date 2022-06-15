@@ -31,17 +31,17 @@ const useStyles = makeStyles((theme) => {
         gInfoText: {
             textAlign: 'center',
             width: '62%',
-            marginTop:'20%'
+            marginTop:'15%',
         },
         gNameText: {
-            typeface: 'Ping Fang SC',
+            fontFamily: 'Roboto',
             fontweight: 'Semibold(600)',
             fontSize: '20px',
             character: '0',
             color: '#0D0D0D'
         },
         gAppIdText: {
-            typeface: 'Ping Fang SC',
+            fontFamily: 'Roboto',
             fontWeight: 'Regular(400)',
             fontSize: '12px',
             character: '0',
@@ -49,7 +49,7 @@ const useStyles = makeStyles((theme) => {
             color: '#999999'
         },
         gDescriptionText: {
-            fontFamily: 'Ping Fang SC',
+            fontFamily: 'Roboto',
             fontWeight: '400',
             fontSize: '12px',
             character: '0',

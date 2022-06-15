@@ -11,6 +11,10 @@ import { useSelector } from 'react-redux'
 import avatarIcon1 from '../../../assets/avatar1.png'
 import avatarIcon2 from '../../../assets/avatar2.png'
 import avatarIcon3 from '../../../assets/avatar3.png'
+import avatarIcon4 from '../../../assets/avatar4.png'
+import avatarIcon5 from '../../../assets/avatar5.png'
+import avatarIcon6 from '../../../assets/avatar6.png'
+import avatarIcon7 from '../../../assets/avatar7.png'
 
 import offlineImg from '../../../assets/Offline.png'
 import onlineIcon from '../../../assets/Online.png'
@@ -110,7 +114,11 @@ function AddressBookDialog(props) {
     let userAvatars = {
         1: avatarIcon1,
         2: avatarIcon2,
-        3: avatarIcon3
+        3: avatarIcon3,
+        4: avatarIcon4,
+        5: avatarIcon5,
+        6: avatarIcon6,
+        7: avatarIcon7,
     }
     let getcontactsInfo = () => {
         let usersInfoData = JSON.parse(localStorage.getItem("usersInfo_1.0")) || []
@@ -122,7 +130,7 @@ function AddressBookDialog(props) {
         return {
             name: user,
             jid: user,
-            avatar: userInfoObj[user] ? userInfoObj[user] : Math.ceil(Math.random() * 3)
+            avatar: userInfoObj[user] ? userInfoObj[user] : Math.ceil(Math.random() * 7)
         }
     })
 

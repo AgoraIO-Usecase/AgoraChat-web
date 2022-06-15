@@ -10,6 +10,7 @@ import {
   Menu,
   MenuItem,
   Typography,
+  Avatar
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import WebIM from "../../../../../utils/WebIM";
@@ -22,7 +23,7 @@ import {
 } from "../../../../../api/groupChat/groupWhite";
 import { rmGroupUser } from "../../../../../api/groupChat/closeGroup";
 import _ from "lodash";
-
+import { userAvatar } from '../../../../../utils'
 import adminIcon from "../../../../../assets/admin@2x.png";
 import muteIcon from "../../../../../assets/mute@2x.png";
 import blockIcon from "../../../../../assets/block@2x.png";
@@ -41,6 +42,11 @@ const useStyles = makeStyles((theme) => {
       textTransform: "none",
       display: "flex",
       justifyContent: "space-between",
+      paddingTop: '0px',
+      paddingBottom: '0px',
+      '& .MuiButton-root:hover': {
+        background: '#F6F7F8',
+      }
     },
     gUserName: {
       width: "100%",
@@ -91,11 +97,21 @@ const useStyles = makeStyles((theme) => {
     },
     imgActiveBgc: {
       background: '#fff',
+    },
+    moreText: {
+      height: '32px',
+      padding: '0',
+      borderRadius: '50%',
+      minWidth: '32px',
+      lineHeight: '10px',
+      '&:hover': {
+        background: '#fff !important',
+      }
     }
   };
 });
 
-const MembersList = ({ newMuteList }) => {
+const MembersList = ({ newMuteList, inputVal }) => {
   const classes = useStyles();
   const state = useSelector((state) => state);
   const groupsInfo = state?.groups?.groupsInfo || {};
@@ -121,20 +137,34 @@ const MembersList = ({ newMuteList }) => {
   const handleClose = () => {
     setAnchorEl(null);
   };
-
-  useEffect(() => {
+  const handlerMemers = () => {
     let _owner = [];
     let _member = [];
-    members.length > 0 &&
-      members.forEach((item) => {
-        if (item.owner) {
-          _owner.push(item.owner);
-        } else if (item.member) {
-          _member.push(item.member);
-        }
-        setNewMembers(_.concat(_owner, _member));
-      });
+    members.forEach((item) => {
+      if (item.owner) {
+        _owner.push(item.owner);
+      } else if (item.member) {
+        _member.push(item.member);
+      }
+      setNewMembers(_.concat(_owner, _member));
+    });
+  }
+  useEffect(() => {
+    members.length > 0 && handlerMemers()
   }, [members.length]);
+  useEffect(() => {
+    if (inputVal) {
+      const tempArr = []
+      newMembers.forEach(item => {
+        if (item.includes(inputVal)) {
+          tempArr.push(item)
+        }
+      })
+      setNewMembers(tempArr)
+    } else {
+      handlerMemers()
+    }
+  }, [inputVal])
   const showSecondDialog = (val, action, text) => {
 		setGroupStatus(val)
     action && setAction(action)
@@ -195,23 +225,23 @@ const MembersList = ({ newMuteList }) => {
                   <Box
                     className={
                       classes.gMemberAvatar
-                    }
-                  ></Box>
+                    }>
+                      <Avatar src={userAvatar(item)} />
+                    </Box>
                   <ListItemText>{item}</ListItemText>
                   {owner && (
                     <ListItemText className={classes.gOwner}>
                       {owner}
                     </ListItemText>
                   )}
-                </Button>
-                {isAdmins && !owner && !lander && (
-                  <Button>
+                  {isAdmins && !owner && !lander && (
+                  <Button className={classes.moreText}>
                     <span
                       id="user-more"
                       className={classes.moreMenus}
                       onClick={(event) => handleClick(event, item)}
                     >
-                      <img src={moreMenu} alt="menu" className={Boolean(anchorEl) ? classes.imgActiveBgc : classes.imgActive} />
+                      <img src={moreMenu} alt="menu" className={`${classes.imgActive} ${Boolean(anchorEl) ? classes.imgActiveBgc : ''}`} />
                     </span>
                     <Menu
                       id="user-menu"
@@ -334,6 +364,7 @@ const MembersList = ({ newMuteList }) => {
                     </Menu>
                   </Button>
                 )}
+                </Button>
               </ListItem>
             </List>
           );

@@ -42,6 +42,7 @@ export default function Header() {
     const [showContact, setShowContact] = useState(false)
     const [showRequest, setShowRequest] = useState(false)
     const [secondSure, setSecondSure] = useState(false)
+    const [groupAuthor, setGroupAuthor] = useState(null)
     // userInfo
     // const [showUserInfoPopover, setShowUserInfoPopover] = useState(false)
     // const [userInfoaddEl, setUserInfoAddEl] = useState(null)
@@ -115,9 +116,10 @@ export default function Header() {
         setAddEl(null)
     }
 
-    function createGroupDialog() {
+    function createGroupDialog(e) {
         store.dispatch(closeGroupChatAction(true));
         setAddEl(null);
+        setGroupAuthor(e.currentTarget)
     }
     function handleCreateGroupDialogClose() {
         store.dispatch(closeGroupChatAction(false));

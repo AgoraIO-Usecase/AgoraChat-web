@@ -1,7 +1,8 @@
 import { useSelector } from 'react-redux'
-import { List, ListItem, ListItemText, Button, Box } from '@material-ui/core';
+import { List, ListItem, ListItemText, Button, Box, Avatar } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import i18next from "i18next";
+import { userAvatar } from '../../../../../utils'
 
 const useStyles = makeStyles((theme) => {
     return ({
@@ -36,11 +37,9 @@ const AdminList = () => {
         <List>
             <ListItem disablepadding="true">
                 <Button className={classes.gUserName}>
-                    <Box
-                        className={
-                        classes.gMemberAvatar
-                        }
-                    ></Box>
+                    <Box className={classes.gMemberAvatar}>
+                        <Avatar src={userAvatar(owner)} />
+                    </Box>
                     <ListItemText>{owner}</ListItemText>
                 </Button>
                 <ListItemText className={classes.gOwner}>{i18next.t('owner')}</ListItemText>

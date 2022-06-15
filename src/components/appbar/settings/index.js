@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, createRef } from "react";
 import CommonDialog from "../../common/dialog";
 import i18next, { use } from "i18next";
 import { Avatar, Button, TextField, List, ListItem, ListItemAvatar, Menu, MenuItem, Box, Switch, Select, RadioGroup, FormControlLabel, Radio, InputBase } from "@material-ui/core";
@@ -17,6 +17,7 @@ import avater4 from '../../../assets/avatar4.png'
 import avater5 from '../../../assets/avatar5.png'
 import avater6 from '../../../assets/avatar6.png'
 import avater7 from '../../../assets/avatar7.png'
+import avater11 from '../../../assets/avatar11.png'
 import avaterSelect from '../../../assets/avatar_select@2x.png'
 
 import CheckIcon from '@material-ui/icons/Check';
@@ -40,6 +41,7 @@ import { removeFromBlackList, deleteContact } from '../../../api/contactsChat/ge
 import { handlerTime, getMillisecond, computedItervalTime, timeIntervalToMinutesOrHours, setTimeVSNowTime, getLocalStorageData } from '../../../utils/notification'
 import { setSilentModeForAll, getSilentModeForAll, getSilentModeForConversations, setPushPerformLanguage, getPushPerformLanguage } from '../../../api/notificationPush'
 import ConfirmDialog from "../../common/confirmDialog"
+import { userAvatar } from '../../../utils'
 
 const useStyles = makeStyles((theme) => {
     return {
@@ -87,6 +89,7 @@ const useStyles = makeStyles((theme) => {
             width: "24px",
             height: "24px",
             cursor: "pointer",
+            visibility: 'hidden'
         },
 
         infoPanel: {
@@ -342,7 +345,7 @@ const useStyles = makeStyles((theme) => {
             cursor: 'pointer',
         },
         selectDefaultText: {
-            fontFamily: 'Roboto',
+            // fontFamily: 'Roboto',
             fontStyle: 'normal',
             fontWeight: '500',
             fontSize: '14px',
@@ -380,7 +383,7 @@ const useStyles = makeStyles((theme) => {
             background: '#FFFFFF',
         },
         selectOption: {
-            fontFamily: 'Roboto',
+            // fontFamily: 'Roboto',
             fontStyle: 'normal',
             fontWeight: '500',
             fontSize: '14px',
@@ -415,7 +418,7 @@ const useStyles = makeStyles((theme) => {
             right: '-5px',
         },
         textStyle: {
-			fontFamily: "Roboto",
+			// fontFamily: "Roboto",
 			fontWeight: "400",
 			fontSize: "12px",
 			lineHeight: "16",
@@ -491,13 +494,13 @@ const selectList = [
     {
         id: 2,
         value: 'AT',
-        label: 'Only @Metion',
+        label: 'Only @Mention',
         checked: false
     },
     {
         id: 3,
         value: 'NONE',
-        label: 'Nothing',
+        label: 'Off',
         checked: false
     }
 ]
@@ -561,6 +564,8 @@ export default function Setting({ open, onClose }) {
     const [showOrClose, setShowOrClose] = useState(true)
     const [showInput, setShowInput] = useState(false)
     const [blockList, setblockList] = useState(blackList)
+    const [nickNameLen, setNickNameLen] = useState(false)
+    const inputNickName = createRef()
 
     useEffect(() => {
         if (myUserInfo) {
@@ -597,8 +602,13 @@ export default function Setting({ open, onClose }) {
     const handleEditChange = (e) => {
         let value = e.target.value;
         if (value.length === 0 || value.length > 12) {
-            message.error(`${i18next.t("Nickname is empty or exceeds the limit")}`);
+            if (nickNameLen) {
+                setNickNameLen(false)
+                message.error(`${i18next.t("Nickname is empty or exceeds the limit")}`);
+            }
             return;
+        } else {
+            setNickNameLen(true)
         }
         setNickName(e.target.value);
     }
@@ -626,14 +636,14 @@ export default function Setting({ open, onClose }) {
     }
 
     function tabs() {
-        const avatarUrl = avatarIndex > -1 ? AVATARS[avatarIndex] : null
+        const avatarUrl = avatarIndex > -1 ? AVATARS[avatarIndex] : avater11
         return (
             <div className={classes.tabsInfo}>
                 <div className={classes.settingInfoBox}>
-                    <Avatar style={{ width: 100, height: 100, marginTop: '36px' }} src={avatarUrl}>
+                    <Avatar style={{ width: 100, height: 100, marginTop: '36px', cursor: 'pointer' }} onClick={() => setTabIndex(0)} src={avatarUrl}>
 
                     </Avatar>
-                    <img src={editIcon} alt='edit' className={classes.avatarEditIcon} onClick={() => setTabIndex(0)} />
+                    <img src={editIcon} alt='edit' className={classes.avatarEditIcon}  />
                     <div>{nickName}</div>
                     <div>AgoraID: {myUserInfo?.agoraId}</div>
                 </div>
@@ -883,6 +893,11 @@ export default function Setting({ open, onClose }) {
     const closeOrShowBlockList = () => {
         setShowOrClose(!showOrClose)
     }
+    useEffect(() => {
+        if (inputNickName) {
+            inputNickName.current && inputNickName.current.focus()
+        }
+    }, [inputNickName])
     function infoTabPanel() {
         return (
             <div className={classes.infoPanel} style={{display: 'block'}}>
@@ -894,8 +909,9 @@ export default function Setting({ open, onClose }) {
                             id="filled-helperText"
                             label="NickName"
                             defaultValue={nickName}
-                            variant="filled"
+                            variant="standard"
                             fullWidth
+                            inputRef={inputNickName}
                         />
                         <Box className={classes.numberBox}>
                             <Typography className={classes.numberStyle}>
@@ -905,7 +921,7 @@ export default function Setting({ open, onClose }) {
                     </Box>
                 ) : (
                     <div className={classes.infoItem}>
-                        <span>NickName</span>
+                        <span>Nickname</span>
                         <span>{nickName}</span>
                         <span onClick={handleEditClick}>Edit</span>
                     </div>
@@ -977,10 +993,11 @@ export default function Setting({ open, onClose }) {
                                             <div className={classes.privacyItemInfo}>
                                                 <ListItemAvatar>
                                                     <Avatar
+                                                        src={userAvatar(value)}
                                                         alt={`Avatar n°${value + 1}`}
                                                     />
                                                 </ListItemAvatar>
-                                                <span>{value}</span>
+                                                <span style={{textTransform: 'none'}}>{value}</span>
                                             </div>
                                             <IconButton value={value} onClick={handlePrivacyItemMoreClick}>
                                                 <MoreVertIcon />
@@ -1027,7 +1044,7 @@ export default function Setting({ open, onClose }) {
 
     function avatarTabPaner() {
         return (
-            <div className={classes.infoPanel}>
+            <div className={classes.infoPanel} style={{display: 'flex'}}>
                 {AVATARS.map((value, index) => {
                     return (<div style={{ width: '117px', height: '117px', margin: '5px', borderRadius: '4px', overflow: 'hidden' }} onClick={() => { handleCheckAvatar(index) }} key={value}>
                         <img src={value} alt='avatar1' style={{ width: '100%' }} />

@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react'
 import CommonDialog from '../../common/dialog'
 import { useSelector } from 'react-redux'
 import i18next from "i18next";
-import { Box, Tabs, Tab } from '@material-ui/core';
+import { Box, Tabs, Tab, Popover } from '@material-ui/core';
 import { TabPanel, a11yProps } from '../../common/tabs'
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
@@ -15,6 +15,8 @@ import addedGroupIcon from '../../../assets/groupchat@2x.png'
 import newGroupIcon from '../../../assets/new_group@2x.png'
 import joinGroupIcon from '../../../assets/join_a_group@2x.png'
 import publicGroupsIcon from '../../../assets/public_group@2x.png'
+import IconButton from '@material-ui/core/IconButton';
+import CloseIcon from '@material-ui/icons/Close';
 
 const useStyles = makeStyles((theme) => {
     return ({
@@ -26,7 +28,15 @@ const useStyles = makeStyles((theme) => {
         },
         tabs: {
             background: '#FFFFFF',
-            width: '45%'
+            width: '45%',
+            padding: '8px',
+            '& .MuiTab-textColorInherit.Mui-selected': {
+                background: 'rgb(235, 237, 241)',
+                borderRadius: '8px',
+            },
+            '& .MuiTabs-indicator': {
+				background: 'transparent',
+			},
         },
         menusBox: {
             display: 'flex', 
@@ -42,16 +52,43 @@ const useStyles = makeStyles((theme) => {
             typeface: 'Ping Fang SC',
             textTransform: ' none',
             character:'0',
+            borderRadius: '8px',
         },
         content: {
             background: '#EDEFF2',
             width: '100%',
-            height: '100%'
+            height: '100%',
+            '& .MuiBox-root': {
+                paddingBottom: '0px'
+            },
+            '& ::-webkit-scrollbar': {
+                display: 'none', /* Chrome Safari */
+            },
+            scrollbarWidth: 'none', /* firefox */
+            '-ms-overflow-style': 'none', /* IE 10+ */
+        },
+
+		popoverTitleBox: {
+			height: '34px',
+			padding: '16px',
+			margin: '0',
+			borderBottom: '2px solid rgb(229, 230, 230)',
+		},
+		closeButton: {
+			position: 'absolute',
+			right: '8px',
+			top: '8px',
+			color: '#9e9e9e',
+		},
+        selfGroupChatPopover: {
+            '& .MuiPopover-paper': {
+                top: '10px !important',
+            }
         }
     })
 });
 
-const ChatGroupDialog = ({ open, onClose }) => {
+const ChatGroupDialog = ({ open, onClose, authorEl }) => {
     const classes = useStyles();
     const state = useSelector((state) => state);
     const groupList = state?.groups?.groupList || [];
@@ -132,6 +169,30 @@ const ChatGroupDialog = ({ open, onClose }) => {
     }
 
     return (
+        authorEl ?
+        <Popover
+            open={Boolean(open)}
+            anchorEl={authorEl}
+            onClose={onClose}
+            anchorOrigin={{
+                vertical: "bottom",
+                horizontal: "left",
+            }}
+            transformOrigin={{
+                vertical: "top",
+                horizontal: "left",
+            }}
+            className={classes.selfGroupChatPopover}
+        >
+            <div className={classes.popoverTitleBox}>
+                <Typography variant="h6">{i18next.t("Group Chat")}</Typography>
+                <IconButton aria-label="close" className={classes.closeButton} onClick={onClose}>
+                    <CloseIcon />
+                </IconButton>
+            </div>
+            {renderGroupContent()}
+        </Popover>
+        :
         <CommonDialog
             open={open}
             onClose={onClose}

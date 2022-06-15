@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import CommonDialog from "../../../common/dialog";
 import i18next, { use } from "i18next";
-import {Box,Tabs,Tab,Button,
+import {
+	Box,Tabs,Tab,Button,Popover
 } from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
@@ -32,6 +33,8 @@ import muteGrayIcon from '../../../../assets/gray@2x.png'
 import { setTimeVSNowTime } from '../../../../utils/notification'
 import { getSilentModeForConversation } from '../../../../api/notificationPush'
 import ConfirmDialog from "../../../common/confirmDialog"
+import IconButton from '@material-ui/core/IconButton';
+import CloseIcon from '@material-ui/icons/Close';
 
 const useStyles = makeStyles((theme) => {
 	return {
@@ -137,10 +140,30 @@ const useStyles = makeStyles((theme) => {
 			width: '12.86px',
 			height: '12.86px',
 		},
+		selfGroupSetPopover: {
+
+		},
+		groupSetTabsBox: {
+			'& .MuiTabs-indicator': {
+				background: 'transparent',
+			},
+		},
+		popoverTitleBox: {
+			height: '34px',
+			padding: '16px',
+			margin: '0',
+			borderBottom: '2px solid rgb(229, 230, 230)',
+		},
+		closeButton: {
+			position: 'absolute',
+			right: '8px',
+			top: '8px',
+			color: '#9e9e9e',
+		},
 	}
 })
 
-const GroupSettingsDialog = ({ open, onClose, currentGroupId }) => {
+const GroupSettingsDialog = ({ open, onClose, currentGroupId, authorEl }) => {
 	const classes = useStyles();
 	const state = useSelector((state) => state);
 	const groupsInfo = state?.groups?.groupsInfo || {};
@@ -200,6 +223,7 @@ const GroupSettingsDialog = ({ open, onClose, currentGroupId }) => {
 					/>
 					<Typography className={classes.menus}>
 						{i18next.t("Members")}
+						<span style={{color: '#ccc',marginLeft: '5px'}}>({groupsInfo.affiliations_count})</span>
 					</Typography>
 				</Button>
 			);
@@ -297,7 +321,7 @@ const GroupSettingsDialog = ({ open, onClose, currentGroupId }) => {
 						className={classes.iconStyle}
 					></img>
 					<Typography className={classes.menus}>
-						{i18next.t("TransFer Ownership")}
+						{i18next.t("Transfer Ownership")}
 					</Typography>
 				</Button>
 			);
@@ -330,7 +354,8 @@ const GroupSettingsDialog = ({ open, onClose, currentGroupId }) => {
 						value={value}
 						onChange={handleChange}
 						aria-label="Vertical tabs example"
-						style={{ maxWidth: "none" }}
+						style={{ maxWidth: "none", borderColor: 'transparent' }}
+						className={classes.groupSetTabsBox}
 					>
 						<Tab
 							label={memberLabel()}
@@ -460,13 +485,36 @@ const GroupSettingsDialog = ({ open, onClose, currentGroupId }) => {
 	};
 
 	return (
-		<CommonDialog
-			open={Boolean(open)}
-			onClose={onClose}
-			title={i18next.t("Group Settings")}
-			content={renderSetting()}
-			maxWidth={880}
-		></CommonDialog>
+		authorEl ?
+			<Popover
+				open={Boolean(authorEl)}
+				anchorEl={authorEl}
+				onClose={onClose}
+				anchorOrigin={{
+					vertical: "bottom",
+					horizontal: "left",
+				}}
+				transformOrigin={{
+					vertical: "top",
+					horizontal: "left",
+				}}
+				className={classes.selfGroupSetPopover}
+			>
+				<div className={classes.popoverTitleBox}>
+					<Typography variant="h6">{i18next.t("Group Settings")}</Typography>
+					<IconButton aria-label="close" className={classes.closeButton} onClick={onClose}>
+						<CloseIcon />
+					</IconButton>
+				</div>
+				{renderSetting()}
+			</Popover>
+		:	<CommonDialog
+				open={Boolean(open)}
+				onClose={onClose}
+				title={i18next.t("Group Settings")}
+				content={renderSetting()}
+				maxWidth={880}
+			></CommonDialog>
 	);
 };
 

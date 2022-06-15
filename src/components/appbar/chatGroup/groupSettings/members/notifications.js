@@ -141,7 +141,7 @@ const useStyles = makeStyles((theme) => {
       cursor: 'pointer',
     },
     selectDefaultText: {
-      fontFamily: 'Roboto',
+      // fontFamily: 'Roboto',
       fontStyle: 'normal',
       fontWeight: '500',
       fontSize: '14px',
@@ -178,7 +178,7 @@ const useStyles = makeStyles((theme) => {
       background: '#FFFFFF',
     },
     selectOption: {
-      fontFamily: 'Roboto',
+      // fontFamily: 'Roboto',
       fontStyle: 'normal',
       fontWeight: '500',
       fontSize: '14px',
@@ -247,13 +247,13 @@ const selectList = [
   {
     id: 2,
     value: 'AT',
-    label: 'Only @Metion',
+    label: 'Only @Mention',
     checked: false
   },
   {
     id: 3,
     value: 'NONE',
-    label: 'Nothing',
+    label: 'Off',
     checked: false
   }
 ]

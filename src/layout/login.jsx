@@ -9,11 +9,10 @@ import store from '../redux/store'
 import { setMyUserInfo, setFetchingStatus } from '../redux/actions'
 import { message } from '../components/common/alert'
 import WebIM from '../utils/WebIM'
-import { IconButton } from '@material-ui/core';
-import HighlightOffIcon from '@material-ui/icons/HighlightOff'
-import VisibilityIcon from '@material-ui/icons/Visibility'
-import VisibilityOffIcon from '@material-ui/icons/VisibilityOff'
 import loading from '../assets/loading.png'
+import closeIcon from '../assets/Xmark@2x.png'
+import eyeOpen from '../assets/eye@2x.png'
+import eyeClose from '../assets/eye_slash@2x.png'
 
 export default function Login() {
     const history = createHashHistory()
@@ -33,7 +32,6 @@ export default function Login() {
     const [loginBtn, setLoginBtn] = useState(i18next.t('login-Login'))
 
     const login = useCallback(() => {
-        console.log('value>>>',values);
         setLoginBtn('')
         if (!values.agoraId) {
             return setNotice({ show: true, text: 'agoraId is required' })
@@ -52,11 +50,13 @@ export default function Login() {
                 const { accessToken, agoraUid } = res
                 WebIM.conn.agoraUid = agoraUid
                 loginWithToken(values.agoraId, accessToken).then(value => {
-                    console.log(value, 'loginWithToken')
+
                 }).catch(err => {
                     setNotice({ show: true, text: 'Wrong Username or Password' })
                 }).finally(_ => {
-                    setLoginBtn(i18next.t('login-Login'))
+                    setTimeout(() => {
+                        setLoginBtn(i18next.t('login-Login'))
+                    }, 500)
                 })
                 
                 store.dispatch(setMyUserInfo({ agoraId: values.agoraId, nickName: values.nickName, password: values.password }))
@@ -68,32 +68,6 @@ export default function Login() {
                 setLoginBtn(i18next.t('login-Login'))
                 // message.error('login fail.')
             })
-        }
-        else if (values.password) {
-            // loginWithPassword(values.agoraId, values.password)
-
-            let options = {
-                user: values.agoraId,
-                pwd: values.password
-            };
-
-            WebIM.conn.open(options).then((res) => {
-                const { accessToken } = res
-                store.dispatch(setMyUserInfo({  agoraId: values.agoraId, password: values.password }))
-                sessionStorage.setItem('webim_auth', JSON.stringify({ agoraId: values.agoraId, password: values.password, accessToken:accessToken }))
-            }).catch((err) => {
-                store.dispatch(setFetchingStatus(false))
-                console.log('catch', err)
-                // message.error('login fail.')
-                if(err.type === 1){
-                    let reason = err.message
-                    if(err.data.message){
-                        reason = err.data.message
-                    }
-                    return setNotice({ show: true, text: reason })
-                }
-            })
-
         }
     }, [values])
 
@@ -115,6 +89,7 @@ export default function Login() {
         if (prop === 'agoraId') {
             value = event.target.value.replace(/[^\w\.\/]/ig, '')
         }
+
         setValues({ ...values, [prop]: value });
     };
     const jumpToSignUp = () => {
@@ -122,17 +97,19 @@ export default function Login() {
     }
     useEffect(() => {
         const webim_auth = JSON.parse(sessionStorage.getItem('webim_auth'))
-        console.log(webim_auth)
-        if (webim_auth) {
+        if (webim_auth && webim_auth.password) {
             setValues({
                 agoraId: webim_auth.agoraId || '',
                 nickName: webim_auth.nickName || '',
                 password: webim_auth.password || '',
             })
+        } else {
+            sessionStorage.removeItem('webim_auth')
         }
     }, [])
     const handleClickClearagoraId = () => {
         setValues({
+            ...values,
             agoraId: ''
         })
     }
@@ -151,14 +128,14 @@ export default function Login() {
     const handleMouseDownPassword = (event) => {
         event.preventDefault()
     }
-    const { agoraId , password } = values
+    // const { agoraId , password } = values
     useEffect(() => {
-        if (agoraId && password) {
+        if (values.agoraId && values.password) {
             setdisabled(false)
         } else {
             setdisabled(true)
         }
-    }, [agoraId , password])
+    }, [values.agoraId , values.password])
     return (
         <div className='login-container'>
             <div className='login-form'>
@@ -174,24 +151,32 @@ export default function Login() {
                         value={values.agoraId}></input>
                     {
                         values.agoraId &&
-                        <IconButton
-                            aria-label="toggle password visibility"
+                        <img
+                            src={closeIcon}
+                            alt="close"
                             onClick={handleClickClearagoraId}
                             onMouseDown={handleMouseDownPassword}
-                            className='close-btn'>
-                            <HighlightOffIcon />
-                        </IconButton>
+                            className='close-btn' />
                     }
                 </div>
                 <div className='input-box'>
                     <input type={activeType} className='login-form-input' placeholder={i18next.t('login-Password')} value={values.password} onChange={handleChange('password')}></input>
-                    <IconButton
-                        aria-label="toggle password visibility"
-                        className='close-btn'
+                    {
+                        values.showPassword?
+                        <img
+                        src={eyeClose}
+                        alt="close"
                         onClick={handleClickShowPassword}
-                        onMouseDown={handleMouseDownPassword}>
-                        {values.showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
-                    </IconButton>
+                        onMouseDown={handleMouseDownPassword}
+                        className='close-btn' />
+                        :
+                        <img
+                            src={eyeOpen}
+                            alt="close"
+                            onClick={handleClickShowPassword}
+                            onMouseDown={handleMouseDownPassword}
+                            className='close-btn' />
+                    }
                 </div>
                 <div className='loading-box'>
                     <input disabled={disabled} type='button' className='login-form-input button' value={loginBtn} onClick={login} ></input>

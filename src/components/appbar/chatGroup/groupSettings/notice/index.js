@@ -1,12 +1,14 @@
-import React, { useState, memo } from "react";
+import React, { useState, memo, useEffect } from "react";
 import { useSelector } from 'react-redux'
 import { makeStyles } from "@material-ui/core/styles";
-import { Box, InputBase, Typography } from "@material-ui/core";
+import { Box, InputBase, Typography, Avatar } from "@material-ui/core";
 import i18next from "i18next";
 import store from "../../../../../redux/store";
 import WebIM from "../../../../../utils/WebIM";
 import { updateGroupNotice } from "../../../../../api/groupChat/getGroupInfo";
 import { message } from '../../../../common/alert'
+import avatarDefault from '../../../../../assets/avatar_default.png'
+import { userAvatar } from '../../../../../utils'
 
 const useStyles = makeStyles((theme) => {
 	return {
@@ -22,7 +24,7 @@ const useStyles = makeStyles((theme) => {
 			display: "flex",
 			justifyContent: "space-between",
 			alignItems: "center",
-			padding: "0 24px 0 38px !important",
+			padding: "0 24px 0 20px !important",
 			position: "relative",
 			// borderRadius: "12px",
 		},
@@ -35,9 +37,9 @@ const useStyles = makeStyles((theme) => {
 		editStyle: {
 			position: "absolute",
 			top: "20px",
-			right: "30px",
+			right: "20px",
 			fontFamily: "Ping Fang SC",
-			fontWeight: "400",
+			fontWeight: "600",
 			fontSize: "14px",
 			color: "#005FFF",
 			cursor: "pointer",
@@ -45,8 +47,10 @@ const useStyles = makeStyles((theme) => {
 		noticeBox: {
 			height: "120px",
 			background: "#F4F5F7",
-			marginTop: "20px",
-			borderRadius: "16px",
+			borderBottomLeftRadius: '16px',
+			borderBottomRightRadius: '16px',
+			padding: '8px !important',
+			boxSizing: 'border-box',
 		},
 		inputStyle: {
 			width: "100%",
@@ -76,6 +80,49 @@ const useStyles = makeStyles((theme) => {
 			alignItems: "center",
 			background: "#EDEFF2",
 		},
+		adminBox: {
+			display: "flex",
+			justifyContent: "space-between",
+			alignItems: "center",
+			background: "#F4F5F7",
+			height: '54px',
+			borderTopLeftRadius: '16px',
+			borderTopRightRadius: '16px',
+			padding: '8px !important',
+			boxSizing: 'border-box',
+			borderBottom: '1px solid #E6E6E6',
+		},
+		nameImgBox: {
+			display: "flex",
+			justifyContent: "center",
+			alignItems: "center",
+		},
+		avatarBox: {
+			width: '40px',
+			height: '40px',
+			borderRadius: '50%',
+			background: 'rgb(236, 164, 153)',
+		},
+		avatarImg: {
+			width: '40px',
+			height: '40px',
+			borderRadius: '50%',
+		},
+		nameBox: {
+			color: '#000',
+			fontFamily: 'Roboto',
+			fontSize: '16px',
+			fontWeight: '600',
+			marginLeft: '10px',
+		},
+		timeBox: {
+			color: "#CCCCCC",
+			fontFamily: 'Roboto',
+			fontWeight: '600',
+		},
+		outBigBox: {
+			margin: '20px 10px',
+		}
 	};
 });
 
@@ -96,6 +143,11 @@ const GroupNotice = () => {
 	const [disabledStatus, setDisabledStatus] = useState(true);
 	const [noticeContent, setnoticeContent] = useState("");
 
+	useEffect(() => {
+		if (groupNotices) {
+			setnoticeContent(groupNotices)
+		}
+	}, [groupNotices])
 	const handleEdit = () => {
 		setEditStatus(false);
 		setDisabledStatus(false);
@@ -139,6 +191,11 @@ const GroupNotice = () => {
 			</>
 		);
 	};
+	const renderTime = (time) => {
+		time = time ? new Date(time).toString() : new Date().toString()
+		const timeList = time.split(' ')
+		return `${timeList[1]}, ${timeList[2]} ${timeList[4].substr(0, 5)}`
+	}
 	return (
 		<Box className={classes.root}>
 			<Box className={classes.titleBox}>
@@ -149,7 +206,16 @@ const GroupNotice = () => {
 			</Box>
 			<Box>
 				{isGroupNotice || !disabledStatus ? (
-					<Box>
+					<Box className={classes.outBigBox}>
+						<Box className={classes.adminBox}>
+							<Box className={classes.nameImgBox}>
+								<Box className={classes.avatarBox}>
+									<Avatar src={userAvatar(currentLoginUser)} />
+								</Box>
+								<span className={classes.nameBox}>{currentLoginUser}</span>
+							</Box>
+							<Box className={classes.timeBox}>{renderTime()}</Box>
+						</Box>
 						<Box className={classes.noticeBox}>
 							<InputBase
 								type="text"

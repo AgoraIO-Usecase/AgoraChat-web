@@ -11,6 +11,7 @@ import {
 import CommonDialog from "../../common/dialog";
 import { handlerTime, getMillisecond, computedItervalTime, timeIntervalToMinutesOrHours, setTimeVSNowTime } from '../../../utils/notification'
 import { setSilentModeForConversation, getSilentModeForConversation } from '../../../api/notificationPush'
+import { userAvatar } from '../../../utils'
 
 import avatarImg from "../../../assets/avatar1.png";
 import blockIcon from "../../../assets/block@2x.png";
@@ -527,7 +528,7 @@ const SessionInfoPopover = ({ open, onClose, sessionInfo }) => {
 				<Box className={classes.root}>
 					<Box className={classes.infoBox}>
 						<Avatar
-							src={avatarImg}
+							src={userAvatar(to)}
 							className={classes.avatarImg}
 						></Avatar>
 						<Tooltip title={usePresenceExt} placement="bottom-end">

@@ -1,8 +1,8 @@
 {
     "translation": {
         "login-Login": "Log in",
-        "login-UserID": "Inter a Username",
-        "login-Password": "Inter a Password",
+        "login-UserID": "Enter a Username",
+        "login-Password": "Enter a Password",
         "login-NickName": "Displayed Profile Name",
         "Add Contact": "Add Contact",
         "accept": "Accept",

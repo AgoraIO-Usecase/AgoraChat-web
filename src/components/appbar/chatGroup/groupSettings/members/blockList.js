@@ -1,11 +1,12 @@
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
 import i18next from "i18next";
-import { Box, List, ListItem, ListItemText, Button, Menu, MenuItem } from "@material-ui/core"
+import { Box, List, ListItem, ListItemText, Button, Menu, MenuItem, Avatar } from "@material-ui/core"
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import { onChangeGroupBlock } from '../../../../../api/groupChat/groupBlock'
 import ConfirmDialog from "../../../../common/confirmDialog"
+import { userAvatar } from '../../../../../utils'
 
 const useStyles = makeStyles((theme) => {
     return ({
@@ -74,7 +75,9 @@ const BlockList = () => {
                                     className={
                                     classes.gMemberAvatar
                                     }
-                                ></Box>
+                                >
+                                    <Avatar src={userAvatar(item)} />
+                                </Box>
                                 < ListItemText>
                                     {item}
                                 </ListItemText>

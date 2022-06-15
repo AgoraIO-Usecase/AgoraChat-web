@@ -144,37 +144,43 @@ const presenceList = [
     id: 1,
     title: 'Online',
     checked: false,
-    img: onlineIcon
+    img: onlineIcon,
+    subTitle: 'Available'
   },
   {
     id: 100,
     title: 'Busy',
     checked: false,
-    img: busyIcon
+    img: busyIcon,
+    subTitle: 'Busy'
   },
   {
     id: 101,
     title: 'Do not Disturb',
     checked: false,
-    img: donotdisturbIcon
+    img: donotdisturbIcon,
+    subTitle: 'Do Not Disturb'
   },
   {
     id: 102,
     title: 'Leave',
     checked: false,
-    img: leaveIcon
+    img: leaveIcon,
+    subTitle: 'Away'
   },
   {
     id: 103,
     title: 'Custom Status',
     checked: false,
-    img: customIcon
+    img: customIcon,
+    subTitle: 'Custom Status'
   },
   {
     id: 0,
     title: 'Offline',
     checked: false,
-    img: offlineImg
+    img: offlineImg,
+    subTitle: 'Offline'
   }
 ]
 

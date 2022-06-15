@@ -50,23 +50,29 @@ const useStyles = makeStyles((theme) => {
 
 
 
-const JoinGroup = () => {
+const JoinGroup = ({ contentObj, sendMethod }) => {
     const classes = useStyles();
     const [inputValue, setInputValue] = useState('')
 
     const hangleInputValue = (event) => {
         setInputValue(event.target.value)
     }
-
+    const handlerSendRequest = () => {
+        if (sendMethod) {
+            sendMethod(inputValue)
+        } else {
+            addGroup(inputValue)
+        }
+    }
     return (
         <Box>
             <Box className={classes.searchBox}>
                 <img src={search_icon} alt="" className={classes.searchImg} />
-                <InputBase placeholder={i18next.t('Group ID')} className={classes.inputSearch} onChange={hangleInputValue} />
+                <InputBase placeholder={(contentObj && contentObj.placeholder) ? contentObj.placeholder : i18next.t('Group ID')} className={classes.inputSearch} onChange={hangleInputValue} />
             </Box>
             {inputValue.length > 0 && <Box className={classes.joinBox}>
-                <Typography>{`GroupID: ${inputValue}`}</Typography>
-                <Typography className={classes.joinBoxText} onClick={() => addGroup(inputValue)}>Apply</Typography>
+                <Typography>{`${(contentObj && contentObj.title) ? contentObj.title : 'GroupID'}: ${inputValue}`}</Typography>
+                <Typography className={classes.joinBoxText} onClick={handlerSendRequest}>Apply</Typography>
             </Box>}
         </Box>
     )

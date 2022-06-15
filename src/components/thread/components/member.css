@@ -5,6 +5,7 @@
     background: #fff;
     justify-content: space-between;
     border-bottom: 1px solid #ccc;
+    align-items: center;
 }
 .tlp-header-title{
     font-size: 18px;
@@ -29,6 +30,12 @@
     padding-top: 2px;
     max-height: 710px;
     overflow-y: scroll;
+    scrollbar-width: none; /* firefox */
+    -ms-overflow-style: none; /* IE 10+ */
+    
+}
+.list-con::-webkit-scrollbar {
+    display: none; /* Chrome Safari */
 }
 .list-item{
     position: relative;

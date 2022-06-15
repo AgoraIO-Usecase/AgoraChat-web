@@ -1,7 +1,8 @@
 import React from 'react'
-import { Box, List, ListItem, ListItemText, Button } from "@material-ui/core"
+import { Box, List, ListItem, ListItemText, Button, Avatar } from "@material-ui/core"
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
+import { userAvatar } from '../../../../../utils'
 
 const useStyles = makeStyles((theme) => {
     return ({
@@ -39,7 +40,9 @@ const MuteList = ({ newMuteList }) => {
                                 className={
                                 classes.gMemberAvatar
                                 }
-                            ></Box>
+                            >
+                                <Avatar src={userAvatar(item)} />
+                            </Box>
                             < ListItemText>
                                 {item}
                             </ListItemText>

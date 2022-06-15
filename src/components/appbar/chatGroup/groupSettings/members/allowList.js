@@ -1,9 +1,11 @@
 import React from 'react'
 import i18next from "i18next";
-import { Box, List, ListItem, ListItemText, Button } from "@material-ui/core"
+import { Box, List, ListItem, ListItemText, Button, Avatar } from "@material-ui/core"
 import { useSelector } from 'react-redux'
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
+import { userAvatar } from '../../../../../utils'
+
 const useStyles = makeStyles((theme) => {
     return ({
         gUserName: {
@@ -47,7 +49,9 @@ const AllowList = () => {
                                 className={
                                 classes.gMemberAvatar
                                 }
-                            ></Box>
+                            >
+                                <Avatar src={userAvatar(item)} />
+                            </Box>
                             < ListItemText>
                                 {item}
                             </ListItemText>

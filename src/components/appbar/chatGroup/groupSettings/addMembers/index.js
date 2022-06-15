@@ -11,6 +11,7 @@ import {
 	ListItem,
 	InputBase,
 	Button,
+	Avatar
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
@@ -31,6 +32,8 @@ import deldeteIcon from "../../../../../assets/delete@2x.png";
 import PanoramaFishEyeIcon from '@material-ui/icons/PanoramaFishEye';
 import CheckCircleOutlineRoundedIcon from '@material-ui/icons/CheckCircleOutlineRounded';
 import CheckCircleRoundedIcon from '@material-ui/icons/CheckCircleRounded';
+import { userAvatar } from '../../../../../utils'
+
 const useStyles = makeStyles((theme) => {
 	return {
 		root: {
@@ -67,7 +70,7 @@ const useStyles = makeStyles((theme) => {
 			overflow: 'auto',
 		},
 		textStyle: {
-			fontTypeface: "Ping Fang SC",
+			fontTypeface: "Roboto",
 			fontWeight: "Regular (400)",
 			fontSize: "12px",
 			lineHeight: "16 (1.333)",
@@ -254,7 +257,9 @@ const AddMembers = ({ onClose }) => {
 												className={
 													classes.gMemberAvatar
 												}
-											></Box>
+											>
+												<Avatar src={userAvatar(item.id)} />
+											</Box>
 											<Typography
 												className={classes.marginStyle}
 											>
@@ -289,7 +294,9 @@ const AddMembers = ({ onClose }) => {
 												className={
 													classes.gMemberAvatar
 												}
-											></Box>
+											>
+												<Avatar src={userAvatar(item)} />
+											</Box>
 											<Typography
 												className={classes.marginStyle}
 											>

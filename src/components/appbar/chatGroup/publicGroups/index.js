@@ -16,7 +16,12 @@ const useStyles = makeStyles((theme) => {
     return ({
         root: {
             width: '100%',
-            height: '100%'
+            height: '100%',
+            // '& ::-webkit-scrollbar': {
+            //     display: 'none', /* Chrome Safari */
+            // },
+            // scrollbarWidth: 'none', /* firefox */
+            // '-ms-overflow-style': 'none', /* IE 10+ */
         },
         inputBox: {
             display: 'flex',
@@ -43,13 +48,17 @@ const useStyles = makeStyles((theme) => {
             height: '590px',
             marginTop: '18px',
             overflowY: 'scroll',
-            overflowX: 'hidden'
+            overflowX: 'hidden',
         },
         gItem: {
             marginBottom: '12px',
             display: 'flex',
             borderRadius: '16px',
-            alignItems: 'center'
+            alignItems: 'center',
+            padding: '8px',
+            '&:hover': {
+                background: 'rgb(243, 244, 246)',
+            }
         },
         gAvatar: {
             width: '50px',
@@ -59,8 +68,8 @@ const useStyles = makeStyles((theme) => {
             cursor: 'pointer',
         },
         gNameText: {
-            Typeface: 'Ping Fang SC',
-            fontWeight: 'Semibold(600)',
+            fontFamily: 'Roboto',
+            fontWeight: '600',
             fontSize: '16px',
             character: '0',
             color: '#0D0D0D',
@@ -70,8 +79,8 @@ const useStyles = makeStyles((theme) => {
             width: '400px'
         },
         gIdText: {
-            Typeface: 'Ping Fang SC',
-            fontWeight: 'Regular(400)',
+            fontFamily: 'Roboto',
+            fontWeight: '400',
             fontSize: '14px',
             character: '0',
             color: '#666666'
@@ -85,18 +94,19 @@ const useStyles = makeStyles((theme) => {
             cursor: 'pointer'
         },
         gAddedText: {
-            Typeface: 'Ping Fang SC',
-            fontWeight: 'Semibold (600)',
+            fontFamily: 'Roboto',
+            fontWeight: '600',
             fontSize: '16px',
             character: '0',
             color: '#BDBDBD'
         },
         gAddText: {
-            Typeface: 'Ping Fang SC',
-            fontWeight: 'Semibold (600)',
+            fontFamily: 'Roboto',
+            fontWeight: '600',
             fontSize: '16px',
             character: '0',
             color: '#005FFF',
+            visibility: 'hidden',
         }
     })
 });
@@ -147,7 +157,18 @@ const PublicGroup = () => {
             //store.dispatch(searchPublicGroupAction(e.target.value))
         }
     }
-
+    const handlerOnMouseEnter = (item) => {
+        const tempEle = document.getElementById(item.groupid)
+        if (item.status === 'join') {
+            tempEle.children[0].style.visibility = 'visible'
+        }
+    }
+    const handlerOnMouseLeave = (item) => {
+        const tempEle = document.getElementById(item.groupid)
+        if (item.status === 'join') {
+            tempEle.children[0].style.visibility = 'hidden'
+        }
+    }
     return (
         <Box className={classes.root}>
             <Box className={classes.inputBox}>
@@ -166,7 +187,7 @@ const PublicGroup = () => {
                         let isJoinGroups = addedGroupsId.includes(item.groupid)
                         item.status = isJoinGroups ? 'joined' : 'join'; 
                         return (
-							<Box key={item.groupid} className={classes.gItem}>
+							<Box key={item.groupid} className={classes.gItem} onMouseEnter={() => handlerOnMouseEnter(item)} onMouseLeave={() => handlerOnMouseLeave(item)}>
 								{/* <Box className={classes.gAvatar}></Box> */}
 								<Avatar
 									className={classes.gAvatar}
@@ -199,7 +220,7 @@ const PublicGroup = () => {
                                                 }
 											}
 										>
-											{i18next.t(`${item.status}`)}
+											{item.status === "joined" ? i18next.t('Joined') : i18next.t('Join')}
 										</Typography>
 									</Box>
 								</Box>

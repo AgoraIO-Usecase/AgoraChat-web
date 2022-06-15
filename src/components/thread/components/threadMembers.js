@@ -8,12 +8,13 @@ import avatarImg from '../../../assets/avatar1.png'
 import { getThreadMembers, removeMemberFromThread } from '../../../api/thread'
 import store from "../../../redux/store";
 import { setThreadInfo } from '../../../redux/actions'
+import { userAvatar } from '../../../utils'
 
 const useStyles = makeStyles(() => {
     return {
         container: {
             position: 'fixed',
-            top: '0',
+            top: '10px',
             right: '20px',
             zIndex: '1000',
             width: '540px',
@@ -115,7 +116,7 @@ const ThreadMembers = ({ membersPanelEl }) => {
                         return (
                             <div className="list-item" key={index}>
                                 <div className="user-info">
-                                    <img className="avatar" src={avatarImg} alt='avatar' />
+                                    <img className="avatar" src={userAvatar(item)} alt='avatar' />
                                     <span className="username">{item}</span>
                                 </div>
                                 {isAdmin && (username !== item) && <div className="user-role">

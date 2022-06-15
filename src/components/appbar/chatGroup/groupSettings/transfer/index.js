@@ -7,12 +7,14 @@ import {
 	List,
 	ListItem,
 	ListItemText,
+	Avatar
 } from "@material-ui/core";
 import i18next from "i18next";
 import store from "../../../../../redux/store";
 import Menu from "./menu";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import searchIcon from "../../../../../assets/search@2x.png";
+import { userAvatar } from '../../../../../utils'
 
 const useStyles = makeStyles((theme) => ({
 	transBox: {
@@ -96,6 +98,12 @@ const useStyles = makeStyles((theme) => ({
 	},
 	ListItemTextName: {
 		marginLeft: '10px'
+	},
+	memberStyle: {
+		color: '#999',
+		'& .MuiTypography-body1': {
+			fontSize: '14px',
+		}
 	}
 }));
 
@@ -150,7 +158,7 @@ const TransFerOwner = ({ onClose }) => {
 		<Box>
 			<Box className={classes.transBox}>
 				<Typography className={classes.titleStyle}>
-					{i18next.t("TransFer Ownership")}
+					{i18next.t("Transfer Ownership")}
 				</Typography>
 				<Box className={classes.searchBox}>
 					{showSearch && (
@@ -197,10 +205,12 @@ const TransFerOwner = ({ onClose }) => {
 										className={
 											classes.gMemberAvatar
 										}
-									></Box>
+									>
+										<Avatar src={userAvatar(item)} />
+									</Box>
 									<ListItemText className={classes.ListItemTextName}>{item}</ListItemText>
 									<Box className={classes.itemStyle}>
-										<ListItemText>Member</ListItemText>
+										<ListItemText className={classes.memberStyle}>Member</ListItemText>
 										<Box
 											className={classes.iconStyle}
 											onClick={(e) => handleMenu(e, item)}

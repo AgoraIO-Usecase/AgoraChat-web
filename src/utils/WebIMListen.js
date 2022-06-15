@@ -152,13 +152,13 @@ const history = createHashHistory()
 const initListen = () => {
 	WebIM.conn.listen({
         onOpened: () => {
+            history.push('/main')
             getSilentModeForAll().finally(res => {
                 getContacts();
                 getGroups();
             })
             getPublicGroups();
             getBlackList()
-            history.push('/main')
             store.dispatch(setFetchingStatus(false))
         },
         onClosed: () => {
@@ -217,7 +217,7 @@ const initListen = () => {
                     item.statusDetails.forEach(val => {
                         if (val.status === 1) {
                             extFlag = true
-                            device = val.device('webim') ? 'Web' : 'Mobile'
+                            device = val.device.includes('webim') ? 'Web' : 'Mobile'
                         }
                         obj[val.device] = val.status.toString()
                     })
@@ -242,7 +242,7 @@ const initListen = () => {
                             }
                         })
                     } else {
-                        presenceList.contact(tempArr)
+                        presenceList.concat(tempArr)
                     }
                     const newArr = presenceList
                     store.dispatch(setPresenceList(newArr))
@@ -344,7 +344,7 @@ const initListen = () => {
 	WebIM.conn.addEventHandler("TOKENSTATUS", {
 		onTokenWillExpire: (token) => {
 			let { myUserInfo } = store.getState();
-			getToken(myUserInfo.agoraId, myUserInfo.nickName).then((res) => {
+			getToken(myUserInfo.agoraId, myUserInfo.password).then((res) => {
 				const { accessToken } = res;
 				WebIM.conn.renewToken(accessToken);
 				const authData = sessionStorage.getItem("webim_auth");
