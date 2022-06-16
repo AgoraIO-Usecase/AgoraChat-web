@@ -10,7 +10,7 @@ import { getGroupAdmins } from './groupAdmin'
 import { getGroupMuted } from './groupMute'
 import { getGroupBlock } from './groupBlock'
 import { getGroupWrite } from './groupWhite'
-import { EaseApp } from "wy-chat"
+import { EaseApp } from "chat-uikit2"
 const getGroupInfo = (groupId, type) => {
     let options = {
         groupId: groupId

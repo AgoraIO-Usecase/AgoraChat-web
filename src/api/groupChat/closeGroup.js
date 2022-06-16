@@ -1,7 +1,7 @@
 import WebIM from "../../utils/WebIM";
 import getGroups from "./getGroups";
 import getGroupInfo from "../groupChat/getGroupInfo";
-import { EaseApp } from 'wy-chat'
+import { EaseApp } from 'chat-uikit2'
 import { getLocalStorageData } from '../../utils/notification'
 export const closeGroup = (groupId, type, onClose) => {
 	let option = {

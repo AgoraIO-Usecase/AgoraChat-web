@@ -21,47 +21,49 @@ export const subFriendStatus = (payload) => {
   payload.expiry = 10000000
   return new Promise((resolve) => {
     WebIM.conn.subscribePresence(payload).then(res => {
-      const tempArr = []
-      res.result.forEach(item => {
-        let extFlag = false
-        item.device = ''
-        // Object.values(item.status).forEach(val => {
-        //   if (Number(val) === 1) {
-        //     extFlag = true
-        //   }
-        // })
-        // if (!extFlag) {
-        //   item.ext = 'Offline'
-        // }
-        const data = item.status
-        for (const val in data) {
-          if (Number(data[val]) === 1) {
-            extFlag = true
-            item.device = val.includes('webim') ? 'Web' : 'Mobile'
+      if (res && Array.isArray(res.result)) {
+        const tempArr = []
+        res.result.forEach(item => {
+          let extFlag = false
+          item.device = ''
+          // Object.values(item.status).forEach(val => {
+          //   if (Number(val) === 1) {
+          //     extFlag = true
+          //   }
+          // })
+          // if (!extFlag) {
+          //   item.ext = 'Offline'
+          // }
+          const data = item.status
+          for (const val in data) {
+            if (Number(data[val]) === 1) {
+              extFlag = true
+              item.device = val.includes('webim') ? 'Web' : 'Mobile'
+            }
           }
-        }
-        if (!extFlag) {
-          item.ext = 'Offline'
-        }
-        if (!item.device) {
-          item.device = Object.keys(data).length ? (Object.keys(data)[0].includes('webim') ? 'Web' : 'Mobile') : ''
-        }
-        if (item.uid) {
-          tempArr.push(item.uid)
-        }
-      })
-      const notInNames = []
-      payload.usernames.forEach(val => {
-        if (!tempArr.includes(val)) {
-          notInNames.push(val)
-        }
-      })
-      res.result.forEach(item => {
-        if (!item.uid) {
-          item.uid = notInNames.shift()
-        }
-      })
-      store.dispatch(setPresenceList(res.result))
+          if (!extFlag) {
+            item.ext = 'Offline'
+          }
+          if (!item.device) {
+            item.device = Object.keys(data).length ? (Object.keys(data)[0].includes('webim') ? 'Web' : 'Mobile') : ''
+          }
+          if (item.uid) {
+            tempArr.push(item.uid)
+          }
+        })
+        const notInNames = []
+        payload.usernames.forEach(val => {
+          if (!tempArr.includes(val)) {
+            notInNames.push(val)
+          }
+        })
+        res.result.forEach(item => {
+          if (!item.uid) {
+            item.uid = notInNames.shift()
+          }
+        })
+        store.dispatch(setPresenceList(res.result))
+      }
       resolve(res.result)
     })
   })

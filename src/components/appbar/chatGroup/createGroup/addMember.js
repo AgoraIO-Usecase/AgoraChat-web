@@ -4,7 +4,7 @@ import i18next from "i18next";
 import store from '../../../../redux/store'
 // import { EaseApp } from "uikit-reaction";
 // import { EaseApp } from "chat-uikit";
-import { EaseApp } from "wy-chat";
+import { EaseApp } from "chat-uikit2";
 import CommonDialog from '../../../common/dialog'
 import createGroup from '../../../../api/groupChat/createGroup'
 import { Box, Checkbox, List, ListItem, InputBase } from '@material-ui/core';
@@ -157,10 +157,10 @@ const AddGroupMemberDialog = ({ groupInfoData, onClearValue, open, onClose }) =>
 
     // click group 
     const handleClickSession = (itemData) => {
-		// uikit
-		let conversationItem = {
-			conversationType: "groupChat",
-			conversationId: itemData,
+        // uikit
+        let conversationItem = {
+            conversationType: "groupChat",
+            conversationId: itemData,
             conversationName: groupNameValue,
             firstCrate: true
 		};
@@ -205,12 +205,12 @@ const AddGroupMemberDialog = ({ groupInfoData, onClearValue, open, onClose }) =>
 
     const handleCreateGroup = () => {
         createGroup(
-			groupInfoData,
-			groupMembers,
-			onClearValue,
-			onClose,
-			handleClickSession
-		);
+            groupInfoData,
+            groupMembers,
+            onClearValue,
+            onClose,
+            handleClickSession
+        );
     }
     let throttled = _.throttle(handleCreateGroup, 3000, { 'trailing': false });
 

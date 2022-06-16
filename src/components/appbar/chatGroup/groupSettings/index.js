@@ -17,7 +17,7 @@ import GroupNotice from './notice'
 import GroupChatInfo from "./info";
 import TransFerOwner from "./transfer";
 import Notifications from './members/notifications'
-import { closeGroup } from "../../../../api/groupChat/closeGroup";
+import ConfirmDialog from '../../../common/confirmDialog'
 
 import groupAvatar from "../../../../assets/groupAvatar.png";
 import membersIcon from "../../../../assets/members@2x.png";
@@ -32,7 +32,7 @@ import muteIcon from '../../../../assets/unmute.png'
 import muteGrayIcon from '../../../../assets/gray@2x.png'
 import { setTimeVSNowTime } from '../../../../utils/notification'
 import { getSilentModeForConversation } from '../../../../api/notificationPush'
-import ConfirmDialog from "../../../common/confirmDialog"
+
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 
@@ -166,11 +166,13 @@ const useStyles = makeStyles((theme) => {
 const GroupSettingsDialog = ({ open, onClose, currentGroupId, authorEl }) => {
 	const classes = useStyles();
 	const state = useSelector((state) => state);
+	const [confirmStatus, setConfirmStatus] = useState(null)
 	const groupsInfo = state?.groups?.groupsInfo || {};
 	const groupNotice = state?.groups?.groupNotice;
 	const loginUser = WebIM.conn.context?.userId;
 	const isOwner = loginUser === groupsInfo?.owner;
 	const groupId = groupsInfo?.id
+	const groupName = groupsInfo?.name
 	const [value, setValue] = useState(0);
 	const [muteFlag, setmuteFlag] = useState(false);
 	const [secondSure, setSecondSure] = useState(false)
@@ -183,34 +185,14 @@ const GroupSettingsDialog = ({ open, onClose, currentGroupId, authorEl }) => {
 	const showMuteImgOrNot = (flag) => {
 		setmuteFlag(flag)
 	}
-	useEffect(() => {
-		if (groupId) {
-			getNotDisturbGroup(groupId)
-		}
-	}, [groupId])
-	const getNotDisturbGroup = (groupId) => {
-		getSilentModeForConversation({conversationId: groupId, type: 'groupChat', flag: 'Group' }).then(res => {
-			if (res.ignoreDuration) {
-				if (setTimeVSNowTime(res, true)) {
-					setmuteFlag(false)
-				} else {
-					setmuteFlag(true)
-				}
-			}
-		})
+
+	const handleConfirmDialogChange = (e) => {
+		setConfirmStatus(true)
+		onClose()
 	}
-	const showSecondDialog = (val) => {
-		setGroupStatus(val)
-		if (val === 'dissolve') {
-			setgroupContent('Disband this Group')
-		} else {
-			setgroupContent('Leave the Group')
-		}
-		setSecondSure(true)
-	}
-	const confirmQuitGroup = () => {
-		closeGroup(currentGroupId, GroupStatus, onClose)
-		setSecondSure(false)
+
+	const handleConfirmDialogClose = () => {
+		setConfirmStatus(null)
 	}
 	const renderSetting = () => {
 		const memberLabel = () => {
@@ -405,14 +387,14 @@ const GroupSettingsDialog = ({ open, onClose, currentGroupId, authorEl }) => {
 							{isOwner ? (
 								<Typography
 									className={classes.gCloseText}
-									onClick={() => showSecondDialog('dissolve')}
+									onClick={handleConfirmDialogChange}
 								>
 									{i18next.t("Disband this Group")}
 								</Typography>
 							) : (
 								<Typography
 									className={classes.gCloseText}
-									onClick={() => showSecondDialog('quit')}
+									onClick={handleConfirmDialogChange}
 								>
 									{i18next.t("Leave the Group")}
 								</Typography>
@@ -472,14 +454,11 @@ const GroupSettingsDialog = ({ open, onClose, currentGroupId, authorEl }) => {
 					</TabPanel>
 
 				</Box>
-				<ConfirmDialog
-					open={Boolean(secondSure)}
-					onClose={() => setSecondSure(false)}
-					confirmMethod={() => confirmQuitGroup()}
-					confirmContent={{
-						content: groupContent
-					}}
-				></ConfirmDialog>
+				<ConfirmDialog 
+					anchorEl={confirmStatus}
+					onClose={handleConfirmDialogClose}
+					type={"group"}
+				/>
 			</Box>
 		);
 	};

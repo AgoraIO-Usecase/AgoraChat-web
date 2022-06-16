@@ -3,10 +3,8 @@ import Header from '../components/appbar'
 import './login.css'
 import getGroupInfo from '../api/groupChat/getGroupInfo'
 import WebIM from '../utils/WebIM';
-// import { EaseApp } from 'uikit-reaction'
 import { loginWithToken, loginWithPassword } from '../api/loginChat'
-// import { EaseApp } from 'chat-uikit'
-import { EaseApp } from "wy-chat";
+import { EaseApp } from 'chat-uikit2'
 import { createHashHistory } from 'history'
 import store from '../redux/store'
 import { setMyUserInfo, setUnread, setCurrentSessionId, setThreadInfo } from '../redux/actions'
@@ -15,8 +13,10 @@ import GroupMemberInfoPopover from '../components/appbar/chatGroup/memberInfo'
 import GroupSettingsDialog from '../components/appbar/chatGroup/groupSettings'
 import { Report } from '../components/report';
 import i18next from "i18next";
+
 import { subFriendStatus } from '../api/presence'
 import map3 from '../assets/notify.mp3'
+import ringing from '../assets/ringing.mp3'
 
 import { changeTitle } from '../utils/notification'
 
@@ -25,12 +25,12 @@ import EditThreadPanel from '../components/thread/components/editThreadPanel'
 import ThreadMembers from '../components/thread/components/threadMembers';
 import ThreadDialog from '../components/thread/components/threadDialog'
 // import { getSilentModeForConversation } from '../api/notificationPush'
+import {getRtctoken, getConfDetail} from '../api/rtcCall'
+
 const history = createHashHistory()
 
 export default function Main() {
     //support edit thread 
-    EaseApp.thread.setShowThread(true)
-    EaseApp.thread.setHasThreadEditPanel(true)
     useEffect(() => {
         const webimAuth = sessionStorage.getItem('webim_auth')
         let webimAuthObj = {}
@@ -42,8 +42,10 @@ export default function Main() {
             } else {
                 history.push('/login')
             }
-        } else if (WebIM.conn.logOut) {
-            history.push('/login')
+            store.dispatch(setMyUserInfo({ agoraId: webimAuthObj.agoraId, nickName: webimAuthObj.nickName }))
+            WebIM.conn.agoraUid = webimAuthObj.agoraUid
+        }else if (WebIM.conn.logOut) {
+            history.push('/login')  
         }
     }, [])
     const state = store.getState();
@@ -129,10 +131,27 @@ export default function Main() {
     //         console.log(res, 'getNotDisturbDuration')
     //     })
     // }
+
+    const handleGetToken = async (data) => {
+        let token = ''
+        console.log('data', data)
+    
+        token = await getRtctoken({ channel: data.channel, agoraId: WebIM.conn.agoraUid, username: data.username })
+        return {
+          agoraUid: WebIM.conn.agoraUid,
+          accessToken: token.accessToken
+        }
+      }
+    
+      const handleGetIdMap = async (data) => {
+        let member = {}
+        member = await getConfDetail(data.userId, data.channel)
+        return member
+      }
+
     return (
         <div className='main-container'>
             <EaseApp
-                isShowReaction={true}
                 header={<Header />}
                 onChatAvatarClick={handleClickSessionInfoDialog}
                 onAvatarChange={handleClickGroupMemberInfoDialog}
@@ -142,6 +161,12 @@ export default function Main() {
                 onEditThreadPanel={changeEditPanelStatus}
                 // onOpenThreadPanel={onOpenThreadPanel}
                 // isShowReaction
+
+                agoraUid={WebIM.conn.agoraUid}
+                appId="15cb0d28b87b425ea613fc46f7c9f974"
+                getRTCToken={handleGetToken}
+                getIdMap={handleGetIdMap}
+                ringingSource={ringing}
             />
             <SessionInfoPopover 
                 open={sessionInfoAddEl}

@@ -5,7 +5,7 @@ import { Box, List, ListItem, ListItemText, Button, Menu, MenuItem, Avatar } fro
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import { onChangeGroupBlock } from '../../../../../api/groupChat/groupBlock'
-import ConfirmDialog from "../../../../common/confirmDialog"
+import SecondConfirmDialog from "../../../../common/secondConfirmDialog"
 import { userAvatar } from '../../../../../utils'
 
 const useStyles = makeStyles((theme) => {
@@ -100,14 +100,14 @@ const BlockList = () => {
                     })}
                 </List> : <Typography className={classes.noDataText}></Typography>
             }
-            <ConfirmDialog
+            <SecondConfirmDialog
             open={Boolean(secondSure)}
             onClose={() => setSecondSure(false)}
             confirmMethod={() => confirmQuitGroup()}
             confirmContent={{
                 content: 'Move to Blocked List'
             }}
-            ></ConfirmDialog>
+            ></SecondConfirmDialog>
         </Box>
     )
 }

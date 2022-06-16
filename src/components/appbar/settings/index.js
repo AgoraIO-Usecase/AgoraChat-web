@@ -40,7 +40,7 @@ import { message } from "../../common/alert";
 import { removeFromBlackList, deleteContact } from '../../../api/contactsChat/getContacts'
 import { handlerTime, getMillisecond, computedItervalTime, timeIntervalToMinutesOrHours, setTimeVSNowTime, getLocalStorageData } from '../../../utils/notification'
 import { setSilentModeForAll, getSilentModeForAll, getSilentModeForConversations, setPushPerformLanguage, getPushPerformLanguage } from '../../../api/notificationPush'
-import ConfirmDialog from "../../common/confirmDialog"
+import SecondConfirmDialog from "../../common/secondConfirmDialog"
 import { userAvatar } from '../../../utils'
 
 const useStyles = makeStyles((theme) => {
@@ -1030,14 +1030,14 @@ export default function Setting({ open, onClose }) {
                         </Typography>
                     </MenuItem>
                 </Menu>
-                <ConfirmDialog
+                <SecondConfirmDialog
                     open={Boolean(secondSure)}
                     onClose={() => setSecondSure(false)}
                     confirmMethod={() => confirmQuitGroup()}
                     confirmContent={{
                         content: groupContent
                     }}
-                ></ConfirmDialog>
+                ></SecondConfirmDialog>
             </div>
         )
     }

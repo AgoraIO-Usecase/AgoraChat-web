@@ -29,7 +29,7 @@ import muteIcon from "../../../../../assets/mute@2x.png";
 import blockIcon from "../../../../../assets/block@2x.png";
 import allowIcon from "../../../../../assets/allow_search@2x.png";
 import deleteIcon from "../../../../../assets/red@2x.png";
-import ConfirmDialog from "../../../../common/confirmDialog"
+import SecondConfirmDialog from "../../../../common/secondConfirmDialog"
 import moreMenu from '../../../../../assets/menu@2x.png'
 const useStyles = makeStyles((theme) => {
   return {
@@ -370,14 +370,14 @@ const MembersList = ({ newMuteList, inputVal }) => {
           );
         })}
     </Box>
-    <ConfirmDialog
+    <SecondConfirmDialog
       open={Boolean(secondSure)}
       onClose={() => setSecondSure(false)}
       confirmMethod={() => confirmQuitGroup()}
       confirmContent={{
         content: groupContent
       }}
-    ></ConfirmDialog>
+    ></SecondConfirmDialog>
   </>
   );
 };

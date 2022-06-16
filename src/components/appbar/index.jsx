@@ -28,7 +28,7 @@ import store from '../../redux/store'
 import { setMyUserInfo, closeGroupChatAction } from '../../redux/actions'
 import { logout } from '../../api/loginChat'
 import getGroups from '../../api/groupChat/getGroups'
-import ConfirmDialog from "../common/confirmDialog"
+import SecondConfirmDialog from "../common/secondConfirmDialog"
 
 // import UserInfoPopover from './userInfo'
 import PresenceStatus from './presence/index'
@@ -234,14 +234,14 @@ export default function Header() {
                 anchorEl={userInfoaddEl}
                 onClose={handleUserInfoClose}
             /> */}
-            <ConfirmDialog
+            <SecondConfirmDialog
                 open={Boolean(secondSure)}
                 onClose={() => setSecondSure(false)}
                 confirmMethod={() => confirmQuitGroup()}
                 confirmContent={{
                     content: 'Log Out'
                 }}
-            ></ConfirmDialog>
+            ></SecondConfirmDialog>
         </>
     )
 }

@@ -56,7 +56,7 @@ export default function Login() {
                 }).finally(_ => {
                     setTimeout(() => {
                         setLoginBtn(i18next.t('login-Login'))
-                    }, 500)
+                    }, 1500)
                 })
                 
                 store.dispatch(setMyUserInfo({ agoraId: values.agoraId, nickName: values.nickName, password: values.password }))

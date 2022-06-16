@@ -57,13 +57,13 @@ export default function SignUp() {
         // store.dispatch(setFetchingStatus(true))
         if (values.password) {
             signUp(values.agoraId, values.password).then(res => {
-                console.log(res)
+                // console.log(res)
                 setDialogOpen(true)
                 store.dispatch(setMyUserInfo({ agoraId, password }))
                 sessionStorage.setItem('webim_auth', JSON.stringify({ agoraId, password }))
             }).catch(err => {
                 // message.error('Sign Up Fail.')
-                console.log(err)
+                // console.log(err)
                 setNotice({ show: true, text: 'Sign Up Fail.' })
                 setdisabled(true)
             }).finally(_ => {

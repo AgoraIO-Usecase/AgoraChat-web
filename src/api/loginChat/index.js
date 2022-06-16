@@ -10,10 +10,10 @@ export const getToken = (agoraId, password) => {
     //a1-hsb.easemob.com
     // a1.easemob.com
     // a1-test.easemob.com  
-    return postData('https://a1-test.easemob.com/app/chat/user/login', { "userAccount": agoraId, "userPassword": password })
+    return postData('https://a41.easemob.com/app/chat/user/login', { "userAccount": agoraId, "userPassword": password })
 }
 export const signUp = (agoraId, password) => {
-    return postData('https://a1-test.easemob.com/app/chat/user/register', { "userAccount": agoraId, "userPassword": password })
+    return postData('https://a41.easemob.com/app/chat/user/register', { "userAccount": agoraId, "userPassword": password })
 }
 
 export const loginWithToken = (agoraId, agoraToken) => {

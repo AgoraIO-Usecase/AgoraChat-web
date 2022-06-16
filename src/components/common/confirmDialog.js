@@ -1,74 +1,188 @@
-import React, { useState, useEffect } from "react";
+import React, { memo } from "react";
+import { useSelector } from 'react-redux'
+import i18next from "i18next";
+import { Popover, Box, Avatar, Button } from "@material-ui/core";
+import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
-import CommonDialog from "./dialog";
-import i18next, { use } from "i18next";
+import WebIM from '../../utils/WebIM'
+import { deleteContact } from "../../api/contactsChat/getContacts"
+import { closeGroup, transferOwner } from "../../api/groupChat/closeGroup";
+import closeIcon from '../../../src/assets/close.png'
+import avatar from '../../../src/assets/avatar2.png'
+import defaultAvatar from '../../../src/assets/avatar_default.png'
+import groupAvatar from "../../../src/assets/avatar_group.png";
 
 const useStyles = makeStyles((theme) => {
-  return {
-    footerBtn: {
-			textAlign: 'right',
-			height: '50px',
-			width: '440px',
-			borderRadius: '12px',
-			boxSizing: 'border-box',
-			'& span': {
-				height: '36px',
-				width: '84px',
-				borderRadius: '26px',
-				display: 'inline-block',
-				fontFamily: 'Roboto',
-				fontStyle: 'normal',
-				fontWeight: '600',
-				fontSize: '16px',
-				lineHeight: '36px',
-				textAlign: 'center',
-				color: '#000000',
-				cursor: 'pointer',
-			}
-		},
-		secondSpan: {
-			color: '#FFFFFF !important',
-			marginRight: '23px',
-			background: '#114EFF',
-		},
-		myGroupsignupdialog: {
-			'& .MuiDialog-paper': {
-				borderRadius: '12px'
-			}
-		},
-		contentBox: {
-			fontWeight: 600,
-			padding: '10px 0 0 20px',
-			boxSizing: 'border-box',
-		}
-  }
-})
-const confirmDialog = ({ confirmContent, onClose, open, confirmMethod }) => {
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  const classes = useStyles();
-  const footerCom = () => {
+    return {
+        root: {
+            height: "340px",
+            width: "340px",
+            background: "#FFFFFF",
+            borderRadius: "12px"
+        },
+        iconBox: {
+            width: "100%",
+            height: "60px",
+            cursor: "pointer"
+        },
+        iconStyle: {
+            width: "32px",
+            height: "32px",
+            padding: "14px 14px 14px 294px",
+            cursor: "pointer"
+        },
+        infoBox: {
+            width: "100%",
+            textAlign: "center"
+        },
+        avatarStyle: {
+            width: "100px",
+            height: "100px",
+            margin: "0px auto"
+        },
+        groupAvatarStyle: {
+            width: "100px",
+            height: "100px",
+        },
+        avatarBox: {
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center"
+        },
+        userTextStyle: {
+            fontFamily: "Ping Fang SC",
+            fontWeight: "600",
+            fontSize: "20px",
+            color: "#0D0D0D",
+            marginTop: (props) => (props.isTransfer ? "0" : "12px" )
+        },
+        defaultTextStyle: {
+            // width:"292px",
+            height: "20px",
+            fontFamily: "Ping Fang SC",
+            fontWeight: "400",
+            fontSize: "14px",
+            color: "#999999",
+            lineHeight: "20px"
+        },
+        btnBox: {
+            width: "100%",
+            height: "85px",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            marginBottom: "16px"
+        },
+        btnStyle: {
+            width: "150px",
+            height: "36px",
+            borderRadius: "26px",
+            background: "#114EFF"
+        },
+        btnTextStyle: {
+            fontFamily: "Ping Fang SC",
+            fontWeight: "600",
+            fontSize: "14px",
+            color: "#FFFFFF",
+            textTransform: "none"
+        },
+        transferAvatarStyle: {
+            width: "100px",
+            height: "100px",
+            marginLeft: "-30px",
+            border: "4px solid #FFFFFF"
+        }
+    };
+});
+
+const ConfirmDialog = (props) => {
+    const state = useSelector((state) => state);
+    let { anchorEl, onClose, type, id, apiType } = props;
+    let isContact = type === "contact"
+    let isGroup = type === "group"
+    let isTransfer = type === "transfer"
+    const classes = useStyles({
+        isTransfer,
+    });
+    let currentLoginUser = WebIM.conn.context.userId;
+    const groupsInfo = state?.groups?.groupsInfo || {};
+    const groupId = groupsInfo?.id;
+    const groupName = groupsInfo?.name;
+
+    let isOwner = groupsInfo?.owner === currentLoginUser;
+
+    const handleDelete = () => {
+        if (isContact) {
+            deleteContact(id, onClose)
+        } else if (isGroup) {
+            if (isOwner) {
+                closeGroup(groupId, "dissolve", onClose)
+            } else {
+                closeGroup(groupId, "quit", onClose)
+            }
+        } else if (isTransfer) {
+            if (apiType === "quit") {
+                transferOwner(groupId, id, onClose, 'quit')
+            } else {
+                transferOwner(groupId, id, onClose);
+            }
+        }
+    }
+
+    const renderDeleteModel = () => {
+        return <>
+            <img src={closeIcon} alt="close" className={classes.iconStyle} onClick={onClose} />
+            <Box className={classes.infoBox}>
+                <Avatar src={isContact ? avatar : groupAvatar} className={classes.avatarStyle}></Avatar>
+                <Typography className={classes.userTextStyle}>{`${i18next.t("Delete") + ' '}${isContact ? id : groupName}?`}</Typography>
+                <Typography className={classes.defaultTextStyle}>{i18next.t(`Delete this ${type} and associated Chats.`)}</Typography>
+            </Box>
+            <Box className={classes.btnBox}>
+                <Button className={classes.btnStyle} onClick={handleDelete}>
+                    <Typography className={classes.btnTextStyle}>{i18next.t("Delete")}</Typography>
+                </Button>
+            </Box>
+        </>
+    }
+
+    const renderTransferModel = () => {
+        return <>
+            <img src={closeIcon} alt="close" className={classes.iconStyle} onClick={onClose} />
+            <Box className={classes.infoBox}>
+                <Box className={classes.avatarBox}>
+                    <Avatar src={avatar} className={classes.groupAvatarStyle}></Avatar>
+                    <Avatar src={defaultAvatar} className={classes.transferAvatarStyle}></Avatar>
+                </Box>
+                <Typography className={classes.userTextStyle}>{i18next.t("Transfer Ownership to ")}</Typography>
+                <Typography className={classes.userTextStyle}>{i18next.t(`${id} and Leave this Group?`)}</Typography>
+            </Box>
+            <Box className={classes.btnBox}>
+                <Button className={classes.btnStyle} onClick={handleDelete}>
+                    <Typography className={classes.btnTextStyle}>{i18next.t("Yes")}</Typography>
+                </Button>
+            </Box>
+        </>
+    }
+
     return (
-      <div className={classes.footerBtn}>
-          <span onClick={onClose}>{confirmContent.cancel ? confirmContent.cancel : 'Cancel'}</span>
-          <span className={classes.secondSpan} onClick={confirmMethod}>{confirmContent.sure ? confirmContent.sure : 'Sure'}</span>
-      </div>
+        <Popover
+            open={Boolean(anchorEl)}
+            anchorEl={anchorEl}
+            onClose={onClose}
+            anchorOrigin={{
+                vertical: "top",
+                horizontal: "center",
+            }}
+            transformOrigin={{
+                vertical: "center",
+                horizontal: "left",
+            }}
+        >
+            <Box className={classes.root}>
+                {isTransfer ? renderTransferModel() : renderDeleteModel()}
+            </Box>
+        </Popover>
     )
-  }
-  const groupContentCom = () => {
-    return (
-      <div className={classes.contentBox}>{confirmContent.content}</div>
-    )
-  }
-  return (
-    <CommonDialog
-      open={Boolean(open)}
-      onClose={onClose}
-      title={i18next.t(confirmContent.title ? confirmContent.title : "Are You Sure!")}
-      footer={footerCom()}
-      content={groupContentCom()}
-      className='myGroupsignupdialog'
-    ></CommonDialog>
-  )
 }
 
-export default confirmDialog
+export default memo(ConfirmDialog);

@@ -4,16 +4,14 @@ import i18next from "i18next";
 import { Popover, Box, Avatar, Button, Tooltip, Select } from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
-import {
-	addFromBlackList,
-	deleteContact,
-} from "../../../api/contactsChat/getContacts";
+import { addFromBlackList } from "../../../api/contactsChat/getContacts";
 import CommonDialog from "../../common/dialog";
 import { handlerTime, getMillisecond, computedItervalTime, timeIntervalToMinutesOrHours, setTimeVSNowTime } from '../../../utils/notification'
 import { setSilentModeForConversation, getSilentModeForConversation } from '../../../api/notificationPush'
 import { userAvatar } from '../../../utils'
+import ConfirmDialog from '../../common/confirmDialog'
 
-import avatarImg from "../../../assets/avatar1.png";
+import avatarImg from "../../../assets/avatar2.png";
 import blockIcon from "../../../assets/block@2x.png";
 import deleteIcon from "../../../assets/red@2x.png";
 
@@ -28,7 +26,6 @@ import unmuteIcon from '../../../assets/unmute.png'
 import grayMuteIcon from '../../../assets/gray@2x.png'
 import checkgrayIcon from '../../../assets/check_gray.png'
 import upAndDown from '../../../assets/go@2x.png'
-import ConfirmDialog from "../../common/confirmDialog"
 
 const useStyles = makeStyles((theme) => {
 	return {
@@ -321,6 +318,7 @@ const SessionInfoPopover = ({ open, onClose, sessionInfo }) => {
 	const [openTurnOff, setOpenTurnOff] = useState(false)
 	const [muteTimeText, setMuteTimeText] = useState(null)
 	const [unmuteTimeText, setUnmuteTimeText] = useState(null)
+	const [confirmStatus, setConfirmStatus] = useState(null)
 	const muteDataObj = useSelector((state) => state?.muteDataObj) || {}
 	const [showSelectOption, setShowSelectOption] = useState(false)
 	const [selectContent, setSelectContent] = useState('For 15 minutes')
@@ -328,7 +326,7 @@ const SessionInfoPopover = ({ open, onClose, sessionInfo }) => {
 	const [GroupStatus, setGroupStatus] = useState('')
 	const [groupContent, setgroupContent] = useState('')
 	let { to } = sessionInfo
-	let presenceExt = ''
+	let presenceExt = null
 	presenceList.forEach(item => {
 		if (item.uid === to) {
 			presenceExt = item.ext
@@ -411,6 +409,9 @@ const SessionInfoPopover = ({ open, onClose, sessionInfo }) => {
 					setCheckedDefaultValue(res.ignoreDuration, 0, true)
 					// setNotifyDialogText('Unmute this Contact')
 				}
+			} else {
+				setNotifyDialogText('Mute this Contact')
+				setMuteTimeText(null)
 			}
 			// if (Object.keys(muteDataObj[to]).length) {
 			// 	setNotifyDialogText('Unmute this Contact')
@@ -505,104 +506,111 @@ const SessionInfoPopover = ({ open, onClose, sessionInfo }) => {
 		if (GroupStatus === 1) {
 			addFromBlackList(to)
 		} else {
-			deleteContact(to, onClose)
+			// deleteContact(to, onClose)
 		}
 		setSecondSure(false)
 	}
-	return (
-		<>
-			<Popover
-				open={Boolean(open)}
-				anchorEl={open}
-				onClose={onClose}
-				anchorOrigin={{
-					vertical: "bottom",
-					horizontal: "left",
-				}}
-				transformOrigin={{
-					vertical: "top",
-					horizontal: "left",
-				}}
-				className={classes.selfMsginfoPopover}
-			>
-				<Box className={classes.root}>
-					<Box className={classes.infoBox}>
-						<Avatar
-							src={userAvatar(to)}
-							className={classes.avatarImg}
-						></Avatar>
-						<Tooltip title={usePresenceExt} placement="bottom-end">
-							<div className={classes.imgBox}>
-								<img alt="" src={statusImgObj[usePresenceExt] || customIcon} className={classes.imgStyle} />
-							</div>
-						</Tooltip>
-						<Typography className={classes.nameText}>
-							{to}
-							{
-								muteDataObj[to] ? <img style={{ width: "16px", marginLeft: '2px' }} src={grayMuteIcon} alt="" /> : null
-							}
-						</Typography>
-						<Typography className={classes.idText}>
-							AgoraID:{to}
-						</Typography>
-					</Box>
-					<Button
-						className={classes.infoBtn}
-						onClick={() => setUserNotification()}
-					>
-						{
-							muteDataObj[to] ? <img src={unmuteIcon} alt="chat" style={{ width: "30px" }} /> : <img src={muteIcon} alt="chat" style={{ width: "30px" }} />
-						}
-						<Typography className={classes.infoBtnText}>
-							<div>
-								{i18next.t(notifyDialogText)}
-							</div>
-							<span className={classes.timeMuteStyle}>{i18next.t(muteTimeText)}</span>
-						</Typography>
-					</Button>
-					<Button
-						className={classes.infoBtn}
-						onClick={() => showSecondDialog(1)}
-					>
-						<img src={blockIcon} alt="chat" style={{ width: "30px" }} />
-						<Typography className={classes.infoBtnText}>
-							{i18next.t("Block")}
-						</Typography>
-					</Button>
-					<Button
-						className={classes.infoBtn}
-						onClick={() => showSecondDialog(2)}
-					>
-						<img
-							src={deleteIcon}
-							alt="new chat"
-							style={{ width: "30px" }}
-						/>
-						<Typography className={classes.infoBtnText}>
-							{i18next.t("Delete Contact")}
-						</Typography>
-					</Button>
-			</Box>
-			</Popover>
-			<CommonDialog
-				style={{zIndex: 1301}}
-				open={openTurnOff}
-				onClose={handleTurnOffClose}
-				title={i18next.t(notifyDialogText)}
-				content={renderTurnOffContent()}
-				footer={renderTurnOffFooter()}
-				className={classes.commonDialog}
-			></CommonDialog>
-			<ConfirmDialog
-				open={Boolean(secondSure)}
-				onClose={() => setSecondSure(false)}
-				confirmMethod={() => confirmQuitGroup()}
-				confirmContent={{
-					content: groupContent
-				}}
-			></ConfirmDialog>
-		</>
-	);
-};
+		const handleConfirmDialogChange = (e) => {
+			// setConfirmStatus(e.currentTarget)
+			setConfirmStatus(true)
+			onClose()
+		}
 
+		const handleConfirmDialogClose = () => {
+			setConfirmStatus(null)
+		}
+		return (
+			<>
+				<Popover
+					open={Boolean(open)}
+					anchorEl={open}
+					onClose={onClose}
+					anchorOrigin={{
+						vertical: "bottom",
+						horizontal: "left",
+					}}
+					transformOrigin={{
+						vertical: "top",
+						horizontal: "left",
+					}}
+					className={classes.selfMsginfoPopover}
+				>
+					<Box className={classes.root}>
+						<Box className={classes.infoBox}>
+							<Avatar
+								src={userAvatar(to)}
+								className={classes.avatarImg}
+							></Avatar>
+							<Tooltip title={usePresenceExt} placement="bottom-end">
+								<div className={classes.imgBox}>
+									<img alt="" src={statusImgObj[usePresenceExt] || customIcon} className={classes.imgStyle} />
+								</div>
+							</Tooltip>
+							<Typography className={classes.nameText}>
+								{to}
+								{
+									muteDataObj[to] ? <img style={{ width: "16px", marginLeft: '2px' }} src={grayMuteIcon} alt="" /> : null
+								}
+							</Typography>
+							<Typography className={classes.idText}>
+								AgoraID:{to}
+							</Typography>
+						</Box>
+						<Button
+							className={classes.infoBtn}
+							onClick={() => setUserNotification()}
+						>
+							{
+								muteDataObj[to] ? <img src={unmuteIcon} alt="chat" style={{ width: "30px" }} /> : <img src={muteIcon} alt="chat" style={{ width: "30px" }} />
+							}
+							<Typography className={classes.infoBtnText}>
+								<div>
+									{i18next.t(notifyDialogText)}
+								</div>
+								<span className={classes.timeMuteStyle}>{i18next.t(muteTimeText)}</span>
+							</Typography>
+						</Button>
+						<Button
+							className={classes.infoBtn}
+							onClick={() => showSecondDialog(1)}
+						>
+							<img src={blockIcon} alt="chat" style={{ width: "30px" }} />
+							<Typography className={classes.infoBtnText}>
+								{i18next.t("Block")}
+							</Typography>
+						</Button>
+						<Button
+							className={classes.infoBtn}
+							onClick = {handleConfirmDialogChange}
+						>
+							<img
+								src={deleteIcon}
+								alt="new chat"
+								style={{ width: "30px" }}
+							/>
+							<Typography className={classes.infoBtnText}>
+								{i18next.t("Delete Contact")}
+							</Typography>
+						</Button>
+				</Box>
+				</Popover>
+				<CommonDialog
+					style={{zIndex: 1301}}
+					open={openTurnOff}
+					onClose={handleTurnOffClose}
+					title={i18next.t(notifyDialogText)}
+					content={renderTurnOffContent()}
+					footer={renderTurnOffFooter()}
+					className={classes.commonDialog}
+				></CommonDialog>
+
+				<ConfirmDialog 
+					anchorEl={confirmStatus} 
+					onClose={handleConfirmDialogClose} 
+					type={"contact"}
+					id={to}
+				/>
+			</>
+		);
+	};
 export default SessionInfoPopover;
