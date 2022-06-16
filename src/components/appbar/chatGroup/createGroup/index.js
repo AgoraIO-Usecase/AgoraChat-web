@@ -19,7 +19,8 @@ const useStyles = makeStyles((theme) => {
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
-            borderBottom: '1px solid #E6E6E6'
+            borderBottom: '1px solid #E6E6E6',
+            position: 'relative',
         },
         gNameText: {
             typeface: 'Ping Fang SC',
@@ -29,7 +30,7 @@ const useStyles = makeStyles((theme) => {
         },
         gNameLimit:{
             position: 'absolute',
-            right: '25px',
+            right: '0px',
             color: '#d42e2e'
         },
         gDescriptionBox: {
@@ -95,6 +96,9 @@ const useStyles = makeStyles((theme) => {
         gNextImg: {
             width: '20px',
             height: '20px'
+        },
+        gNameTextPadding: {
+          paddingTop: '12px',
         }
     })
 });
@@ -111,6 +115,10 @@ const CreateGroup = () => {
     const [showAddMemberDialog, setShowAddMemberDialog] = useState(false)
     const [groupInfoData, setGroupInfoData] = useState({})
     const [showGroupNamelimit, setShowGroupNamelimit] = useState(false)
+    const [inviteNeedConfirm, setInviteNeedConfirm] = useState(false)
+    const [maximumValue, setMaximumValue] = useState(false)
+    const [maximumValueNotNum, SetMaximumValueNotNum] = useState(false)
+    const [descriptionLen, SetDescriptionLen] = useState(false)
 
     // Group Name
     const handleNameChange = (event) => {
@@ -129,17 +137,36 @@ const CreateGroup = () => {
     const handleDescriptionChange = (event) => {
         let value = event.target.value;
         if (value.length > descMaxLength) {
-            message.error(
-              i18next.t("The group description exceeded the upper limit")
-            );
-            return;
-        } 
+          if (descriptionLen) {
+            SetDescriptionLen(false)
+            message.error(i18next.t("The group description exceeded the upper limit"))
+          }
+          return
+        } else {
+          SetDescriptionLen(true)
+        }
         setGroupDescriptionValue(value)
     }
     //
     const handleMaximumChange = (event) => {
+      if (Number(event.target.value).toString() === 'NaN') {
+        if (maximumValueNotNum) {
+          SetMaximumValueNotNum(false)
+          message.error(i18next.t("Maximum Mumbers Need Number"));
+        }
+        return
+      } else {
+        SetMaximumValueNotNum(true)
+      }
+
       if (Number(event.target.value) > 2000) {
-          return
+        if (maximumValue) {
+          setMaximumValue(false)
+          message.error(i18next.t("No More Than 2000"))
+        }
+        return
+      } else {
+        setMaximumValue(true)
       }
       setGroupMaximumValue(event.target.value)
     }
@@ -154,14 +181,17 @@ const CreateGroup = () => {
     const handleGroupInviteChange = (event) => {
         setGroupInviteChecked(event.target.checked);
     };
-
+    
+    const handleInviteNeedConfirm = (event) => {
+      setInviteNeedConfirm(event.target.checked);
+    };
     const handleSelectUserDialog = () => {
         if (groupNameValue.match(/^\s*$/)) {
-            message.error(i18next.t('group name cannot be empty'))
+            message.error(i18next.t('Group name cannot be empty'))
             return;
         }
         setShowAddMemberDialog(true);
-        setGroupInfoData({ groupNameValue, groupDescriptionValue, groupPublicChecked, groupApprovalChecked, groupInviteChecked, groupMaximumValue })
+        setGroupInfoData({ groupNameValue, groupDescriptionValue, groupPublicChecked, groupApprovalChecked, groupInviteChecked, groupMaximumValue, inviteNeedConfirm })
     }
     const handleSelectUserDialogClose = () => {
         setShowAddMemberDialog(false);
@@ -185,14 +215,15 @@ const CreateGroup = () => {
           <Box>
             <Box className={classes.inputBox}>
               <Box className={classes.gNameBox}>
-                <Typography className={classes.gNameText}>GroupName</Typography>
+                <Typography className={classes.gNameText + ' ' + classes.gNameTextPadding}>Group Name</Typography>
                 <InputBase
                   type="text"
                   max={20}
                   className={classes.gInputBaseWidth}
-                  placeholder={i18next.t("groupName")}
+                  placeholder={i18next.t("Group Name")}
                   value={groupNameValue}
                   onChange={handleNameChange}
+                  style={{paddingRight: '145px'}}
                 />
                 {showGroupNamelimit && (
                   <Typography className={classes.gNameLimit}>
@@ -202,7 +233,7 @@ const CreateGroup = () => {
               </Box>
               <Box className={classes.gDescriptionBox}>
                 <Box className={classes.gDescription}>
-                  <Typography className={classes.gNameText}>
+                  <Typography className={classes.gNameText + ' ' + classes.gNameTextPadding}>
                     Group Description
                   </Typography>
                   <InputBase
@@ -224,24 +255,24 @@ const CreateGroup = () => {
                   {groupDescriptionValue.length}/{descMaxLength}
                 </Box>
               </Box>
-              <Box style={{ color: "#CCCCCC", pointerEvents: "none" }}>
-                <Box className={classes.gInfoSetting}>
+              <Box>
+                <Box className={classes.gInfoSetting} style={{paddingBottom: '5px'}}>
                   <Typography className={classes.gNameText}>
-                    Maximum Mumber
+                    Maximum Mumbers
                   </Typography>
                   <InputBase
-                    type="number"
-                    value={200}
-                    style={{ color: "#CCCCCC" }}
+                    className={classes.gInputBaseWidth}
+                    style={{marginTop: 0, paddingRight: '145px'}}
+                    value={groupMaximumValue}
                     placeholder={i18next.t("No More Than 2000")}
-                    // onChange={groupMaximumValue}
+                    onChange={handleMaximumChange}
                   />
                 </Box>
               </Box>
             </Box>
             <Box className={classes.gSetting}>
               <Typography className={classes.gNameText}>
-                Set to a Public Group
+                Set as Public Group
               </Typography>
               <Switch
                 checked={groupPublicChecked}
@@ -258,10 +289,10 @@ const CreateGroup = () => {
               }}
             >
               <Typography className={classes.gNameText}>
-                Authorizated to join
+                Authorized to join
               </Typography>
               <Switch
-                checked={groupPublicChecked ? groupApprovalChecked : true}
+                checked={groupPublicChecked ? groupApprovalChecked : false}
                 onChange={handleGrooupApprovalChange}
                 color="primary"
               />
@@ -283,12 +314,35 @@ const CreateGroup = () => {
               />
             </Box>
             <Box
+              className={classes.gInvite}
+              style={{
+                color: !inviteNeedConfirm ? "#CCCCCC" : "rgba(0, 0, 0, 0.87)",
+              }}
+            >
+              <Typography className={classes.gNameText}>
+                Invite Need Confirm
+              </Typography>
+              <Switch
+                checked={inviteNeedConfirm}
+                onChange={handleInviteNeedConfirm}
+                color="primary"
+              />
+            </Box>
+            <Box
               className={classes.gNext}
               onClick={() => handleSelectUserDialog()}
+              style={{
+                color: (groupNameValue && groupMaximumValue) ? "#005FFF" : '#CCCCCC',
+                pointerEvents: (groupNameValue && groupMaximumValue) ? "all" : "none",
+              }}
             >
               <Typography
                 className={classes.gNameText}
-                style={{ color: "#005FFF" }}
+                style={{
+                  color: (groupNameValue && groupMaximumValue) ? "#005FFF" : '#CCCCCC',
+                  pointerEvents: (groupNameValue && groupMaximumValue) ? "all" : "none",
+                  paddingTop: '0px'
+                }}
               >
                 {i18next.t("Next")}
               </Typography>

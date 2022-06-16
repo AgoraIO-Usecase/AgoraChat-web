@@ -1,10 +1,11 @@
-import React, { useState, memo } from "react";
+import React, { useState, memo, createRef, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Box, InputBase, Typography } from "@material-ui/core";
 import i18next from "i18next";
 import store from "../../../../../redux/store";
 import WebIM from '../../../../../utils/WebIM'
 import { modifyGroupInfo } from "../../../../../api/groupChat/getGroupInfo";
+import { message } from "../../../../common/alert";
 
 const useStyles = makeStyles((theme) => {
 	return {
@@ -15,11 +16,11 @@ const useStyles = makeStyles((theme) => {
 			display: "flex",
 			justifyContent: "space-between",
 			alignItems: "center",
-			padding: "0 15px",
-			borderRadius: "12px",
+			padding: "0 24px 0 18px !important",
+			// borderRadius: "12px",
 		},
 		titleStyle: {
-			fontFamily: "Ping Fang SC",
+			fontFamily: "Roboto",
 			fontWeight: "600",
 			fontSize: "16px",
 			color: "#000000",
@@ -28,6 +29,8 @@ const useStyles = makeStyles((theme) => {
 			marginTop: "20px",
 			borderRadius: "16px",
 			background: "#F4F5F7",
+			margin: '16px 8px',
+    	padding: '8px !important',
 		},
 		nameBox: {
 			height: "60px",
@@ -39,7 +42,7 @@ const useStyles = makeStyles((theme) => {
 			position: "relative",
 		},
 		nameStyle: {
-			fontFamily: "Ping Fang SC",
+			fontFamily: "Roboto",
 			fontWeight: "600",
 			fontSize: "16px",
 			color: "#0D0D0D",
@@ -48,8 +51,8 @@ const useStyles = makeStyles((theme) => {
 			position: "absolute",
 			top: "20px",
 			right: "30px",
-			fontFamily: "Ping Fang SC",
-			fontWeight: "400",
+			fontFamily: "Roboto",
+			fontWeight: "600",
 			fontSize: "14px",
 			color: "#005FFF",
 			cursor: "pointer",
@@ -57,8 +60,8 @@ const useStyles = makeStyles((theme) => {
 		descEditStatusStyle: {
 			position: "absolute",
 			right: "30px",
-			fontFamily: "Ping Fang SC",
-			fontWeight: "400",
+			fontFamily: "Roboto",
+			fontWeight: "600",
 			fontSize: "14px",
 			color: "#005FFF",
 			cursor: "pointer",
@@ -66,9 +69,12 @@ const useStyles = makeStyles((theme) => {
 		nameContentBox: {
 			width: "60%",
 			margin: "15px 6px",
+			'& .Mui-disabled': {
+				color: '#000',
+			}
 		},
 		nameContentStyle: {
-			fontFamily: "Ping Fang SC",
+			fontFamily: "Roboto",
 			fontWeight: "400",
 			fontSize: "16px",
 			color: "#000000",
@@ -79,15 +85,28 @@ const useStyles = makeStyles((theme) => {
 			padding: "0 15px",
 			marginTop: "15px",
 			position: "relative",
+			'& ::-webkit-scrollbar': {
+        display: 'none', /* Chrome Safari */
+      },
+      scrollbarWidth: 'none', /* firefox */
+      '-ms-overflow-style': 'none', /* IE 10+ */
 		},
 		contentBox: {
 			height: "60px",
 			width: "61%",
 			marginBottom: "50px",
 			overflowY: "scroll",
+			'& .Mui-disabled': {
+				color: '#000',
+			},
+			'& ::-webkit-scrollbar': {
+        display: 'none', /* Chrome Safari */
+      },
+      scrollbarWidth: 'none', /* firefox */
+      '-ms-overflow-style': 'none', /* IE 10+ */
 		},
 		contentStyle: {
-			fontFamily: "Ping Fang SC",
+			fontFamily: "Roboto",
 			fontWeight: "400",
 			fontSize: "14px",
 			color: "#000000",
@@ -97,12 +116,19 @@ const useStyles = makeStyles((theme) => {
 			position: "absolute",
 			bottom: "10px",
 			right: "15px",
-			fontFamily: "Ping Fang SC",
+			fontFamily: "Roboto",
 			fontWeight: "400",
 			fontSize: "14px",
 			color: "#005FFF",
 			cursor: "pointer",
 		},
+		inputTextAreaBox: {
+			'& ::-webkit-scrollbar': {
+        display: 'none', /* Chrome Safari */
+      },
+      scrollbarWidth: 'none', /* firefox */
+      '-ms-overflow-style': 'none', /* IE 10+ */
+		}
 	};
 });
 
@@ -122,7 +148,12 @@ const GroupChatInfo = () => {
 		owner === currentLoginUser || admin.includes(currentLoginUser);
 
 	const handleNameChange = (e) => {
-		setNameValue(e.target.value)
+		let value = e.target.value;
+		if (value.length === 0 || value.length > 20) {
+			message.error(`${i18next.t("Group name is empty or exceeds the limit")}`);
+			return;
+		} 
+		setNameValue(value)
 	}
 
 	const handleDescChange = (e) => {
@@ -137,15 +168,20 @@ const GroupChatInfo = () => {
 		setNameEditStatus(true)
 		setDescEditStatus(true);
 	}
+	const inputEl = createRef()
+	const inputTextarea = createRef()
+	useEffect(() => {
+		console.log(inputEl, inputTextarea)
+		inputEl.current && inputEl.current.focus()
+		inputTextarea.current && inputTextarea.current.focus()
+	}, [nameEditStatus, descEditStatus])
 
 	const rendernameEditStatus = () => {
 		return <>
 			{nameEditStatus ? (
 				<Typography
 					className={classes.nameEditStatusStyle}
-					onClick={() => {
-						setNameEditStatus(false);
-					}}
+					onClick={() => setNameEditStatus(false)}
 				>
 					{i18next.t("Edit")}
 				</Typography>
@@ -170,6 +206,11 @@ const GroupChatInfo = () => {
 						className={classes.descEditStatusStyle}
 						onClick={() => {
 							setDescEditStatus(false);
+							console.log(inputEl, inputTextarea)
+							setTimeout(() => {
+								console.log(inputEl, inputTextarea)
+								inputTextarea.current && inputTextarea.current.focus()
+							}, 300)
 						}}
 					>
 						{i18next.t("Edit")}
@@ -202,6 +243,7 @@ const GroupChatInfo = () => {
 					</Typography>
 					<Box className={classes.nameContentBox}>
 						<InputBase
+							inputRef={inputEl}
 							type="text"
 							max={20}
 							defaultValue={groupName}
@@ -217,6 +259,7 @@ const GroupChatInfo = () => {
 					</Typography>
 					<Box className={classes.contentBox}>
 						<InputBase
+							inputRef={inputTextarea}
 							type="text"
 							multiline={true}
 							max={20}
@@ -229,6 +272,7 @@ const GroupChatInfo = () => {
 								overflowX: "hidden",
 								overflowY: "scroll",
 							}}
+							className={classes.inputTextAreaBox}
 							onChange={handleDescChange}
 						/>
 						{isPermissions && renderdescEditStatus()}

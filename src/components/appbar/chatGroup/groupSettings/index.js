@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import CommonDialog from "../../../common/dialog";
-import i18next from "i18next";
-import {Box,Tabs,Tab,Button,
+import i18next, { use } from "i18next";
+import {
+	Box,Tabs,Tab,Button,Popover
 } from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
@@ -16,7 +17,7 @@ import GroupNotice from './notice'
 import GroupChatInfo from "./info";
 import TransFerOwner from "./transfer";
 import Notifications from './members/notifications'
-import { closeGroup } from "../../../../api/groupChat/closeGroup";
+import ConfirmDialog from '../../../common/confirmDialog'
 
 import groupAvatar from "../../../../assets/groupAvatar.png";
 import membersIcon from "../../../../assets/members@2x.png";
@@ -29,6 +30,11 @@ import transferIcon from "../../../../assets/transfer@2x.png";
 import deleteIcon from "../../../../assets/red@2x.png";
 import muteIcon from '../../../../assets/unmute.png'
 import muteGrayIcon from '../../../../assets/gray@2x.png'
+import { setTimeVSNowTime } from '../../../../utils/notification'
+import { getSilentModeForConversation } from '../../../../api/notificationPush'
+
+import IconButton from '@material-ui/core/IconButton';
+import CloseIcon from '@material-ui/icons/Close';
 
 const useStyles = makeStyles((theme) => {
 	return {
@@ -56,6 +62,10 @@ const useStyles = makeStyles((theme) => {
 			fontSize: "20px",
 			character: "0",
 			color: "#0D0D0D",
+			width:"100%",
+			overflow: "hidden",
+			textOverflow: "ellipsis",
+			whiteSpace: "nowrap",
 		},
 		gAppIdText: {
 			typeface: "Ping Fang SC",
@@ -87,6 +97,9 @@ const useStyles = makeStyles((theme) => {
 			background: "#EDEFF2",
 			width: "100%",
 			height: "100%",
+			'& .MuiBox-root': {
+				padding: '0'
+			}
 		},
 		gSettingRight: {
 			width: "65%",
@@ -124,28 +137,62 @@ const useStyles = makeStyles((theme) => {
 			padding:"6px 12px"
 		},
 		muteImgstyle: {
-			width: '20px',
-			height: '20px',
-			verticalAlign: 'text-top',
-		}
-	};
-});
+			width: '12.86px',
+			height: '12.86px',
+		},
+		selfGroupSetPopover: {
 
-const GroupSettingsDialog = ({ open, onClose, currentGroupId }) => {
+		},
+		groupSetTabsBox: {
+			'& .MuiTabs-indicator': {
+				background: 'transparent',
+			},
+		},
+		popoverTitleBox: {
+			height: '34px',
+			padding: '16px',
+			margin: '0',
+			borderBottom: '2px solid rgb(229, 230, 230)',
+		},
+		closeButton: {
+			position: 'absolute',
+			right: '8px',
+			top: '8px',
+			color: '#9e9e9e',
+		},
+	}
+})
+
+const GroupSettingsDialog = ({ open, onClose, currentGroupId, authorEl }) => {
 	const classes = useStyles();
 	const state = useSelector((state) => state);
+	const [confirmStatus, setConfirmStatus] = useState(null)
 	const groupsInfo = state?.groups?.groupsInfo || {};
 	const groupNotice = state?.groups?.groupNotice;
 	const loginUser = WebIM.conn.context?.userId;
 	const isOwner = loginUser === groupsInfo?.owner;
 	const groupId = groupsInfo?.id
+	const groupName = groupsInfo?.name
 	const [value, setValue] = useState(0);
 	const [muteFlag, setmuteFlag] = useState(false);
+	const [secondSure, setSecondSure] = useState(false)
+	const [GroupStatus, setGroupStatus] = useState('')
+	const [groupContent, setgroupContent] = useState('')
+
 	const handleChange = (event, newValue) => {
 		setValue(newValue);
 	};
 	const showMuteImgOrNot = (flag) => {
 		setmuteFlag(flag)
+	}
+
+	const handleConfirmDialogChange = (e) => {
+		setConfirmStatus(true)
+		onClose()
+	}
+
+	const handleConfirmDialogClose = () => {
+		setConfirmStatus(null)
 	}
 	const renderSetting = () => {
 		const memberLabel = () => {
@@ -158,6 +205,7 @@ const GroupSettingsDialog = ({ open, onClose, currentGroupId }) => {
 					/>
 					<Typography className={classes.menus}>
 						{i18next.t("Members")}
+						<span style={{color: '#ccc',marginLeft: '5px'}}>({groupsInfo.affiliations_count})</span>
 					</Typography>
 				</Button>
 			);
@@ -255,7 +303,7 @@ const GroupSettingsDialog = ({ open, onClose, currentGroupId }) => {
 						className={classes.iconStyle}
 					></img>
 					<Typography className={classes.menus}>
-						{i18next.t("TransFer Ownership")}
+						{i18next.t("Transfer Ownership")}
 					</Typography>
 				</Button>
 			);
@@ -288,7 +336,8 @@ const GroupSettingsDialog = ({ open, onClose, currentGroupId }) => {
 						value={value}
 						onChange={handleChange}
 						aria-label="Vertical tabs example"
-						style={{ maxWidth: "none" }}
+						style={{ maxWidth: "none", borderColor: 'transparent' }}
+						className={classes.groupSetTabsBox}
 					>
 						<Tab
 							label={memberLabel()}
@@ -338,26 +387,14 @@ const GroupSettingsDialog = ({ open, onClose, currentGroupId }) => {
 							{isOwner ? (
 								<Typography
 									className={classes.gCloseText}
-									onClick={() =>
-										closeGroup(
-											currentGroupId,
-											"dissolve",
-											onClose
-										)
-									}
+									onClick={handleConfirmDialogChange}
 								>
 									{i18next.t("Disband this Group")}
 								</Typography>
 							) : (
 								<Typography
 									className={classes.gCloseText}
-									onClick={() =>
-										closeGroup(
-											currentGroupId,
-											"quit",
-											onClose
-										)
-									}
+									onClick={handleConfirmDialogChange}
 								>
 									{i18next.t("Leave the Group")}
 								</Typography>
@@ -417,18 +454,46 @@ const GroupSettingsDialog = ({ open, onClose, currentGroupId }) => {
 					</TabPanel>
 
 				</Box>
+				<ConfirmDialog 
+					anchorEl={confirmStatus}
+					onClose={handleConfirmDialogClose}
+					type={"group"}
+				/>
 			</Box>
 		);
 	};
 
 	return (
-		<CommonDialog
-			open={Boolean(open)}
-			onClose={onClose}
-			title={i18next.t("Group Settings")}
-			content={renderSetting()}
-			maxWidth={880}
-		></CommonDialog>
+		authorEl ?
+			<Popover
+				open={Boolean(authorEl)}
+				anchorEl={authorEl}
+				onClose={onClose}
+				anchorOrigin={{
+					vertical: "bottom",
+					horizontal: "left",
+				}}
+				transformOrigin={{
+					vertical: "top",
+					horizontal: "left",
+				}}
+				className={classes.selfGroupSetPopover}
+			>
+				<div className={classes.popoverTitleBox}>
+					<Typography variant="h6">{i18next.t("Group Settings")}</Typography>
+					<IconButton aria-label="close" className={classes.closeButton} onClick={onClose}>
+						<CloseIcon />
+					</IconButton>
+				</div>
+				{renderSetting()}
+			</Popover>
+		:	<CommonDialog
+				open={Boolean(open)}
+				onClose={onClose}
+				title={i18next.t("Group Settings")}
+				content={renderSetting()}
+				maxWidth={880}
+			></CommonDialog>
 	);
 };
 

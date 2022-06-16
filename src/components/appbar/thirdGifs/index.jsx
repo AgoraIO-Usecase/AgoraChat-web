@@ -6,7 +6,7 @@ import { GiphyFetch } from "@giphy/js-fetch-api";
 import {
   Grid
 } from "@giphy/react-components";
-import { EaseApp } from 'wy-chat'
+import { EaseApp } from 'chat-uikit2'
 
 import search from '../../../assets/magnifying@2x.png'
 import deleteImg from '../../../assets/delete@2x.png'
@@ -130,71 +130,6 @@ const useStyles = makeStyles((theme) => {
     },
   }
 })
-
-function imgUrlToFile(e) {
-	var imgLink = e.currentSrc;
-	var tempImage = new Image();
-  tempImage.setAttribute('crossorigin', 'anonymous')
-  tempImage.src = imgLink;
-	return new Promise((resolve,reject) => {
-    tempImage.onload = function() {
-      var base64 = getBase64Image(tempImage);
-      var imgblob = base64toBlob(base64);
-          //获取原文件名称
-      var filename = getFileName(e.currentSrc);
-      var coverFile = blobToFile(imgblob, filename);
-      const param = {
-        target: {
-          files: {
-            ...coverFile,
-            length: 1,
-            item: () => coverFile
-          }
-        }
-      }
-      resolve(param)
-    };
-  })
-}
-function getBase64Image(img) {
-	var canvas = document.createElement("canvas");
-	canvas.width = img.width;
-	canvas.height = img.height;
-	var ctx = canvas.getContext("2d");
-	ctx.drawImage(img, 0, 0, img.width, img.height);
-	// var ext = img.src.substring(img.src.lastIndexOf(".") + 1).toLowerCase();
-	var dataURL = canvas.toDataURL("image/gif");
-	return dataURL;
-}
-function base64toBlob(base64) {
-	let arr = base64.split(","),
-	mime = arr[0].match(/:(.*?);/)[1],
-	bstr = atob(arr[1]),
-	n = bstr.length,
-	u8arr = new Uint8Array(n);
-	while (n--) {
-		u8arr[n] = bstr.charCodeAt(n);
-	}
-	return new Blob([u8arr], { type: mime });
-}
-function blobToFile(blob, filename) {
-  // var file = new File(blob, filename)
-  // console.log(file)
-  // const file = new window.File(
-  //   [blob],
-  //   filename,
-  //   { type: 'image/gif' }
-  // )
-	blob.lastModifiedDate = new Date();
-	blob.name = filename;
-  const url = window.URL.createObjectURL(blob);
-  console.log(url)
-	return blob;
-}
-function getFileName(url) {
-	let pos = url.lastIndexOf("/")
-	return url.substring(pos + 1)
-}
 
 function GridDemo({ searchValue, width, closeLoading }) {
   let fetchGifs = ''

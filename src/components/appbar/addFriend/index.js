@@ -6,6 +6,8 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import { message } from '../../common/alert'
 import { addContact } from '../../../api/contactsChat/getContacts'
+import JoinGroup from '../chatGroup/joinGroup/index'
+
 const useStyles = makeStyles((theme) => {
     return ({
         root: {
@@ -34,7 +36,7 @@ export default function AddfriendDialog({ open, onClose }) {
     // const dispatch = useDispatch()
     const [inputValue, setInputValue] = useState('')
     const [error, setError] = useState(null)
-    const addFriend = () => {
+    const addFriend = (inputValue) => {
         if (!inputValue) {
             return setError(true)
         }
@@ -55,6 +57,7 @@ export default function AddfriendDialog({ open, onClose }) {
     }
     function renderContent() {
         return (
+            false ?
             <Box className={classes.root}>
                 <Typography className={classes.inputLabel}>
                     {i18next.t('login-UserID')}
@@ -71,6 +74,15 @@ export default function AddfriendDialog({ open, onClose }) {
                     {i18next.t('Send')}
                 </Button>
             </Box>
+            : <div style={{width: '500px', height: '400px', padding: '10px'}}>
+                <JoinGroup
+                    contentObj={{
+                        placeholder: i18next.t('login-UserID'),
+                        title: 'AgoraID'
+                    }}
+                    sendMethod={addFriend}
+                />
+            </div>
         )
     }
 

@@ -10,6 +10,7 @@ import {
   Menu,
   MenuItem,
   Typography,
+  Avatar
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import WebIM from "../../../../../utils/WebIM";
@@ -22,17 +23,18 @@ import {
 } from "../../../../../api/groupChat/groupWhite";
 import { rmGroupUser } from "../../../../../api/groupChat/closeGroup";
 import _ from "lodash";
-
+import { userAvatar } from '../../../../../utils'
 import adminIcon from "../../../../../assets/admin@2x.png";
 import muteIcon from "../../../../../assets/mute@2x.png";
 import blockIcon from "../../../../../assets/block@2x.png";
 import allowIcon from "../../../../../assets/allow_search@2x.png";
 import deleteIcon from "../../../../../assets/red@2x.png";
-
+import SecondConfirmDialog from "../../../../common/secondConfirmDialog"
+import moreMenu from '../../../../../assets/menu@2x.png'
 const useStyles = makeStyles((theme) => {
   return {
     moreMenus: {
-      transform: "rotate(90deg)",
+      // transform: "rotate(90deg)",
       cursor: "pointer",
     },
     userItem: {
@@ -40,12 +42,18 @@ const useStyles = makeStyles((theme) => {
       textTransform: "none",
       display: "flex",
       justifyContent: "space-between",
+      paddingTop: '0px',
+      paddingBottom: '0px',
+      '& .MuiButton-root:hover': {
+        background: '#F6F7F8',
+      }
     },
     gUserName: {
       width: "100%",
       textAlign: "left",
       textTransform: "none",
       fontSize: "16px",
+      borderRadius: "12px",
     },
     gOwner: {
       textAlign: "right",
@@ -61,10 +69,49 @@ const useStyles = makeStyles((theme) => {
       fontSize: "14px",
       color: "#000000",
     },
+    myselfMenu: {
+      '& .MuiMenu-paper': {
+        borderRadius: '12px',
+      },
+      '& .MuiList-padding': {
+        padding: '8px',
+      },
+      '& .MuiMenuItem-root:hover': {
+        borderRadius: '8px',
+      },
+      '& .MuiListItem-gutters': {
+        paddingLeft: '6px',
+      }
+    },
+    gMemberAvatar: {
+			width: "36px",
+			height: "36px",
+			borderRadius: "20px",
+			backgroundColor: "rgb(238, 171, 159)",
+      marginRight: '10px',
+		},
+    imgActive: {
+      borderRadius: '50%',
+      width: '32px',
+      height: '32px',
+    },
+    imgActiveBgc: {
+      background: '#fff',
+    },
+    moreText: {
+      height: '32px',
+      padding: '0',
+      borderRadius: '50%',
+      minWidth: '32px',
+      lineHeight: '10px',
+      '&:hover': {
+        background: '#fff !important',
+      }
+    }
   };
 });
 
-const MembersList = ({ newMuteList }) => {
+const MembersList = ({ newMuteList, inputVal }) => {
   const classes = useStyles();
   const state = useSelector((state) => state);
   const groupsInfo = state?.groups?.groupsInfo || {};
@@ -79,6 +126,10 @@ const MembersList = ({ newMuteList }) => {
   const [newMembers, setNewMembers] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedUser, setSelectedUser] = useState("");
+  const [secondSure, setSecondSure] = useState(false)
+	const [GroupStatus, setGroupStatus] = useState('')
+	const [groupContent, setgroupContent] = useState('')
+	const [action, setAction] = useState('')
   const handleClick = (event, item) => {
     setAnchorEl(event.currentTarget);
     setSelectedUser(item);
@@ -86,22 +137,82 @@ const MembersList = ({ newMuteList }) => {
   const handleClose = () => {
     setAnchorEl(null);
   };
-
-  useEffect(() => {
+  const handlerMemers = () => {
     let _owner = [];
     let _member = [];
-    members.length > 0 &&
-      members.forEach((item) => {
-        if (item.owner) {
-          _owner.push(item.owner);
-        } else if (item.member) {
-          _member.push(item.member);
-        }
-        setNewMembers(_.concat(_owner, _member));
-      });
+    members.forEach((item) => {
+      if (item.owner) {
+        _owner.push(item.owner);
+      } else if (item.member) {
+        _member.push(item.member);
+      }
+      setNewMembers(_.concat(_owner, _member));
+    });
+  }
+  useEffect(() => {
+    members.length > 0 && handlerMemers()
   }, [members.length]);
-
+  useEffect(() => {
+    if (inputVal) {
+      const tempArr = []
+      newMembers.forEach(item => {
+        if (item.includes(inputVal)) {
+          tempArr.push(item)
+        }
+      })
+      setNewMembers(tempArr)
+    } else {
+      handlerMemers()
+    }
+  }, [inputVal])
+  const showSecondDialog = (val, action, text) => {
+		setGroupStatus(val)
+    action && setAction(action)
+    setgroupContent(text)
+		setSecondSure(true)
+    handleClose()
+	}
+  const confirmQuitGroup = () => {
+		if (GroupStatus === 1) {
+      onChengeGroupAdmin(
+        groupId,
+        selectedUser,
+        action,
+        handleClose
+      );
+    } else if (GroupStatus === 2) {
+      onChangeGroipMute(
+        groupId,
+        selectedUser,
+        action,
+        handleClose
+      );
+    } else if (GroupStatus === 3) {
+      onChangeGroupBlock(
+        groupId,
+        selectedUser,
+        action,
+        handleClose
+      );
+    } else if (GroupStatus === 4) {
+      rmGroupWhiteUser(
+        groupId,
+        selectedUser,
+        handleClose
+      );
+    } else if (GroupStatus === 5) {
+      addGroupWhiteUser(
+        groupId,
+        selectedUser,
+        handleClose
+      );
+    } else if (GroupStatus === 6) {
+      rmGroupUser(groupId, selectedUser, handleClose)
+    }
+		setSecondSure(false)
+	}
   return (
+    <>
     <Box>
       {newMembers.length > 0 &&
         newMembers.map((item, key) => {
@@ -111,28 +222,34 @@ const MembersList = ({ newMuteList }) => {
             <List key={key}>
               <ListItem disablepadding="true" className={classes.userItem}>
                 <Button className={classes.gUserName}>
+                  <Box
+                    className={
+                      classes.gMemberAvatar
+                    }>
+                      <Avatar src={userAvatar(item)} />
+                    </Box>
                   <ListItemText>{item}</ListItemText>
                   {owner && (
                     <ListItemText className={classes.gOwner}>
                       {owner}
                     </ListItemText>
                   )}
-                </Button>
-                {isAdmins && !owner && !lander && (
-                  <Button>
-                    <ListItemText
+                  {isAdmins && !owner && !lander && (
+                  <Button className={classes.moreText}>
+                    <span
                       id="user-more"
                       className={classes.moreMenus}
                       onClick={(event) => handleClick(event, item)}
                     >
-                      ...
-                    </ListItemText>
+                      <img src={moreMenu} alt="menu" className={`${classes.imgActive} ${Boolean(anchorEl) ? classes.imgActiveBgc : ''}`} />
+                    </span>
                     <Menu
                       id="user-menu"
                       anchorEl={anchorEl}
                       keepMounted
                       open={Boolean(anchorEl)}
                       onClose={handleClose}
+                      className={classes.myselfMenu}
                     >
                       {isOwner && (
                         <MenuItem>
@@ -145,14 +262,7 @@ const MembersList = ({ newMuteList }) => {
                             <Typography
                               variant="inherit"
                               noWrap
-                              onClick={() => {
-                                onChengeGroupAdmin(
-                                  groupId,
-                                  selectedUser,
-                                  "move",
-                                  handleClose
-                                );
-                              }}
+                              onClick={() => showSecondDialog(1, "move", "Move Admin")}
                               className={classes.menusName}
                             >
                               {i18next.t("Move Admin")}
@@ -161,14 +271,7 @@ const MembersList = ({ newMuteList }) => {
                             <Typography
                               variant="inherit"
                               noWrap
-                              onClick={() => {
-                                onChengeGroupAdmin(
-                                  groupId,
-                                  selectedUser,
-                                  "make",
-                                  handleClose
-                                );
-                              }}
+                              onClick={() => showSecondDialog(1, "move", "Make Admin")}
                               className={classes.menusName}
                             >
                               {i18next.t("Make Admin")}
@@ -186,14 +289,7 @@ const MembersList = ({ newMuteList }) => {
                           <Typography
                             variant="inherit"
                             noWrap
-                            onClick={() => {
-                              onChangeGroipMute(
-                                groupId,
-                                selectedUser,
-                                "move",
-                                handleClose
-                              );
-                            }}
+                            onClick={() => showSecondDialog(2, "move", "Move to Muted List")}
                             className={classes.menusName}
                           >
                             {i18next.t("Move to Muted List")}
@@ -202,14 +298,7 @@ const MembersList = ({ newMuteList }) => {
                           <Typography
                             variant="inherit"
                             noWrap
-                            onClick={() => {
-                              onChangeGroipMute(
-                                groupId,
-                                selectedUser,
-                                "make",
-                                handleClose
-                              );
-                            }}
+                            onClick={() => showSecondDialog(2, "move", "Make to Muted List")}
                             className={classes.menusName}
                           >
                             {i18next.t("Make to Muted List")}
@@ -225,14 +314,7 @@ const MembersList = ({ newMuteList }) => {
                         <Typography
                           variant="inherit"
                           noWrap
-                          onClick={() => {
-                            onChangeGroupBlock(
-                              groupId,
-                              selectedUser,
-                              "make",
-                              handleClose
-                            );
-                          }}
+                          onClick={() => showSecondDialog(3, "make", "Make to Blocked List")}
                           className={classes.menusName}
                         >
                           {i18next.t("Make to Blocked List")}
@@ -248,13 +330,7 @@ const MembersList = ({ newMuteList }) => {
                           <Typography
                             variant="inherit"
                             noWrap
-                            onClick={() => {
-                              rmGroupWhiteUser(
-                                groupId,
-                                selectedUser,
-                                handleClose
-                              );
-                            }}
+                            onClick={() => showSecondDialog(4, null, "Move to Allowed List")}
                             className={classes.menusName}
                           >
                             {i18next.t("Move to Allowed List")}
@@ -263,13 +339,7 @@ const MembersList = ({ newMuteList }) => {
                           <Typography
                             variant="inherit"
                             noWrap
-                            onClick={() => {
-                              addGroupWhiteUser(
-                                groupId,
-                                selectedUser,
-                                handleClose
-                              );
-                            }}
+                            onClick={() => showSecondDialog(5, null, "Make to Allowed List")}
                             className={classes.menusName}
                           >
                             {i18next.t("Make to Allowed List")}
@@ -285,22 +355,30 @@ const MembersList = ({ newMuteList }) => {
                         <Typography
                           variant="inherit"
                           noWrap
-                          onClick={() =>
-                            rmGroupUser(groupId, selectedUser, handleClose)
-                          }
+                          onClick={() => showSecondDialog(6, null, "Remove")}
                           className={classes.menusName}
                         >
-                          {i18next.t("Remove")}
+                          {i18next.t("Remove The Member")}
                         </Typography>
                       </MenuItem>
                     </Menu>
                   </Button>
                 )}
+                </Button>
               </ListItem>
             </List>
           );
         })}
     </Box>
+    <SecondConfirmDialog
+      open={Boolean(secondSure)}
+      onClose={() => setSecondSure(false)}
+      confirmMethod={() => confirmQuitGroup()}
+      confirmContent={{
+        content: groupContent
+      }}
+    ></SecondConfirmDialog>
+  </>
   );
 };
 

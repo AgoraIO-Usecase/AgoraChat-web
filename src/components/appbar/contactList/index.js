@@ -1,16 +1,20 @@
-import React, { useEffect, useState, memo } from 'react'
+import React, { useEffect, useState, memo, createRef } from 'react'
 import CommonDialog from '../../common/dialog'
 import { Box, ListItemAvatar, Avatar, ListItem, List } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 // import { EaseApp } from "uikit-reaction";
 // import { EaseApp } from "chat-uikit";
-import { EaseApp } from "wy-chat";
+import { EaseApp } from "chat-uikit2";
 import { useSelector } from 'react-redux'
 
 import avatarIcon1 from '../../../assets/avatar1.png'
 import avatarIcon2 from '../../../assets/avatar2.png'
 import avatarIcon3 from '../../../assets/avatar3.png'
+import avatarIcon4 from '../../../assets/avatar4.png'
+import avatarIcon5 from '../../../assets/avatar5.png'
+import avatarIcon6 from '../../../assets/avatar6.png'
+import avatarIcon7 from '../../../assets/avatar7.png'
 
 import offlineImg from '../../../assets/Offline.png'
 import onlineIcon from '../../../assets/Online.png'
@@ -47,7 +51,9 @@ const useStyles = makeStyles((theme) => {
             alignItems: 'center',
             boxSizing: 'border-box',
             padding: 0,
-            color: '#0D0D0D'
+            color: '#0D0D0D',
+            borderRadius: '8px',
+            paddingLeft: '10px',
         },
         itemBox: {
             height: '100%',
@@ -108,19 +114,23 @@ function AddressBookDialog(props) {
     let userAvatars = {
         1: avatarIcon1,
         2: avatarIcon2,
-        3: avatarIcon3
+        3: avatarIcon3,
+        4: avatarIcon4,
+        5: avatarIcon5,
+        6: avatarIcon6,
+        7: avatarIcon7,
     }
     let getcontactsInfo = () => {
         let usersInfoData = JSON.parse(localStorage.getItem("usersInfo_1.0")) || []
         usersInfoData.length > 0 && usersInfoData.map((item) => {
             return setUserInfoObj(Object.assign(userInfoObj, { [item.username]: item.userAvatar }))
         })
-    }   
+    }
     let contactsData = constacts.map((user) => {
         return {
             name: user,
             jid: user,
-            avatar: userInfoObj[user] ? userInfoObj[user] : Math.ceil(Math.random() * 3)
+            avatar: userInfoObj[user] ? userInfoObj[user] : Math.ceil(Math.random() * 7)
         }
     })
 
@@ -128,13 +138,13 @@ function AddressBookDialog(props) {
     const handleClick = (itemData) => {
         // uikit
         let conversationItem = {
-			conversationType: "singleChat",
-			conversationId: itemData.name,
+            conversationType: "singleChat",
+            conversationId: itemData.name,
             ext: {
                 ext: itemData?.presence?.ext,
                 muteFlag: muteDataObj[itemData.name]
             }
-		};
+        };
         EaseApp.addConversationItem(conversationItem);
         onClose()
     }
@@ -159,12 +169,16 @@ function AddressBookDialog(props) {
         'Leave': leaveIcon,
         '': onlineIcon
     }
+    const inputEl = createRef()
+    useEffect(() => {
+        inputEl.current && inputEl.current.focus()
+    }, [open])
     function renderContent() {
         return (
             <div className={classes.root}>
                 <div className={classes.serchContainer}>
                     <label className={classes.baseInputLabel}>To:</label>
-                    <input className={classes.baseInput} onChange={handleChange} />
+                    <input className={classes.baseInput} onChange={handleChange} ref={inputEl} />
                 </div>
                 <List dense >
                     {contactList.map((userGroup, index) => {

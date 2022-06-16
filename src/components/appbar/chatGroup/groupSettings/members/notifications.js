@@ -7,13 +7,14 @@ import { handlerTime, getMillisecond, computedItervalTime, timeIntervalToMinutes
 import { setSilentModeForConversation, getSilentModeForConversation, getSilentModeForConversations } from '../../../../../api/notificationPush'
 import muteIcon from '../../../../../assets/go@2x.png'
 import CommonDialog from "../../../../common/dialog";
+import checkgrayIcon from '../../../../../assets/check_gray.png'
 
 const useStyles = makeStyles((theme) => {
   return {
     root: {
       width: '540px',
       height: '508px',
-      paddingTop: '10px',
+      padding: '10px',
       boxSizing: 'border-box',
       background: 'rgb(237, 239, 242)',
       borderBottomLeftRadius: '16px',
@@ -37,8 +38,8 @@ const useStyles = makeStyles((theme) => {
       color: '#0D0D0D',
     },
     imgStyle: {
-      width: '20px',
-      height: '20px',
+      width: '15px',
+      height: '15px',
     },
     imgUpStyle: {
       transform: 'rotate(-90deg)',
@@ -88,7 +89,7 @@ const useStyles = makeStyles((theme) => {
     },
     contentBox: {
       margin: '20px',
-      fontSize: '14px',
+      fontSize: '16px',
       width: '540px',
     },
     turnOffBtnStyle: {
@@ -104,18 +105,98 @@ const useStyles = makeStyles((theme) => {
     rightBtn: {
       margin: '0px 20px 20px 10px',
       fontSize: '14px',
+      background: '#114EFF',
+      borderRadius: '26px',
+      height: '36px',
+      width: '84px',
+      color: '#fff',
+      textAlign: 'center',
+      display: 'inline-block',
+      lineHeight: '36px',
+      cursor: 'pointer',
     },
     unmuteTimeStyle: {
 			color: '#0D0D0D',
-			fontSize: '16px',
-			fontWeight: 'normal',
+			fontWeight: '500',
 		},
     notifyPrayTitle: {
       color: 'rgb(153, 153, 153)',
       fontSize: '14px',
       fontWeight: '600',
       marginLeft: '5px',
-    }
+    },
+    mySelect: {
+      position: 'relative',
+      background: '#FFFFFF',
+      borderRadius: '10px',
+      height: '40px',
+      width: '162px',
+    },
+    selectTop: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      padding: '0 10px',
+      boxSizing: 'border-box',
+      cursor: 'pointer',
+    },
+    selectDefaultText: {
+      // fontFamily: 'Roboto',
+      fontStyle: 'normal',
+      fontWeight: '500',
+      fontSize: '14px',
+      color: '#000000',
+      lineHeight: '40px',
+    },
+    selectBottom: {
+      width: '178px',
+      position: 'absolute',
+      top: '46px',
+      left: '-6px',
+      background: '#F4F5F7',
+      boxShadow: '0px 24px 36px rgba(0, 0, 0, 0.2), 8px 0px 24px rgba(0, 0, 0, 0.16)',
+      borderRadius: '12px',
+      padding: '8px 8px 0px 8px',
+      boxSizing: 'border-box',
+    },
+    selectTextlist: {
+      height: '39px',
+      width: '162px',
+      borderRadius: '8px',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      padding: '0 10px',
+      boxSizing: 'border-box',
+      marginBottom: '8px',
+      cursor: 'pointer',
+      '&:hover': {
+        background: '#FFFFFF',
+      }
+    },
+    selectChecked: {
+      background: '#FFFFFF',
+    },
+    selectOption: {
+      // fontFamily: 'Roboto',
+      fontStyle: 'normal',
+      fontWeight: '500',
+      fontSize: '14px',
+      lineHeight: '39px',
+      color: '#000000',
+    },
+    checkedStyle: {
+      width: '15px',
+      verticalAlign: 'middle'
+    },
+    commonDialog: {
+        '& .MuiDialog-paperWidthSm': {
+            borderRadius: '12px'
+        }
+    },
+    groupsettingnotify: {
+      padding: '16px',
+    },
   }
 })
 const radioList = [
@@ -154,22 +235,26 @@ const selectList = [
   {
     id: 0,
     value: 'DEFAULT',
-    label: 'Default'
+    label: 'Default',
+    checked: true
   },
   {
     id: 1,
     value: 'ALL',
-    label: 'All Message'
+    label: 'All Message',
+    checked: false
   },
   {
     id: 2,
     value: 'AT',
-    label: 'Only @Metion'
+    label: 'Only @Mention',
+    checked: false
   },
   {
     id: 3,
     value: 'NONE',
-    label: 'Nothing'
+    label: 'Off',
+    checked: false
   }
 ]
 const Notifications = (props) => {
@@ -178,15 +263,12 @@ const Notifications = (props) => {
   // const state = useSelector((state) => state)
   // const groupsInfo = state?.groups?.groupsInfo || {}
   // const groupId = groupsInfo?.id
-  // const groupList = state?.groups?.groupList || [];
-  const [notifyText, setNotifyText] = useState('DEFAULT')
-  const [defaultValue, setDefaultValue] = useState('')
+  const [selectContent, setSelectContent] = useState('Default')
+  const [defaultValue, setDefaultValue] = useState('0')
   const [showRadio, setShowRadio] = useState(false)
   const [muteTimeText, setMuteTimeText] = useState(null)
   const [openTurnOff, setopenTurnOff] = useState(false)
-  // const [selectDisabled, setSelectDisabled] = useState(false)
-  // const [millisecond, setMillisecond] = useState(0)
-  // const [itervalTime, setItervalTime] = useState('')
+  const [showSelectOption, setShowSelectOption] = useState(false)
   const [turnOffBtnFlag, setTurnOffBtnFlag] = useState(false)
 
   const getNotDisturbGroup = (groupId) => {
@@ -195,20 +277,36 @@ const Notifications = (props) => {
       console.log(res, 'getNotDisturbDuration')
       const type = res.type
       if (type) {
-        setNotifyText(type)
-        // setSelectDisabled(true)
+        selectList.forEach(item => {
+          if (item.value === type) {
+            item.checked = true
+            setSelectContent(item.label)
+          } else {
+            item.checked = false
+          }
+        })
       } else {
-        setNotifyText('DEFAULT')
+        selectList.forEach(item => {
+          if (item.value === 'DEFAULT') {
+            item.checked = true
+            setSelectContent(item.label)
+          } else {
+            item.checked = false
+          }
+        })
       }
       if (res.ignoreDuration) {
         if (setTimeVSNowTime(res, true)) {
           setMuteTimeText(null)
           showMuteImgOrNot(false)
+          setShowRadio(true)
         } else {
           setCheckedDefaultValue(res.ignoreDuration, 0, true)
           setTurnOffBtnFlag(true)
           showMuteImgOrNot(true)
         }
+      } else {
+        setShowRadio(true)
       }
       // if (res.ignoreInterval) {
       //   setDefaultValue(radioList[timeIntervalToMinutesOrHours(res.ignoreInterval)].value)
@@ -228,29 +326,40 @@ const Notifications = (props) => {
         getNotDisturbGroup(props.groupId)
       }
   }, [props.groupId])
-  const handleSelectChange = (event) => {
-    console.log(event.target.value, 'event.target.value')
-    setNotifyText(event.target.value)
+  const handleSelectChange = (item) => {
+    const value = item.value
+    selectList.forEach(item => {
+      if (item.value === value) {
+        item.checked = true
+        setSelectContent(item.label)
+      } else {
+        item.checked = false
+      }
+    })
     const params = {
       conversationId: props.groupId,
       type: useScene,
       options: {
         paramType: 0,
-        remindType: event.target.value
+        remindType: value
       }
     }
     setNotDisturbGroup(params)
-    if (event.target.value === 'NONE') {
+    if (value === 'NONE') {
       showMuteImgOrNot(true)
     } else {
       showMuteImgOrNot(false)
     }
+    setShowSelectOption(false)
   }
   const handleChangeRadio = (event) => {
     console.log(event.target.value, 'event.target.value')
     setDefaultValue(event.target.value)
   }
   const handlerShowRadio = () => {
+    if (turnOffBtnFlag) {
+      return
+    }
     setShowRadio(!showRadio)
   }
   const setCheckedDefaultValue = (time, index, flag) => {
@@ -305,7 +414,11 @@ const Notifications = (props) => {
   //   })
   // }
 
-  const handlerTurnOffBtn = () => {
+  const handlerTurnOffBtn = (e) => {
+    e.stopPropagation()
+    e.preventDefault()
+    e.cancelBubble = true // IE
+    e.returnValue = false // IE
     setopenTurnOff(true)
   }
   const handleTurnOffClose = () => {
@@ -341,20 +454,22 @@ const Notifications = (props) => {
     return (
       <div className={classes.btnBox}>
         <span className={classes.turnOffBtnStyle} onClick={handleTurnOffClose}>{i18next.t('Cancel')}</span>
-        <span className={classes.btnStyle + ' ' + classes.rightBtn} onClick={handlerOkay}>{i18next.t('Okay')}</span>
+        <span className={classes.rightBtn} onClick={handlerOkay}>{i18next.t('Okay')}</span>
       </div>
     )
   }
-
+  const handlerSelectBox = () => {
+    setShowSelectOption(!showSelectOption)
+  }
   return (
-    <div className={`${useComponent === 'Thread' ? classes.root : ''}`}>
+    <div className={`${useComponent === 'Thread' ? classes.root : classes.groupsettingnotify}`}>
       <div className={classes.topBox}>
-        <div className={classes.titleBox}>
+        <div onClick={handlerShowRadio} className={classes.titleBox}>
           <span className={classes.titleStyle}>Mute this {useComponent} { muteTimeText ? <span className={classes.notifyPrayTitle}>Until {muteTimeText}</span> : null}</span>
           {
             muteTimeText && turnOffBtnFlag?
-            <span onClick={handlerTurnOffBtn} className={classes.turnStyle + ' ' + classes.cursorStyle}>Unmute</span>
-            : <img onClick={handlerShowRadio} className={`${classes.imgStyle + ' ' + classes.cursorStyle} ${showRadio ? classes.imgUpStyle : classes.imgDownStyle}`} alt="" src={muteIcon} />
+            <span onClick={(e) => handlerTurnOffBtn(e)} className={classes.turnStyle + ' ' + classes.cursorStyle}>Unmute</span>
+            : <img className={`${classes.imgStyle + ' ' + classes.cursorStyle} ${showRadio ? classes.imgUpStyle : classes.imgDownStyle}`} alt="" src={muteIcon} />
           }
         </div>
         {
@@ -383,20 +498,27 @@ const Notifications = (props) => {
       </div>
       <div className={classes.topBox + ' ' + classes.titleBox}>
         <div className={classes.titleStyle}>Frequency</div>
-        <Select
-            value={notifyText}
-            className={classes.notifySelect}
-            onChange={handleSelectChange}
-            variant="outlined"
-        >
+        <div className={classes.mySelect}>
+          <div className={classes.selectTop} onClick={handlerSelectBox}>
+            <span className={classes.selectDefaultText}>{selectContent}</span>
+            <img className={`${classes.imgStyle + ' ' + classes.cursorStyle} ${showSelectOption ? classes.imgUpStyle : classes.imgDownStyle}`} alt="" src={muteIcon} />
+          </div>
           {
-            selectList.map(item=> {
-              return (
-                <MenuItem key={item.value} value={item.value}>{item.label}</MenuItem>
-              )
-            })
+            showSelectOption &&
+            <div className={classes.selectBottom}>
+              {
+                selectList.map(item => {
+                  return (
+                    <div key={item.value} onClick={() => handleSelectChange(item)} className={`${classes.selectTextlist} ${item.checked ? classes.selectChecked : ''}`}>
+                      <span className={classes.selectOption} value={item.value}>{item.label}</span>
+                      {item.checked ? <img alt="" className={classes.checkedStyle} src={checkgrayIcon} /> : ''}
+                    </div>
+                  )
+                })
+              }
+            </div>
           }
-        </Select>
+        </div>
       </div>
       <CommonDialog
           open={openTurnOff}
@@ -404,6 +526,7 @@ const Notifications = (props) => {
           title={i18next.t(`Unmute this ${useComponent}?`)}
           content={renderTurnOffContent()}
           footer={renderTurnOffFooter()}
+          className={classes.commonDialog}
       ></CommonDialog>
     </div>
   )

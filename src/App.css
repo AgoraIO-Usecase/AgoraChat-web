@@ -4,7 +4,8 @@
   height: 100%;
   position: absolute;
   display: flex;
-  overflow: hidden;
+  overflow: auto;
+  /* font-family: "Roboto" !important; */
 }
 
 .App-logo {
@@ -41,4 +42,13 @@
   to {
     transform: rotate(360deg);
   }
+}
+.MuiDialog-paper,.MuiMenu-paper,.MuiPopover-paper {
+  border-radius: 12px !important;
+}
+.MuiList-padding {
+  padding: 8px !important;
+}
+.MuiMenuItem-root {
+  border-radius: 8px !important;
 }

@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import React, { useEffect, useState, useRef } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { EaseApp } from 'wy-chat';
+import { EaseApp } from 'chat-uikit2';
 import {
   searchStiPopSticket,
   usedTickets,

@@ -2,14 +2,20 @@ import React, { useState,useEffect, useCallback } from 'react'
 import './login.css'
 import i18next from "i18next";
 import { getToken, loginWithToken, loginWithPassword } from '../api/loginChat'
-// import { createHashHistory } from 'history';
+import { createHashHistory } from 'history';
 // import { useHistory } from 'react-router-dom'
 
 import store from '../redux/store'
 import { setMyUserInfo, setFetchingStatus } from '../redux/actions'
 import { message } from '../components/common/alert'
+import WebIM from '../utils/WebIM'
+import loading from '../assets/loading.png'
+import closeIcon from '../assets/Xmark@2x.png'
+import eyeOpen from '../assets/eye@2x.png'
+import eyeClose from '../assets/eye_slash@2x.png'
+
 export default function Login() {
-    // const history = useHistory()
+    const history = createHashHistory()
     const [notice, setNotice] = useState({
         show: false,
         text: ''
@@ -19,44 +25,50 @@ export default function Login() {
         agoraId: '',
         nickName: '',
         password: '',
+        showPassword: false
     });
+    const [activeType, setActiveType] = useState('password')
+    const [disabled, setdisabled] = useState(true)
+    const [loginBtn, setLoginBtn] = useState(i18next.t('login-Login'))
 
     const login = useCallback(() => {
-        console.log('value>>>',values);
+        setLoginBtn('')
         if (!values.agoraId) {
             return setNotice({ show: true, text: 'agoraId is required' })
         } else if (!(values.nickName || values.password)) {
-            return setNotice({ show: true, text: 'nickName is required' })
+            return setNotice({ show: true, text: 'password is required' })
         } else if (values.nickName.length > 32 || values.agoraId.length > 32) {
-            return setNotice({ show: true, text: 'nickName or agoraId is too long' })
+            return setNotice({ show: true, text: 'agoraId is too long' })
         } else {
             setNotice({
                 show: false
             })
         }
-        store.dispatch(setFetchingStatus(true))
-        if (values.nickName) {
-            getToken(values.agoraId, values.nickName).then((res) => {
-                const { accessToken } = res
-                loginWithToken(values.agoraId, accessToken)
-                store.dispatch(setMyUserInfo({ agoraId: values.agoraId, nickName: values.nickName }))
-                sessionStorage.setItem('webim_auth', JSON.stringify({ ...values, accessToken }))
+        // store.dispatch(setFetchingStatus(true))
+        if (values.password) {
+            getToken(values.agoraId, values.password).then((res) => {
+                const { accessToken, agoraUid } = res
+                WebIM.conn.agoraUid = agoraUid
+                loginWithToken(values.agoraId, accessToken).then(value => {
+
+                }).catch(err => {
+                    setNotice({ show: true, text: 'Wrong Username or Password' })
+                }).finally(_ => {
+                    setTimeout(() => {
+                        setLoginBtn(i18next.t('login-Login'))
+                    }, 1500)
+                })
+                
+                store.dispatch(setMyUserInfo({ agoraId: values.agoraId, nickName: values.nickName, password: values.password }))
+                sessionStorage.setItem('webim_auth', JSON.stringify({ ...values, accessToken, agoraUid }))
             }).catch(() => {
-                store.dispatch(setFetchingStatus(false))
-                message.error('login fail.')
+                // store.dispatch(setFetchingStatus(false))
+                setNotice({ show: true, text: 'login fail' })
+                setdisabled(true)
+                setLoginBtn(i18next.t('login-Login'))
+                // message.error('login fail.')
             })
-        } else if (values.password) {
-            loginWithPassword(values.agoraId, values.password)
         }
-        // getToken(values.agoraId, values.nickName).then((res) => {
-        //     const { accessToken } = res
-        //     loginWithToken(values.agoraId, accessToken)
-        //     store.dispatch(setMyUserInfo({ agoraId: values.agoraId, nickName: values.nickName }))
-        //     sessionStorage.setItem('webim_auth', JSON.stringify({ ...values, accessToken }))
-        // }).catch(() => {
-        //     store.dispatch(setFetchingStatus(false))
-        //     message.error('login fail.')
-        // })
     }, [values])
 
     useEffect(() => {
@@ -77,9 +89,53 @@ export default function Login() {
         if (prop === 'agoraId') {
             value = event.target.value.replace(/[^\w\.\/]/ig, '')
         }
+
         setValues({ ...values, [prop]: value });
     };
-
+    const jumpToSignUp = () => {
+        history.push('/signup')
+    }
+    useEffect(() => {
+        const webim_auth = JSON.parse(sessionStorage.getItem('webim_auth'))
+        if (webim_auth && webim_auth.password) {
+            setValues({
+                agoraId: webim_auth.agoraId || '',
+                nickName: webim_auth.nickName || '',
+                password: webim_auth.password || '',
+            })
+        } else {
+            sessionStorage.removeItem('webim_auth')
+        }
+    }, [])
+    const handleClickClearagoraId = () => {
+        setValues({
+            ...values,
+            agoraId: ''
+        })
+    }
+    const handleClickShowPassword = () => {
+        setValues({
+            ...values,
+            showPassword: !values.showPassword,
+        })
+        if (activeType === 'password') {
+            setActiveType('text')
+        } else {
+            setActiveType('password')
+        }
+    }
+    
+    const handleMouseDownPassword = (event) => {
+        event.preventDefault()
+    }
+    // const { agoraId , password } = values
+    useEffect(() => {
+        if (values.agoraId && values.password) {
+            setdisabled(false)
+        } else {
+            setdisabled(true)
+        }
+    }, [values.agoraId , values.password])
     return (
         <div className='login-container'>
             <div className='login-form'>
@@ -88,12 +144,50 @@ export default function Login() {
                 {notice.show ? <div className='login-form-notice'>
                     {notice.text}
                 </div> : null}
-                <input className='login-form-input' 
-                placeholder={i18next.t('login-UserID')} 
-                onChange={handleChange('agoraId')} value={values.agoraId}></input>
-                <input className='login-form-input' placeholder={i18next.t('login-NickName')} value={values.nickName} onChange={handleChange('nickName')}></input>
-                <input className='login-form-input' placeholder={i18next.t('login-Password')} value={values.password} onChange={handleChange('password')}></input>
-                <input type='button' className='login-form-input button' value={i18next.t('login-Login')} onClick={login} />
+                <div className='input-box'>
+                    <input className='login-form-input' 
+                        placeholder={i18next.t('login-UserID')} 
+                        onChange={handleChange('agoraId')}
+                        value={values.agoraId}></input>
+                    {
+                        values.agoraId &&
+                        <img
+                            src={closeIcon}
+                            alt="close"
+                            onClick={handleClickClearagoraId}
+                            onMouseDown={handleMouseDownPassword}
+                            className='close-btn' />
+                    }
+                </div>
+                <div className='input-box'>
+                    <input type={activeType} className='login-form-input' placeholder={i18next.t('login-Password')} value={values.password} onChange={handleChange('password')}></input>
+                    {
+                        values.showPassword?
+                        <img
+                        src={eyeClose}
+                        alt="close"
+                        onClick={handleClickShowPassword}
+                        onMouseDown={handleMouseDownPassword}
+                        className='close-btn' />
+                        :
+                        <img
+                            src={eyeOpen}
+                            alt="close"
+                            onClick={handleClickShowPassword}
+                            onMouseDown={handleMouseDownPassword}
+                            className='close-btn' />
+                    }
+                </div>
+                <div className='loading-box'>
+                    <input disabled={disabled} type='button' className='login-form-input button' value={loginBtn} onClick={login} ></input>
+                    {
+                        !loginBtn && <img className='loading-img' src={loading} alt="" />
+                    }
+                </div>
+                <div className='sign-up-box'>
+                    {i18next.t('NoAccount')}
+                    <span onClick={jumpToSignUp} className='sign-up'>{i18next.t('Register')}</span>
+                </div>
             </div>
             <div className='login-copyright'>
                 © 2022 Agora
