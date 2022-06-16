@@ -14,7 +14,7 @@ import {
   downloadMarketSticker,
   recentlySentStickers,
   registeringStickerSend,
-} from '../../../api/axios/stipop'
+} from '../../../api/request/stipop'
 import _ from "lodash"
 import emojiImg from '../../../assets/clock@2x.png'
 import search from '../../../assets/magnifying@2x.png'
@@ -410,7 +410,7 @@ const tabBtnList = [
     checked: false,
   },
 ]
-export default function thirdEmoji () {
+export default function ThirdEmoji () {
   const classes = useStyles()
   const [selectTitle, setSelectTitle] = useState('')
   const [searchInput, setSearchInput] = useState(false)

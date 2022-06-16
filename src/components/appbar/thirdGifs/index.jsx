@@ -132,28 +132,17 @@ const useStyles = makeStyles((theme) => {
 })
 
 function imgUrlToFile(e) {
-  console.log(e)
-  // return coverFile
-	// var self = this;
 	var imgLink = e.currentSrc;
-  console.log(imgLink)
 	var tempImage = new Image();
-  console.log(tempImage)
-	//如果图片url是网络url，要加下一句代码
-  //跨域不可用
   tempImage.setAttribute('crossorigin', 'anonymous')
   tempImage.src = imgLink;
-  console.log(tempImage)
 	return new Promise((resolve,reject) => {
     tempImage.onload = function() {
-      console.log(tempImage, 'onload')
       var base64 = getBase64Image(tempImage);
-      // console.log(base64);
       var imgblob = base64toBlob(base64);
           //获取原文件名称
       var filename = getFileName(e.currentSrc);
       var coverFile = blobToFile(imgblob, filename);
-      console.log(coverFile)
       const param = {
         target: {
           files: {
@@ -168,20 +157,16 @@ function imgUrlToFile(e) {
   })
 }
 function getBase64Image(img) {
-    //通过canvas绘制图片转base64
 	var canvas = document.createElement("canvas");
 	canvas.width = img.width;
 	canvas.height = img.height;
 	var ctx = canvas.getContext("2d");
 	ctx.drawImage(img, 0, 0, img.width, img.height);
 	// var ext = img.src.substring(img.src.lastIndexOf(".") + 1).toLowerCase();
-  // console.log(ext, 'ext')
 	var dataURL = canvas.toDataURL("image/gif");
-  // console.log(dataURL, 'dataURL')
 	return dataURL;
 }
 function base64toBlob(base64) {
-    //base64转Blob
 	let arr = base64.split(","),
 	mime = arr[0].match(/:(.*?);/)[1],
 	bstr = atob(arr[1]),
@@ -200,9 +185,6 @@ function blobToFile(blob, filename) {
   //   filename,
   //   { type: 'image/gif' }
   // )
-
-    //Blob转file对象
-	// edge浏览器不支持new File对象，所以用以下方法兼容
 	blob.lastModifiedDate = new Date();
 	blob.name = filename;
   const url = window.URL.createObjectURL(blob);
@@ -210,9 +192,8 @@ function blobToFile(blob, filename) {
 	return blob;
 }
 function getFileName(url) {
-	// 获取到文件名
-	let pos = url.lastIndexOf("/"); // 查找最后一个/的位置
-	return url.substring(pos + 1); // 截取最后一个/位置到字符长度，也就是截取文件名
+	let pos = url.lastIndexOf("/")
+	return url.substring(pos + 1)
 }
 
 function GridDemo({ searchValue, width, closeLoading }) {
@@ -248,7 +229,7 @@ function GridDemo({ searchValue, width, closeLoading }) {
   );
 }
 
-export default function thirdEmoji () {
+export default function ThirdEmoji () {
   const classes = useStyles()
   const [searchInput, setSearchInput] = useState(false)
   const [values, setValues] = useState('')

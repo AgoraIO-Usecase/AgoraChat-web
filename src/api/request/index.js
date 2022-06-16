@@ -8,10 +8,7 @@ const request = new axios.create({
   headers: { 'apikey': stipopAppKey }
 })
 
-// 添加请求拦截器
 request.interceptors.request.use(function (config) {
-  // 在发送请求之前做些什么
-  // console.log(config, 'config')
   const { myUserInfo: { agoraId } } = store.getState()
   const { params, url } = config
   if (params) {
@@ -23,16 +20,12 @@ request.interceptors.request.use(function (config) {
   }
   return config
 }, function (error) {
-  // 对请求错误做些什么
   return Promise.reject(error);
 });
 
-// 添加响应拦截器
 request.interceptors.response.use(function (response) {
-  // 对响应数据做点什么
-  // console.log(response, 'response')
   const { status, data: { body, header } } = response
-  if (status === 200 && header.code === '0000') {
+  if (status === 200 && header.code === '0000') { // 0000 is request success
     if (Array.isArray(body) && body.length === 0) {
       return header
     } else {
@@ -42,7 +35,6 @@ request.interceptors.response.use(function (response) {
     return response.data
   }
 }, function (error) {
-  // 对响应错误做点什么
   return Promise.reject(error);
 })
 
