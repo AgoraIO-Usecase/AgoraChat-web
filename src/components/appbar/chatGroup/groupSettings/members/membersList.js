@@ -271,7 +271,7 @@ const MembersList = ({ newMuteList, inputVal }) => {
                             <Typography
                               variant="inherit"
                               noWrap
-                              onClick={() => showSecondDialog(1, "move", "Make Admin")}
+                              onClick={() => showSecondDialog(1, "make", "Make Admin")}
                               className={classes.menusName}
                             >
                               {i18next.t("Make Admin")}
@@ -298,7 +298,7 @@ const MembersList = ({ newMuteList, inputVal }) => {
                           <Typography
                             variant="inherit"
                             noWrap
-                            onClick={() => showSecondDialog(2, "move", "Make to Muted List")}
+                            onClick={() => showSecondDialog(2, "make", "Make to Muted List")}
                             className={classes.menusName}
                           >
                             {i18next.t("Make to Muted List")}
