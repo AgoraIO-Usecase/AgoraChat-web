@@ -26,6 +26,7 @@ import unmuteIcon from '../../../assets/unmute.png'
 import grayMuteIcon from '../../../assets/gray@2x.png'
 import checkgrayIcon from '../../../assets/check_gray.png'
 import upAndDown from '../../../assets/go@2x.png'
+import SecondConfirmDialog from '../../common/secondConfirmDialog'
 
 const useStyles = makeStyles((theme) => {
 	return {
@@ -610,6 +611,14 @@ const SessionInfoPopover = ({ open, onClose, sessionInfo }) => {
 					type={"contact"}
 					id={to}
 				/>
+				<SecondConfirmDialog
+					open={Boolean(secondSure)}
+					onClose={() => setSecondSure(false)}
+					confirmMethod={() => confirmQuitGroup()}
+					confirmContent={{
+						content: groupContent
+					}}
+				></SecondConfirmDialog>
 			</>
 		);
 	};
