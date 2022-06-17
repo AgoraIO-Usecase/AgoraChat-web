@@ -45,7 +45,7 @@ function refreshSilentModeStatus(data, payload) {
       }
     }
     store.dispatch(setMuteDataObj(collectObj))
-    // EaseApp.changePresenceStatus(collectObj1)
+    EaseApp.changePresenceStatus(collectObj1)
     const { unread } = store.getState()
     for (let item in unread) {
       for (let val in unread[item]) {
@@ -206,7 +206,7 @@ export const getSilentModeForConversations = (payload, params = { type: '', opti
       }
       changeTitle()
       store.dispatch(setMuteDataObj(collectObj))
-      // EaseApp.changePresenceStatus(collectObj1)
+      EaseApp.changePresenceStatus(collectObj1)
       resolve(res.data)
     }).catch(err => {
       reject(err)

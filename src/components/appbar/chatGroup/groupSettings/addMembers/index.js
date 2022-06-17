@@ -10,6 +10,7 @@ import {
 	ListItem,
 	InputBase,
 	Button,
+	Avatar
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
@@ -27,6 +28,10 @@ import rearchIcon from "../../../../../assets/search@2x.png";
 import doneActiveIcon from "../../../../../assets/create@2x.png";
 import doneDisabledIcon from "../../../../../assets/go@2x.png";
 import deldeteIcon from "../../../../../assets/delete@2x.png";
+import PanoramaFishEyeIcon from '@material-ui/icons/PanoramaFishEye';
+import CheckCircleOutlineRoundedIcon from '@material-ui/icons/CheckCircleOutlineRounded';
+import CheckCircleRoundedIcon from '@material-ui/icons/CheckCircleRounded';
+import { userAvatar } from '../../../../../utils'
 
 const useStyles = makeStyles((theme) => {
 	return {
@@ -55,15 +60,16 @@ const useStyles = makeStyles((theme) => {
 			width: "36px",
 			height: "36px",
 			borderRadius: "20px",
-			backgroundColor: "#FF9F4D",
+			backgroundColor: "rgb(238, 171, 159)",
 		},
 		memberBox: {
 			width: "50%",
 			background: "#EDEFF2",
 			padding: "10px",
+			overflow: 'auto',
 		},
 		textStyle: {
-			fontTypeface: "Ping Fang SC",
+			fontTypeface: "Roboto",
 			fontWeight: "Regular (400)",
 			fontSize: "12px",
 			lineHeight: "16 (1.333)",
@@ -81,6 +87,10 @@ const useStyles = makeStyles((theme) => {
 		},
 		marginStyle: {
 			marginLeft: "10px",
+			textOverflow: 'ellipsis',
+			width: '140px',
+			overflow: 'hidden',
+			whiteSpace: 'nowrap',
 		},
 		doneBox: {
 			display: "flex",
@@ -98,6 +108,9 @@ const useStyles = makeStyles((theme) => {
 			width: "20px",
 			height: "20px",
 		},
+		checkBoxColor: {
+			color: 'rgb(0, 95, 255)',
+		}
 	};
 });
 
@@ -207,6 +220,7 @@ const AddMembers = ({ onClose }) => {
 		<Box className={classes.root}>
 			<Box className={classes.gUserBox}>
 				<Box
+					className={classes.memberBox}
 					style={{
 						width: "50%",
 						background: "#F5F7FA",
@@ -242,7 +256,9 @@ const AddMembers = ({ onClose }) => {
 												className={
 													classes.gMemberAvatar
 												}
-											></Box>
+											>
+												<Avatar src={userAvatar(item.id)} />
+											</Box>
 											<Typography
 												className={classes.marginStyle}
 											>
@@ -251,9 +267,9 @@ const AddMembers = ({ onClose }) => {
 										</Box>
 										{/* <Checkbox checked={item.checked} /> */}
 										{groupMembersObjs.includes(item.id) ? (
-											<Checkbox checked disabled />
+											<Checkbox checked disabled checkedIcon={<CheckCircleRoundedIcon />} />
 										) : (
-											<Checkbox checked={item.checked} />
+											<Checkbox checked={item.checked} icon={<PanoramaFishEyeIcon />} checkedIcon={<CheckCircleRoundedIcon className={classes.checkBoxColor} />} />
 										)}
 									</ListItem>
 								);
@@ -277,7 +293,9 @@ const AddMembers = ({ onClose }) => {
 												className={
 													classes.gMemberAvatar
 												}
-											></Box>
+											>
+												<Avatar src={userAvatar(item)} />
+											</Box>
 											<Typography
 												className={classes.marginStyle}
 											>

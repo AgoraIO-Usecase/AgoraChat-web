@@ -33,7 +33,33 @@
     cursor: pointer;
     position: relative;
 }
+.MuiDialog-paperWidthSm {
+    border-radius: 12px;
+}
 .chatlist-header-more img{
     width: 32px;
     height: 32px;
+}
+
+.chatlist-header-more img:hover{
+    border-radius: 50%;
+    background: #ccc;
+}
+.img-active{
+    border-radius: 50%;
+    background: #ccc;
+}
+.myself-menu .MuiMenu-paper{
+    left: 149px !important;
+    top: 48px !important;
+    border-radius: 12px;
+    padding: 0px;
+}
+.myself-menu .MuiList-padding {
+    padding-left: 8px;
+    padding-right: 8px;
+}
+.myself-menu .MuiMenuItem-root {
+    border-radius: 8px;
+    padding-left: 8px;
 }

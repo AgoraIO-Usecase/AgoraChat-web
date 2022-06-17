@@ -1,15 +1,18 @@
-import React, { memo } from 'react'
+import React, { memo, useState } from 'react'
 import { makeStyles } from '@material-ui/core/styles';
-import { Box, Avatar, Button, Tabs, Tab, Typography, IconButton } from '@material-ui/core';
+import { Box, Avatar, Button, Tabs, Tab, Typography, IconButton, InputBase } from '@material-ui/core';
 import CommonDialog from '../../common/dialog'
 import i18next from "i18next";
 import ClearIcon from '@material-ui/icons/Clear';
 import { useSelector } from 'react-redux'
 import { acceptContactRequest, declineContactRequest } from '../../../api/contactsChat/getContacts'
 import { acceptGroupRequest, declineGroupRequest } from '../../../api/groupChat/groupRequest'
+import addcontactIcon from '../../../assets/addcontact@2x.png'
+import search_icon from '../../../assets/search.png'
+
 const useStyles = makeStyles((theme) => ({
     root: {
-        width: '620px',
+        width: '700px',
         height: theme.spacing(75),
         backgroundColor: 'rgba(206, 211, 217, .15)',
         boxSizing: 'border-box',
@@ -64,7 +67,7 @@ const useStyles = makeStyles((theme) => ({
         flex: 1,
         width: '100%',
         borderRadius: '16px',
-        margin: '5px',
+        // margin: '5px',
         display: 'flex',
         padding: '8px',
         boxSizing: 'border-box',
@@ -75,10 +78,82 @@ const useStyles = makeStyles((theme) => ({
         width: '72px',
         height: '28px',
         borderRadius: '17.5px',
-        fontSize: '14px',
         color: '#fff',
-        marginRight: '10px'
-    }
+        marginRight: '10px',
+        background: '#114EFF',
+        display: 'inline-block',
+        lineHeight: '28px',
+        fontSize: '14px',
+        textAlign: 'center',
+    },
+    tabsRequest: {
+        background: '#FFFFFF',
+        padding: '8px 8px 0 8px',
+        width: '200px',
+        '& .MuiTab-textColorInherit.Mui-selected': {
+            background: 'rgb(235, 237, 241)',
+            borderRadius: '8px',
+        },
+        '& .MuiTabs-indicator': {
+            background: 'transparent',
+        },
+        '& .MuiTab-root': {
+            minHeight: '30px',
+            paddingLeft: '0px',
+        }
+    },
+    menusBox: {
+        display: 'flex', 
+        alignItems: 'center', 
+        justifyContent: 'flex-start', 
+        width: '100%',
+        cursor:'pointer',
+    },
+    menus: {
+        color: '#000000',
+        fontSize: '14px',
+        fontWeight: '500',
+        fontFamily: 'Roboto',
+        textTransform: ' none',
+        character:'0',
+        borderRadius: '8px',
+    },
+    IconButtonStyle: {
+        color: '#ccc',
+        padding: '6px',
+        '& .MuiSvgIcon-root': {
+            width: '15px',
+            height: '15px',
+            color: '#ccc',
+            // padding: '6px',
+        }
+    },
+    TabPanelStyle: {
+        overflowY: 'auto',
+        flex: '1',
+        backgroundColor: '#EDEFF2',
+        '& .MuiBox-root': {
+            padding: '10px 8px 8px 8px',
+        }
+    },
+    searchBox: {
+        height: '26px',
+        marginBottom: '20px',
+        display: 'flex',
+        alignItems: 'center',
+        borderRadius: '23px',
+        background: '#F4F5F7',
+    },
+    inputSearch: {
+        borderBottom: 'none',
+        width: '100%',
+        padding: '6px 5px 7px',
+    },
+    searchImg: {
+        width: '18px',
+        height: '18px',
+        paddingLeft: '8px'
+    },
 }))
 
 function a11yProps(index) {
@@ -129,8 +204,8 @@ function RequestItem(props) {
     if (data.status === 'pedding') {
         buttonContent = (
             <>
-                <Button color="primary" variant="contained" className={classes.acceptButton} onClick={accept} > {i18next.t('accept')}</Button >
-                <IconButton style={{ width: '28px', height: '28px' }} onClick={ignore}><ClearIcon /></IconButton>
+                <div color="primary" variant="contained" className={classes.acceptButton} onClick={accept} > {i18next.t('accept')}</div >
+                <IconButton className={classes.IconButtonStyle} onClick={ignore}><ClearIcon /></IconButton>
             </>
         )
     } else {
@@ -141,14 +216,14 @@ function RequestItem(props) {
     let localTime = data.time ? new Date(data.time).toLocaleDateString() : ''
     return (
         <div className={classes.requestItemBox}>
-            <Avatar style={{ width: '50px', height: '50px', marginRight: '11px' }} />
+            <Avatar style={{ width: '40px', height: '40px', marginRight: '11px' }} />
             <div style={{ margin: '0 5px' }}>
                 <div>
                     <div>{data.name}</div>
                     <div style={{ fontSize: '14px' }}>{text}</div>
                 </div>
             </div>
-            <div style={{ position: 'relative', right: '-36px', fontSize: '12px', color: '#666666' }}>{localTime}</div>
+            <div style={{ position: 'absolute', right: '22px', fontSize: '12px', color: '#666666' }}>{localTime}</div>
             <div style={{ position: 'absolute', bottom: '12px', right: '14px' }}>
                 {buttonContent}
             </div>
@@ -165,11 +240,32 @@ function Notice(props) {
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
+    const [inputValue, setInputValue] = useState('')
+
+    const hangleInputValue = (event) => {
+        setInputValue(event.target.value)
+    }
+    const AddedContactMenu = () => {
+        return (
+            <Box className={classes.menusBox}>
+                <img src={addcontactIcon} alt='new chat' style={{ width: '30px' }} />
+                <Typography style={{ marginLeft: '8px' }}>{`${i18next.t('New Friends')}`}</Typography>
+            </Box> 
+        )
+    }
+    const AddedGroupsMenu = () => {
+        return (
+            <Box className={classes.menusBox}>
+                <img src={addcontactIcon} alt='new chat' style={{ width: '30px' }} />
+                <Typography style={{ marginLeft: '8px' }}>{`${i18next.t('Group Requests')}`}</Typography>
+            </Box> 
+        )
+    }
     function renderContent() {
         return (
             <div className={classes.root}>
                 <Box
-                    sx={{ flexGrow: 1, bgcolor: 'background.paper', display: 'flex', height: 590 }}
+                    sx={{ flexGrow: 1, bgcolor: 'background.paper', display: 'flex', height: 600 }}
                     style={{ width: '100%' }}
                 >
                     <Tabs
@@ -179,18 +275,27 @@ function Notice(props) {
                         onChange={handleChange}
                         aria-label="Vertical tabs example"
                         sx={{ borderRight: 1, borderColor: 'divider' }}
+                        className={classes.tabsRequest}
                     >
-                        <Tab label="New Friends" {...a11yProps(0)} />
-                        <Tab label="Group Requests" {...a11yProps(1)} />
+                        <Tab label={<AddedContactMenu/>} {...a11yProps(0)} className={classes.menus} />
+                        <Tab label={<AddedGroupsMenu/>} {...a11yProps(1)} className={classes.menus} />
                     </Tabs>
-                    <TabPanel value={value} index={0} style={{ overflowY: 'auto', flex: '1', backgroundColor: '#EDEFF2' }}>
+                    <TabPanel value={value} index={0} className={classes.TabPanelStyle}>
+                        {/* <Box className={classes.searchBox}>
+                            <img src={search_icon} alt="" className={classes.searchImg} />
+                            <InputBase placeholder={i18next.t('Group ID')} className={classes.inputSearch} onChange={hangleInputValue} />
+                        </Box> */}
                         {requests.contact.map(value => {
                             return (
                                 <RequestItem key={value.name} data={value} type="contact" text="Sent you a friend request." />
                             )
                         })}
                     </TabPanel>
-                    <TabPanel value={value} index={1} style={{ overflowY: 'auto', flex: '1', backgroundColor: '#EDEFF2' }}>
+                    <TabPanel value={value} index={1} className={classes.TabPanelStyle}>
+                        {/* <Box className={classes.searchBox}>
+                            <img src={search_icon} alt="" className={classes.searchImg} />
+                            <InputBase placeholder={i18next.t('Group ID')} className={classes.inputSearch} onChange={hangleInputValue} />
+                        </Box> */}
                         {requests.group.map((value,key) => {
                             return (
                                 <RequestItem key={key} data={value} type="group" text={"Want to join the " + value.groupId} />

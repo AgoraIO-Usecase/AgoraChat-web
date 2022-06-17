@@ -36,10 +36,11 @@ export default function Main() {
         let webimAuthObj = {}
         if (webimAuth && WebIM.conn.logOut) {
             webimAuthObj = JSON.parse(webimAuth)
-            if(webimAuthObj.password){
-                loginWithPassword(webimAuthObj.agoraId, webimAuthObj.password)
-            }else{
+            if (webimAuthObj.password) {
                 loginWithToken(webimAuthObj.agoraId, webimAuthObj.accessToken)
+                store.dispatch(setMyUserInfo({ agoraId: webimAuthObj.agoraId, nickName: webimAuthObj.nickName, password: webimAuthObj.password }))
+            } else {
+                history.push('/login')
             }
             store.dispatch(setMyUserInfo({ agoraId: webimAuthObj.agoraId, nickName: webimAuthObj.nickName }))
             WebIM.conn.agoraUid = webimAuthObj.agoraUid
@@ -178,6 +179,7 @@ export default function Main() {
                 presenceList={presenceList}/>
             <GroupSettingsDialog 
                 open={groupSettingAddEl}
+                authorEl={groupSettingAddEl}
                 onClose={() => setGroupSettingAddEl(null)}
                 currentGroupId={currentGroupId} />
             <Report open={isShowReport} onClose={() => {setShowReport(false)}} currentMsg={currentMsg}/>

@@ -1,10 +1,12 @@
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
 import i18next from "i18next";
-import { Box, List, ListItem, ListItemText, Button, Menu, MenuItem } from "@material-ui/core"
+import { Box, List, ListItem, ListItemText, Button, Menu, MenuItem, Avatar } from "@material-ui/core"
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import { onChangeGroupBlock } from '../../../../../api/groupChat/groupBlock'
+import SecondConfirmDialog from "../../../../common/secondConfirmDialog"
+import { userAvatar } from '../../../../../utils'
 
 const useStyles = makeStyles((theme) => {
     return ({
@@ -22,7 +24,14 @@ const useStyles = makeStyles((theme) => {
             color: '#999999',
             fontSize: '14px',
             textAlign: 'center'
-        }
+        },
+        gMemberAvatar: {
+            width: "36px",
+            height: "36px",
+            borderRadius: "20px",
+            backgroundColor: "rgb(238, 171, 159)",
+            marginRight: '10px',
+        },
     })
 });
 
@@ -33,6 +42,8 @@ const BlockList = () => {
     const [anchorEl, setAnchorEl] = useState(null);
     const [selectedUser, setSelectedUser] = useState('')
     const groupBlockList = state?.groups?.groupBlockList
+    const [secondSure, setSecondSure] = useState(false)
+
     const handleClick = (event, item) => {
         setAnchorEl(event.currentTarget);
         setSelectedUser(item)
@@ -40,7 +51,19 @@ const BlockList = () => {
     const handleClose = () => {
         setAnchorEl(null);
     };
-
+    const showSecondDialog = () => {
+		setSecondSure(true)
+        handleClose()
+	}
+    const confirmQuitGroup = () => {
+        onChangeGroupBlock(
+            groupId,
+            selectedUser,
+            'move',
+            handleClose
+        );
+		setSecondSure(false)
+    }
     return (
         <Box>
             {
@@ -48,6 +71,13 @@ const BlockList = () => {
                     {groupBlockList.map((item, key) => {
                         return <ListItem key={key}>
                             <Button className={classes.gUserName} >
+                                <Box
+                                    className={
+                                    classes.gMemberAvatar
+                                    }
+                                >
+                                    <Avatar src={userAvatar(item)} />
+                                </Box>
                                 < ListItemText>
                                     {item}
                                 </ListItemText>
@@ -61,20 +91,23 @@ const BlockList = () => {
                                 onClose={handleClose}
                             >
                                 <MenuItem>
-                                    <Typography variant="inherit" noWrap onClick={() => { onChangeGroupBlock(
-                                      groupId,
-                                      selectedUser,
-                                      "move",
-                                      handleClose
-                                    ); }}>
+                                    <Typography variant="inherit" noWrap onClick={() => showSecondDialog()}>
                                         {i18next.t('Move to Blocked List')}
                                     </Typography>
                                 </MenuItem>
                             </Menu>
                         </ListItem>
                     })}
-                </List> : <Typography className={classes.noDataText}>暂无数据</Typography>
+                </List> : <Typography className={classes.noDataText}></Typography>
             }
+            <SecondConfirmDialog
+            open={Boolean(secondSure)}
+            onClose={() => setSecondSure(false)}
+            confirmMethod={() => confirmQuitGroup()}
+            confirmContent={{
+                content: 'Move to Blocked List'
+            }}
+            ></SecondConfirmDialog>
         </Box>
     )
 }

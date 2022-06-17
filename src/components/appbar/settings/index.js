@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, createRef } from "react";
 import CommonDialog from "../../common/dialog";
 import i18next, { use } from "i18next";
-import { Avatar, Button, TextField, List, ListItem, ListItemAvatar, Menu, MenuItem, Box, Switch, Select, RadioGroup, FormControlLabel, Radio } from "@material-ui/core";
+import { Avatar, Button, TextField, List, ListItem, ListItemAvatar, Menu, MenuItem, Box, Switch, Select, RadioGroup, FormControlLabel, Radio, InputBase } from "@material-ui/core";
 import ListItemButton from '@mui/material/ListItemButton';
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
@@ -17,17 +17,20 @@ import avater4 from '../../../assets/avatar4.png'
 import avater5 from '../../../assets/avatar5.png'
 import avater6 from '../../../assets/avatar6.png'
 import avater7 from '../../../assets/avatar7.png'
+import avater11 from '../../../assets/avatar11.png'
 import avaterSelect from '../../../assets/avatar_select@2x.png'
 
 import CheckIcon from '@material-ui/icons/Check';
 import arrow from '../../../assets/go@2x.png'
+import checkgrayIcon from '../../../assets/check_gray.png'
+import muteIcon from '../../../assets/go@2x.png'
 
 import aboutIcon from '../../../assets/about@2x.png'
 import privacyIcon from '../../../assets/privacy@2x.png'
 import notificationsIcon from '../../../assets/notifications@2x.png'
 import generalIcon from '../../../assets/general@2x.png'
 import infoIcon from '../../../assets/info@2x.png'
-
+import rearchIcon from "../../../assets/search@2x.png";
 
 import { useSelector } from 'react-redux'
 import { setMyUserInfo } from '../../../redux/actions'
@@ -37,6 +40,8 @@ import { message } from "../../common/alert";
 import { removeFromBlackList, deleteContact } from '../../../api/contactsChat/getContacts'
 import { handlerTime, getMillisecond, computedItervalTime, timeIntervalToMinutesOrHours, setTimeVSNowTime, getLocalStorageData } from '../../../utils/notification'
 import { setSilentModeForAll, getSilentModeForAll, getSilentModeForConversations, setPushPerformLanguage, getPushPerformLanguage } from '../../../api/notificationPush'
+import SecondConfirmDialog from "../../common/secondConfirmDialog"
+import { userAvatar } from '../../../utils'
 
 const useStyles = makeStyles((theme) => {
     return {
@@ -84,6 +89,7 @@ const useStyles = makeStyles((theme) => {
             width: "24px",
             height: "24px",
             cursor: "pointer",
+            visibility: 'hidden'
         },
 
         infoPanel: {
@@ -91,9 +97,9 @@ const useStyles = makeStyles((theme) => {
             height: "450px",
             backgroundColor: "#EDEFF2",
             padding: "6px 8px",
-            display: "flex",
+            // display: "flex",
             flexFlow: 'wrap',
-            alignContent: 'flexStart'
+            alignContent: 'flexStart',
         },
         infoItem: {
             backgroundColor: "#F4F5F7",
@@ -104,6 +110,7 @@ const useStyles = makeStyles((theme) => {
             padding: "0 16px",
             boxSizing: "border-box",
             position: "relative",
+            fontWeight: '600',
             "& span:nth-child(3)": {
                 color: "#005FFF",
                 position: "absolute",
@@ -126,7 +133,11 @@ const useStyles = makeStyles((theme) => {
             height: '50px',
             lineHeight: '50px',
             margin: '2px 0',
-            padding: '0 8px'
+            padding: '0 8px',
+            '& a': {
+                textDecoration: 'none',
+                color: '#114EFF',
+            }
         },
         textfieldStyle: {
             width: "100%"
@@ -181,6 +192,7 @@ const useStyles = makeStyles((theme) => {
             width: '20px',
             height: '20px',
             cursor: 'pointer',
+            marginRight: '10px',
         },
         arrowDownImg: {
             transform: 'rotate(90deg)',
@@ -199,7 +211,8 @@ const useStyles = makeStyles((theme) => {
             }
         },
         previewStyle: {
-            borderTop: '1px solid #E6E6E6'
+            borderTop: '1px solid #E6E6E6',
+            width: '97%',
         },
         bottomStyle: {
             height: '52px',
@@ -214,6 +227,9 @@ const useStyles = makeStyles((theme) => {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
+        },
+        cursorStyle: {
+            cursor: 'pointer'
         },
         notifyPrayTitle: {
             color: 'rgb(153, 153, 153)',
@@ -235,6 +251,8 @@ const useStyles = makeStyles((theme) => {
             textAlign: 'center',
             lineHeight: '28px',
             cursor: 'pointer',
+            fontSize: '14px',
+            fontWeight: '600',
         },
         turnStyle: {
             fontWeight: '500',
@@ -244,15 +262,18 @@ const useStyles = makeStyles((theme) => {
             cursor: 'pointer',
         },
         switchStyle: {
-            '& .Mui-checked': {
-                color: '#fff',
-            }
+            // '& .Mui-checked': {
+            //     color: '#fff',
+            // }
+        },
+        switchStyleMargin: {
+            marginRight: '-10px',
         },
         switchOpenStyle: {
-            '& .MuiSwitch-track': {
-                background: 'rgb(49, 78, 238) !important',
-                opacity: '1 !important',
-            }
+            // '& .MuiSwitch-track': {
+            //     background: 'rgb(49, 78, 238) !important',
+            //     opacity: '1 !important',
+            // }
         },
         contentBox: {
             margin: '20px',
@@ -267,16 +288,27 @@ const useStyles = makeStyles((theme) => {
             textAlign: 'center',
             lineHeight: '36px',
             cursor: 'pointer',
-            fontSize: '14px',
+            fontSize: '16px',
+            fontWeight: '600',
         },
         rightBtn: {
             margin: '0px 20px 20px 10px',
             fontSize: '14px',
+            background: '#114EFF',
+            borderRadius: '26px',
+            height: '36px',
+            width: '84px',
+            color: '#fff',
+            textAlign: 'center',
+            display: 'inline-block',
+            lineHeight: '36px',
+            cursor: 'pointer',
+            fontWeight: '600',
         },
         unmuteTimeStyle: {
             color: '#0D0D0D',
             fontSize: '16px',
-            fontWeight: 'normal',
+            fontWeight: '500',
         },
         menuIcon: {
             width: '30px',
@@ -284,7 +316,169 @@ const useStyles = makeStyles((theme) => {
         },
         menuBtn: {
             justifyContent: 'start',
-            textTransform: 'none'
+            textTransform: 'none',
+            borderRadius: '8px !important',
+        },
+        imgStyle: {
+            width: '15px',
+            height: '15px',
+        },
+        imgUpStyle: {
+            transform: 'rotate(-90deg)',
+        },
+        imgDownStyle: {
+            transform: 'rotate(90deg)',
+        },
+        mySelect: {
+            position: 'relative',
+            background: '#FFFFFF',
+            borderRadius: '10px',
+            height: '40px',
+            width: '162px',
+        },
+        selectTop: {
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            padding: '0 10px',
+            boxSizing: 'border-box',
+            cursor: 'pointer',
+        },
+        selectDefaultText: {
+            // fontFamily: 'Roboto',
+            fontStyle: 'normal',
+            fontWeight: '500',
+            fontSize: '14px',
+            color: '#000000',
+            lineHeight: '40px',
+        },
+        selectBottom: {
+            width: '178px',
+            position: 'absolute',
+            top: '46px',
+            left: '-6px',
+            background: '#F4F5F7',
+            boxShadow: '0px 24px 36px rgba(0, 0, 0, 0.2), 8px 0px 24px rgba(0, 0, 0, 0.16)',
+            borderRadius: '12px',
+            padding: '8px 8px 0px 8px',
+            boxSizing: 'border-box',
+            zIndex: '1',
+        },
+        selectTextlist: {
+            height: '39px',
+            width: '162px',
+            borderRadius: '8px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            padding: '0 10px',
+            boxSizing: 'border-box',
+            marginBottom: '8px',
+            cursor: 'pointer',
+            '&:hover': {
+                background: '#FFFFFF',
+            }
+        },
+        selectChecked: {
+            background: '#FFFFFF',
+        },
+        selectOption: {
+            // fontFamily: 'Roboto',
+            fontStyle: 'normal',
+            fontWeight: '500',
+            fontSize: '14px',
+            lineHeight: '39px',
+            color: '#000000',
+        },
+        checkedStyle: {
+            width: '15px',
+            verticalAlign: 'middle'
+        },
+        commonDialog: {
+            '& .MuiDialog-paperWidthSm': {
+                borderRadius: '12px'
+            }
+        },
+        infoSwitchItem: {
+            backgroundColor: "#F4F5F7",
+            borderRadius: "16px",
+            height: "55px",
+            width: "100%",
+            boxSizing: "border-box",
+            display: 'flex',
+            alignItems: 'center',
+            textAlign: 'left',
+            lineHeight: '55px',
+            paddingLeft: '14px',
+            position: 'relative',
+            marginTop: '16px',
+        },
+        switchMargin: {
+            position: 'absolute',
+            right: '-5px',
+        },
+        textStyle: {
+			// fontFamily: "Roboto",
+			fontWeight: "400",
+			fontSize: "12px",
+			lineHeight: "16",
+			color: "#000000",
+			width: "100%",
+			padding: "5px",
+		},
+		imgSearchStyle: {
+			width: "25px",
+			cursor: "pointer",
+            marginRight: '5px',
+		},
+        blockedListBox: {
+            display: 'flex',
+            justifyContent: 'spance-between',
+            alignItems: 'center',
+            padding: '12px',
+            height: '54px',
+            background: '#F4F5F7',
+            borderTopLeftRadius: '16px',
+            borderTopRightRadius: '16px',
+            width: '100%',
+            boxSizing: 'border-box',
+            borderBottom: '1px solid #E6E6E6'
+        },
+        blockText: {
+            color: '#000',
+            fontWeight: 600,
+            fontSize: '16px',
+            width: '290px',
+        },
+        searchBox: {
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+        },
+        cancelBtn: {
+            fontSize: '14px',
+            color: '#114EFF',
+            cursor: 'pointer',
+        },
+        listBoxBlock: {
+            background: '#F4F5F7',
+            borderBottomLeftRadius: '16px',
+            borderBottomRightRadius: '16px',
+        },
+        listItemBlock: {
+            padding: '0',
+            borderRadius: '12px',
+            '& .MuiButton-root:hover': {
+                background: '#fff',
+                borderRadius: '12px',
+            }
+        },
+        inputBox: {
+            width: '310px',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginRight: '10px',
         }
     }
 })
@@ -294,17 +488,20 @@ const selectList = [
     {
         id: 1,
         value: 'ALL',
-        label: 'All Message'
+        label: 'All Message',
+        checked: true
     },
     {
         id: 2,
         value: 'AT',
-        label: 'Only @Metion'
+        label: 'Only @Mention',
+        checked: false
     },
     {
         id: 3,
         value: 'NONE',
-        label: 'Nothing'
+        label: 'Off',
+        checked: false
     }
 ]
 const radioList = [
@@ -346,8 +543,9 @@ export default function Setting({ open, onClose }) {
     const [nickName, setNickName] = useState('')
     const [avatarIndex, setAvatarIndex] = useState(null)
     const [addEl, setAddEl] = useState(null)
+    const [addElSub, setAddElSub] = useState(null)
     const [notifyText, setNotifyText] = useState('ALL');
-    const [defaultValue, setDefaultValue] = useState('')
+    const [defaultValue, setDefaultValue] = useState('0')
     const [showRadio, setShowRadio] = useState(false)
     const [checkedValue, setCheckedValue] = useState('')
     const [textSwitch, setTextSwitch] = useState(false)
@@ -357,6 +555,18 @@ export default function Setting({ open, onClose }) {
     const [turnOffBtnFlag, setTurnOffBtnFlag] = useState(false)
     const myUserInfo = useSelector(state => state?.myUserInfo)
     const blackList = useSelector(state => state?.blackList) || []
+    const [showSelectOption, setShowSelectOption] = useState(false)
+    const [selectContent, setSelectContent] = useState('All Message')
+    const [deleteSwitch, setDeleteSwitch] = useState(false)
+    const [secondSure, setSecondSure] = useState(false)
+	const [GroupStatus, setGroupStatus] = useState('')
+	const [groupContent, setgroupContent] = useState('')
+    const [showOrClose, setShowOrClose] = useState(true)
+    const [showInput, setShowInput] = useState(false)
+    const [blockList, setblockList] = useState(blackList)
+    const [nickNameLen, setNickNameLen] = useState(false)
+    const inputNickName = createRef()
+
     useEffect(() => {
         if (myUserInfo) {
             setNickName(myUserInfo.nickName)
@@ -392,14 +602,20 @@ export default function Setting({ open, onClose }) {
     const handleEditChange = (e) => {
         let value = e.target.value;
         if (value.length === 0 || value.length > 12) {
-            message.error(`${i18next.t("Nickname is empty or exceeds the limit")}`);
+            if (nickNameLen) {
+                setNickNameLen(false)
+                message.error(`${i18next.t("Nickname is empty or exceeds the limit")}`);
+            }
             return;
+        } else {
+            setNickNameLen(true)
         }
         setNickName(e.target.value);
     }
 
     const handlePrivacyItemMoreClick = (e) => {
         setAddEl(e.currentTarget)
+        setAddElSub(e.currentTarget)
     }
 
     const handleUnblockContact = (target) => {
@@ -420,14 +636,14 @@ export default function Setting({ open, onClose }) {
     }
 
     function tabs() {
-        const avatarUrl = avatarIndex > -1 ? AVATARS[avatarIndex] : null
+        const avatarUrl = avatarIndex > -1 ? AVATARS[avatarIndex] : avater11
         return (
             <div className={classes.tabsInfo}>
                 <div className={classes.settingInfoBox}>
-                    <Avatar style={{ width: 100, height: 100, marginTop: '36px' }} src={avatarUrl}>
+                    <Avatar style={{ width: 100, height: 100, marginTop: '36px', cursor: 'pointer' }} onClick={() => setTabIndex(0)} src={avatarUrl}>
 
                     </Avatar>
-                    <img src={editIcon} alt='edit' className={classes.avatarEditIcon} onClick={() => setTabIndex(0)} />
+                    <img src={editIcon} alt='edit' className={classes.avatarEditIcon}  />
                     <div>{nickName}</div>
                     <div>AgoraID: {myUserInfo?.agoraId}</div>
                 </div>
@@ -466,16 +682,24 @@ export default function Setting({ open, onClose }) {
             return notificationTabPanel()
         }
     }
-    const handleSelectChange = (event) => {
-        console.log(event.target.value, 'event.target.value')
-        setNotifyText(event.target.value)
+    const handleSelectChange = (item) => {
+        const value = item.value
+        selectList.forEach(item => {
+            if (item.value === value) {
+              item.checked = true
+              setSelectContent(item.label)
+            } else {
+              item.checked = false
+            }
+        })
         const params = {
             options: {
                 paramType: 0,
-                remindType: event.target.value,
+                remindType: value,
             }
         }
         setNotDisturb(params)
+        setShowSelectOption(false)
     }
     const setNotDisturb = (params) => {
         setSilentModeForAll(params).then(res => {
@@ -491,16 +715,36 @@ export default function Setting({ open, onClose }) {
             console.log(res, 'getSilentModeForAll')
             const type = res.type
             if (type) {
+                selectList.forEach(item => {
+                    if (item.value === type) {
+                      item.checked = true
+                      setSelectContent(item.label)
+                    } else {
+                      item.checked = false
+                    }
+                })
                 setNotifyText(type)
                 setSelectDisabled(true)
+            } else {
+                selectList.forEach(item => {
+                    if (item.value === 'All Message') {
+                      item.checked = true
+                      setSelectContent(item.label)
+                    } else {
+                      item.checked = false
+                    }
+                })
             }
             if (res.ignoreDuration) {
                 if (setTimeVSNowTime(res, true)) {
                     setCheckedValue('')
+                    setShowRadio(true)
                 } else {
                     setCheckedDefaultValue(res.ignoreDuration, 0, true)
                     setTurnOffBtnFlag(true)
                 }
+            } else {
+                setShowRadio(true)
             }
         })
     }
@@ -521,9 +765,16 @@ export default function Setting({ open, onClose }) {
         setDefaultValue(event.target.value)
     }
     const handlerArrowImg = () => {
+        if (turnOffBtnFlag) {
+            return
+        }
         setShowRadio(!showRadio)
     }
-    const handlerTurnOffBtn = () => {
+    const handlerTurnOffBtn = (e) => {
+        e.stopPropagation()
+        e.preventDefault()
+        e.cancelBubble = true // IE
+        e.returnValue = false // IE
         setopenTurnOff(true)
     }
     const setCheckedDefaultValue = (time, index, flag) => {
@@ -561,11 +812,15 @@ export default function Setting({ open, onClose }) {
         const checked = e.target.checked
         const soundPreviewText = {
             sound: soundSwitch,
-            previewText: textSwitch
+            previewText: textSwitch,
+            deleteSwitch: deleteSwitch
         }
-        if (val) {
+        if (Number(val) === 1) {
             setSoundSwitch(checked)
             soundPreviewText['sound'] = checked
+        } else if (Number(val) === 2) {
+            setDeleteSwitch(checked)
+            soundPreviewText['deleteSwitch'] = checked
         } else {
             setTextSwitch(checked)
             soundPreviewText['previewText'] = checked
@@ -591,9 +846,61 @@ export default function Setting({ open, onClose }) {
         }
         setNotDisturb(params)
     }
+    const handlerSelectBox = () => {
+        setShowSelectOption(!showSelectOption)
+    }
+    const showSecondDialog = (val) => {
+		setGroupStatus(val)
+		if (val === 1) {
+			setgroupContent('Move To Block')
+		} else {
+			setgroupContent('Delete Contact')
+		}
+		setSecondSure(true)
+        handleCloseMenu()
+	}
+	const confirmQuitGroup = () => {
+		if (GroupStatus === 1) {
+			handleUnblockContact(addElSub)
+		} else {
+			handleDeleteContact(addElSub)
+		}
+		setSecondSure(false)
+	}
+    useEffect(() => {
+        const tempArr = []
+        blackList.forEach(item => {
+            tempArr.push(item)
+        })
+        setblockList(tempArr)
+    }, [blackList])
+    const searchChangeValue = (e) => {
+		console.log(e.target.value, blackList)
+        const value = e.target.value
+        if (!value) {
+            setblockList(blackList)
+            return
+        }
+        const tempArr = []
+        blockList.forEach(item => {
+            if (item.includes(value)) {
+                tempArr.push(item)
+            }
+        })
+        setblockList(tempArr)
+	};
+
+    const closeOrShowBlockList = () => {
+        setShowOrClose(!showOrClose)
+    }
+    useEffect(() => {
+        if (inputNickName) {
+            inputNickName.current && inputNickName.current.focus()
+        }
+    }, [inputNickName])
     function infoTabPanel() {
         return (
-            <div className={classes.infoPanel}>
+            <div className={classes.infoPanel} style={{display: 'block'}}>
                 {editStatus ? (
                     <Box className={classes.textfieldStyle}>
                         <TextField
@@ -602,8 +909,9 @@ export default function Setting({ open, onClose }) {
                             id="filled-helperText"
                             label="NickName"
                             defaultValue={nickName}
-                            variant="filled"
+                            variant="standard"
                             fullWidth
+                            inputRef={inputNickName}
                         />
                         <Box className={classes.numberBox}>
                             <Typography className={classes.numberStyle}>
@@ -613,11 +921,15 @@ export default function Setting({ open, onClose }) {
                     </Box>
                 ) : (
                     <div className={classes.infoItem}>
-                        <span>NickName</span>
+                        <span>Nickname</span>
                         <span>{nickName}</span>
                         <span onClick={handleEditClick}>Edit</span>
                     </div>
                 )}
+                <div className={classes.infoSwitchItem}>
+                    <span className={classes.notifySubTitle} style={{fontSize: '16px'}}>{i18next.t('Delete the Chat after Leaving Group')}</span>
+                    <Switch checked={deleteSwitch} color="primary" className={classes.switchMargin} onChange={(e) => handleSwitchChange(e, 2)}></Switch>
+                </div>
             </div>
         );
     }
@@ -630,6 +942,7 @@ export default function Setting({ open, onClose }) {
                 <div style={{ flex: 1 }}>
                     <div className={classes.aboutItem}>SDK version: 4.0.5</div>
                     <div className={classes.aboutItem}>uikit version: 1.0.3</div>
+                    <div className={classes.aboutItem}>More: <a href="https://www.agora.io/en/" target="_black">Agora</a></div>
                 </div>
             </div>
         )
@@ -638,34 +951,64 @@ export default function Setting({ open, onClose }) {
     function privacyTabPanel() {
         return (
             <div className={classes.infoPanel}>
-                <List dense sx={{ width: '400px' }} style={{ width: '100%' }}>
-                    {blackList.map((value) => {
-                        const labelId = `label-${value}`;
-                        return (
-                            <ListItem
-                                fullWidth
-                                key={labelId}
-                            >
-                                <Button fullWidth style={{
-                                    display: 'flex',
-                                    'justify-content': 'space-between'
-                                }}>
-                                    <div className={classes.privacyItemInfo}>
-                                        <ListItemAvatar>
-                                            <Avatar
-                                                alt={`Avatar n°${value + 1}`}
-                                            />
-                                        </ListItemAvatar>
-                                        <span>{value}</span>
-                                    </div>
-                                    <IconButton value={value} onClick={handlePrivacyItemMoreClick}>
-                                        <MoreVertIcon />
-                                    </IconButton>
-                                </Button>
-                            </ListItem>
-                        )
-                    })}
-                </List>
+                <div className={classes.blockedListBox}>
+                    {
+                        !showInput && <div className={classes.blockText}>Blocked List</div>
+                    }
+                    <div className={classes.searchBox}>
+                        {
+                            showInput ?
+                            <div className={classes.inputBox}>
+                                <InputBase
+                                    type="search"
+                                    placeholder={i18next.t("User Name")}
+                                    className={classes.textStyle}
+                                    onChange={searchChangeValue}
+                                />
+                                <span className={classes.cancelBtn} onClick={() => setShowInput(false)}>Cancel</span>
+                            </div>
+                            : <img
+                                src={rearchIcon}
+                                alt=""
+                                className={classes.imgSearchStyle}
+                                onClick={() => setShowInput(true)}/>
+                        }
+                    </div>
+                    <img onClick={closeOrShowBlockList} className={`${classes.arrowImg} ${showOrClose ? classes.arrowUpImg : classes.arrowDownImg}`} alt="" src={arrow} />
+                </div>
+                {
+                    showOrClose && <List dense className={classes.listBoxBlock} sx={{ width: '400px' }}>
+                        { blockList.length ? blockList.map((value) => {
+                            const labelId = `label-${value}`;
+                                return (
+                                    <ListItem
+                                        fullWidth
+                                        key={labelId}
+                                        className={classes.listItemBlock}
+                                    >
+                                        <Button fullWidth style={{
+                                            display: 'flex',
+                                            'justify-content': 'space-between'
+                                        }}>
+                                            <div className={classes.privacyItemInfo}>
+                                                <ListItemAvatar>
+                                                    <Avatar
+                                                        src={userAvatar(value)}
+                                                        alt={`Avatar n°${value + 1}`}
+                                                    />
+                                                </ListItemAvatar>
+                                                <span style={{textTransform: 'none'}}>{value}</span>
+                                            </div>
+                                            <IconButton value={value} onClick={handlePrivacyItemMoreClick}>
+                                                <MoreVertIcon />
+                                            </IconButton>
+                                        </Button>
+                                    </ListItem>
+                                )
+                            }) : <div style={{textAlign: 'center', height: '100px', paddingTop: '40px'}}>No Data</div>
+                        }
+                    </List>
+                }
 
                 <Menu
                     id="simple-menu"
@@ -674,26 +1017,34 @@ export default function Setting({ open, onClose }) {
                     open={Boolean(addEl)}
                     onClose={handleCloseMenu}
                 >
-                    <MenuItem onClick={handleUnblockContact.bind(this, addEl)}>
+                    <MenuItem onClick={() => showSecondDialog(1)}>
                         <Typography variant="inherit" noWrap style={{ display: 'flex', alignItems: 'center' }}>
                             <RemoveCircleOutlineIcon style={{ width: '30px', height: '30px', marginRight: '8px' }} />
                             Unblock
                         </Typography>
                     </MenuItem>
-                    <MenuItem onClick={handleDeleteContact.bind(this, addEl)}>
+                    <MenuItem onClick={() => showSecondDialog(2)}>
                         <Typography variant="inherit" noWrap style={{ display: 'flex', alignItems: 'center', color: '#FF14CC' }}>
                             <img src={deleteContactIcon} alt='deleteContact' style={{ width: '30px', height: '30px', marginRight: '8px' }} />
                             Delete Contact
                         </Typography>
                     </MenuItem>
                 </Menu>
+                <SecondConfirmDialog
+                    open={Boolean(secondSure)}
+                    onClose={() => setSecondSure(false)}
+                    confirmMethod={() => confirmQuitGroup()}
+                    confirmContent={{
+                        content: groupContent
+                    }}
+                ></SecondConfirmDialog>
             </div>
         )
     }
 
     function avatarTabPaner() {
         return (
-            <div className={classes.infoPanel}>
+            <div className={classes.infoPanel} style={{display: 'flex'}}>
                 {AVATARS.map((value, index) => {
                     return (<div style={{ width: '117px', height: '117px', margin: '5px', borderRadius: '4px', overflow: 'hidden' }} onClick={() => { handleCheckAvatar(index) }} key={value}>
                         <img src={value} alt='avatar1' style={{ width: '100%' }} />
@@ -722,7 +1073,7 @@ export default function Setting({ open, onClose }) {
         return (
             <div className={classes.btnBox}>
                 <span className={classes.turnOffBtnStyle} onClick={handleTurnOffClose}>Cancel</span>
-                <span className={classes.btnStyle + ' ' + classes.rightBtn} onClick={handlerOkay}>Okay</span>
+                <span className={classes.rightBtn} onClick={handlerOkay}>Okay</span>
             </div>
         )
     }
@@ -738,36 +1089,30 @@ export default function Setting({ open, onClose }) {
                         <div>
                             <div className={classes.flexBox}>
                                 <span className={classes.notifySubTitle}>{i18next.t('Notifications Settings')}</span>
-                                <Select
-                                    value={notifyText}
-                                    className={classes.notifySelect}
-                                    onChange={handleSelectChange}
-                                    variant="outlined"
-                                    // disabled={selectDisabled}
-                                    renderValue={(selected) => {
-                                        if (selected.length === 0) {
-                                            return <em>Please Select</em>
-                                        }
-                                        let tempStr = ''
-                                        selectList.forEach(item => {
-                                            if (item.value === selected) {
-                                                tempStr = item.label
-                                            }
-                                        })
-                                        return tempStr || <em>Please Select</em>
-                                    }}
-                                >
+                                <div className={classes.mySelect}>
+                                    <div className={classes.selectTop} onClick={handlerSelectBox}>
+                                        <span className={classes.selectDefaultText}>{selectContent}</span>
+                                        <img className={`${classes.imgStyle} ${showSelectOption ? classes.imgUpStyle : classes.imgDownStyle}`} alt="" src={muteIcon} />
+                                    </div>
                                     {
-                                        selectList.map(item => {
+                                        showSelectOption &&
+                                        <div className={classes.selectBottom}>
+                                        {
+                                            selectList.map(item => {
                                             return (
-                                                <MenuItem key={item.value} value={item.value}>{item.label}</MenuItem>
+                                                <div key={item.value} onClick={() => handleSelectChange(item)} className={`${classes.selectTextlist} ${item.checked ? classes.selectChecked : ''}`}>
+                                                <span className={classes.selectOption} value={item.value}>{item.label}</span>
+                                                {item.checked ? <img alt="" className={classes.checkedStyle} src={checkgrayIcon} /> : ''}
+                                                </div>
                                             )
-                                        })
+                                            })
+                                        }
+                                        </div>
                                     }
-                                </Select>
+                                </div>
                             </div>
                             <div className={classes.bottomItem}>
-                                <div className={classes.flexBox}>
+                                <div className={`${classes.flexBox} ${!turnOffBtnFlag ? classes.cursorStyle : ''}`} onClick={handlerArrowImg}>
                                     <div>
                                         <span className={classes.notifySubTitle}>{i18next.t('Do not Disturb')}</span>
                                         {
@@ -776,8 +1121,8 @@ export default function Setting({ open, onClose }) {
                                     </div>
                                     {
                                         checkedValue && turnOffBtnFlag ?
-                                            <span onClick={handlerTurnOffBtn} className={classes.turnStyle}>Turn Off</span>
-                                            : <img className={`${classes.arrowImg} ${showRadio ? classes.arrowUpImg : classes.arrowDownImg}`} alt="" onClick={handlerArrowImg} src={arrow} />
+                                        <span onClick={(e) => handlerTurnOffBtn(e)} className={classes.turnStyle}>Turn Off</span>
+                                        : <img className={`${classes.arrowImg} ${showRadio ? classes.arrowUpImg : classes.arrowDownImg}`} alt="" src={arrow} />
                                     }
                                 </div>
                                 {showRadio ?
@@ -805,7 +1150,7 @@ export default function Setting({ open, onClose }) {
                         </div>
                         <div className={classes.bottomStyle + ' ' + classes.previewStyle + ' ' + classes.bottomItem + ' ' + classes.flexBox}>
                             <span className={classes.notifySubTitle}>{i18next.t('Show Preview Text')}</span>
-                            <Switch checked={textSwitch} className={`${classes.switchStyle} ${textSwitch ? classes.switchOpenStyle : ''}`} onChange={(e) => handleSwitchChange(e, 0)}></Switch>
+                            <Switch checked={textSwitch} color="primary" className={`${classes.switchStyle} ${classes.switchStyleMargin} ${textSwitch ? classes.switchOpenStyle : ''}`} onChange={(e) => handleSwitchChange(e, 0)}></Switch>
                         </div>
                     </div>
                 </div>
@@ -813,7 +1158,7 @@ export default function Setting({ open, onClose }) {
                     <div className={classes.notifyTitle}>{i18next.t('Notification Sounds')}</div>
                     <div className={classes.bottomStyle + ' ' + classes.alertStyle + ' ' + classes.flexBox}>
                         <span className={classes.notifySubTitle}>{i18next.t('Alert Sound')}</span>
-                        <Switch checked={soundSwitch} className={`${classes.switchStyle} ${soundSwitch ? classes.switchOpenStyle : ''}`} onChange={(e) => handleSwitchChange(e, 1)}></Switch>
+                        <Switch checked={soundSwitch} color="primary" className={`${classes.switchStyle} ${soundSwitch ? classes.switchOpenStyle : ''}`} onChange={(e) => handleSwitchChange(e, 1)}></Switch>
                     </div>
                 </div>
                 <CommonDialog
@@ -822,6 +1167,7 @@ export default function Setting({ open, onClose }) {
                     title={i18next.t("Turn off Do Not Disturb?")}
                     content={renderTurnOffContent()}
                     footer={renderTurnOffFooter()}
+                    className={classes.commonDialog}
                 ></CommonDialog>
             </div>
         )

@@ -65,6 +65,7 @@ const useStyles = makeStyles((theme) => {
             textTransform: 'none',
             fontSize: '16px',
             display: 'inherit',
+            borderRadius: '8px',
         },
         gNameText: {
             typeface: 'Ping Fang SC',

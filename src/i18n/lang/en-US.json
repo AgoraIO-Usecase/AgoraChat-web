@@ -1,8 +1,8 @@
 {
     "translation": {
         "login-Login": "Log in",
-        "login-UserID": "User ID",
-        "login-Password": "User Password",
+        "login-UserID": "Enter a Username",
+        "login-Password": "Enter a Password",
         "login-NickName": "Displayed Profile Name",
         "Add Contact": "Add Contact",
         "accept": "Accept",
@@ -16,6 +16,18 @@
         "Custom Status Is Not Empty": "Custom Status Is Not Empty",
         "Edit Thread Name": "Edit Thread Name",
         "Leave this Thread?": "Leave this Thread?",
-        "Disband this Thread?": "Disband this Thread?"
+        "Disband this Thread?": "Disband this Thread?",
+        "SignUp": "SignUp",
+        "NoAccount": "No account?",
+        "UserAlreadyExists":"User Already Exists!",
+        "UserNameTooLong": "User Name Exceeds 64 Bytes!",
+        "InvalidPassword": "Invalid Password",
+        "InvalidUserName": "Invalid UserName",
+        "SignUpFailed": "SignUp Failed No Permission!",
+        "LimitAccount": "Your App User Registration Number Has Reached The Maximum, Please Upgrade To Enterprise Edition!",
+        "HasAccount": "Already Have An Account?",
+        "ComnfirmPassword": "Comnfirm Password",
+        "BacktoLogin": "Back to Login",
+        "Register": "Register"
     }
 }

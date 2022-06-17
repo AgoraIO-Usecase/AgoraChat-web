@@ -27,7 +27,7 @@ let options = {
 }
 function twoMethod(params, iconTitle) {
   options = { ...options, ...params }
-  const bodyList = options.body.split('?')
+  const bodyList = options.body.split('🀧')
   options.body = bodyList[0]
   var notification = new Notification(options.title || 'New Message', options);
   const session = {}

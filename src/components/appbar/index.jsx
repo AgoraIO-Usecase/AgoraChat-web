@@ -28,6 +28,7 @@ import store from '../../redux/store'
 import { setMyUserInfo, closeGroupChatAction } from '../../redux/actions'
 import { logout } from '../../api/loginChat'
 import getGroups from '../../api/groupChat/getGroups'
+import SecondConfirmDialog from "../common/secondConfirmDialog"
 
 // import UserInfoPopover from './userInfo'
 import PresenceStatus from './presence/index'
@@ -40,7 +41,8 @@ export default function Header() {
     const [showUserSetting, setShowUserSetting] = useState(false)
     const [showContact, setShowContact] = useState(false)
     const [showRequest, setShowRequest] = useState(false)
-
+    const [secondSure, setSecondSure] = useState(false)
+    const [groupAuthor, setGroupAuthor] = useState(null)
     // userInfo
     // const [showUserInfoPopover, setShowUserInfoPopover] = useState(false)
     // const [userInfoaddEl, setUserInfoAddEl] = useState(null)
@@ -114,9 +116,10 @@ export default function Header() {
         setAddEl(null)
     }
 
-    function createGroupDialog() {
+    function createGroupDialog(e) {
         store.dispatch(closeGroupChatAction(true));
         setAddEl(null);
+        setGroupAuthor(e.currentTarget)
     }
     function handleCreateGroupDialogClose() {
         store.dispatch(closeGroupChatAction(false));
@@ -129,19 +132,25 @@ export default function Header() {
     // const handleUserInfoClose = () => {
     //     setShowUserInfoPopover(false);
     // }
-
-
+    const confirmLogout = () => {
+        setSecondSure(true)
+    }
+    const confirmQuitGroup = () => {
+		logout()
+		setSecondSure(false)
+        setAddEl(null)
+	}
     return (
         <>
             <div className='chatlist-header'>
                 {/* <div className='chatlist-header-avatar'></div> */}
                 <Avatar style={{ width: 40, height: 40 }} src={avatarUrl} ></Avatar>
-                <PresenceStatus style={{position: 'absolute', bottom: '10px', left: '40px'}} />
+                <PresenceStatus style={{position: 'absolute', bottom: '2px', left: '35px'}} />
                 <div className='chatlist-header-title'>
                     <img src={AgoraChat} alt="agora chat"/>
                 </div>
                 <div className='chatlist-header-more' onClick={handleClickMore}>
-                    <img src={menuIcon} alt="menu"/>
+                    <img src={menuIcon} alt="menu" className={Boolean(addEl) ? 'img-active' : ''} />
                 {unDealRequestsNum > 0 ? <p style={{ width: '6px', height: '6px', background: '#FF14CC', borderRadius: '3px', position: 'absolute', top: '-12px', left: '-5px' }}></p> : null}
                 </div>
 
@@ -151,6 +160,7 @@ export default function Header() {
                     keepMounted
                     open={Boolean(addEl)}
                     onClose={() => setAddEl(null)}
+                    className='myself-menu'
                 >
                     <MenuItem onClick={handleNewChatDialog}>
                         <Typography variant="inherit" noWrap style={{ display: 'flex', alignItems: 'center' }}>
@@ -184,7 +194,7 @@ export default function Header() {
                             Settings
                     </Typography>
                     </MenuItem>
-                    <MenuItem onClick={logout}>
+                    <MenuItem onClick={confirmLogout}>
                         <Typography variant="inherit" noWrap style={{ display: 'flex', alignItems: 'center' }}>
                             <img src={logoutIcon} alt='new chat' style={{ width: '30px' }} />
                             Log out
@@ -224,6 +234,14 @@ export default function Header() {
                 anchorEl={userInfoaddEl}
                 onClose={handleUserInfoClose}
             /> */}
+            <SecondConfirmDialog
+                open={Boolean(secondSure)}
+                onClose={() => setSecondSure(false)}
+                confirmMethod={() => confirmQuitGroup()}
+                confirmContent={{
+                    content: 'Log Out'
+                }}
+            ></SecondConfirmDialog>
         </>
     )
 }

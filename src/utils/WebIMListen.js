@@ -10,6 +10,7 @@ import { getToken } from '../api/loginChat'
 import { agreeInviteGroup } from '../api/groupChat/addGroup'
 import { getGroupMuted } from "../api/groupChat/groupMute";
 import { getGroupWrite } from "../api/groupChat/groupWhite";
+import getGroupInfo from '../api/groupChat/getGroupInfo'
 import { notification, getLocalStorageData, playSound, randomNumber, setTimeVSNowTime, checkBrowerNotifyStatus, notifyMe } from './notification'
 import { handlerThreadChangedMsg } from "../api/thread/index";
 
@@ -71,7 +72,7 @@ function publicNotify (message, msgType, iconTitle = {}, body = 'You Have A New 
         }
     }
     handlerNewMessage(message, false)
-    body = `You Have A New Message?sessionType=${sessionType}&sessionId=${from}`
+    body = `You Have A New Message🀧sessionType=${sessionType}&sessionId=${from}`
     if (getLocalStorageData().previewText) {
         switch(msgType){
             case 'text':
@@ -149,13 +150,13 @@ const history = createHashHistory()
 const initListen = () => {
 	WebIM.conn.listen({
         onOpened: () => {
+            history.push('/main')
             getSilentModeForAll().finally(res => {
                 getContacts();
                 getGroups();
             })
             getPublicGroups();
             getBlackList()
-            history.push('/main')
             store.dispatch(setFetchingStatus(false))
         },
         onClosed: () => {
@@ -181,10 +182,10 @@ const initListen = () => {
                     break;
                 case 'invite': 
                     agreeInviteGroup(event)
-                    if (getLocalStorageData().sound) {
-                        playSound()
-                    }
-                    notification({body: 'Have A Group Invite', tag: randomNumber()}, {title: 'agora chat'})
+                    // if (getLocalStorageData().sound) {
+                    //     playSound()
+                    // }
+                    // notification({body: 'Have A Group Invite', tag: randomNumber()}, {title: 'agora chat'})
                     break;
                 case 'removedFromGroup':
                     message.info(`${i18next.t('You have been removed from the group:')}` + event.gid)
@@ -213,12 +214,17 @@ const initListen = () => {
                     const tempArr = []
                     const obj = {}
                     let extFlag = false
+                    let device = ''
                     item.statusDetails.forEach(val => {
                         if (val.status === 1) {
                             extFlag = true
+                            device = val.device.includes('webim') ? 'Web' : 'Mobile'
                         }
                         obj[val.device] = val.status.toString()
                     })
+                    if (!device) {
+                        device = item.statusDetails.length ? (item.statusDetails[0].device.includes('webim') ? 'Web' : 'Mobile') : ''
+                    }
                     if (!extFlag) {
                         item.ext = 'Offline'
                     }
@@ -227,7 +233,8 @@ const initListen = () => {
                         ext: item.ext,
                         last_time: item.lastTime,
                         uid: item.userId,
-                        status: obj
+                        status: obj,
+                        device
                     })
                     if (presenceList.findIndex(val => val.uid === item.userId) !== -1) {
                         presenceList.forEach(val => {
@@ -236,12 +243,13 @@ const initListen = () => {
                             }
                         })
                     } else {
-                        presenceList.contact(tempArr)
+                        presenceList.concat(tempArr)
                     }
                     const newArr = presenceList
                     store.dispatch(setPresenceList(newArr))
                     EaseApp.changePresenceStatus({[item.userId]: {
-                        ext: item.ext
+                        ext: item.ext,
+                        device
                     }})
                 }
                 else{
@@ -285,10 +293,10 @@ const initListen = () => {
             contactRequests.unshift(data)
             let newRequests = { ...requests, contact: contactRequests }
             store.dispatch(setRequests(newRequests))
-            if (getLocalStorageData().sound) {
-                playSound()
-            }
-            notification({body: 'Have A New Friend Want To Be Your Friend', tag: randomNumber()}, {title: 'agora chat'})
+            // if (getLocalStorageData().sound) {
+            //     playSound()
+            // }
+            // notification({body: 'Have A New Friend Want To Be Your Friend', tag: randomNumber()}, {title: 'agora chat'})
         },
         onGroupChange: (msg) => {
             console.log('onGroupChange', msg)
@@ -322,15 +330,22 @@ const initListen = () => {
 				getGroupWrite(msg.gid);
 			} else if (msg.type === "rmUserFromGroupWhiteList") {
 				getGroupWrite(msg.gid);
-			}
-            checkBrowerNotifyStatus(false)
+			} else if (msg.type === "update") {
+                getGroupInfo(msg.gid)
+            } else if (msg.type === 'leave' || msg.type === 'leaveGroup' || msg.type === 'deleteGroupChat') {
+                // EaseApp.deleteSessionAndMessage({})
+            } else if (msg.type === 'removedFromGroup') {
+                EaseApp.deleteSessionAndMessage({sessionType: 'groupChat', sessionId: msg.gid})
+                getGroups();
+            }
+            // checkBrowerNotifyStatus(false)
 		},
 	});
 
 	WebIM.conn.addEventHandler("TOKENSTATUS", {
 		onTokenWillExpire: (token) => {
 			let { myUserInfo } = store.getState();
-			getToken(myUserInfo.agoraId, myUserInfo.nickName).then((res) => {
+			getToken(myUserInfo.agoraId, myUserInfo.password).then((res) => {
 				const { accessToken } = res;
 				WebIM.conn.renewToken(accessToken);
 				const authData = sessionStorage.getItem("webim_auth");
