@@ -31,7 +31,7 @@ export default function SignUp() {
     const [activeType, setActiveType] = useState('password')
     const [activeType1, setActiveType1] = useState('password')
     const [disabled, setdisabled] = useState(true)
-    const [loginBtn, setLoginBtn] = useState(i18next.t('SignUp'))
+    const [loginBtn, setLoginBtn] = useState(i18next.t('Sign Up'))
     const [useDialogOpen, setDialogOpen] = useState(false)
 
     const login = useCallback(() => {
