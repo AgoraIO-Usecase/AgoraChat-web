@@ -1,5 +1,5 @@
 .login-container {
-    background-image: url('../assets/background@2x.png');
+    background-image: url('../assets/background-min.jpg');
     background-size: cover;
     background-repeat: no-repeat;
     display: flex;
@@ -9,6 +9,7 @@
     align-items: center;
     /* min-width: 600px; */
     min-height: 698px;
+    background-position: center;
 }
 
 .login-form {

@@ -72,7 +72,7 @@ function publicNotify (message, msgType, iconTitle = {}, body = 'You Have A New 
         }
     }
     handlerNewMessage(message, false)
-    body = `You Have A New Message?sessionType=${sessionType}&sessionId=${from}`
+    body = `You Have A New Message🀧sessionType=${sessionType}&sessionId=${from}`
     if (getLocalStorageData().previewText) {
         switch(msgType){
             case 'text':

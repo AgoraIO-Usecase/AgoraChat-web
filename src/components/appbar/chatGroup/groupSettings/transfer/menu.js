@@ -38,13 +38,15 @@ const Menu = ({ open, onClose, userId }) => {
 	const [confirmStatus, setConfirmStatus] = useState(null)
 	const state = store.getState();
 	const groupId = state?.groups?.groupsInfo.id;
-
+	const [apiType, setApiType] = useState('')
 	const handleTransFer = () => {
 		setConfirmStatus(true);
+		setApiType('')
 	}
 
 	const handleTransFerLeave = () => {
 		setConfirmStatus(true);
+		setApiType('quit')
 	}
 
 	const handleConfirmDialogClose = () => {
@@ -97,7 +99,7 @@ const Menu = ({ open, onClose, userId }) => {
 				onClose={handleConfirmDialogClose}
 				id={userId}
 				type={"transfer"}
-				apiType={"quit"}
+				apiType={apiType}
 			/>
 		</Popover>
 	);
