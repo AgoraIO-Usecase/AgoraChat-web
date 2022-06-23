@@ -68,7 +68,11 @@ const useStyles = makeStyles(() => {
             width: '100%',
             height: '38px',
             lineHeight: '38px',
+            borderRadius: '8px',
             '&:hover': {
+                backgroundColor: '#F6F7F8'
+            },
+            '&:active': {
                 backgroundColor: '#F4F5F7'
             },
             cursor: 'pointer',

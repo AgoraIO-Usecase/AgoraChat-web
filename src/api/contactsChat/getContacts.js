@@ -6,6 +6,9 @@ import { contactsAciton, setBlackList, updateRequestStatus, searchLoadAction } f
 import { subFriendStatus } from '../presence/index'
 import { getSilentModeForConversations } from '../notificationPush/index'
 
+import { EaseApp } from "chat-uikit2";
+import { setMyUserInfo } from '../../redux/actions'
+
 const getContacts = () => {
     WebIM.conn.getRoster().then((res) => {
         const payload = {
@@ -70,6 +73,13 @@ export const deleteContact = (userId, onClose) => {
 
 export const acceptContactRequest = (userId) => {
     WebIM.conn.acceptInvitation(userId)
+    // .then(()=>{
+    //     let conversationItem = {
+    //         conversationType: "singleChat",
+    //         conversationId: userId,
+    //     };
+    //     EaseApp.addConversationItem(conversationItem);
+    // })
     store.dispatch(updateRequestStatus({ type: 'contact', name: userId, status: 'accepted' }))
     let { constacts } = store.getState()
     let newContacts = [...constacts, userId]
@@ -79,6 +89,13 @@ export const acceptContactRequest = (userId) => {
 export const declineContactRequest = (userId) => {
     WebIM.conn.declineInvitation(userId)
     store.dispatch(updateRequestStatus({ type: 'contact', name: userId, status: 'ignored' }))
+}
+
+export const editSelfInfoMessage = (obj) => {
+    WebIM.conn.updateUserInfo(obj).then(val => {
+        const res = val.data
+        store.dispatch(setMyUserInfo({ nickName: res?.nickname || '' }))
+    })
 }
 
 export default getContacts;

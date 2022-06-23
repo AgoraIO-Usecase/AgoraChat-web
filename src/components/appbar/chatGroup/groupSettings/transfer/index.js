@@ -7,12 +7,14 @@ import {
 	List,
 	ListItem,
 	ListItemText,
+	Avatar
 } from "@material-ui/core";
 import i18next from "i18next";
 import store from "../../../../../redux/store";
 import Menu from "./menu";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import searchIcon from "../../../../../assets/search@2x.png";
+import { userAvatar } from '../../../../../utils'
 
 const useStyles = makeStyles((theme) => ({
 	transBox: {
@@ -20,8 +22,8 @@ const useStyles = makeStyles((theme) => ({
 		display: "flex",
 		justifyContent: "space-between",
 		alignItems: "center",
-		borderRadius: "12px",
-		padding: "0 15px",
+		// borderRadius: "12px",
+		padding: "0 24px 0 38px !important",
 		background: "#F6F7F8",
 	},
 	searchBox: {
@@ -70,13 +72,39 @@ const useStyles = makeStyles((theme) => ({
 		cursor: "pointer",
 	},
 	listStyle: {
-		background: "#F6F7F8",
+		// background: "#F6F7F8",
 		marginTop: "20px",
 		borderRadius: "16px",
 		height: "550px",
 		overflowX: "hidden",
 		overflowY: "scroll",
+		'& .MuiListItem-gutters': {
+			paddingLeft: '16px',
+		},
+		'& .MuiListItem-button:hover': {
+			background: 'rgb(244, 245, 247)',
+		}
 	},
+	mytransferMenu: {
+		'& .MuiPopover-paper': {
+			borderRadius: '12px',
+		}
+	},
+	gMemberAvatar: {
+		width: "36px",
+		height: "36px",
+		borderRadius: "20px",
+		backgroundColor: "rgb(238, 171, 159)",
+	},
+	ListItemTextName: {
+		marginLeft: '10px'
+	},
+	memberStyle: {
+		color: '#999',
+		'& .MuiTypography-body1': {
+			fontSize: '14px',
+		}
+	}
 }));
 
 const TransFerOwner = ({ onClose }) => {
@@ -92,6 +120,7 @@ const TransFerOwner = ({ onClose }) => {
 	let membersLength = newMembers.length > 0;
 	let searchMembersLength = searchMembers.length > 0;
 	useEffect(() => {
+		console.log(groupMembers, 'groupMembers')
 		let membersAry = [];
 		groupMembers.length > 0 &&
 			groupMembers.forEach((item) => {
@@ -129,7 +158,7 @@ const TransFerOwner = ({ onClose }) => {
 		<Box>
 			<Box className={classes.transBox}>
 				<Typography className={classes.titleStyle}>
-					{i18next.t("TransFerOwner")}
+					{i18next.t("Transfer Ownership")}
 				</Typography>
 				<Box className={classes.searchBox}>
 					{showSearch && (
@@ -172,9 +201,16 @@ const TransFerOwner = ({ onClose }) => {
 									style={{ borderRadius: "16px" }}
 									key={i}
 								>
-									<ListItemText>{item}</ListItemText>
+									<Box
+										className={
+											classes.gMemberAvatar
+										}
+									>
+										<Avatar src={userAvatar(item)} />
+									</Box>
+									<ListItemText className={classes.ListItemTextName}>{item}</ListItemText>
 									<Box className={classes.itemStyle}>
-										<ListItemText>Role</ListItemText>
+										<ListItemText className={classes.memberStyle}>Member</ListItemText>
 										<Box
 											className={classes.iconStyle}
 											onClick={(e) => handleMenu(e, item)}
@@ -187,7 +223,7 @@ const TransFerOwner = ({ onClose }) => {
 						}
 					)}
 			</List>
-			<Menu open={anchorEl} onClose={handleClose} userId={clickUser} />
+			<Menu open={anchorEl} onClose={handleClose} userId={clickUser} className={classes.mytransferMenu} />
 		</Box>
 	);
 };

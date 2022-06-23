@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, createRef } from "react";
 import { makeStyles } from "@material-ui/styles";
 import { useSelector } from "react-redux";
 import closeIcon from '../images/close.png'
@@ -64,6 +64,13 @@ const useStyles = makeStyles((theme) => {
             fontSize: '16px',
             fontWeight: '600',
             color: '#000',
+            background:'#fff',
+            '&:hover':{
+                background: '#F2F2F2',
+            },
+            '&:active':{
+                background: '#E6E6E6',
+            }
         },
         button2: {
             marginLeft: '8px',
@@ -77,6 +84,12 @@ const useStyles = makeStyles((theme) => {
             fontSize: '16px',
             fontWeight: '600',
             color: '#fff',
+            '&:hover':{
+                background: '#104AF2',
+            },
+            '&:active':{
+                background: '#0F46E6',
+            }
         },
         changeName: {
             display: 'flex',
@@ -113,11 +126,13 @@ const useStyles = makeStyles((theme) => {
 
 const ThreadDialog = () => {
     const classes = useStyles();
+    const state = useSelector(state => state)
+    const editNameRef = createRef();
+    const threadName = state?.thread?.threadName || '';
     const [inputValue, changeInputValue] = useState('');
     const handleNameChange = (e) => {
         changeInputValue(e.target.value);
     }
-    const state = useSelector(state => state)
     const threadId = state?.thread?.threadId || '';
     const currentEditPage = state?.thread?.currentEditPage || '';
     const clearInputValue = () => {
@@ -166,8 +181,8 @@ const ThreadDialog = () => {
         if (currentEditPage === 'EditThread') {
             return (
                 <div className={classes.changeName}>
-                    <input className={classes.changeNameInput} value={inputValue} onChange={handleNameChange} maxLength={64}></input>
-                    <img src={deleteIcon} className={classes.deleteIcon} onClick={clearInputValue} alt="deleteIcon"></img>
+                    <input ref={editNameRef} className={classes.changeNameInput} value={inputValue} onChange={handleNameChange} maxLength={64}></input>
+                    {inputValue!=='' && <img src={deleteIcon} className={classes.deleteIcon} onClick={clearInputValue} alt="deleteIcon"></img>}
                 </div>
             )
         }
@@ -185,6 +200,16 @@ const ThreadDialog = () => {
         setShowDialog(currentEditPage === 'EditThread' || currentEditPage === 'DisbandThread' || currentEditPage === 'LeaveThread'  || currentEditPage === 'Notifications')
     }, [currentEditPage])
 
+    useEffect(()=>{
+        if(showDialog && currentEditPage === 'EditThread'){
+            changeInputValue(threadName);
+        }
+    },[currentEditPage,showDialog,threadName])
+
+    useEffect(()=>{
+        editNameRef.current && editNameRef.current.focus();
+    },[editNameRef])
+    
     const showMuteImgOrNot = (flag) => {
 		// setmuteFlag(flag)
 	}

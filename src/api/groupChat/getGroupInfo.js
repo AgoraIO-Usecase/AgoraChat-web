@@ -10,6 +10,7 @@ import { getGroupAdmins } from './groupAdmin'
 import { getGroupMuted } from './groupMute'
 import { getGroupBlock } from './groupBlock'
 import { getGroupWrite } from './groupWhite'
+import { EaseApp } from "chat-uikit2"
 const getGroupInfo = (groupId, type) => {
     let options = {
         groupId: groupId
@@ -23,9 +24,9 @@ const getGroupInfo = (groupId, type) => {
             getGroupBlock(id)
             getGroupWrite(id)
             getGroupFiles(id);
-        }else if (type === 'thread'){
-			getGroupAdmins(id)
-		}
+        } else if (type === 'thread') {
+					getGroupAdmins(id)
+				}
         store.dispatch(groupsInfoAction(res.data[0]))
     })
 }
@@ -41,9 +42,19 @@ export const modifyGroupInfo = (newGroupName, newDescription, handleClose) => {
 		groupName: newGroupName ? newGroupName : groupName,
 		description: newDescription ? newDescription : groupDescription,
 	};
+	const muteDataObj = state.muteDataObj
 	WebIM.conn.modifyGroup(option).then((res) => {
 		console.log("modifyGroupInfo>>>", res);
         getGroupInfo(groupId);
+				let conversationItem = {
+					conversationType: "groupChat",
+					conversationId: groupId,
+					conversationName: option.groupName,
+					ext: {
+						muteFlag: muteDataObj[groupId]
+					}
+				};
+				EaseApp.addConversationItem(conversationItem);
         handleClose && handleClose();
 	});
 };
