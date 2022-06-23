@@ -8,9 +8,9 @@ import WebIM from '../../utils/WebIM'
 import { deleteContact } from "../../api/contactsChat/getContacts"
 import { closeGroup, transferOwner } from "../../api/groupChat/closeGroup";
 import closeIcon from '../../../src/assets/close.png'
-import avatar from '../../../src/assets/avatar2.png'
-import defaultAvatar from '../../../src/assets/avatar_default.png'
-import groupAvatar from "../../../src/assets/avatar_group.png";
+import avatar from '../../../src/assets/avatar2.jpg'
+import defaultAvatar from '../../../src/assets/avatar_default.jpg'
+import groupAvatar from "../../../src/assets/avatar_group.jpg";
 
 const useStyles = makeStyles((theme) => {
     return {
@@ -77,7 +77,10 @@ const useStyles = makeStyles((theme) => {
             width: "150px",
             height: "36px",
             borderRadius: "26px",
-            background: "#114EFF"
+            background: "#114EFF",
+            '&:hover': {
+                background: "#114EFF",
+            }
         },
         btnTextStyle: {
             fontFamily: "Ping Fang SC",
@@ -97,7 +100,7 @@ const useStyles = makeStyles((theme) => {
 
 const ConfirmDialog = (props) => {
     const state = useSelector((state) => state);
-    let { anchorEl, onClose, type, id, apiType } = props;
+    let { anchorEl, onClose, type, id, apiType, btnWord } = props;
     let isContact = type === "contact"
     let isGroup = type === "group"
     let isTransfer = type === "transfer"
@@ -134,12 +137,12 @@ const ConfirmDialog = (props) => {
             <img src={closeIcon} alt="close" className={classes.iconStyle} onClick={onClose} />
             <Box className={classes.infoBox}>
                 <Avatar src={isContact ? avatar : groupAvatar} className={classes.avatarStyle}></Avatar>
-                <Typography className={classes.userTextStyle}>{`${i18next.t("Delete") + ' '}${isContact ? id : groupName}?`}</Typography>
-                <Typography className={classes.defaultTextStyle}>{i18next.t(`Delete this ${type} and associated Chats.`)}</Typography>
+                <Typography className={classes.userTextStyle}>{`${i18next.t(btnWord || "Delete") + ' '}${isContact ? id : groupName}?`}</Typography>
+                <Typography className={classes.defaultTextStyle}>{i18next.t(`${btnWord || 'Delete'} this ${type} and associated Chats.`)}</Typography>
             </Box>
             <Box className={classes.btnBox}>
                 <Button className={classes.btnStyle} onClick={handleDelete}>
-                    <Typography className={classes.btnTextStyle}>{i18next.t("Delete")}</Typography>
+                    <Typography className={classes.btnTextStyle}>{i18next.t(btnWord || "Delete")}</Typography>
                 </Button>
             </Box>
         </>

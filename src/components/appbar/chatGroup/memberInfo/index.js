@@ -6,7 +6,7 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import { EaseApp } from "chat-uikit2";
 import { addContact } from "../../../../api/contactsChat/getContacts";
-import avatarImg from '../../../../assets/avatar1.png'
+import avatarImg from '../../../../assets/avatar1.jpg'
 import newChatIcon from '../../../../assets/newchat@2x.png'
 import addContactIcon from '../../../../assets/addcontact@2x.png'
 

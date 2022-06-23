@@ -21,6 +21,10 @@ export const loginWithToken = (agoraId, agoraToken) => {
 
     return new Promise((resolve,reject) => {
         WebIM.conn.open(options).then(res => {
+            WebIM.conn.fetchUserInfoById(agoraId).then(val => {
+                const res = val.data || {}
+                store.dispatch(setMyUserInfo({ nickName: res[agoraId]?.nickname || '' }))
+            })
             resolve(res)
         }).catch(err => {
             reject(err)

@@ -19,6 +19,10 @@ import back_icon from '../../../../assets/back@2x.png'
 import create_icon from '../../../../assets/create@2x.png'
 import deldete_icon from '../../../../assets/delete@2x.png'
 import groupAvatar from '../../../../assets/groupAvatar.png'
+import { userAvatar } from '../../../../utils'
+import { Avatar } from "@material-ui/core"
+import PanoramaFishEyeIcon from '@material-ui/icons/PanoramaFishEye';
+import CheckCircleRoundedIcon from '@material-ui/icons/CheckCircleRounded';
 
 const useStyles = makeStyles((theme) => {
     return ({
@@ -118,6 +122,9 @@ const useStyles = makeStyles((theme) => {
 			overflow: 'hidden',
 			whiteSpace: 'nowrap',
 		},
+        checkBoxColor: {
+			color: 'rgb(0, 95, 255)',
+		}
     })
 });
 
@@ -244,10 +251,12 @@ const AddGroupMemberDialog = ({ groupInfoData, onClearValue, open, onClose }) =>
                                 return (
                                     <ListItem key={key} onClick={handleSelect(item.id)} className={classes.contactsItem}>
                                         <Box style={{ display: 'flex', alignItems: 'center' }}>
-                                            <Box className={classes.gMemberAvatar}></Box>
+                                            <Box className={classes.gMemberAvatar}>
+                                                <Avatar src={userAvatar(item.id)} />
+                                            </Box>
                                             <Typography className={classes.marginStyle}>{item.id}</Typography>
                                         </Box>
-                                        <Checkbox checked={item.checked} />
+                                        <Checkbox checked={item.checked} icon={<PanoramaFishEyeIcon />} checkedIcon={<CheckCircleRoundedIcon className={classes.checkBoxColor} />} />
                                     </ListItem>
                                 )
                             })}
@@ -260,7 +269,9 @@ const AddGroupMemberDialog = ({ groupInfoData, onClearValue, open, onClose }) =>
                                 return (
                                     <ListItem key={key} className={classes.contactsItem}>
                                         <Box style={{ display: 'flex', alignItems: 'center' }}>
-                                            <Box className={classes.gMemberAvatar} ></Box>
+                                            <Box className={classes.gMemberAvatar} >
+                                                <Avatar src={userAvatar(item)} />
+                                            </Box>
                                             <Typography className={classes.marginStyle}>{item}</Typography>
                                         </Box>
                                         <img src={deldete_icon} alt="" style={{ width: '20px', cursor: 'pointer' }} onClick={deleteGroupMember(item)} />

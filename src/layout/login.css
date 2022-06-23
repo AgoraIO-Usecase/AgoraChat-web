@@ -30,7 +30,7 @@
 }
 
 .login-form-icon {
-    background-image: url('../assets/Icon@2x.png');
+    background-image: url('../assets/Icon@2x.jpg');
     background-size: contain;
     background-repeat: no-repeat;
     width: 100px;
@@ -100,8 +100,8 @@
     font-size: 16px;
     color: #fff;
     position: relative;
-    bottom: -90px;
-    /* bottom: 10%; */
+    /* bottom: -90px; */
+    bottom: -10%;
 }
 
 .main-container {

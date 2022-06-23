@@ -40,11 +40,11 @@ export default function Main() {
             webimAuthObj = JSON.parse(webimAuth)
             if (webimAuthObj.password) {
                 loginWithToken(webimAuthObj.agoraId, webimAuthObj.accessToken)
-                store.dispatch(setMyUserInfo({ agoraId: webimAuthObj.agoraId, nickName: webimAuthObj.nickName, password: webimAuthObj.password }))
+                store.dispatch(setMyUserInfo({ agoraId: webimAuthObj.agoraId, password: webimAuthObj.password }))
             } else {
                 history.push('/login')
             }
-            store.dispatch(setMyUserInfo({ agoraId: webimAuthObj.agoraId, nickName: webimAuthObj.nickName }))
+            store.dispatch(setMyUserInfo({ agoraId: webimAuthObj.agoraId }))
             WebIM.conn.agoraUid = webimAuthObj.agoraUid
         }else if (WebIM.conn.logOut) {
             history.push('/login')  

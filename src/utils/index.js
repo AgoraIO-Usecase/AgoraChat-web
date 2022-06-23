@@ -1,12 +1,12 @@
 import _ from 'lodash'
-import avatarIcon1 from '../assets/avatar1.png'
-import avatarIcon2 from '../assets/avatar2.png'
-import avatarIcon3 from '../assets/avatar3.png'
-import avatarIcon4 from '../assets/avatar4.png'
-import avatarIcon5 from '../assets/avatar5.png'
-import avatarIcon6 from '../assets/avatar6.png'
-import avatarIcon7 from '../assets/avatar7.png'
-import avatarIcon11 from '../assets/avatar11.png'
+import avatarIcon1 from '../assets/avatar1.jpg'
+import avatarIcon2 from '../assets/avatar2.jpg'
+import avatarIcon3 from '../assets/avatar3.jpg'
+import avatarIcon4 from '../assets/avatar4.jpg'
+import avatarIcon5 from '../assets/avatar5.jpg'
+import avatarIcon6 from '../assets/avatar6.jpg'
+import avatarIcon7 from '../assets/avatar7.jpg'
+import avatarIcon11 from '../assets/avatar11.jpg'
 
 let userAvatars = {
   1: avatarIcon1,

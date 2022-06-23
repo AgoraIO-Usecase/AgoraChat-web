@@ -15,13 +15,13 @@ import requestsIcon from '../../assets/requests@2x.png'
 import settingsIcon from '../../assets/settings@2x.png'
 import logoutIcon from '../../assets/logout@2x.png'
 
-import avater1 from '../../assets/avatar1.png'
-import avater2 from '../../assets/avatar2.png'
-import avater3 from '../../assets/avatar3.png'
-import avater4 from '../../assets/avatar4.png'
-import avater5 from '../../assets/avatar5.png'
-import avater6 from '../../assets/avatar6.png'
-import avater7 from '../../assets/avatar7.png'
+import avater1 from '../../assets/avatar1.jpg'
+import avater2 from '../../assets/avatar2.jpg'
+import avater3 from '../../assets/avatar3.jpg'
+import avater4 from '../../assets/avatar4.jpg'
+import avater5 from '../../assets/avatar5.jpg'
+import avater6 from '../../assets/avatar6.jpg'
+import avater7 from '../../assets/avatar7.jpg'
 import AgoraChat from '../../assets/AgoraChat@2x.png'
 import menuIcon from '../../assets/menu@2x.png'
 import store from '../../redux/store'
@@ -33,6 +33,8 @@ import SecondConfirmDialog from "../common/secondConfirmDialog"
 // import UserInfoPopover from './userInfo'
 import PresenceStatus from './presence/index'
 import { useSelector } from "react-redux";
+import { getLocalStorageData } from '../../utils/notification'
+import { acceptGroupRequest } from '../../api/groupChat/groupRequest'
 
 const AVATARS = [avater1, avater2, avater3, avater4, avater5, avater6, avater7]
 export default function Header() {
@@ -55,6 +57,11 @@ export default function Header() {
     // let unDealRequestsNum = countNum(requests.group) + countNum(requests.contact)
 
     useEffect(() => {
+        if (getLocalStorageData().groupRequestSwitch && requests.group.length) {
+            requests.group.forEach(item => {
+                acceptGroupRequest(item.name, item.groupId)
+            })
+        }
         let unDealRequestsNum = countNum(requests.group) + countNum(requests.contact)
         setUnDealRequestsNum(unDealRequestsNum)
     }, [requests])

@@ -11,7 +11,7 @@ import { setSilentModeForConversation, getSilentModeForConversation } from '../.
 import { userAvatar } from '../../../utils'
 import ConfirmDialog from '../../common/confirmDialog'
 
-import avatarImg from "../../../assets/avatar2.png";
+import avatarImg from "../../../assets/avatar2.jpg";
 import blockIcon from "../../../assets/block@2x.png";
 import deleteIcon from "../../../assets/red@2x.png";
 
