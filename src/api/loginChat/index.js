@@ -7,9 +7,6 @@ import { createHashHistory } from 'history'
 import { reject } from 'lodash';
 const history = createHashHistory()
 export const getToken = (agoraId, password) => {
-    //a1-hsb.easemob.com
-    // a1.easemob.com
-    // a1-test.easemob.com  
     return postData('https://a41.easemob.com/app/chat/user/login', { "userAccount": agoraId, "userPassword": password })
 }
 export const signUp = (agoraId, password) => {
@@ -24,6 +21,10 @@ export const loginWithToken = (agoraId, agoraToken) => {
 
     return new Promise((resolve,reject) => {
         WebIM.conn.open(options).then(res => {
+            WebIM.conn.fetchUserInfoById(agoraId).then(val => {
+                const res = val.data || {}
+                store.dispatch(setMyUserInfo({ nickName: res[agoraId]?.nickname || '' }))
+            })
             resolve(res)
         }).catch(err => {
             reject(err)

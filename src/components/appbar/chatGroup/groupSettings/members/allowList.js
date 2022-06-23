@@ -30,6 +30,17 @@ const useStyles = makeStyles((theme) => {
             backgroundColor: "rgb(238, 171, 159)",
             marginRight: '10px',
         },
+        userItem: {
+            width: "100%",
+            textTransform: "none",
+            display: "flex",
+            justifyContent: "space-between",
+            paddingTop: '0px',
+            paddingBottom: '0px',
+            '& .MuiButton-root:hover': {
+              background: '#F6F7F8',
+            }
+        },
     })
 });
 
@@ -43,7 +54,7 @@ const AllowList = () => {
             {groupAllowList.length > 0 ? <List>
                 {groupAllowList.map((item, key) => {
                     let owner = item === groupOwner
-                    return <ListItem key={key}>
+                    return <ListItem key={key} className={classes.userItem}>
                         <Button className={classes.gUserName}>
                             <Box
                                 className={

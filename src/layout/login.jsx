@@ -59,7 +59,7 @@ export default function Login() {
                     }, 1500)
                 })
                 
-                store.dispatch(setMyUserInfo({ agoraId: values.agoraId, nickName: values.nickName, password: values.password }))
+                store.dispatch(setMyUserInfo({ agoraId: values.agoraId, password: values.password }))
                 sessionStorage.setItem('webim_auth', JSON.stringify({ ...values, accessToken, agoraUid }))
             }).catch(() => {
                 // store.dispatch(setFetchingStatus(false))

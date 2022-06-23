@@ -10,14 +10,14 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 import RemoveCircleOutlineIcon from '@material-ui/icons/RemoveCircleOutline';
 import { IconButton } from '@material-ui/core';
 import deleteContactIcon from '../../../assets/deletecontact@2x.png'
-import avater1 from '../../../assets/avatar1.png'
-import avater2 from '../../../assets/avatar2.png'
-import avater3 from '../../../assets/avatar3.png'
-import avater4 from '../../../assets/avatar4.png'
-import avater5 from '../../../assets/avatar5.png'
-import avater6 from '../../../assets/avatar6.png'
-import avater7 from '../../../assets/avatar7.png'
-import avater11 from '../../../assets/avatar11.png'
+import avater1 from '../../../assets/avatar1.jpg'
+import avater2 from '../../../assets/avatar2.jpg'
+import avater3 from '../../../assets/avatar3.jpg'
+import avater4 from '../../../assets/avatar4.jpg'
+import avater5 from '../../../assets/avatar5.jpg'
+import avater6 from '../../../assets/avatar6.jpg'
+import avater7 from '../../../assets/avatar7.jpg'
+import avater11 from '../../../assets/avatar11.jpg'
 import avaterSelect from '../../../assets/avatar_select@2x.png'
 
 import CheckIcon from '@material-ui/icons/Check';
@@ -37,11 +37,12 @@ import { setMyUserInfo } from '../../../redux/actions'
 import store from '../../../redux/store'
 import { message } from "../../common/alert";
 
-import { removeFromBlackList, deleteContact } from '../../../api/contactsChat/getContacts'
+import { removeFromBlackList, deleteContact, editSelfInfoMessage } from '../../../api/contactsChat/getContacts'
 import { handlerTime, getMillisecond, computedItervalTime, timeIntervalToMinutesOrHours, setTimeVSNowTime, getLocalStorageData } from '../../../utils/notification'
 import { setSilentModeForAll, getSilentModeForAll, getSilentModeForConversations, setPushPerformLanguage, getPushPerformLanguage } from '../../../api/notificationPush'
 import SecondConfirmDialog from "../../common/secondConfirmDialog"
 import { userAvatar } from '../../../utils'
+import settingsIcon from '../../../assets/settings@2x.png'
 
 const useStyles = makeStyles((theme) => {
     return {
@@ -411,7 +412,7 @@ const useStyles = makeStyles((theme) => {
             lineHeight: '55px',
             paddingLeft: '14px',
             position: 'relative',
-            marginTop: '16px',
+            marginBottom: '12px',
         },
         switchMargin: {
             position: 'absolute',
@@ -479,6 +480,26 @@ const useStyles = makeStyles((theme) => {
             justifyContent: 'space-between',
             alignItems: 'center',
             marginRight: '10px',
+        },
+        gInputBaseWidth: {
+            width: '230px',
+            marginLeft:"10px"
+        },
+        spanNickName: {
+            backgroundColor: "#F4F5F7",
+            fontWeight: '600',
+            fontSize: '16px',
+        },
+        doneNickName: {
+            cursor: 'pointer',
+            color: 'rgb(30, 100, 246)',
+            fontWeight: '600',
+        },
+        settingDialogLu: {
+            '& .MuiBackdrop-root': {
+                backdropFilter: 'blur(6px)',
+                background: 'rgba(255,255,255,.8)',
+            }
         }
     }
 })
@@ -566,6 +587,8 @@ export default function Setting({ open, onClose }) {
     const [blockList, setblockList] = useState(blackList)
     const [nickNameLen, setNickNameLen] = useState(false)
     const inputNickName = createRef()
+    const [typingSwitch, setTypingSwitch] = useState(false)
+    const [groupRequestSwitch, setGroupRequestSwitch] = useState(false)
 
     useEffect(() => {
         if (myUserInfo) {
@@ -590,9 +613,16 @@ export default function Setting({ open, onClose }) {
             setTabIndex(3)
         } else if (e.target.innerHTML.includes('Notifications')) {
             setTabIndex(4)
+        } else if (e.target.innerHTML.includes('General')) {
+            setTabIndex(5)
         }
     }
-
+    const submitNickName = () => {
+        if (nickName.length > 0) {
+            editSelfInfoMessage({ nickname: nickName })
+        }
+        setEditStatus(false)
+    }
     const handleEditClick = () => {
         setEditStatus(true)
     }
@@ -601,7 +631,7 @@ export default function Setting({ open, onClose }) {
     }
     const handleEditChange = (e) => {
         let value = e.target.value;
-        if (value.length === 0 || value.length > 12) {
+        if (value.length < 0 || value.length > 12) {
             if (nickNameLen) {
                 setNickNameLen(false)
                 message.error(`${i18next.t("Nickname is empty or exceeds the limit")}`);
@@ -652,6 +682,10 @@ export default function Setting({ open, onClose }) {
                         <img src={infoIcon} alt="info" className={classes.menuIcon} />
                         Info
                     </ListItemButton>
+                    <ListItemButton key={5} className={classes.menuBtn} selected={tabIndex === 5}>
+                        <img src={settingsIcon} alt="info" className={classes.menuIcon} />
+                        General
+                    </ListItemButton>
                     <ListItemButton key={3} className={classes.menuBtn} selected={tabIndex === 4}>
                         <img src={notificationsIcon} alt="notifications" className={classes.menuIcon} />
                         Notifications
@@ -680,6 +714,8 @@ export default function Setting({ open, onClose }) {
             return aboutTabPanel()
         } else if (tabIndex === 4) {
             return notificationTabPanel()
+        } else if (tabIndex === 5) {
+            return generalTabPanel()
         }
     }
     const handleSelectChange = (item) => {
@@ -703,7 +739,6 @@ export default function Setting({ open, onClose }) {
     }
     const setNotDisturb = (params) => {
         setSilentModeForAll(params).then(res => {
-            console.log(res, 'setSilentModeForAll')
         })
     }
 
@@ -712,7 +747,6 @@ export default function Setting({ open, onClose }) {
     }
     const getNotDisturb = () => {
         getSilentModeForAll().then(res => {
-            console.log(res, 'getSilentModeForAll')
             const type = res.type
             if (type) {
                 selectList.forEach(item => {
@@ -759,9 +793,17 @@ export default function Setting({ open, onClose }) {
         if (getLocalStorageData().previewText) {
             setTextSwitch(getLocalStorageData().previewText)
         }
+        if (getLocalStorageData().typingSwitch) {
+            setTypingSwitch(getLocalStorageData().typingSwitch)
+        }
+        if (getLocalStorageData().groupRequestSwitch) {
+            setGroupRequestSwitch(getLocalStorageData().groupRequestSwitch)
+        }
+        if (getLocalStorageData().deleteSwitch) {
+            setDeleteSwitch(getLocalStorageData().deleteSwitch)
+        }
     }, [open])
     const handleChangeRadio = (event) => {
-        console.log(event.target.value, 'event.target.value')
         setDefaultValue(event.target.value)
     }
     const handlerArrowImg = () => {
@@ -801,19 +843,19 @@ export default function Setting({ open, onClose }) {
                 duration: getMillisecond(radioList[radioIndex].time)
             }
         }
-        console.log(params, 'params')
         setNotDisturb(params)
         setSelectDisabled(true)
         setTurnOffBtnFlag(true)
     }
 
     const handleSwitchChange = (e, val) => {
-        console.log(e, val)
         const checked = e.target.checked
         const soundPreviewText = {
             sound: soundSwitch,
             previewText: textSwitch,
-            deleteSwitch: deleteSwitch
+            deleteSwitch: deleteSwitch,
+            typingSwitch: typingSwitch,
+            groupRequestSwitch: groupRequestSwitch
         }
         if (Number(val) === 1) {
             setSoundSwitch(checked)
@@ -821,6 +863,12 @@ export default function Setting({ open, onClose }) {
         } else if (Number(val) === 2) {
             setDeleteSwitch(checked)
             soundPreviewText['deleteSwitch'] = checked
+        } else if (Number(val) === 3) {
+            setTypingSwitch(checked)
+            soundPreviewText['typingSwitch'] = checked
+        } else if (Number(val) === 4) {
+            setGroupRequestSwitch(checked)
+            soundPreviewText['groupRequestSwitch'] = checked
         } else {
             setTextSwitch(checked)
             soundPreviewText['previewText'] = checked
@@ -875,7 +923,6 @@ export default function Setting({ open, onClose }) {
         setblockList(tempArr)
     }, [blackList])
     const searchChangeValue = (e) => {
-		console.log(e.target.value, blackList)
         const value = e.target.value
         if (!value) {
             setblockList(blackList)
@@ -902,34 +949,26 @@ export default function Setting({ open, onClose }) {
         return (
             <div className={classes.infoPanel} style={{display: 'block'}}>
                 {editStatus ? (
-                    <Box className={classes.textfieldStyle}>
-                        <TextField
-                            onBlur={handleEditBlur}
+                    <Box className={classes.infoSwitchItem}>
+                        <span className={classes.spanNickName}>NickName</span>
+                        <InputBase
+                            type="text"
+                            max={12}
+                            className={classes.gInputBaseWidth}
+                            placeholder={i18next.t("Your NickName")}
+                            value={nickName}
                             onChange={handleEditChange}
-                            id="filled-helperText"
-                            label="NickName"
-                            defaultValue={nickName}
-                            variant="standard"
-                            fullWidth
                             inputRef={inputNickName}
                         />
-                        <Box className={classes.numberBox}>
-                            <Typography className={classes.numberStyle}>
-                                {nickName?.length}/{maxLength}
-                            </Typography>
-                        </Box>
+                        <span className={classes.doneNickName} onClick={submitNickName}>Done</span>
                     </Box>
                 ) : (
                     <div className={classes.infoItem}>
-                        <span>Nickname</span>
+                        <span>NickName</span>
                         <span>{nickName}</span>
                         <span onClick={handleEditClick}>Edit</span>
                     </div>
                 )}
-                <div className={classes.infoSwitchItem}>
-                    <span className={classes.notifySubTitle} style={{fontSize: '16px'}}>{i18next.t('Delete the Chat after Leaving Group')}</span>
-                    <Switch checked={deleteSwitch} color="primary" className={classes.switchMargin} onChange={(e) => handleSwitchChange(e, 2)}></Switch>
-                </div>
             </div>
         );
     }
@@ -1173,6 +1212,25 @@ export default function Setting({ open, onClose }) {
         )
     }
 
+    function generalTabPanel () {
+        return (
+            <div className={classes.infoPanel} style={{display: 'block'}}>
+                <div className={classes.infoSwitchItem}>
+                    <span className={classes.notifySubTitle} style={{fontSize: '16px'}}>{i18next.t('Show Typing')}</span>
+                    <Switch checked={typingSwitch} color="primary" className={classes.switchMargin} onChange={(e) => handleSwitchChange(e, 3)}></Switch>
+                </div>
+                <div className={classes.infoSwitchItem}>
+                    <span className={classes.notifySubTitle} style={{fontSize: '16px'}}>{i18next.t('Add Group Request')}</span>
+                    <Switch checked={groupRequestSwitch} color="primary" className={classes.switchMargin} onChange={(e) => handleSwitchChange(e, 4)}></Switch>
+                </div>
+                <div className={classes.infoSwitchItem}>
+                    <span className={classes.notifySubTitle} style={{fontSize: '16px'}}>{i18next.t('Delete the Chat after Leaving Group')}</span>
+                    <Switch checked={deleteSwitch} color="primary" className={classes.switchMargin} onChange={(e) => handleSwitchChange(e, 2)}></Switch>
+                </div>
+            </div>
+        )
+    }
+
     function renderContent() {
         return (
             <div className={classes.root}>
@@ -1189,6 +1247,7 @@ export default function Setting({ open, onClose }) {
             title={i18next.t("Settings")}
             content={renderContent()}
             maxWidth={700}
+            className={classes.settingDialogLu}
         ></CommonDialog>
     );
 }
