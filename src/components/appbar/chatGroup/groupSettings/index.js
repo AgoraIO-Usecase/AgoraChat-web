@@ -178,6 +178,7 @@ const GroupSettingsDialog = ({ open, onClose, currentGroupId, authorEl }) => {
 	const [secondSure, setSecondSure] = useState(false)
 	const [GroupStatus, setGroupStatus] = useState('')
 	const [groupContent, setgroupContent] = useState('')
+	const [btnWord, setBtnWord] = useState('')
 
 	const handleChange = (event, newValue) => {
 		setValue(newValue);
@@ -186,7 +187,8 @@ const GroupSettingsDialog = ({ open, onClose, currentGroupId, authorEl }) => {
 		setmuteFlag(flag)
 	}
 
-	const handleConfirmDialogChange = (e) => {
+	const handleConfirmDialogChange = (val) => {
+		setBtnWord(val)
 		setConfirmStatus(true)
 		onClose()
 	}
@@ -387,14 +389,14 @@ const GroupSettingsDialog = ({ open, onClose, currentGroupId, authorEl }) => {
 							{isOwner ? (
 								<Typography
 									className={classes.gCloseText}
-									onClick={handleConfirmDialogChange}
+									onClick={() => handleConfirmDialogChange('Disband')}
 								>
 									{i18next.t("Disband this Group")}
 								</Typography>
 							) : (
 								<Typography
 									className={classes.gCloseText}
-									onClick={handleConfirmDialogChange}
+									onClick={() => handleConfirmDialogChange('Leave')}
 								>
 									{i18next.t("Leave the Group")}
 								</Typography>
@@ -458,6 +460,7 @@ const GroupSettingsDialog = ({ open, onClose, currentGroupId, authorEl }) => {
 					anchorEl={confirmStatus}
 					onClose={handleConfirmDialogClose}
 					type={"group"}
+					btnWord={btnWord}
 				/>
 			</Box>
 		);

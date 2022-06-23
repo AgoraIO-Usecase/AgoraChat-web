@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import "./member.css"
 import { Box, Popover } from "@material-ui/core";
 import close from '../images/close.png'
-import avatarImg from '../../../assets/avatar1.png'
+import avatarImg from '../../../assets/avatar1.jpg'
 import { getThreadMembers, removeMemberFromThread } from '../../../api/thread'
 import store from "../../../redux/store";
 import { setThreadInfo } from '../../../redux/actions'

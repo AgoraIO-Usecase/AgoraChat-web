@@ -8,13 +8,13 @@ import { makeStyles } from '@material-ui/core/styles';
 import { EaseApp } from "chat-uikit2";
 import { useSelector } from 'react-redux'
 
-import avatarIcon1 from '../../../assets/avatar1.png'
-import avatarIcon2 from '../../../assets/avatar2.png'
-import avatarIcon3 from '../../../assets/avatar3.png'
-import avatarIcon4 from '../../../assets/avatar4.png'
-import avatarIcon5 from '../../../assets/avatar5.png'
-import avatarIcon6 from '../../../assets/avatar6.png'
-import avatarIcon7 from '../../../assets/avatar7.png'
+import avatarIcon1 from '../../../assets/avatar1.jpg'
+import avatarIcon2 from '../../../assets/avatar2.jpg'
+import avatarIcon3 from '../../../assets/avatar3.jpg'
+import avatarIcon4 from '../../../assets/avatar4.jpg'
+import avatarIcon5 from '../../../assets/avatar5.jpg'
+import avatarIcon6 from '../../../assets/avatar6.jpg'
+import avatarIcon7 from '../../../assets/avatar7.jpg'
 
 import offlineImg from '../../../assets/Offline.png'
 import onlineIcon from '../../../assets/Online.png'

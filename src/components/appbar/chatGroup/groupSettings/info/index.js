@@ -146,7 +146,14 @@ const GroupChatInfo = () => {
 	let currentLoginUser = WebIM.conn.context.userId;
 	let isPermissions =
 		owner === currentLoginUser || admin.includes(currentLoginUser);
-
+	useEffect(() => {
+		if (groupDescription) {
+			setDescValue(groupDescription);
+		}
+		if (groupName) {
+			setNameValue(groupName)
+		}
+	}, [groupName, groupDescription])
 	const handleNameChange = (e) => {
 		let value = e.target.value;
 		if (value.length === 0 || value.length > 20) {
@@ -157,7 +164,7 @@ const GroupChatInfo = () => {
 	}
 
 	const handleDescChange = (e) => {
-		setDescValue(e.target.valu);
+		setDescValue(e.target.value);
 	}
 
 	const handleModifyGroupInfo = () => {
@@ -171,7 +178,6 @@ const GroupChatInfo = () => {
 	const inputEl = createRef()
 	const inputTextarea = createRef()
 	useEffect(() => {
-		console.log(inputEl, inputTextarea)
 		inputEl.current && inputEl.current.focus()
 		inputTextarea.current && inputTextarea.current.focus()
 	}, [nameEditStatus, descEditStatus])
@@ -206,9 +212,7 @@ const GroupChatInfo = () => {
 						className={classes.descEditStatusStyle}
 						onClick={() => {
 							setDescEditStatus(false);
-							console.log(inputEl, inputTextarea)
 							setTimeout(() => {
-								console.log(inputEl, inputTextarea)
 								inputTextarea.current && inputTextarea.current.focus()
 							}, 300)
 						}}
@@ -246,7 +250,7 @@ const GroupChatInfo = () => {
 							inputRef={inputEl}
 							type="text"
 							max={20}
-							defaultValue={groupName}
+							value={nameValue}
 							disabled={nameEditStatus}
 							onChange={handleNameChange}
 						/>
@@ -264,7 +268,7 @@ const GroupChatInfo = () => {
 							multiline={true}
 							max={20}
 							rows={3}
-							defaultValue={groupDescription}
+							value={descValue}
 							disabled={descEditStatus}
 							style={{
 								height: "60px",
