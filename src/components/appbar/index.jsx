@@ -71,7 +71,7 @@ export default function Header() {
         return arr.reduce((prev, curr) => {
 
             console.log(prev, curr)
-            if (curr.status === 'pedding') {
+            if (curr.status === 'pending') {
                 prev++
                 return prev
             }

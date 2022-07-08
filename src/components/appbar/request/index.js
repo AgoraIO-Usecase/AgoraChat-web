@@ -1,6 +1,6 @@
 import React, { memo, useState } from 'react'
 import { makeStyles } from '@material-ui/core/styles';
-import { Box, Avatar, Button, Tabs, Tab, Typography, IconButton, InputBase } from '@material-ui/core';
+import { Box, Avatar, Button, Tabs, Tab, Typography, IconButton, InputBase, Menu, MenuItem } from '@material-ui/core';
 import CommonDialog from '../../common/dialog'
 import i18next from "i18next";
 import ClearIcon from '@material-ui/icons/Clear';
@@ -9,7 +9,13 @@ import { acceptContactRequest, declineContactRequest } from '../../../api/contac
 import { acceptGroupRequest, declineGroupRequest } from '../../../api/groupChat/groupRequest'
 import addcontactIcon from '../../../assets/addcontact@2x.png'
 import search_icon from '../../../assets/search.png'
-
+import menu_icon from '../../../assets/menu@2x.png'
+import accept_icon from '../../../assets/acceptall@2x.png'
+import ignore_icon from '../../../assets/ignoreall@2x.png'
+import clear_icon from '../../../assets/clearall@2x.png'
+import group_request from '../../../assets/group_requates@2x.png'
+import store from "../../../redux/store";
+import { setRequests } from '../../../redux/actions'
 const useStyles = makeStyles((theme) => ({
     root: {
         width: '700px',
@@ -67,7 +73,7 @@ const useStyles = makeStyles((theme) => ({
         flex: 1,
         width: '100%',
         borderRadius: '16px',
-        // margin: '5px',
+        margin: '5px 0',
         display: 'flex',
         padding: '8px',
         boxSizing: 'border-box',
@@ -103,11 +109,11 @@ const useStyles = makeStyles((theme) => ({
         }
     },
     menusBox: {
-        display: 'flex', 
-        alignItems: 'center', 
-        justifyContent: 'flex-start', 
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'flex-start',
         width: '100%',
-        cursor:'pointer',
+        cursor: 'pointer',
     },
     menus: {
         color: '#000000',
@@ -115,7 +121,7 @@ const useStyles = makeStyles((theme) => ({
         fontWeight: '500',
         fontFamily: 'Roboto',
         textTransform: ' none',
-        character:'0',
+        character: '0',
         borderRadius: '8px',
     },
     IconButtonStyle: {
@@ -138,11 +144,12 @@ const useStyles = makeStyles((theme) => ({
     },
     searchBox: {
         height: '26px',
-        marginBottom: '20px',
         display: 'flex',
         alignItems: 'center',
         borderRadius: '23px',
         background: '#F4F5F7',
+        flex: '1',
+        marginRight: '5px'
     },
     inputSearch: {
         borderBottom: 'none',
@@ -154,6 +161,10 @@ const useStyles = makeStyles((theme) => ({
         height: '18px',
         paddingLeft: '8px'
     },
+    menuIcon: {
+        width: '30px',
+        height: '30px'
+    }
 }))
 
 function a11yProps(index) {
@@ -201,7 +212,7 @@ function RequestItem(props) {
         }
     }
     let buttonContent = null
-    if (data.status === 'pedding') {
+    if (data.status === 'pending') {
         buttonContent = (
             <>
                 <div color="primary" variant="contained" className={classes.acceptButton} onClick={accept} > {i18next.t('accept')}</div >
@@ -235,32 +246,134 @@ function Notice(props) {
     const classes = useStyles();
     const [value, setValue] = React.useState(0);
     const requests = useSelector(state => state?.requests) || { contact: [], group: [] }
-
+    const [requestsCp, setRequestsCp] = useState(requests)
     const { open, onClose } = props
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
-    const [inputValue, setInputValue] = useState('')
 
-    const hangleInputValue = (event) => {
-        setInputValue(event.target.value)
+    const handleInputValue = (event) => {
+        const requestsCp2 = JSON.parse(JSON.stringify(requestsCp))
+        if (value === 0) {
+            requestsCp2.contact.forEach(item => {
+                if (!item.name.includes(event.target.value)) {
+                    item.hidden = true
+                } else {
+                    item.hidden = false
+                }
+            })
+        } else {
+            requestsCp2.group.forEach(item => {
+                if (!item.name.includes(event.target.value)) {
+                    item.hidden = true
+                } else {
+                    item.hidden = false
+                }
+            })
+        }
+        setRequestsCp(requestsCp2)
     }
     const AddedContactMenu = () => {
         return (
             <Box className={classes.menusBox}>
                 <img src={addcontactIcon} alt='new chat' style={{ width: '30px' }} />
                 <Typography style={{ marginLeft: '8px' }}>{`${i18next.t('New Friends')}`}</Typography>
-            </Box> 
+            </Box>
         )
     }
     const AddedGroupsMenu = () => {
         return (
             <Box className={classes.menusBox}>
-                <img src={addcontactIcon} alt='new chat' style={{ width: '30px' }} />
+                <img src={group_request} alt='new chat' style={{ width: '30px' }} />
                 <Typography style={{ marginLeft: '8px' }}>{`${i18next.t('Group Requests')}`}</Typography>
-            </Box> 
+            </Box>
         )
     }
+    const [sessionEl, setSessionEl] = useState(null);
+    const handleMenuClick = (e) => {
+        setSessionEl(e.currentTarget);
+    };
+    const handleMenuItemClick = (operate, chatType) => () => {
+        console.log(operate, value)
+        switch (operate) {
+            case 'accept':
+                if (value === 0) {
+                    requests.contact.forEach((data) => {
+                        console.log('data', data) // ignored  accepted pending
+                        if (data.status === 'pending') {
+                            acceptContactRequest(data.name)
+                        }
+                    })
+                } else {
+                    requests.group.forEach((data) => {
+                        if (data.status === 'pending') {
+                            acceptGroupRequest(data.name, data.groupId)
+                        }
+                    })
+                }
+                break;
+            case 'ignore':
+                if (value === 0) {
+                    requests.contact.forEach((data) => {
+                        console.log('data', data)
+                        if (data.status === 'pending') {
+                            declineContactRequest(data.name)
+                        }
+                    })
+                } else {
+                    requests.group.forEach((data) => {
+                        if (data.status === 'pending') {
+                            declineGroupRequest(data.name, data.groupId)
+                        }
+                    })
+                }
+                break;
+            case 'clear':
+                if (value === 0) {
+                    store.dispatch(setRequests({
+                        ...requests,
+                        contact: []
+                    }))
+                } else {
+                    store.dispatch(setRequests({
+                        ...requests,
+                        group: []
+                    }))
+                }
+                break;
+        }
+        setSessionEl(null)
+    }
+    const renderMenu = () => {
+        return (
+            <Menu
+                id="simple-menu"
+                anchorEl={sessionEl}
+                keepMounted
+                open={Boolean(sessionEl)}
+                onClose={() => setSessionEl(null)}
+            >
+                <MenuItem onClick={handleMenuItemClick('accept')}>
+                    <img src={accept_icon} alt="" className={classes.menuIcon} />
+                    <Typography variant="inherit" noWrap>
+                        {i18next.t("Accept all")}
+                    </Typography>
+                </MenuItem>
+                <MenuItem onClick={handleMenuItemClick('ignore')}>
+                    <img className={classes.menuIcon} src={ignore_icon} alt="" />
+                    <Typography variant="inherit" noWrap>
+                        {i18next.t("Ignore all")}
+                    </Typography>
+                </MenuItem>
+                <MenuItem onClick={handleMenuItemClick('clear')}>
+                    <img className={classes.menuIcon} src={clear_icon} alt="" />
+                    <Typography variant="inherit" noWrap>
+                        {i18next.t("Clear all")}
+                    </Typography>
+                </MenuItem>
+            </Menu>
+        );
+    };
     function renderContent() {
         return (
             <div className={classes.root}>
@@ -277,32 +390,47 @@ function Notice(props) {
                         sx={{ borderRight: 1, borderColor: 'divider' }}
                         className={classes.tabsRequest}
                     >
-                        <Tab label={<AddedContactMenu/>} {...a11yProps(0)} className={classes.menus} />
-                        <Tab label={<AddedGroupsMenu/>} {...a11yProps(1)} className={classes.menus} />
+                        <Tab label={<AddedContactMenu />} {...a11yProps(0)} className={classes.menus} />
+                        <Tab label={<AddedGroupsMenu />} {...a11yProps(1)} className={classes.menus} />
                     </Tabs>
                     <TabPanel value={value} index={0} className={classes.TabPanelStyle}>
-                        {/* <Box className={classes.searchBox}>
-                            <img src={search_icon} alt="" className={classes.searchImg} />
-                            <InputBase placeholder={i18next.t('Group ID')} className={classes.inputSearch} onChange={hangleInputValue} />
-                        </Box> */}
-                        {requests.contact.map(value => {
-                            return (
-                                <RequestItem key={value.name} data={value} type="contact" text="Sent you a friend request." />
-                            )
+                        <Box style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '0', margin: '10px 0 20px 0' }}>
+                            <Box className={classes.searchBox}>
+                                <img src={search_icon} alt="" className={classes.searchImg} />
+                                <InputBase placeholder={i18next.t('Search')} className={classes.inputSearch} onChange={handleInputValue} />
+                            </Box>
+                            <IconButton circle style={{ borderRadius: '50%', width: '32px', height: '32px' }} onClick={handleMenuClick}>
+                                <img src={menu_icon} alt="menu" style={{ width: '32px', height: '32px' }} />
+                            </IconButton>
+                        </Box>
+                        {requestsCp.contact.map(value => {
+                            if (!value.hidden) {
+                                return (
+                                    <RequestItem key={value.name} data={value} type="contact" text="Sent you a friend request." />
+                                )
+                            }
                         })}
                     </TabPanel>
                     <TabPanel value={value} index={1} className={classes.TabPanelStyle}>
-                        {/* <Box className={classes.searchBox}>
-                            <img src={search_icon} alt="" className={classes.searchImg} />
-                            <InputBase placeholder={i18next.t('Group ID')} className={classes.inputSearch} onChange={hangleInputValue} />
-                        </Box> */}
-                        {requests.group.map((value,key) => {
-                            return (
-                                <RequestItem key={key} data={value} type="group" text={"Want to join the " + value.groupId} />
-                            )
+                        <Box style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '0', margin: '10px 0 20px 0' }}>
+                            <Box className={classes.searchBox}>
+                                <img src={search_icon} alt="" className={classes.searchImg} />
+                                <InputBase placeholder={i18next.t('Search')} className={classes.inputSearch} onChange={handleInputValue} />
+                            </Box>
+                            <IconButton onClick={handleMenuClick} circle style={{ borderRadius: '50%', width: '32px', height: '32px' }}>
+                                <img src={menu_icon} alt="menu" style={{ width: '32px', height: '32px' }} />
+                            </IconButton>
+                        </Box>
+                        {requestsCp.group.map((value, key) => {
+                            if (!value.hidden) {
+                                return (
+                                    <RequestItem key={key} data={value} type="group" text={"Want to join the " + value.groupId} />
+                                )
+                            }
                         })}
                     </TabPanel>
                 </Box>
+                {renderMenu()}
             </div>
         )
     }

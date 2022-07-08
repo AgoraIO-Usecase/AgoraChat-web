@@ -17,8 +17,8 @@ import { handlerThreadChangedMsg } from "../api/thread/index";
 import i18next from "i18next";
 import { message } from '../components/common/alert'
 import { EaseApp } from "chat-uikit2"
-function publicNotify (message, msgType, iconTitle = {}, body = 'You Have A New Message') {
-    const { chatType, from, data, type, to, time, url} = message
+function publicNotify(message, msgType, iconTitle = {}, body = 'You Have A New Message') {
+    const { chatType, from, data, type, to, time, url } = message
     let { myUserInfo: { agoraId }, muteDataObj, globalSilentMode: { global, single, group, threading } } = store.getState()
     handlerNewMessage(message, true)
     if ((global[agoraId]?.ignoreDuration && !setTimeVSNowTime(global[agoraId], true))) {
@@ -74,7 +74,7 @@ function publicNotify (message, msgType, iconTitle = {}, body = 'You Have A New 
     handlerNewMessage(message, false)
     body = `You Have A New Message🀧sessionType=${sessionType}&sessionId=${from}`
     if (getLocalStorageData().previewText) {
-        switch(msgType){
+        switch (msgType) {
             case 'text':
                 body = `${from}: ${data}`
                 break
@@ -99,9 +99,9 @@ function publicNotify (message, msgType, iconTitle = {}, body = 'You Have A New 
     if (getLocalStorageData().sound) {
         playSound()
     }
-    notifyMe({body, tag: time + Math.random().toString(), icon: url}, iconTitle)
+    notifyMe({ body, tag: time + Math.random().toString(), icon: url }, iconTitle)
 }
-function handlerNewMessage (message, realFlag) {
+function handlerNewMessage(message, realFlag) {
     const { type, from, to } = message
     const { unread, currentSessionId } = store.getState()
     let sessionType = ''
@@ -148,7 +148,7 @@ function handlerNewMessage (message, realFlag) {
 }
 const history = createHashHistory()
 const initListen = () => {
-	WebIM.conn.listen({
+    WebIM.conn.listen({
         onOpened: () => {
             history.push('/main')
             getSilentModeForAll().finally(res => {
@@ -180,7 +180,7 @@ const initListen = () => {
                 case 'direct_joined':
                     getGroups();
                     break;
-                case 'invite': 
+                case 'invite':
                     agreeInviteGroup(event)
                     // if (getLocalStorageData().sound) {
                     //     playSound()
@@ -198,7 +198,7 @@ const initListen = () => {
             console.log('onContactInvited', msg)
         },
 
-		onTokenWillExpire: () => {
+        onTokenWillExpire: () => {
             let { myUserInfo } = store.getState()
             getToken(myUserInfo.agoraId, myUserInfo.nickName).then((res) => {
                 const { accessToken } = res
@@ -206,10 +206,10 @@ const initListen = () => {
                 console.log('reset token success')
             })
         },
-        onPresenceStatusChange: function(message){
+        onPresenceStatusChange: function (message) {
             let { myUserInfo, presenceList } = store.getState()
             message.forEach(item => {
-                if(myUserInfo.agoraId !== item.userId){
+                if (myUserInfo.agoraId !== item.userId) {
                     presenceList = JSON.parse(JSON.stringify(presenceList))
                     const tempArr = []
                     const obj = {}
@@ -247,12 +247,14 @@ const initListen = () => {
                     }
                     const newArr = presenceList
                     store.dispatch(setPresenceList(newArr))
-                    EaseApp.changePresenceStatus({[item.userId]: {
-                        ext: item.ext,
-                        device
-                    }})
+                    EaseApp.changePresenceStatus({
+                        [item.userId]: {
+                            ext: item.ext,
+                            device
+                        }
+                    })
                 }
-                else{
+                else {
                     store.dispatch(presenceStatusImg(item.ext))
                 }
             })
@@ -280,14 +282,14 @@ const initListen = () => {
         },
     })
 
-	WebIM.conn.addEventHandler('REQUESTS', {
+    WebIM.conn.addEventHandler('REQUESTS', {
         onContactInvited: (msg) => {
             console.log('onContactInvited', msg)
             let { requests } = store.getState()
             let contactRequests = requests.contact
             let data = {
                 name: msg.from,
-                status: 'pedding',
+                status: 'pending',
                 time: Date.now()
             }
             contactRequests.unshift(data)
@@ -306,73 +308,73 @@ const initListen = () => {
                 let data = {
                     name: msg.from,
                     groupId: msg.gid,
-                    status: 'pedding',
+                    status: 'pending',
                     time: Date.now()
                 }
                 let index = groupRequests.findIndex((value) => {
-                    if (value.name === data.name && value.groupId === data.groupId){
+                    if (value.name === data.name && value.groupId === data.groupId) {
                         return true
                     }
                 })
-                if (index > -1){
+                if (index > -1) {
                     groupRequests[index] = data
-                }else{
+                } else {
                     groupRequests.unshift(data)
                 }
                 // groupRequests.unshift(data)
                 let newRequests = { ...requests, group: [...groupRequests] }
                 store.dispatch(setRequests(newRequests))
-            }else if (msg.type === "addMute") {
+            } else if (msg.type === "addMute") {
                 getGroupMuted(msg.gid);
-			}else if (msg.type ===  "removeMute") {
-				getGroupMuted(msg.gid);
-			} else if (msg.type === "addUserToGroupWhiteList") {
-				getGroupWrite(msg.gid);
-			} else if (msg.type === "rmUserFromGroupWhiteList") {
-				getGroupWrite(msg.gid);
-			} else if (msg.type === "update") {
+            } else if (msg.type === "removeMute") {
+                getGroupMuted(msg.gid);
+            } else if (msg.type === "addUserToGroupWhiteList") {
+                getGroupWrite(msg.gid);
+            } else if (msg.type === "rmUserFromGroupWhiteList") {
+                getGroupWrite(msg.gid);
+            } else if (msg.type === "update") {
                 getGroupInfo(msg.gid)
             } else if (msg.type === 'leave' || msg.type === 'leaveGroup' || msg.type === 'deleteGroupChat') {
                 // EaseApp.deleteSessionAndMessage({})
             } else if (msg.type === 'removedFromGroup') {
-                EaseApp.deleteSessionAndMessage({sessionType: 'groupChat', sessionId: msg.gid})
+                EaseApp.deleteSessionAndMessage({ sessionType: 'groupChat', sessionId: msg.gid })
                 getGroups();
             }
             // checkBrowerNotifyStatus(false)
-		},
-	});
+        },
+    });
 
-	WebIM.conn.addEventHandler("TOKENSTATUS", {
-		onTokenWillExpire: (token) => {
-			let { myUserInfo } = store.getState();
-			getToken(myUserInfo.agoraId, myUserInfo.password).then((res) => {
-				const { accessToken } = res;
-				WebIM.conn.renewToken(accessToken);
-				const authData = sessionStorage.getItem("webim_auth");
-				const webim_auth = authData && JSON.parse(authData);
-				webim_auth.accessToken = accessToken;
-				sessionStorage.setItem(
-					"webim_auth",
-					JSON.stringify(webim_auth)
-				);
-			});
-		},
-		onTokenExpired: () => {
-			console.error("onTokenExpired");
-		},
-		onConnected: () => {
-			console.log("onConnected");
-		},
-		onDisconnected: () => {
-			console.log("onDisconnected");
-		},
-	});
+    WebIM.conn.addEventHandler("TOKENSTATUS", {
+        onTokenWillExpire: (token) => {
+            let { myUserInfo } = store.getState();
+            getToken(myUserInfo.agoraId, myUserInfo.password).then((res) => {
+                const { accessToken } = res;
+                WebIM.conn.renewToken(accessToken);
+                const authData = sessionStorage.getItem("webim_auth");
+                const webim_auth = authData && JSON.parse(authData);
+                webim_auth.accessToken = accessToken;
+                sessionStorage.setItem(
+                    "webim_auth",
+                    JSON.stringify(webim_auth)
+                );
+            });
+        },
+        onTokenExpired: () => {
+            console.error("onTokenExpired");
+        },
+        onConnected: () => {
+            console.log("onConnected");
+        },
+        onDisconnected: () => {
+            console.log("onDisconnected");
+        },
+    });
 
-	WebIM.conn.addEventHandler("Thread",{
-		onMultiDeviceEvent:(message)=>{
-			handlerThreadChangedMsg(message)
-		}
-	})
+    WebIM.conn.addEventHandler("Thread", {
+        onMultiDeviceEvent: (message) => {
+            handlerThreadChangedMsg(message)
+        }
+    })
 };
 
 export default initListen;
