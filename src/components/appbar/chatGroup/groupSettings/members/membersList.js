@@ -298,10 +298,10 @@ const MembersList = ({ newMuteList, inputVal }) => {
                           <Typography
                             variant="inherit"
                             noWrap
-                            onClick={() => showSecondDialog(2, "make", "Make to Muted List")}
+                            onClick={() => showSecondDialog(2, "make", "Move to Muted List")}
                             className={classes.menusName}
                           >
-                            {i18next.t("Make to Muted List")}
+                            {i18next.t("Move to Muted List")}
                           </Typography>
                         )}
                       </MenuItem>
@@ -314,10 +314,10 @@ const MembersList = ({ newMuteList, inputVal }) => {
                         <Typography
                           variant="inherit"
                           noWrap
-                          onClick={() => showSecondDialog(3, "make", "Make to Blocked List")}
+                          onClick={() => showSecondDialog(3, "make", "Move to Blocked List")}
                           className={classes.menusName}
                         >
-                          {i18next.t("Make to Blocked List")}
+                          {i18next.t("Move to Blocked List")}
                         </Typography>
                       </MenuItem>
                       <MenuItem>
@@ -339,10 +339,10 @@ const MembersList = ({ newMuteList, inputVal }) => {
                           <Typography
                             variant="inherit"
                             noWrap
-                            onClick={() => showSecondDialog(5, null, "Make to Allowed List")}
+                            onClick={() => showSecondDialog(5, null, "Move to Allowed List")}
                             className={classes.menusName}
                           >
-                            {i18next.t("Make to Allowed List")}
+                            {i18next.t("Move to Allowed List")}
                           </Typography>
                         )}
                       </MenuItem>
