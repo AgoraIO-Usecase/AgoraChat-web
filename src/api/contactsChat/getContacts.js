@@ -2,7 +2,7 @@ import WebIM from '../../utils/WebIM'
 import store from '../../redux/store'
 import { message } from "../../components/common/alert";
 import i18next from "i18next";
-import { contactsAciton, setBlackList, updateRequestStatus, searchLoadAction } from '../../redux/actions'
+import { contactsAction, setBlackList, updateRequestStatus, searchLoadAction } from '../../redux/actions'
 import { subFriendStatus } from '../presence/index'
 import { getSilentModeForConversations } from '../notificationPush/index'
 
@@ -25,7 +25,7 @@ const getContacts = () => {
             })
         })
         getSilentModeForConversations({conversationList})
-        store.dispatch(contactsAciton(res.data))
+        store.dispatch(contactsAction(res.data))
         store.dispatch(searchLoadAction(false))
     });
 }
@@ -83,7 +83,7 @@ export const acceptContactRequest = (userId) => {
     store.dispatch(updateRequestStatus({ type: 'contact', name: userId, status: 'accepted' }))
     let { constacts } = store.getState()
     let newContacts = [...constacts, userId]
-    store.dispatch(contactsAciton(newContacts))
+    store.dispatch(contactsAction(newContacts))
 }
 
 export const declineContactRequest = (userId) => {
