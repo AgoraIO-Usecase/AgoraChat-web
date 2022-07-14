@@ -117,11 +117,11 @@ const PublicGroup = () => {
     // const state = store.getState();
     const state = useSelector((state) => state);
     const addedGroups = state?.groups?.groupList;
-    const pulicGroupsList = state?.groups?.publicGroups;
+    const publicGroupsList = state?.groups?.publicGroups;
     const isSearching = state?.isSearching || false
     const [addedGroupsId, setAddedGroupsId] = useState([])
 
-    const [renderGroups, setRenderGroups] = useState([...pulicGroupsList])
+    const [renderGroups, setRenderGroups] = useState([...publicGroupsList])
 
     useEffect(() => {
         let groupArr = []
@@ -131,6 +131,16 @@ const PublicGroup = () => {
         setAddedGroupsId(groupArr);
     }, [addedGroups])
 
+    useEffect(() => {
+        getPublicGroups();
+    }, [])
+
+    useEffect(() => {
+        setRenderGroups(publicGroupsList)
+    }, [publicGroupsList])
+    
+    
+    
 
     const handleGroup = (groupId) => {
         addGroup(groupId);
@@ -143,14 +153,13 @@ const PublicGroup = () => {
         });
         setRenderGroups(newGroups);
     }
-
     const handleSearchValue = (e) => {
         if (!(e.target.value)) {
             // getPublicGroups()
             // store.dispatch(searchLoadAction(true))
-            setRenderGroups(pulicGroupsList)
+            setRenderGroups(publicGroupsList)
         } else {
-            let reRenderGroups = pulicGroupsList.filter((item) => {
+            let reRenderGroups = publicGroupsList.filter((item) => {
                 return item.groupname.includes(e.target.value)
             });
             setRenderGroups(reRenderGroups)

@@ -73,7 +73,7 @@ const reducer = (state = defaultState, action) => {
 					groupList: data,
 				},
 			};
-		case "PUBLIC_GROUPS_ACITON":
+		case "PUBLIC_GROUPS_ACTION":
 			return {
 				...state,
 				groups: {
@@ -81,7 +81,7 @@ const reducer = (state = defaultState, action) => {
 					publicGroups: data,
 				},
 			};
-		case "GROUPS_INFO_ACITON":
+		case "GROUPS_INFO_ACTION":
 			return {
 				...state,
 				groups: {
@@ -89,7 +89,7 @@ const reducer = (state = defaultState, action) => {
 					groupsInfo: data,
 				},
 			};
-		case "GROUP_ADMINS_ACITON":
+		case "GROUP_ADMINS_ACTION":
 			return {
 				...state,
 				groups: {
@@ -97,7 +97,7 @@ const reducer = (state = defaultState, action) => {
 					groupAdmins: data,
 				},
 			};
-		case "GROUP_MUTE_ACITON":
+		case "GROUP_MUTE_ACTION":
 			return {
 				...state,
 				groups: {
@@ -105,7 +105,7 @@ const reducer = (state = defaultState, action) => {
 					groupMuteList: data,
 				},
 			};
-		case "GROUP_BLOCK_ACITON":
+		case "GROUP_BLOCK_ACTION":
 			return {
 				...state,
 				groups: {
@@ -113,7 +113,7 @@ const reducer = (state = defaultState, action) => {
 					groupBlockList: data,
 				},
 			};
-		case "GROUP_ALLOW_ACITON":
+		case "GROUP_ALLOW_ACTION":
 			return {
 				...state,
 				groups: {
@@ -121,7 +121,7 @@ const reducer = (state = defaultState, action) => {
 					groupAllowList: data,
 				},
 			};
-		case "GROUPS_NOTICE_ACITON":
+		case "GROUPS_NOTICE_ACTION":
 			return {
 				...state,
 				groups: {
@@ -130,7 +130,7 @@ const reducer = (state = defaultState, action) => {
 				},
 			};
 
-		case "GROUPS_FILES_ACITON":
+		case "GROUPS_FILES_ACTION":
 			let { type } = option;
 			let files = []
 			if (type === "getFile") {

@@ -153,7 +153,7 @@ const initListen = () => {
             history.push('/main')
             getSilentModeForAll().finally(res => {
                 getContacts();
-                getGroups();
+                // getGroups();
             })
             getPublicGroups();
             getBlackList()
@@ -188,7 +188,8 @@ const initListen = () => {
                     // notification({body: 'Have A Group Invite', tag: randomNumber()}, {title: 'agora chat'})
                     break;
                 case 'removedFromGroup':
-                    message.info(`${i18next.t('You have been removed from the group:')}` + event.gid)
+                    message.info(`${i18next.t('You have been removed from the group:')}` + event.gid);
+                    getGroups()
                     break;
                 default:
                     break;
@@ -336,6 +337,7 @@ const initListen = () => {
                 getGroupInfo(msg.gid)
             } else if (msg.type === 'leave' || msg.type === 'leaveGroup' || msg.type === 'deleteGroupChat') {
                 // EaseApp.deleteSessionAndMessage({})
+                getGroups();
             } else if (msg.type === 'removedFromGroup') {
                 EaseApp.deleteSessionAndMessage({ sessionType: 'groupChat', sessionId: msg.gid })
                 getGroups();

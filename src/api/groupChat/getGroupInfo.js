@@ -12,6 +12,10 @@ import { getGroupBlock } from './groupBlock'
 import { getGroupWrite } from './groupWhite'
 import { EaseApp } from "chat-uikit2"
 const getGroupInfo = (groupId, type) => {
+	let admins = store.getState().groups?.groupAdmins || [];
+	let owner = store.getState().groups?.groupsInfo?.owner;
+	let loginCurrentUser = WebIM.conn.context.userId;
+	let ispPermission = admins.includes(loginCurrentUser) || owner === loginCurrentUser
     let options = {
         groupId: groupId
     };
@@ -20,7 +24,7 @@ const getGroupInfo = (groupId, type) => {
         if (!type) {
             getGroupNotice(id)
             getGroupAdmins(id)
-            getGroupMuted(id)
+            ispPermission && getGroupMuted(id)
             getGroupBlock(id)
             getGroupWrite(id)
             getGroupFiles(id);

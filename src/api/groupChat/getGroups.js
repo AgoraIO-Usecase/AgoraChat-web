@@ -1,7 +1,7 @@
 
 import WebIM from '../../utils/WebIM'
 import store from '../../redux/store'
-import { groupListAciton, searchLoadAction } from '../../redux/actions'
+import { groupListAction, searchLoadAction } from '../../redux/actions'
 import { getSilentModeForConversations } from '../notificationPush/index'
 const getGroups = () => {
     WebIM.conn.getGroup().then((res) => {
@@ -29,7 +29,7 @@ const getGroups = () => {
         if (conversationList.length) {
             getSilentModeForConversations({conversationList})
         }
-        store.dispatch(groupListAciton(res.data))
+        store.dispatch(groupListAction(res.data))
         store.dispatch(searchLoadAction(false))
     })
 }

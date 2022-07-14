@@ -1,49 +1,49 @@
 import offlineImg from '../assets/Offline.png'
 import onlineIcon from '../assets/Online.png'
 import busyIcon from '../assets/Busy.png'
-import donotdisturbIcon from '../assets/Do_not_Disturb.png'
+import doNotDisturbIcon from '../assets/Do_not_Disturb.png'
 import customIcon from '../assets/custom.png'
 import leaveIcon from '../assets/leave.png'
 
-export const contactsAciton = (data) => {
+export const contactsAction = (data) => {
     return { type: 'CONTACTS_ACTION', data };
 };
 
-export const groupListAciton = (data) => {
+export const groupListAction = (data) => {
     return { type: 'GROUP_LIST_ACTION', data };
 };
 
-export const publicGroupsAciton = (data) => {
-    return { type: 'PUBLIC_GROUPS_ACITON', data };
+export const publicGroupsAction = (data) => {
+    return { type: 'PUBLIC_GROUPS_ACTION', data };
 };
 
 
 export const groupsInfoAction = (data) => {
-    return { type: 'GROUPS_INFO_ACITON', data };
+    return { type: 'GROUPS_INFO_ACTION', data };
 }
 
 export const groupAdminsAction = (data) => {
-    return { type: 'GROUP_ADMINS_ACITON', data };
+    return { type: 'GROUP_ADMINS_ACTION', data };
 }
 
 export const groupMuteAction = (data, options) => {
-    return { type: 'GROUP_MUTE_ACITON', data, options };
+    return { type: 'GROUP_MUTE_ACTION', data, options };
 }
 
 export const groupBlockAction = (data) => {
-    return { type: 'GROUP_BLOCK_ACITON', data };
+    return { type: 'GROUP_BLOCK_ACTION', data };
 }
 
 export const groupAllowAction = (data) => {
-    return { type: 'GROUP_ALLOW_ACITON', data };
+    return { type: 'GROUP_ALLOW_ACTION', data };
 }
 
 export const groupsNoticeAction = (data) => {
-    return { type: 'GROUPS_NOTICE_ACITON', data };
+    return { type: 'GROUPS_NOTICE_ACTION', data };
 }
 
 export const groupsFilesAction = (data,option) => {
-	return { type: "GROUPS_FILES_ACITON", data, option };
+	return { type: "GROUPS_FILES_ACTION", data, option };
 };
 
 // set user info
@@ -113,7 +113,7 @@ export const presenceStatusImg = ext => {
         data.statusImg = busyIcon
         data.index = 1
     } else if (ext === 'Do not Disturb') {
-        data.statusImg = donotdisturbIcon
+        data.statusImg = doNotDisturbIcon
         data.index = 2
     } else if (ext === 'Leave') {
         data.statusImg = leaveIcon
