@@ -2,3 +2,4 @@ node_modules
 dist/
 build/
 webim-hyphenate.zip
+.DS_Store
