@@ -1,4 +1,4 @@
-import React, { memo, useState } from 'react'
+import React, { memo, useEffect, useState } from 'react'
 import { makeStyles } from '@material-ui/core/styles';
 import { Box, Avatar, Button, Tabs, Tab, Typography, IconButton, InputBase, Menu, MenuItem } from '@material-ui/core';
 import CommonDialog from '../../common/dialog'
@@ -374,6 +374,12 @@ function Notice(props) {
             </Menu>
         );
     };
+
+    useEffect(() => {
+        setRequestsCp(requests)
+    }, [
+        requests
+    ])
     function renderContent() {
         return (
             <div className={classes.root}>
@@ -403,10 +409,10 @@ function Notice(props) {
                                 <img src={menu_icon} alt="menu" style={{ width: '32px', height: '32px' }} />
                             </IconButton>
                         </Box>
-                        {requestsCp.contact.map(value => {
+                        {requestsCp.contact.map((value, index) => {
                             if (!value.hidden) {
                                 return (
-                                    <RequestItem key={value.name} data={value} type="contact" text="Sent you a friend request." />
+                                    <RequestItem key={value.name + Math.floor(Math.random() * 1000)} data={value} type="contact" text="Sent you a friend request." />
                                 )
                             }
                         })}
@@ -424,7 +430,7 @@ function Notice(props) {
                         {requestsCp.group.map((value, key) => {
                             if (!value.hidden) {
                                 return (
-                                    <RequestItem key={key} data={value} type="group" text={"Want to join the " + value.groupId} />
+                                    <RequestItem key={value.groupId + Math.floor(Math.random() * 1000)} data={value} type="group" text={"Want to join the " + value.groupId} />
                                 )
                             }
                         })}

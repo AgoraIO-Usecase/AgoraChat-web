@@ -24,8 +24,8 @@ const getContacts = () => {
                 type: 'singleChat'
             })
         })
-        getSilentModeForConversations({conversationList})
-        store.dispatch(contactsAction(res.data))
+        getSilentModeForConversations({ conversationList })
+        store.dispatch(contactsAciton(res.data))
         store.dispatch(searchLoadAction(false))
     });
 }

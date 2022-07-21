@@ -57,7 +57,7 @@ export default function Header() {
     // let unDealRequestsNum = countNum(requests.group) + countNum(requests.contact)
 
     useEffect(() => {
-        if (getLocalStorageData().groupRequestSwitch && requests.group.length) {
+        if (getLocalStorageData().groupRequestSwitch && requests?.group.length) {
             requests.group.forEach(item => {
                 acceptGroupRequest(item.name, item.groupId)
             })
