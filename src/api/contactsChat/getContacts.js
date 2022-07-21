@@ -25,7 +25,7 @@ const getContacts = () => {
             })
         })
         getSilentModeForConversations({ conversationList })
-        store.dispatch(contactsAciton(res.data))
+        store.dispatch(contactsAction(res.data))
         store.dispatch(searchLoadAction(false))
     });
 }
@@ -47,10 +47,10 @@ export const addFromBlackList = (userId) => {
         return
     }
     WebIM.conn.addUsersToBlacklist({
-		name: [userId],
-	});
-     blackList = blackList.concat(userId);
-     store.dispatch(setBlackList(blackList));
+        name: [userId],
+    });
+    blackList = blackList.concat(userId);
+    store.dispatch(setBlackList(blackList));
 }
 
 export const removeFromBlackList = (userId, onClose) => {
@@ -64,10 +64,10 @@ export const removeFromBlackList = (userId, onClose) => {
 }
 
 export const deleteContact = (userId, onClose) => {
-	WebIM.conn.deleteContact(userId);
-	let { blackList } = store.getState();
-	blackList = blackList.filter((v) => v !== userId);
-	store.dispatch(setBlackList(blackList));
+    WebIM.conn.deleteContact(userId);
+    let { blackList } = store.getState();
+    blackList = blackList.filter((v) => v !== userId);
+    store.dispatch(setBlackList(blackList));
     onClose && onClose();
 };
 

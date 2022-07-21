@@ -22,6 +22,7 @@
     "bfj": "^7.0.2",
     "camelcase": "^6.1.0",
     "case-sensitive-paths-webpack-plugin": "2.3.0",
+    "chat-callkit": "^1.0.0",
     "chat-uikit2": "^2.3.6",
     "css-loader": "4.3.0",
     "dotenv": "8.2.0",
