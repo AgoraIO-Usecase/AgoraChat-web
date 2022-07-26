@@ -4,7 +4,7 @@ import i18next from "i18next";
 import store from '../../../../redux/store'
 // import { EaseApp } from "uikit-reaction";
 // import { EaseApp } from "chat-uikit";
-import { EaseApp } from "chat-uikit2";
+import { EaseApp } from "agora-chat-uikit";
 import CommonDialog from '../../../common/dialog'
 import createGroup from '../../../../api/groupChat/createGroup'
 import { Box, Checkbox, List, ListItem, InputBase } from '@material-ui/core';
@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme) => {
         gInfoText: {
             textAlign: 'center',
             width: '62%',
-            marginTop:'15%',
+            marginTop: '15%',
         },
         gNameText: {
             fontFamily: 'Roboto',
@@ -116,15 +116,15 @@ const useStyles = makeStyles((theme) => {
             width: '100px'
         },
         marginStyle: {
-			marginLeft: "10px",
-			textOverflow: 'ellipsis',
-			width: '140px',
-			overflow: 'hidden',
-			whiteSpace: 'nowrap',
-		},
+            marginLeft: "10px",
+            textOverflow: 'ellipsis',
+            width: '140px',
+            overflow: 'hidden',
+            whiteSpace: 'nowrap',
+        },
         checkBoxColor: {
-			color: 'rgb(0, 95, 255)',
-		}
+            color: 'rgb(0, 95, 255)',
+        }
     })
 });
 
@@ -170,10 +170,10 @@ const AddGroupMemberDialog = ({ groupInfoData, onClearValue, open, onClose }) =>
             conversationId: itemData,
             conversationName: groupNameValue,
             firstCrate: true
-		};
-		EaseApp.addConversationItem(conversationItem);
-		onClose();
-	};
+        };
+        EaseApp.addConversationItem(conversationItem);
+        onClose();
+    };
 
     const handleSelect = (val) => (e) => {
         if (e.target.checked) {

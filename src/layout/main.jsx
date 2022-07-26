@@ -4,7 +4,7 @@ import './login.css'
 import getGroupInfo from '../api/groupChat/getGroupInfo'
 import WebIM from '../utils/WebIM';
 import { loginWithToken, loginWithPassword } from '../api/loginChat'
-import { EaseApp } from 'chat-uikit2'
+import { EaseApp } from 'agora-chat-uikit'
 import { createHashHistory } from 'history'
 import store from '../redux/store'
 import { setMyUserInfo, setUnread, setCurrentSessionId, setThreadInfo } from '../redux/actions'

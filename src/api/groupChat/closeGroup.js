@@ -1,7 +1,7 @@
 import WebIM from "../../utils/WebIM";
 import getGroups from "./getGroups";
 import getGroupInfo from "../groupChat/getGroupInfo";
-import { EaseApp } from 'chat-uikit2'
+import { EaseApp } from 'agora-chat-uikit'
 import { getLocalStorageData } from '../../utils/notification'
 export const closeGroup = (groupId, type, onClose) => {
 	let option = {
@@ -12,7 +12,7 @@ export const closeGroup = (groupId, type, onClose) => {
 		WebIM.conn.dissolveGroup(option).then((res) => {
 			console.log(res);
 			if (getLocalStorageData().deleteSwitch) {
-				EaseApp.deleteSessionAndMessage({sessionType: 'groupChat', sessionId: groupId})
+				EaseApp.deleteSessionAndMessage({ sessionType: 'groupChat', sessionId: groupId })
 			}
 			getGroups();
 		});
@@ -20,7 +20,7 @@ export const closeGroup = (groupId, type, onClose) => {
 		WebIM.conn.quitGroup(option).then((res) => {
 			console.log(res);
 			if (getLocalStorageData().deleteSwitch) {
-				EaseApp.deleteSessionAndMessage({sessionType: 'groupChat', sessionId: groupId})
+				EaseApp.deleteSessionAndMessage({ sessionType: 'groupChat', sessionId: groupId })
 			}
 			getGroups();
 		});

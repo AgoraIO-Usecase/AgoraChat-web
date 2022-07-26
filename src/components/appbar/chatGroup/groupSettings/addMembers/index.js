@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import i18next from "i18next";
 import store from "../../../../../redux/store";
 
-import { EaseApp } from "chat-uikit2";
+import { EaseApp } from "agora-chat-uikit";
 import {
 	Box,
 	Checkbox,

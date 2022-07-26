@@ -1,7 +1,7 @@
 import WebIM from '../../utils/WebIM'
 import store from '../../redux/store'
 import { setMuteDataObj, setGlobalSilentMode, setUnread } from '../../redux/actions'
-import { EaseApp } from "chat-uikit2"
+import { EaseApp } from "agora-chat-uikit"
 import { setTimeVSNowTime, changeTitle } from '../../utils/notification'
 
 function silentModeRedux(type, data) {

@@ -10,36 +10,36 @@ import { getGroupAdmins } from './groupAdmin'
 import { getGroupMuted } from './groupMute'
 import { getGroupBlock } from './groupBlock'
 import { getGroupWrite } from './groupWhite'
-import { EaseApp } from "chat-uikit2"
+import { EaseApp } from "agora-chat-uikit"
 const getGroupInfo = (groupId, type) => {
 	let admins = store.getState().groups?.groupAdmins || [];
 	let owner = store.getState().groups?.groupsInfo?.owner;
 	let loginCurrentUser = WebIM.conn.context.userId;
 	let ispPermission = admins.includes(loginCurrentUser) || owner === loginCurrentUser
-    let options = {
-        groupId: groupId
-    };
-    WebIM.conn.getGroupInfo(options).then((res) => {
-        let id = res.data[0].id
-        if (!type) {
-            getGroupNotice(id)
-            getGroupAdmins(id)
-            ispPermission && getGroupMuted(id)
-            getGroupBlock(id)
-            getGroupWrite(id)
-            getGroupFiles(id);
-        } else if (type === 'thread') {
-					getGroupAdmins(id)
-				}
-        store.dispatch(groupsInfoAction(res.data[0]))
-    })
+	let options = {
+		groupId: groupId
+	};
+	WebIM.conn.getGroupInfo(options).then((res) => {
+		let id = res.data[0].id
+		if (!type) {
+			getGroupNotice(id)
+			getGroupAdmins(id)
+			ispPermission && getGroupMuted(id)
+			getGroupBlock(id)
+			getGroupWrite(id)
+			getGroupFiles(id);
+		} else if (type === 'thread') {
+			getGroupAdmins(id)
+		}
+		store.dispatch(groupsInfoAction(res.data[0]))
+	})
 }
 
 
 export const modifyGroupInfo = (newGroupName, newDescription, handleClose) => {
-    let state = store.getState();
+	let state = store.getState();
 	let groupId = state.groups.groupsInfo?.id;
-    let groupName = state.groups.groupsInfo?.name || "";
+	let groupName = state.groups.groupsInfo?.name || "";
 	let groupDescription = state.groups.groupsInfo?.description || "";
 	let option = {
 		groupId: groupId,
@@ -49,17 +49,17 @@ export const modifyGroupInfo = (newGroupName, newDescription, handleClose) => {
 	const muteDataObj = state.muteDataObj
 	WebIM.conn.modifyGroup(option).then((res) => {
 		console.log("modifyGroupInfo>>>", res);
-        getGroupInfo(groupId);
-				let conversationItem = {
-					conversationType: "groupChat",
-					conversationId: groupId,
-					conversationName: option.groupName,
-					ext: {
-						muteFlag: muteDataObj[groupId]
-					}
-				};
-				EaseApp.addConversationItem(conversationItem);
-        handleClose && handleClose();
+		getGroupInfo(groupId);
+		let conversationItem = {
+			conversationType: "groupChat",
+			conversationId: groupId,
+			conversationName: option.groupName,
+			ext: {
+				muteFlag: muteDataObj[groupId]
+			}
+		};
+		EaseApp.addConversationItem(conversationItem);
+		handleClose && handleClose();
 	});
 };
 
@@ -67,12 +67,12 @@ export const modifyGroupInfo = (newGroupName, newDescription, handleClose) => {
 
 
 const getGroupFiles = (groupId) => {
-    let options = {
-		groupId: groupId, 
+	let options = {
+		groupId: groupId,
 	};
 	WebIM.conn.fetchGroupSharedFileList(options).then((res) => {
 		console.log("getGroupFiles>>>", res);
-		store.dispatch(groupsFilesAction(res.data,{type:"getFile"}));
+		store.dispatch(groupsFilesAction(res.data, { type: "getFile" }));
 	});
 }
 
@@ -82,42 +82,42 @@ export const uploadfile = (groupId, file) => {
 		file: file,
 		onFileUploadProgress: function (res) {
 			console.log("start uploadfile>>>", res);
-		}, 
+		},
 		onFileUploadComplete: function (res) {
 			console.log("upload succes>>>", res);
 			// res.data.file_name = file.target.files[0].name;
-			store.dispatch(groupsFilesAction(res.data,{type:"uploda"}));
-		}, 
-		onFileUploadError: function (e) {},
+			store.dispatch(groupsFilesAction(res.data, { type: "uploda" }));
+		},
+		onFileUploadError: function (e) { },
 		onFileUploadCanceled: function (e) {
 		},
 	};
 	WebIM.conn.uploadGroupSharedFile(options);
 };
 
-export const downloadFile = (groudId,fileId) => {
+export const downloadFile = (groudId, fileId) => {
 	console.log("groudId,fileId", groudId, fileId);
 	let options = {
 		groupId: groudId,
-		fileId: fileId, 
+		fileId: fileId,
 		onFileDownloadComplete: function (res) {
-			console.log("downloadFile succes",res);
+			console.log("downloadFile succes", res);
 		},
 		onFileDownloadError: function (e) {
 			console.log("downloadFile fail", e);
-		}, 
+		},
 	};
 	WebIM.conn.downloadGroupSharedFile(options);
 };
 
 export const deleteFile = (groudId, fileId) => {
 	let options = {
-		groupId: groudId, 
-		fileId: fileId, 
+		groupId: groudId,
+		fileId: fileId,
 		onFileDownloadComplete: function (res) {
-			console.log("deleteFile success",res);
+			console.log("deleteFile success", res);
 			getGroupFiles(groudId);
-		}, 
+		},
 		onFileDownloadError: function (e) {
 			console.log("deleteFile fail", e);
 
@@ -126,7 +126,7 @@ export const deleteFile = (groudId, fileId) => {
 	WebIM.conn.downloadGroupSharedFile(options);
 };
 
-export const updateGroupNotice = (groupId,content) => {
+export const updateGroupNotice = (groupId, content) => {
 	let options = {
 		groupId: groupId,
 		announcement: content,

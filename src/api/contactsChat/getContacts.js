@@ -6,7 +6,7 @@ import { contactsAction, setBlackList, updateRequestStatus, searchLoadAction } f
 import { subFriendStatus } from '../presence/index'
 import { getSilentModeForConversations } from '../notificationPush/index'
 
-import { EaseApp } from "chat-uikit2";
+import { EaseApp } from "agora-chat-uikit";
 import { setMyUserInfo } from '../../redux/actions'
 
 const getContacts = () => {
