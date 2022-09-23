@@ -10,7 +10,7 @@ import { EaseApp } from "agora-chat-uikit";
 import { setMyUserInfo } from '../../redux/actions'
 
 const getContacts = () => {
-    WebIM.conn.getRoster().then((res) => {
+    WebIM.conn.getContacts().then((res) => {
         const payload = {
             usernames: res.data
         }
