@@ -35,7 +35,6 @@ export default function SignUp() {
     const [useDialogOpen, setDialogOpen] = useState(false)
 
     const login = useCallback(() => {
-        console.log('value>>>',values);
         setLoginBtn('')
         if (!values.agoraId) {
             setLoginBtn(i18next.t('SignUp'))
@@ -63,7 +62,7 @@ export default function SignUp() {
                 sessionStorage.setItem('webim_auth', JSON.stringify({ agoraId, password }))
             }).catch(err => {
                 // message.error('Sign Up Fail.')
-                // console.log(err)
+                console.log(err)
                 setNotice({ show: true, text: 'Sign Up Fail.' })
                 setdisabled(true)
             }).finally(_ => {

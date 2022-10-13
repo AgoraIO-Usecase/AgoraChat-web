@@ -37,7 +37,7 @@ export default function Main() {
         if (webimAuth && WebIM.conn.logOut) {
             webimAuthObj = JSON.parse(webimAuth)
             if (webimAuthObj.password) {
-                loginWithToken(webimAuthObj.agoraId, webimAuthObj.accessToken)
+                loginWithToken(webimAuthObj.agoraId.toLowerCase(), webimAuthObj.accessToken)
                 store.dispatch(setMyUserInfo({ agoraId: webimAuthObj.agoraId, password: webimAuthObj.password }))
             } else {
                 history.push('/login')
