@@ -7,10 +7,10 @@ import { createHashHistory } from 'history'
 import { reject } from 'lodash';
 const history = createHashHistory()
 export const getToken = (agoraId, password) => {
-    return postData('https://a41.easemob.com/app/chat/user/login', { "userAccount": agoraId, "userPassword": password })
+    return postData('https://a41.chat.agora.io/app/chat/user/login', { "userAccount": agoraId, "userPassword": password })
 }
 export const signUp = (agoraId, password) => {
-    return postData('https://a41.easemob.com/app/chat/user/register', { "userAccount": agoraId, "userPassword": password })
+    return postData('https://a41.chat.agora.io/app/chat/user/register', { "userAccount": agoraId, "userPassword": password })
 }
 
 export const loginWithToken = (agoraId, agoraToken) => {
