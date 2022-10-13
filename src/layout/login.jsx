@@ -49,7 +49,7 @@ export default function Login() {
             getToken(values.agoraId, values.password).then((res) => {
                 const { accessToken, agoraUid } = res
                 WebIM.conn.agoraUid = agoraUid
-                loginWithToken(values.agoraId, accessToken).then(value => {
+                loginWithToken(values.agoraId.toLowerCase(), accessToken).then(value => {
 
                 }).catch(err => {
                     setNotice({ show: true, text: 'Wrong Username or Password' })
