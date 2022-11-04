@@ -2326,7 +2326,7 @@ aggregate-error@^3.0.0:
     clean-stack "^2.0.0"
     indent-string "^4.0.0"
 
-agora-chat-uikit@^1.0.6:
+agora-chat-uikit@^1.0.7:
   version "1.0.7"
   resolved "https://registry.npmjs.org/agora-chat-uikit/-/agora-chat-uikit-1.0.7.tgz#14785d31121a6f958d0e65e94834f7913a50b9fa"
   integrity sha512-+De6XrFUK0vmDPPc5ZvCOHivPwj2tRiNAo5WEK3LW18VO3uuPMK6MfAVy74JrnQci/roKDcwvbjQbR2uCvgXZA==
@@ -2365,6 +2365,11 @@ agora-chat-uikit@^1.0.6:
     redux-thunk "^2.3.0"
     reduxsauce "^1.2.0"
     seamless-immutable "^7.1.4"
+
+agora-chat@^1.0.7:
+  version "1.0.7"
+  resolved "https://registry.npmjs.org/agora-chat/-/agora-chat-1.0.7.tgz#fe4a5791b90c3c1721ee355c0b025fa20c71c224"
+  integrity sha512-J6EFUwPSpSNlyVoDuCuRbcGiKNPc2jVCQCvk/MGi6mfM6g5QPZ/9dhKFkUTQaigOECmn9MQPI1mNzVAfuORDhg==
 
 agora-rtc-sdk-ng@^4.11.0:
   version "4.14.2"
