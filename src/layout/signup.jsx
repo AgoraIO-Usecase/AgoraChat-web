@@ -87,7 +87,7 @@ export default function SignUp() {
     const handleChange = (prop) => (event) => {
         let value = event.target.value
         if (prop === 'agoraId') {
-            value = event.target.value.replace(/[^\w\.\/]/ig, '')   
+            value = event.target.value.replace(/[^\w\.\-\/]/ig, '')   
         }
         setValues({ ...values, [prop]: value })
     };
