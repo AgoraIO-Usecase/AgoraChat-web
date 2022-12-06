@@ -252,7 +252,7 @@ const MembersList = ({ newMuteList, inputVal }) => {
                       className={classes.myselfMenu}
                     >
                       {isOwner && (
-                        <MenuItem onClick={() => showSecondDialog(1, "move", "Move Admin")}>
+                        <MenuItem onClick={() => groupAdmins.includes(selectedUser) ? showSecondDialog(1, "move", "Move Admin"): showSecondDialog(1, "make", "Make Admin")}>
                           <img
                             src={adminIcon}
                             alt="admin"
@@ -270,7 +270,6 @@ const MembersList = ({ newMuteList, inputVal }) => {
                             <Typography
                               variant="inherit"
                               noWrap
-                              onClick={() => showSecondDialog(1, "make", "Make Admin")}
                               className={classes.menusName}
                             >
                               {i18next.t("Make Admin")}
@@ -278,7 +277,7 @@ const MembersList = ({ newMuteList, inputVal }) => {
                           )}
                         </MenuItem>
                       )}
-                      <MenuItem onClick={() => showSecondDialog(2, "move", "Remove from Muted List")}>
+                      <MenuItem onClick={() => newMuteList.includes(selectedUser) ? showSecondDialog(2, "move", "Remove from Muted List"): showSecondDialog(2, "make", "Move to Muted List")}>
                         <img
                           src={muteIcon}
                           alt="mute"
@@ -296,7 +295,6 @@ const MembersList = ({ newMuteList, inputVal }) => {
                           <Typography
                             variant="inherit"
                             noWrap
-                            onClick={() => showSecondDialog(2, "make", "Move to Muted List")}
                             className={classes.menusName}
                           >
                             {i18next.t("Move to Muted List")}
@@ -317,7 +315,7 @@ const MembersList = ({ newMuteList, inputVal }) => {
                           {i18next.t("Move to Blocked List")}
                         </Typography>
                       </MenuItem>
-                      <MenuItem onClick={() => showSecondDialog(4, null, "Remove from Allowed List")}>
+                      <MenuItem onClick={() => groupAllowList.includes(selectedUser) ? showSecondDialog(4, null, "Remove from Allowed List"): showSecondDialog(5, null, "Move to Allowed List")}>
                         <img
                           src={allowIcon}
                           alt="allow"
@@ -335,7 +333,6 @@ const MembersList = ({ newMuteList, inputVal }) => {
                           <Typography
                             variant="inherit"
                             noWrap
-                            onClick={() => showSecondDialog(5, null, "Move to Allowed List")}
                             className={classes.menusName}
                           >
                             {i18next.t("Move to Allowed List")}
