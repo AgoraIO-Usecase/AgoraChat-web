@@ -58,6 +58,9 @@ const AdminList = () => {
             {admins.length > 0 && admins.map((item,key)=>{
                 return <ListItem key={key} disablePadding>
                     <Button className={classes.gUserName}>
+                        <Box className={classes.gMemberAvatar}>
+                            <Avatar src={userAvatar(item)} />
+                        </Box>
                         <ListItemText>{item}</ListItemText>
                     </Button>
                 </ListItem>
