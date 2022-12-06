@@ -252,7 +252,7 @@ const MembersList = ({ newMuteList, inputVal }) => {
                       className={classes.myselfMenu}
                     >
                       {isOwner && (
-                        <MenuItem>
+                        <MenuItem onClick={() => showSecondDialog(1, "move", "Move Admin")}>
                           <img
                             src={adminIcon}
                             alt="admin"
@@ -262,7 +262,6 @@ const MembersList = ({ newMuteList, inputVal }) => {
                             <Typography
                               variant="inherit"
                               noWrap
-                              onClick={() => showSecondDialog(1, "move", "Move Admin")}
                               className={classes.menusName}
                             >
                               {i18next.t("Move Admin")}
@@ -279,7 +278,7 @@ const MembersList = ({ newMuteList, inputVal }) => {
                           )}
                         </MenuItem>
                       )}
-                      <MenuItem>
+                      <MenuItem onClick={() => showSecondDialog(2, "move", "Remove from Muted List")}>
                         <img
                           src={muteIcon}
                           alt="mute"
@@ -289,10 +288,9 @@ const MembersList = ({ newMuteList, inputVal }) => {
                           <Typography
                             variant="inherit"
                             noWrap
-                            onClick={() => showSecondDialog(2, "move", "Move to Muted List")}
                             className={classes.menusName}
                           >
-                            {i18next.t("Move to Muted List")}
+                            {i18next.t("Remove from Muted List")}
                           </Typography>
                         ) : (
                           <Typography
@@ -305,7 +303,7 @@ const MembersList = ({ newMuteList, inputVal }) => {
                           </Typography>
                         )}
                       </MenuItem>
-                      <MenuItem>
+                      <MenuItem onClick={() => showSecondDialog(3, "make", "Move to Blocked List")}>
                         <img
                           src={blockIcon}
                           alt="block"
@@ -314,13 +312,12 @@ const MembersList = ({ newMuteList, inputVal }) => {
                         <Typography
                           variant="inherit"
                           noWrap
-                          onClick={() => showSecondDialog(3, "make", "Move to Blocked List")}
                           className={classes.menusName}
                         >
                           {i18next.t("Move to Blocked List")}
                         </Typography>
                       </MenuItem>
-                      <MenuItem>
+                      <MenuItem onClick={() => showSecondDialog(4, null, "Remove from Allowed List")}>
                         <img
                           src={allowIcon}
                           alt="allow"
@@ -330,10 +327,9 @@ const MembersList = ({ newMuteList, inputVal }) => {
                           <Typography
                             variant="inherit"
                             noWrap
-                            onClick={() => showSecondDialog(4, null, "Move to Allowed List")}
                             className={classes.menusName}
                           >
-                            {i18next.t("Move to Allowed List")}
+                            {i18next.t("Remove from Allowed List")}
                           </Typography>
                         ) : (
                           <Typography
@@ -346,7 +342,7 @@ const MembersList = ({ newMuteList, inputVal }) => {
                           </Typography>
                         )}
                       </MenuItem>
-                      <MenuItem>
+                      <MenuItem onClick={() => showSecondDialog(6, null, "Remove")}>
                         <img
                           src={deleteIcon}
                           alt="delete"
@@ -355,7 +351,6 @@ const MembersList = ({ newMuteList, inputVal }) => {
                         <Typography
                           variant="inherit"
                           noWrap
-                          onClick={() => showSecondDialog(6, null, "Remove")}
                           className={classes.menusName}
                         >
                           {i18next.t("Remove The Member")}
