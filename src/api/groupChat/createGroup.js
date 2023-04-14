@@ -5,6 +5,7 @@ import { message } from '../../components/common/alert'
 import i18next from "i18next";
 import store from "../../redux/store";
 import { closeGroupChatAction } from "../../redux/actions";
+import { Chat, ConversationList, RootProvider, rootStore } from 'chatuim2'
 const createGroup = (
 	groupInfo,
 	member,
@@ -34,14 +35,14 @@ const createGroup = (
 		},
 	};
 	console.log(options)
-	WebIM.conn.createGroupNew(options).then((res) => {
+	rootStore.client.createGroupNew(options).then((res) => {
 		console.log("createGroupNew>>>", res);
 		message.success(i18next.t("created success"));
 		getGroups();
 		onClearValue();
 		onClose();
 		store.dispatch(closeGroupChatAction(false));
-        handleClickSession(res.data.groupid);
+		handleClickSession(res.data.groupid);
 	});
 };
 

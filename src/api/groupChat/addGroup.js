@@ -3,17 +3,17 @@ import WebIM from '../../utils/WebIM'
 import getGroups from './getGroups'
 import { message } from '../../components/common/alert'
 import i18next from "i18next";
-
+import { Chat, ConversationList, RootProvider, rootStore } from 'chatuim2'
 export const addGroup = (groupId) => {
     let options = {
         groupId: groupId,
         message: "I am Tom"
     };
-    WebIM.conn.joinGroup(options).then((res) => {
+    rootStore.client.joinGroup(options).then((res) => {
         console.log('joinGroup>>>', res)
         message.success(`${i18next.t('addGroup succes')}`)
         getGroups();
-    }).catch((err)=>{
+    }).catch((err) => {
         if (err.type === 605) {
             message.error(`${i18next.t("Group does not exist")}`);
         }
@@ -26,7 +26,7 @@ export const agreeInviteGroup = (val) => {
         invitee: to,
         groupId: gid
     };
-    WebIM.conn.agreeInviteIntoGroup(options).then((res) => {
+    rootStore.client.agreeInviteIntoGroup(options).then((res) => {
         console.log('agreeInvite>>>', res);
         message.success(`${i18next.t('You have joined the group：')}` + gid)
         getGroups();
@@ -39,7 +39,7 @@ export const agreeInviteGroup = (val) => {
 //         invitee: to,
 //         groupId: gid
 //     };
-//     WebIM.conn.rejectInviteIntoGroup(options).then((res) => {
+//      rootStore.client.rejectInviteIntoGroup(options).then((res) => {
 //         console.log('rejectInvite>>>', res);
 //         message.success(`${i18next.t('已拒绝加入群组：')}` + gid)
 //     })

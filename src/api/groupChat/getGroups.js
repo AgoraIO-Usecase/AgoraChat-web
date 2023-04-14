@@ -3,9 +3,10 @@ import WebIM from '../../utils/WebIM'
 import store from '../../redux/store'
 import { groupListAction, searchLoadAction } from '../../redux/actions'
 import { getSilentModeForConversations } from '../notificationPush/index'
+import { rootStore } from 'chatuim2'
 const getGroups = () => {
-    WebIM.conn.getGroup().then((res) => {
-        console.log('getGroups>>>',res);
+    rootStore.client.getGroup().then((res) => {
+        console.log('getGroups>>>', res);
         const conversationList = []
         res.data.forEach(item => {
             conversationList.push({
@@ -27,7 +28,7 @@ const getGroups = () => {
             // })
         })
         if (conversationList.length) {
-            getSilentModeForConversations({conversationList})
+            getSilentModeForConversations({ conversationList })
         }
         store.dispatch(groupListAction(res.data))
         store.dispatch(searchLoadAction(false))

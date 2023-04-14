@@ -84,12 +84,12 @@ const useStyles = makeStyles((theme) => {
       }
     },
     gMemberAvatar: {
-			width: "36px",
-			height: "36px",
-			borderRadius: "20px",
-			backgroundColor: "rgb(238, 171, 159)",
+      width: "36px",
+      height: "36px",
+      borderRadius: "20px",
+      backgroundColor: "rgb(238, 171, 159)",
       marginRight: '10px',
-		},
+    },
     imgActive: {
       borderRadius: '50%',
       width: '32px',
@@ -127,9 +127,9 @@ const MembersList = ({ newMuteList, inputVal }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedUser, setSelectedUser] = useState("");
   const [secondSure, setSecondSure] = useState(false)
-	const [GroupStatus, setGroupStatus] = useState('')
-	const [groupContent, setgroupContent] = useState('')
-	const [action, setAction] = useState('')
+  const [GroupStatus, setGroupStatus] = useState('')
+  const [groupContent, setgroupContent] = useState('')
+  const [action, setAction] = useState('')
   const handleClick = (event, item) => {
     setAnchorEl(event.currentTarget);
     setSelectedUser(item);
@@ -152,10 +152,21 @@ const MembersList = ({ newMuteList, inputVal }) => {
   useEffect(() => {
     members.length > 0 && handlerMemers()
   }, [members.length]);
+
+  let _owner = [];
+  let _member = [];
+  members.forEach((item) => {
+    if (item.owner) {
+      _owner.push(item.owner);
+    } else if (item.member) {
+      _member.push(item.member);
+    }
+  });
+
   useEffect(() => {
     if (inputVal) {
       const tempArr = []
-      newMembers.forEach(item => {
+      _member.forEach(item => {
         if (item.includes(inputVal)) {
           tempArr.push(item)
         }
@@ -166,14 +177,14 @@ const MembersList = ({ newMuteList, inputVal }) => {
     }
   }, [inputVal])
   const showSecondDialog = (val, action, text) => {
-		setGroupStatus(val)
+    setGroupStatus(val)
     action && setAction(action)
     setgroupContent(text)
-		setSecondSure(true)
+    setSecondSure(true)
     handleClose()
-	}
+  }
   const confirmQuitGroup = () => {
-		if (GroupStatus === 1) {
+    if (GroupStatus === 1) {
       onChengeGroupAdmin(
         groupId,
         selectedUser,
@@ -209,168 +220,168 @@ const MembersList = ({ newMuteList, inputVal }) => {
     } else if (GroupStatus === 6) {
       rmGroupUser(groupId, selectedUser, handleClose)
     }
-		setSecondSure(false)
-	}
+    setSecondSure(false)
+  }
   return (
     <>
-    <Box>
-      {newMembers.length > 0 &&
-        newMembers.map((item, key) => {
-          let owner = groupOwner === item ? `${i18next.t("owner")}` : "";
-          let lander = loginUser === item;
-          return (
-            <List key={key}>
-              <ListItem disablepadding="true" className={classes.userItem}>
-                <Button className={classes.gUserName}>
-                  <Box
-                    className={
-                      classes.gMemberAvatar
-                    }>
+      <Box>
+        {newMembers.length > 0 &&
+          newMembers.map((item, key) => {
+            let owner = groupOwner === item ? `${i18next.t("owner")}` : "";
+            let lander = loginUser === item;
+            return (
+              <List key={key}>
+                <ListItem disablepadding="true" className={classes.userItem}>
+                  <Button className={classes.gUserName}>
+                    <Box
+                      className={
+                        classes.gMemberAvatar
+                      }>
                       <Avatar src={userAvatar(item)} />
                     </Box>
-                  <ListItemText>{item}</ListItemText>
-                  {owner && (
-                    <ListItemText className={classes.gOwner}>
-                      {owner}
-                    </ListItemText>
-                  )}
-                  {isAdmins && !owner && !lander && (
-                  <Button className={classes.moreText}>
-                    <span
-                      id="user-more"
-                      className={classes.moreMenus}
-                      onClick={(event) => handleClick(event, item)}
-                    >
-                      <img src={moreMenu} alt="menu" className={`${classes.imgActive} ${Boolean(anchorEl) ? classes.imgActiveBgc : ''}`} />
-                    </span>
-                    <Menu
-                      id="user-menu"
-                      anchorEl={anchorEl}
-                      keepMounted
-                      open={Boolean(anchorEl)}
-                      onClose={handleClose}
-                      className={classes.myselfMenu}
-                    >
-                      {isOwner && (
-                        <MenuItem onClick={() => groupAdmins.includes(selectedUser) ? showSecondDialog(1, "move", "Move Admin"): showSecondDialog(1, "make", "Make Admin")}>
-                          <img
-                            src={adminIcon}
-                            alt="admin"
-                            className={classes.iconStyle}
-                          />
-                          {groupAdmins.includes(selectedUser) ? (
-                            <Typography
-                              variant="inherit"
-                              noWrap
-                              className={classes.menusName}
-                            >
-                              {i18next.t("Move Admin")}
-                            </Typography>
-                          ) : (
-                            <Typography
-                              variant="inherit"
-                              noWrap
-                              className={classes.menusName}
-                            >
-                              {i18next.t("Make Admin")}
-                            </Typography>
+                    <ListItemText>{item}</ListItemText>
+                    {owner && (
+                      <ListItemText className={classes.gOwner}>
+                        {owner}
+                      </ListItemText>
+                    )}
+                    {isAdmins && !owner && !lander && (
+                      <Button className={classes.moreText}>
+                        <span
+                          id="user-more"
+                          className={classes.moreMenus}
+                          onClick={(event) => handleClick(event, item)}
+                        >
+                          <img src={moreMenu} alt="menu" className={`${classes.imgActive} ${Boolean(anchorEl) ? classes.imgActiveBgc : ''}`} />
+                        </span>
+                        <Menu
+                          id="user-menu"
+                          anchorEl={anchorEl}
+                          keepMounted
+                          open={Boolean(anchorEl)}
+                          onClose={handleClose}
+                          className={classes.myselfMenu}
+                        >
+                          {isOwner && (
+                            <MenuItem onClick={() => groupAdmins.includes(selectedUser) ? showSecondDialog(1, "move", "Move Admin") : showSecondDialog(1, "make", "Make Admin")}>
+                              <img
+                                src={adminIcon}
+                                alt="admin"
+                                className={classes.iconStyle}
+                              />
+                              {groupAdmins.includes(selectedUser) ? (
+                                <Typography
+                                  variant="inherit"
+                                  noWrap
+                                  className={classes.menusName}
+                                >
+                                  {i18next.t("Move Admin")}
+                                </Typography>
+                              ) : (
+                                <Typography
+                                  variant="inherit"
+                                  noWrap
+                                  className={classes.menusName}
+                                >
+                                  {i18next.t("Make Admin")}
+                                </Typography>
+                              )}
+                            </MenuItem>
                           )}
-                        </MenuItem>
-                      )}
-                      <MenuItem onClick={() => newMuteList.includes(selectedUser) ? showSecondDialog(2, "move", "Remove from Muted List"): showSecondDialog(2, "make", "Move to Muted List")}>
-                        <img
-                          src={muteIcon}
-                          alt="mute"
-                          className={classes.iconStyle}
-                        />
-                        {newMuteList.includes(selectedUser) ? (
-                          <Typography
-                            variant="inherit"
-                            noWrap
-                            className={classes.menusName}
-                          >
-                            {i18next.t("Remove from Muted List")}
-                          </Typography>
-                        ) : (
-                          <Typography
-                            variant="inherit"
-                            noWrap
-                            className={classes.menusName}
-                          >
-                            {i18next.t("Move to Muted List")}
-                          </Typography>
-                        )}
-                      </MenuItem>
-                      <MenuItem onClick={() => showSecondDialog(3, "make", "Move to Blocked List")}>
-                        <img
-                          src={blockIcon}
-                          alt="block"
-                          className={classes.iconStyle}
-                        />
-                        <Typography
-                          variant="inherit"
-                          noWrap
-                          className={classes.menusName}
-                        >
-                          {i18next.t("Move to Blocked List")}
-                        </Typography>
-                      </MenuItem>
-                      <MenuItem onClick={() => groupAllowList.includes(selectedUser) ? showSecondDialog(4, null, "Remove from Allowed List"): showSecondDialog(5, null, "Move to Allowed List")}>
-                        <img
-                          src={allowIcon}
-                          alt="allow"
-                          className={classes.iconStyle}
-                        />
-                        {groupAllowList.includes(selectedUser) ? (
-                          <Typography
-                            variant="inherit"
-                            noWrap
-                            className={classes.menusName}
-                          >
-                            {i18next.t("Remove from Allowed List")}
-                          </Typography>
-                        ) : (
-                          <Typography
-                            variant="inherit"
-                            noWrap
-                            className={classes.menusName}
-                          >
-                            {i18next.t("Move to Allowed List")}
-                          </Typography>
-                        )}
-                      </MenuItem>
-                      <MenuItem onClick={() => showSecondDialog(6, null, "Remove")}>
-                        <img
-                          src={deleteIcon}
-                          alt="delete"
-                          className={classes.iconStyle}
-                        />
-                        <Typography
-                          variant="inherit"
-                          noWrap
-                          className={classes.menusName}
-                        >
-                          {i18next.t("Remove The Member")}
-                        </Typography>
-                      </MenuItem>
-                    </Menu>
+                          <MenuItem onClick={() => newMuteList.includes(selectedUser) ? showSecondDialog(2, "move", "Remove from Muted List") : showSecondDialog(2, "make", "Move to Muted List")}>
+                            <img
+                              src={muteIcon}
+                              alt="mute"
+                              className={classes.iconStyle}
+                            />
+                            {newMuteList.includes(selectedUser) ? (
+                              <Typography
+                                variant="inherit"
+                                noWrap
+                                className={classes.menusName}
+                              >
+                                {i18next.t("Remove from Muted List")}
+                              </Typography>
+                            ) : (
+                              <Typography
+                                variant="inherit"
+                                noWrap
+                                className={classes.menusName}
+                              >
+                                {i18next.t("Move to Muted List")}
+                              </Typography>
+                            )}
+                          </MenuItem>
+                          <MenuItem onClick={() => showSecondDialog(3, "make", "Move to Blocked List")}>
+                            <img
+                              src={blockIcon}
+                              alt="block"
+                              className={classes.iconStyle}
+                            />
+                            <Typography
+                              variant="inherit"
+                              noWrap
+                              className={classes.menusName}
+                            >
+                              {i18next.t("Move to Blocked List")}
+                            </Typography>
+                          </MenuItem>
+                          <MenuItem onClick={() => groupAllowList.includes(selectedUser) ? showSecondDialog(4, null, "Remove from Allowed List") : showSecondDialog(5, null, "Move to Allowed List")}>
+                            <img
+                              src={allowIcon}
+                              alt="allow"
+                              className={classes.iconStyle}
+                            />
+                            {groupAllowList.includes(selectedUser) ? (
+                              <Typography
+                                variant="inherit"
+                                noWrap
+                                className={classes.menusName}
+                              >
+                                {i18next.t("Remove from Allowed List")}
+                              </Typography>
+                            ) : (
+                              <Typography
+                                variant="inherit"
+                                noWrap
+                                className={classes.menusName}
+                              >
+                                {i18next.t("Move to Allowed List")}
+                              </Typography>
+                            )}
+                          </MenuItem>
+                          <MenuItem onClick={() => showSecondDialog(6, null, "Remove")}>
+                            <img
+                              src={deleteIcon}
+                              alt="delete"
+                              className={classes.iconStyle}
+                            />
+                            <Typography
+                              variant="inherit"
+                              noWrap
+                              className={classes.menusName}
+                            >
+                              {i18next.t("Remove The Member")}
+                            </Typography>
+                          </MenuItem>
+                        </Menu>
+                      </Button>
+                    )}
                   </Button>
-                )}
-                </Button>
-              </ListItem>
-            </List>
-          );
-        })}
-    </Box>
-    <SecondConfirmDialog
-      open={Boolean(secondSure)}
-      onClose={() => setSecondSure(false)}
-      confirmMethod={() => confirmQuitGroup()}
-      confirmContent={{
-        content: groupContent
-      }}
-    ></SecondConfirmDialog>
-  </>
+                </ListItem>
+              </List>
+            );
+          })}
+      </Box>
+      <SecondConfirmDialog
+        open={Boolean(secondSure)}
+        onClose={() => setSecondSure(false)}
+        confirmMethod={() => confirmQuitGroup()}
+        confirmContent={{
+          content: groupContent
+        }}
+      ></SecondConfirmDialog>
+    </>
   );
 };
 

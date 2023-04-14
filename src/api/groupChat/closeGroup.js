@@ -3,13 +3,14 @@ import getGroups from "./getGroups";
 import getGroupInfo from "../groupChat/getGroupInfo";
 import { EaseApp } from 'agora-chat-uikit'
 import { getLocalStorageData } from '../../utils/notification'
+import { Chat, ConversationList, RootProvider, rootStore } from 'chatuim2'
 export const closeGroup = (groupId, type, onClose) => {
 	let option = {
 		groupId: groupId,
 	};
 
 	if (type === "dissolve") {
-		WebIM.conn.dissolveGroup(option).then((res) => {
+		rootStore.client.dissolveGroup(option).then((res) => {
 			console.log(res);
 			if (getLocalStorageData().deleteSwitch) {
 				EaseApp.deleteSessionAndMessage({ sessionType: 'groupChat', sessionId: groupId })
@@ -17,7 +18,7 @@ export const closeGroup = (groupId, type, onClose) => {
 			getGroups();
 		});
 	} else if (type === "quit") {
-		WebIM.conn.quitGroup(option).then((res) => {
+		rootStore.client.quitGroup(option).then((res) => {
 			console.log(res);
 			if (getLocalStorageData().deleteSwitch) {
 				EaseApp.deleteSessionAndMessage({ sessionType: 'groupChat', sessionId: groupId })
@@ -25,6 +26,10 @@ export const closeGroup = (groupId, type, onClose) => {
 			getGroups();
 		});
 	}
+	rootStore.conversationStore.deleteConversation({
+		chatType: 'groupChat',
+		conversationId: groupId
+	});
 	onClose && onClose();
 };
 
@@ -33,7 +38,7 @@ export const rmGroupUser = (groupId, username, onClose) => {
 		groupId: groupId,
 		username: username,
 	};
-	WebIM.conn.removeSingleGroupMember(option).then((res) => {
+	rootStore.client.removeSingleGroupMember(option).then((res) => {
 		console.log("rmGroupUser success >>>", res);
 		getGroupInfo(groupId, "rmGroupUser");
 		onClose && onClose();
@@ -52,5 +57,5 @@ export const transferOwner = (groupId, userId, onClose, type) => {
 			onClose && onClose();
 		},
 	};
-	WebIM.conn.changeGroupOwner(option);
+	rootStore.client.changeGroupOwner(option);
 };

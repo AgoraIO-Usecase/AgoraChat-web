@@ -11,7 +11,7 @@ import closeIcon from '../../../src/assets/close.png'
 import avatar from '../../../src/assets/avatar2.jpg'
 import defaultAvatar from '../../../src/assets/avatar_default.jpg'
 import groupAvatar from "../../../src/assets/avatar_group.jpg";
-
+import { rootStore } from 'chatuim2'
 const useStyles = makeStyles((theme) => {
     return {
         root: {
@@ -54,7 +54,7 @@ const useStyles = makeStyles((theme) => {
             fontWeight: "600",
             fontSize: "20px",
             color: "#0D0D0D",
-            marginTop: (props) => (props.isTransfer ? "0" : "12px" )
+            marginTop: (props) => (props.isTransfer ? "0" : "12px")
         },
         defaultTextStyle: {
             // width:"292px",
@@ -107,7 +107,7 @@ const ConfirmDialog = (props) => {
     const classes = useStyles({
         isTransfer,
     });
-    let currentLoginUser = WebIM.conn.context.userId;
+    let currentLoginUser = rootStore.client.context.userId;
     const groupsInfo = state?.groups?.groupsInfo || {};
     const groupId = groupsInfo?.id;
     const groupName = groupsInfo?.name;

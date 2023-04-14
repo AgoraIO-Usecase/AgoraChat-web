@@ -14,9 +14,10 @@ import Signup from './layout/signup'
 import initListen from './utils/WebIMListen'
 import Loading from './components/common/loading'
 import { useSelector } from 'react-redux'
-
+import { useEffect } from 'react';
+import { rootStore, Provider } from 'chatuim2'
 const history = createHashHistory()
-initListen()
+
 
 const AuthorizedComponent = (props) => {
 	const Component = props.component;
@@ -31,17 +32,28 @@ const AuthorizedComponent = (props) => {
 
 function App() {
 	const isFetching = useSelector(state => state?.isFetching) || false
+	useEffect(() => {
+		console.log('********', rootStore.client)
+		initListen()
+
+	}, [])
 	return (
 		<div className="App">
-			<Loading show={isFetching} />
-			<HashRouter basename='/' history={history}>
-				<Switch>
-					<Route exact path="/login" component={Login} />
-					<Route exact path="/main" component={Main} />
-					<Route exact path="/signup" component={Signup} />
-					<Route path="/" render={() => <AuthorizedComponent token={'11'} component={Main} />} />
-				</Switch>
-			</HashRouter>
+			<Provider
+				initConfig={{
+					appKey: '41117440#383391',
+				}}
+			>
+				<Loading show={isFetching} />
+				<HashRouter basename='/' history={history}>
+					<Switch>
+						<Route exact path="/login" component={Login} />
+						<Route exact path="/main" component={Main} />
+						<Route exact path="/signup" component={Signup} />
+						<Route path="/" render={() => <AuthorizedComponent token={'11'} component={Main} />} />
+					</Switch>
+				</HashRouter>
+			</Provider>
 		</div>
 	);
 }

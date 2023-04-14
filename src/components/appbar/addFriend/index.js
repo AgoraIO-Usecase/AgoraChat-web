@@ -7,7 +7,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { message } from '../../common/alert'
 import { addContact } from '../../../api/contactsChat/getContacts'
 import JoinGroup from '../chatGroup/joinGroup/index'
-
+import { rootStore } from 'chatuim2'
 const useStyles = makeStyles((theme) => {
     return ({
         root: {
@@ -36,9 +36,13 @@ export default function AddfriendDialog({ open, onClose }) {
     // const dispatch = useDispatch()
     const [inputValue, setInputValue] = useState('')
     const [error, setError] = useState(null)
+    const currentUser = rootStore.client.context.userId;
     const addFriend = (inputValue) => {
         if (!inputValue) {
             return setError(true)
+        }
+        if (inputValue == currentUser) {
+            return message.error(i18next.t('Cannot add yourself as a friend'))
         }
         addContact(inputValue, 'hi')
         message.success(i18next.t('Successfully send the application'))
@@ -58,31 +62,31 @@ export default function AddfriendDialog({ open, onClose }) {
     function renderContent() {
         return (
             false ?
-            <Box className={classes.root}>
-                <Typography className={classes.inputLabel}>
-                    {i18next.t('login-UserID')}
-                </Typography>
+                <Box className={classes.root}>
+                    <Typography className={classes.inputLabel}>
+                        {i18next.t('login-UserID')}
+                    </Typography>
 
-                <TextField
-                    label={i18next.t('login-UserID')} variant="outlined" fullWidth autoFocus name="email"
-                    error={error}
-                    value={inputValue}
-                    onChange={handleChange} />
+                    <TextField
+                        label={i18next.t('login-UserID')} variant="outlined" fullWidth autoFocus name="email"
+                        error={error}
+                        value={inputValue}
+                        onChange={handleChange} />
 
-                <Button
-                    onClick={addFriend} variant="contained" color="primary" className={classes.button}>
-                    {i18next.t('Send')}
-                </Button>
-            </Box>
-            : <div style={{width: '500px', height: '400px', padding: '10px'}}>
-                <JoinGroup
-                    contentObj={{
-                        placeholder: i18next.t('login-UserID'),
-                        title: 'AgoraID'
-                    }}
-                    sendMethod={addFriend}
-                />
-            </div>
+                    <Button
+                        onClick={addFriend} variant="contained" color="primary" className={classes.button}>
+                        {i18next.t('Send')}
+                    </Button>
+                </Box>
+                : <div style={{ width: '500px', height: '400px', padding: '10px' }}>
+                    <JoinGroup
+                        contentObj={{
+                            placeholder: i18next.t('login-UserID'),
+                            title: 'AgoraID'
+                        }}
+                        sendMethod={addFriend}
+                    />
+                </div>
         )
     }
 

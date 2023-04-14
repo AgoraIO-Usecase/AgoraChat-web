@@ -2,33 +2,34 @@
 import WebIM from '../../utils/WebIM'
 import store from '../../redux/store'
 import { groupAllowAction } from '../../redux/actions'
+import { rootStore } from 'chatuim2'
 export const getGroupWrite = (groupId) => {
     let options = {
         groupId: groupId
     }
-    WebIM.conn.getGroupWhitelist(options).then((res) => {
-        console.log("getGroupWhitelist>>>",res);
+    rootStore.client.getGroupWhitelist(options).then((res) => {
+        console.log("getGroupWhitelist>>>", res);
         store.dispatch(groupAllowAction(res.data))
     })
 }
 
-export const rmGroupWhiteUser = (groupId, userName,onClose) => {
+export const rmGroupWhiteUser = (groupId, userName, onClose) => {
     let options = {
         groupId: groupId,
         userName: userName
     };
-    WebIM.conn.rmUsersFromGroupWhitelist(options).then((res) => {
+    rootStore.client.rmUsersFromGroupWhitelist(options).then((res) => {
         getGroupWrite(groupId)
         onClose && onClose();
     })
 }
 
-export const addGroupWhiteUser = (groupId, userName,onClose) => {
+export const addGroupWhiteUser = (groupId, userName, onClose) => {
     let options = {
         groupId: groupId,
         users: [userName]
     };
-    WebIM.conn.addUsersToGroupWhitelist(options).then((res) => {
+    rootStore.client.addUsersToGroupWhitelist(options).then((res) => {
         getGroupWrite(groupId);
         onClose && onClose();
     })

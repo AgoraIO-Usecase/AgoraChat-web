@@ -1,10 +1,10 @@
 import WebIM from '../../utils/WebIM'
 import store from '../../redux/store'
 import { setPresenceList } from '../../redux/actions'
-
+import { rootStore } from 'chatuim2'
 export const publishNewPresence = (payload) => {
   return new Promise((resolve, reject) => {
-    WebIM.conn.publishPresence(payload).then(res => {
+    rootStore.client.publishPresence(payload).then(res => {
       resolve(res)
     }).catch(err => {
       reject(err)
@@ -13,14 +13,14 @@ export const publishNewPresence = (payload) => {
 }
 
 export const getAllFriendsStatus = (payload) => {
-  WebIM.conn.getSubscribedPresenceList(payload).then(res => {
+  rootStore.client.getSubscribedPresenceList(payload).then(res => {
   });
 }
 
 export const subFriendStatus = (payload) => {
   payload.expiry = 10000000
   return new Promise((resolve) => {
-    WebIM.conn.subscribePresence(payload).then(res => {
+    rootStore.client.subscribePresence(payload).then(res => {
       if (res && Array.isArray(res.result)) {
         const tempArr = []
         res.result.forEach(item => {
@@ -70,13 +70,13 @@ export const subFriendStatus = (payload) => {
 }
 
 export const unsubFriendStatus = (payload) => {
-  WebIM.conn.unsubscribePresence(payload).then(res => {
+  rootStore.client.unsubscribePresence(payload).then(res => {
   });
 }
 
 export const getSubPresence = (payload) => {
   return new Promise((resolve, reject) => {
-    WebIM.conn.getPresenceStatus(payload).then(res => {
+    rootStore.client.getPresenceStatus(payload).then(res => {
       resolve(res)
     }).catch(err => {
       reject(err)

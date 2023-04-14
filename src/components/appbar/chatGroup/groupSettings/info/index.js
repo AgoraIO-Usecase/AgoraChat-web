@@ -6,7 +6,7 @@ import store from "../../../../../redux/store";
 import WebIM from '../../../../../utils/WebIM'
 import { modifyGroupInfo } from "../../../../../api/groupChat/getGroupInfo";
 import { message } from "../../../../common/alert";
-
+import { rootStore } from 'chatuim2'
 const useStyles = makeStyles((theme) => {
 	return {
 		titleBox: {
@@ -30,7 +30,7 @@ const useStyles = makeStyles((theme) => {
 			borderRadius: "16px",
 			background: "#F4F5F7",
 			margin: '16px 8px',
-    	padding: '8px !important',
+			padding: '8px !important',
 		},
 		nameBox: {
 			height: "60px",
@@ -86,10 +86,10 @@ const useStyles = makeStyles((theme) => {
 			marginTop: "15px",
 			position: "relative",
 			'& ::-webkit-scrollbar': {
-        display: 'none', /* Chrome Safari */
-      },
-      scrollbarWidth: 'none', /* firefox */
-      '-ms-overflow-style': 'none', /* IE 10+ */
+				display: 'none', /* Chrome Safari */
+			},
+			scrollbarWidth: 'none', /* firefox */
+			'-ms-overflow-style': 'none', /* IE 10+ */
 		},
 		contentBox: {
 			height: "60px",
@@ -100,10 +100,10 @@ const useStyles = makeStyles((theme) => {
 				color: '#000',
 			},
 			'& ::-webkit-scrollbar': {
-        display: 'none', /* Chrome Safari */
-      },
-      scrollbarWidth: 'none', /* firefox */
-      '-ms-overflow-style': 'none', /* IE 10+ */
+				display: 'none', /* Chrome Safari */
+			},
+			scrollbarWidth: 'none', /* firefox */
+			'-ms-overflow-style': 'none', /* IE 10+ */
 		},
 		contentStyle: {
 			fontFamily: "Roboto",
@@ -124,10 +124,10 @@ const useStyles = makeStyles((theme) => {
 		},
 		inputTextAreaBox: {
 			'& ::-webkit-scrollbar': {
-        display: 'none', /* Chrome Safari */
-      },
-      scrollbarWidth: 'none', /* firefox */
-      '-ms-overflow-style': 'none', /* IE 10+ */
+				display: 'none', /* Chrome Safari */
+			},
+			scrollbarWidth: 'none', /* firefox */
+			'-ms-overflow-style': 'none', /* IE 10+ */
 		}
 	};
 });
@@ -143,7 +143,7 @@ const GroupChatInfo = () => {
 	let groupDescription = state.groups.groupsInfo?.description || "";
 	let owner = state.groups.groupsInfo?.owner;
 	let admin = state.groups.groupAdmins;
-	let currentLoginUser = WebIM.conn.context.userId;
+	let currentLoginUser = rootStore.client.context.userId;
 	let isPermissions =
 		owner === currentLoginUser || admin.includes(currentLoginUser);
 	useEffect(() => {
@@ -159,7 +159,7 @@ const GroupChatInfo = () => {
 		if (value.length === 0 || value.length > 20) {
 			message.error(`${i18next.t("Group name is empty or exceeds the limit")}`);
 			return;
-		} 
+		}
 		setNameValue(value)
 	}
 
@@ -272,7 +272,7 @@ const GroupChatInfo = () => {
 							disabled={descEditStatus}
 							style={{
 								height: "60px",
-								width:"100%",
+								width: "100%",
 								overflowX: "hidden",
 								overflowY: "scroll",
 							}}

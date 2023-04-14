@@ -27,6 +27,8 @@ import ThreadDialog from '../components/thread/components/threadDialog'
 // import { getSilentModeForConversation } from '../api/notificationPush'
 import {getRtctoken, getConfDetail} from '../api/rtcCall'
 
+import {Chat, ConversationList, Provider, rootStore} from 'chatuim2'
+import 'chatuim2/style.css'
 const history = createHashHistory()
 
 export default function Main() {
@@ -62,10 +64,14 @@ export default function Main() {
     const [currentMsg, setCurrentMsg] = useState({})
     // session avatar click
     const handleClickSessionInfoDialog = (e,res) => {
-        let {chatType,to} = res
+        // let {chatType,to} = res
+        let {chatType,conversationId:to} = rootStore.conversationStore.currentCvs;
         if (chatType === "singleChat") {
             setSessionInfoAddEl(e.target);
-            setSessionInfo(res)
+            setSessionInfo({
+                chatType,
+                to
+            })
         } else if (chatType === "groupChat"){
             getGroupInfo(to)
             setGroupSettingAddEl(e.target)
@@ -151,7 +157,25 @@ export default function Main() {
 
     return (
         <div className='main-container'>
-            <EaseApp
+           
+			<div
+				style={{
+					width: '40%',
+					border: '1px solid transparent',
+					background: '#fff',
+				}}
+			>
+				<ConversationList
+                    renderHeader={() => <Header />}
+                ></ConversationList>
+				{/* <ContactList></ContactList> */}
+			</div>
+			<div style={{ width: '60%', border: '1px solid transparent' }}>
+				<Chat headerProps={{
+                    onAvatarClick: handleClickSessionInfoDialog
+                }}></Chat>
+			</div>
+            {/* <EaseApp
                 header={<Header />}
                 onChatAvatarClick={handleClickSessionInfoDialog}
                 onAvatarChange={handleClickGroupMemberInfoDialog}
@@ -167,7 +191,7 @@ export default function Main() {
                 getRTCToken={handleGetToken}
                 getIdMap={handleGetIdMap}
                 ringingSource={ringing}
-            />
+            /> */}
             <SessionInfoPopover 
                 open={sessionInfoAddEl}
                 onClose={() => setSessionInfoAddEl(null)}

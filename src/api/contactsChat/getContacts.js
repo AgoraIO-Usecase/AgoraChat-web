@@ -8,9 +8,9 @@ import { getSilentModeForConversations } from '../notificationPush/index'
 
 import { EaseApp } from "agora-chat-uikit";
 import { setMyUserInfo } from '../../redux/actions'
-
+import { rootStore } from 'chatuim2'
 const getContacts = () => {
-    WebIM.conn.getContacts().then((res) => {
+    rootStore.client.getContacts().then((res) => {
         const payload = {
             usernames: res.data
         }
@@ -31,11 +31,11 @@ const getContacts = () => {
 }
 
 export const addContact = (userId, message) => {
-    WebIM.conn.addContact(userId, message);
+    rootStore.client.addContact(userId, message);
 }
 
 export const getBlackList = () => {
-    WebIM.conn.getBlacklist().then((res) => {
+    rootStore.client.getBlacklist().then((res) => {
         store.dispatch(setBlackList(res.data))
     })
 }
@@ -46,7 +46,7 @@ export const addFromBlackList = (userId) => {
         message.warn(`${i18next.t("The user is in the blacklist")}`);
         return
     }
-    WebIM.conn.addUsersToBlacklist({
+    rootStore.client.addUsersToBlacklist({
         name: [userId],
     });
     blackList = blackList.concat(userId);
@@ -54,7 +54,7 @@ export const addFromBlackList = (userId) => {
 }
 
 export const removeFromBlackList = (userId, onClose) => {
-    WebIM.conn.removeFromBlackList({
+    rootStore.client.removeFromBlackList({
         name: [userId]
     });
     let { blackList } = store.getState()
@@ -64,7 +64,11 @@ export const removeFromBlackList = (userId, onClose) => {
 }
 
 export const deleteContact = (userId, onClose) => {
-    WebIM.conn.deleteContact(userId);
+    rootStore.client.deleteContact(userId);
+    rootStore.conversationStore.deleteConversation({
+        chatType: 'singleChat',
+        conversationId: userId
+    });
     let { blackList } = store.getState();
     blackList = blackList.filter((v) => v !== userId);
     store.dispatch(setBlackList(blackList));
@@ -72,7 +76,7 @@ export const deleteContact = (userId, onClose) => {
 };
 
 export const acceptContactRequest = (userId) => {
-    WebIM.conn.acceptInvitation(userId)
+    rootStore.client.acceptInvitation(userId)
     // .then(()=>{
     //     let conversationItem = {
     //         conversationType: "singleChat",
@@ -87,12 +91,12 @@ export const acceptContactRequest = (userId) => {
 }
 
 export const declineContactRequest = (userId) => {
-    WebIM.conn.declineInvitation(userId)
+    rootStore.client.declineInvitation(userId)
     store.dispatch(updateRequestStatus({ type: 'contact', name: userId, status: 'ignored' }))
 }
 
 export const editSelfInfoMessage = (obj) => {
-    WebIM.conn.updateUserInfo(obj).then(val => {
+    rootStore.client.updateUserInfo(obj).then(val => {
         const res = val.data
         store.dispatch(setMyUserInfo({ nickName: res?.nickname || '' }))
     })

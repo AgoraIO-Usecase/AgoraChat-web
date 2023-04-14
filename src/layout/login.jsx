@@ -52,6 +52,7 @@ export default function Login() {
                 loginWithToken(values.agoraId.toLowerCase(), accessToken).then(value => {
 
                 }).catch(err => {
+                    console.log(err)
                     setNotice({ show: true, text: 'Wrong Username or Password' })
                 }).finally(_ => {
                     setTimeout(() => {

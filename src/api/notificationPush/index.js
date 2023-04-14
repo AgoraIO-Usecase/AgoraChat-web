@@ -3,7 +3,7 @@ import store from '../../redux/store'
 import { setMuteDataObj, setGlobalSilentMode, setUnread } from '../../redux/actions'
 import { EaseApp } from "agora-chat-uikit"
 import { setTimeVSNowTime, changeTitle } from '../../utils/notification'
-
+import { rootStore } from 'chatuim2'
 function silentModeRedux(type, data) {
   store.dispatch(setGlobalSilentMode({ [type]: data }))
 }
@@ -73,7 +73,7 @@ function setSilentModeAllFalse(data, payload) {
 
 export const setSilentModeForAll = (payload) => {
   return new Promise((resolve, reject) => {
-    WebIM.conn.setSilentModeForAll(payload).then(res => {
+    rootStore.client.setSilentModeForAll(payload).then(res => {
       payload.type = 'global'
       setSilentModeAllFalse(res.data, payload)
       resolve(res.data)
@@ -85,7 +85,7 @@ export const setSilentModeForAll = (payload) => {
 
 export const getSilentModeForAll = () => {
   return new Promise((resolve, reject) => {
-    WebIM.conn.getSilentModeForAll().then(res => {
+    rootStore.client.getSilentModeForAll().then(res => {
       const data = {
         type: res.data.type || 'ALL',
         ...res.data
@@ -100,7 +100,7 @@ export const getSilentModeForAll = () => {
 
 export const getSilentModeForConversation = (payload) => {
   return new Promise((resolve, reject) => {
-    WebIM.conn.getSilentModeForConversation(payload).then(res => {
+    rootStore.client.getSilentModeForConversation(payload).then(res => {
       refreshUserGroupStatus(payload)
       resolve(res.data)
     }).catch(err => {
@@ -111,7 +111,7 @@ export const getSilentModeForConversation = (payload) => {
 
 export const setSilentModeForConversation = (payload) => {
   return new Promise((resolve, reject) => {
-    WebIM.conn.setSilentModeForConversation(payload).then(res => {
+    rootStore.client.setSilentModeForConversation(payload).then(res => {
       refreshUserGroupStatus(payload)
       resolve(res.data)
     }).catch(err => {
@@ -122,7 +122,7 @@ export const setSilentModeForConversation = (payload) => {
 
 export const clearRemindTypeForConversation = (payload) => {
   return new Promise((resolve, reject) => {
-    WebIM.conn.clearRemindTypeForConversation(payload).then(res => {
+    rootStore.client.clearRemindTypeForConversation(payload).then(res => {
       // const tempObj = {}
       // res.data.forEach(item => {
       //   tempObj[item.group] = item.value
@@ -137,7 +137,7 @@ export const clearRemindTypeForConversation = (payload) => {
 
 export const getSilentModeForConversations = (payload, params = { type: '', options: {} }) => {
   return new Promise((resolve, reject) => {
-    WebIM.conn.getSilentModeForConversations(payload).then(res => {
+    rootStore.client.getSilentModeForConversations(payload).then(res => {
       const { globalSilentMode: { global }, myUserInfo: { agoraId }, unread } = store.getState()
       const data = res.data
       const tempData = {}
@@ -216,7 +216,7 @@ export const getSilentModeForConversations = (payload, params = { type: '', opti
 
 export const setPushPerformLanguage = (payload) => {
   return new Promise((resolve, reject) => {
-    WebIM.conn.setPushPerformLanguage(payload).then(res => {
+    rootStore.client.setPushPerformLanguage(payload).then(res => {
       resolve(res.data)
     }).catch(err => {
       reject(err)
@@ -226,7 +226,7 @@ export const setPushPerformLanguage = (payload) => {
 
 export const getPushPerformLanguage = (payload) => {
   return new Promise((resolve, reject) => {
-    WebIM.conn.getPushPerformLanguage(payload).then(res => {
+    rootStore.client.getPushPerformLanguage(payload).then(res => {
       resolve(res.data)
     }).catch(err => {
       reject(err)

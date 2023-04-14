@@ -14,6 +14,7 @@ import Loading from '../../../common/loading'
 import search_icon from '../../../../assets/search.png'
 import groupAvatar_icon from '../../../../assets/groupAvatar.png'
 
+import { rootStore } from 'chatuim2'
 const useStyles = makeStyles((theme) => {
     return ({
         root: {
@@ -133,7 +134,22 @@ const AddedGroups = ({ onClose }) => {
                 muteFlag: muteDataObj[itemData]
             }
         };
-        EaseApp.addConversationItem(conversationItem);
+        // EaseApp.addConversationItem(conversationItem);
+
+        rootStore.conversationStore.addConversation({
+            chatType: 'groupChat',
+            conversationId: itemData.groupid,
+            lastMessage: {
+                time: Date.now()
+            },
+            unreadCount: 0,
+            name: itemData.groupname
+        })
+        console.log('itemData', itemData);
+        rootStore.conversationStore.setCurrentCvs({
+            chatType: 'groupChat',
+            conversationId: itemData.groupid,
+        })
         onClose();
     }
 
@@ -175,7 +191,7 @@ const AddedGroups = ({ onClose }) => {
                                     <Box
                                         style={{ flex: "1" }}
                                         onClick={() => {
-                                            handleClickSession(item.groupid);
+                                            handleClickSession(item);
                                         }}
                                     >
                                         <Button className={classes.gName}>

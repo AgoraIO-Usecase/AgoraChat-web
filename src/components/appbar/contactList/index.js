@@ -23,6 +23,7 @@ import donotdisturbIcon from '../../../assets/Do_not_Disturb.png'
 import customIcon from '../../../assets/custom.png'
 import leaveIcon from '../../../assets/leave.png'
 
+import { rootStore } from 'chatuim2'
 const useStyles = makeStyles((theme) => {
     return ({
         root: {
@@ -145,7 +146,19 @@ function AddressBookDialog(props) {
                 muteFlag: muteDataObj[itemData.name]
             }
         };
-        EaseApp.addConversationItem(conversationItem);
+        rootStore.conversationStore.addConversation({
+            chatType: 'singleChat',
+            conversationId: itemData.name,
+            lastMessage: {
+                time: Date.now()
+            },
+            unreadCount: 0
+        })
+        rootStore.conversationStore.setCurrentCvs({
+            chatType: 'singleChat',
+            conversationId: itemData.name,
+        })
+        // EaseApp.addConversationItem(conversationItem);
         onClose()
     }
 

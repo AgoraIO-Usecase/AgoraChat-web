@@ -17,6 +17,9 @@ import { handlerThreadChangedMsg } from "../api/thread/index";
 import i18next from "i18next";
 import { message } from '../components/common/alert'
 import { EaseApp } from "agora-chat-uikit"
+
+import { rootStore } from 'chatuim2'
+
 function publicNotify(message, msgType, iconTitle = {}, body = 'You Have A New Message') {
     const { chatType, from, data, type, to, time, url } = message
     let { myUserInfo: { agoraId }, muteDataObj, globalSilentMode: { global, single, group, threading } } = store.getState()
@@ -148,7 +151,7 @@ function handlerNewMessage(message, realFlag) {
 }
 const history = createHashHistory()
 const initListen = () => {
-    WebIM.conn.listen({
+    rootStore.client.listen({
         onOpened: () => {
             history.push('/main')
             getSilentModeForAll().finally(res => {
@@ -275,7 +278,7 @@ const initListen = () => {
         },
     })
 
-    WebIM.conn.addEventHandler('REQUESTS', {
+    rootStore.client.addEventHandler('REQUESTS', {
         onContactInvited: (msg) => {
             console.log('onContactInvited', msg)
             let { requests } = store.getState()
@@ -338,12 +341,12 @@ const initListen = () => {
         },
     });
 
-    WebIM.conn.addEventHandler("TOKENSTATUS", {
+    rootStore.client.addEventHandler("TOKENSTATUS", {
         onTokenWillExpire: (token) => {
             let { myUserInfo } = store.getState();
             getToken(myUserInfo.agoraId, myUserInfo.password).then((res) => {
                 const { accessToken } = res;
-                WebIM.conn.renewToken(accessToken);
+                rootStore.client.renewToken(accessToken);
                 const authData = sessionStorage.getItem("webim_auth");
                 const webim_auth = authData && JSON.parse(authData);
                 webim_auth.accessToken = accessToken;
@@ -364,7 +367,7 @@ const initListen = () => {
         },
     });
 
-    WebIM.conn.addEventHandler("Thread", {
+    rootStore.client.addEventHandler("Thread", {
         onMultiDeviceEvent: (message) => {
             handlerThreadChangedMsg(message)
         }
