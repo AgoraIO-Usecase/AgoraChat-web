@@ -16,7 +16,7 @@ With this sample project, you can:
 
 ## Running the App
 
-Tips: To use the webrtc feature, please use https
+Tips: To use the webrtc feature, please use `https`.
 
 ```bash
 # Install dependency.
