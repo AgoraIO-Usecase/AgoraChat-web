@@ -9,14 +9,16 @@ With this sample project, you can:
 3. Manage the conversation list.
 4. Add friends.
 5. Join group chats.
-Add your friends to your blacklist
-Send various types of messages, Such as: text, expression, picture, voice, file and so on
-Recall a message
-9. Log out of the chat server.
-
+   Add your friends to your blacklist
+   Send various types of messages, Such as: text, expression, picture, voice, file and so on
+   Recall a message
+6. Log out of the chat server.
 
 ## Running the App
-``` bash
+
+Tips: To use the webrtc feature, please use https
+
+```bash
 # Install dependency.
 npm install
 # Run in dev mode.
@@ -26,10 +28,10 @@ npm run build
 ```
 
 ## Contact Us
+
 - You can find the complete API document at [Document Center](https://hyphenateinc.github.io/web_product_overview.html).
 - You can file bugs about this demo a[issue](https://github.com/AgoraIO-Usecase/AgoraChat-web/issues).
 
 ## License
+
 The MIT License (MIT).
-
-
