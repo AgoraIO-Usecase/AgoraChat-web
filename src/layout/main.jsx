@@ -166,6 +166,7 @@ export default function Main() {
 				}}
 			>
 				<ConversationList
+                    style={{background: "#F1F2F3"}}
                     renderHeader={() => <Header />}
                 ></ConversationList>
 				{/* <ContactList></ContactList> */}
