@@ -369,18 +369,18 @@ const GroupSettingsDialog = ({ open, onClose, currentGroupId, authorEl }) => {
               {...a11yProps(4)}
               className={classes.itemBox}
             />
+            <Tab
+              label={GroupMemberInfoLabel()}
+              {...a11yProps(5)}
+              className={classes.itemBox}
+            />
             {isOwner ? (
               <Tab
                 label={transFerLabel()}
-                {...a11yProps(5)}
+                {...a11yProps(6)}
                 className={classes.itemBox}
               />
             ) : null}
-            <Tab
-              label={GroupMemberInfoLabel()}
-              {...a11yProps(6)}
-              className={classes.itemBox}
-            />
           </Tabs>
           <Box className={classes.deleteGroupBox}>
             <Button className={classes.membersBox}>
@@ -436,10 +436,10 @@ const GroupSettingsDialog = ({ open, onClose, currentGroupId, authorEl }) => {
             <GroupChatInfo />
           </TabPanel>
           <TabPanel value={value} index={5} className={classes.content}>
-            <TransFerOwner onClose={onClose} />
+            <MemberInfo onClose={onClose} />
           </TabPanel>
           <TabPanel value={value} index={6} className={classes.content}>
-            <MemberInfo onClose={onClose} />
+            <TransFerOwner onClose={onClose} />
           </TabPanel>
         </Box>
         <ConfirmDialog
@@ -485,7 +485,7 @@ const GroupSettingsDialog = ({ open, onClose, currentGroupId, authorEl }) => {
       onClose={onClose}
       title={i18next.t("Group Settings")}
       content={renderSetting()}
-      maxWidth={880}
+      maxWidth={false}
     ></CommonDialog>
   );
 };

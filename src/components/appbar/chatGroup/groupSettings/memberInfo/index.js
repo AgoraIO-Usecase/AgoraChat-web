@@ -1,9 +1,9 @@
-import React, { memo, useState } from "react";
+import React, { memo, useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Box, InputBase, Typography } from "@material-ui/core";
 import i18next from "i18next";
-import { modifyGroupInfo } from "../../../../../api/groupChat/getGroupInfo";
-import { message } from "../../../../common/alert";
+import { rootStore } from "chatuim2";
+import { useSelector } from "react-redux";
 
 const useStyles = makeStyles((theme) => {
   return {
@@ -55,9 +55,42 @@ const useStyles = makeStyles((theme) => {
 const maxLength = 50;
 
 const MemberInfo = () => {
+  const state = useSelector((state) => state);
+  const groupsInfo = state?.groups?.groupsInfo || {};
+  const groupId = groupsInfo?.id;
   const [value, setValue] = useState("");
   const [editStatus, setEditStatus] = useState(false);
   const classes = useStyles({ value });
+  const { client } = rootStore;
+
+  const getMemberAttr = () => {
+    client
+      .getGroupMemberAttributes({ groupId, userId: client.user })
+      .then((res) => {
+        if (res.data) {
+          setValue(res.data?.nickname || "");
+        }
+      });
+  };
+
+  const setMemberAttr = () => {
+    if (!value) return;
+    client
+      .setGroupMemberAttributes({
+        groupId,
+        userId: client.user,
+        memberAttributes: {
+          nickname: value
+        }
+      })
+      .then(() => {
+        setEditStatus(false);
+      });
+  };
+
+  useEffect(() => {
+    getMemberAttr();
+  }, []);
 
   return (
     <Box>
@@ -85,7 +118,7 @@ const MemberInfo = () => {
             <Box className={classes.doneBtn}>
               <div
                 onClick={() => {
-                  setEditStatus(true);
+                  setMemberAttr();
                 }}
               >
                 Done
