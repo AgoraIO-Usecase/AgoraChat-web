@@ -9,9 +9,9 @@ function silentModeRedux(type, data) {
 }
 
 function refreshUserGroupStatus(params) {
-  const { constacts, groups: { groupList }, thread: { threadId } } = store.getState()
+  const { contacts, groups: { groupList }, thread: { threadId } } = store.getState()
   const conversationList = []
-  constacts.forEach(item => {
+  contacts.forEach(item => {
     conversationList.push({
       id: item,
       type: 'singleChat'

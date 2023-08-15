@@ -124,7 +124,7 @@ const AddMembers = ({ onClose }) => {
 		isActiveBtn: isActiveBtn,
 	});
 	const state = store.getState();
-	const contacts = state?.constacts;
+	const contacts = state?.contacts;
 	const isSearching = state?.isSearching || false;
 	const groupId = state?.groups?.groupsInfo?.id;
 	const members = state?.groups?.groupsInfo?.affiliations || [];

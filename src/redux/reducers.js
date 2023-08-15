@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import onlineIcon from '../assets/Online.png'
 let defaultState = {
-	constacts: [],
+	contacts: [],
     groups: {
         groupList: [],
         publicGroups: [],
@@ -62,7 +62,7 @@ const reducer = (state = defaultState, action) => {
 		case "CONTACTS_ACTION": {
 			return {
 				...state,
-				constacts: data,
+				contacts: data,
 			};
 		}
 		case "GROUP_LIST_ACTION":
@@ -233,12 +233,12 @@ const reducer = (state = defaultState, action) => {
 			};
 
 		case "SEARCH_CONTACTS_ACTION":
-			let searchContacts = state.constacts.filter((item) =>
+			let searchContacts = state.contacts.filter((item) =>
 				item.includes(data)
 			);
 			return {
 				...state,
-				constacts: searchContacts,
+				contacts: searchContacts,
 			};
 		case "CLOSE_GROUP_CHAT_ACTION":
 			return {

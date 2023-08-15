@@ -53,7 +53,7 @@ export default function Header() {
     const state = useSelector(state => state)
     let myUserInfo = state?.myUserInfo
     let requests = state?.requests || {}
-    let showChatGroup = state?.isShowGroupChat
+    let showChatGroup = state?.isShowGroupChat || false
     // let unDealRequestsNum = countNum(requests.group) + countNum(requests.contact)
 
     useEffect(() => {

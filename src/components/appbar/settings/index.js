@@ -1246,7 +1246,7 @@ export default function Setting({ open, onClose }) {
             onClose={handleClose}
             title={i18next.t("Settings")}
             content={renderContent()}
-            maxWidth={700}
+            maxWidth={false}
             className={classes.settingDialogLu}
         ></CommonDialog>
     );

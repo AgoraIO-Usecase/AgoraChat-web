@@ -81,7 +81,6 @@ export function Report(props) {
                     value={textValue}
                     aria-label="maximum height"
                     placeholder="Report reasons"
-                    defaultValue=""
                 />
                 <div style={{ margin: '45px auto' }}>
                     <Button variant="contained" color="primary" style={{marginRight: '50px'}} onClick={handleConfrm}>
@@ -98,7 +97,7 @@ export function Report(props) {
             onClose={onClose}
             title={i18next.t("Report")}
             content={renderContent()}
-            maxWidth={700}
+            maxWidth={false}
         ></CommonDialog>
     )
 }

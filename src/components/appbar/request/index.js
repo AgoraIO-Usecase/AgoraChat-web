@@ -405,7 +405,7 @@ function Notice(props) {
                                 <img src={search_icon} alt="" className={classes.searchImg} />
                                 <InputBase placeholder={i18next.t('Search')} className={classes.inputSearch} onChange={handleInputValue} />
                             </Box>
-                            <IconButton circle style={{ borderRadius: '50%', width: '32px', height: '32px' }} onClick={handleMenuClick}>
+                            <IconButton  style={{ borderRadius: '50%', width: '32px', height: '32px' }} onClick={handleMenuClick}>
                                 <img src={menu_icon} alt="menu" style={{ width: '32px', height: '32px' }} />
                             </IconButton>
                         </Box>
@@ -423,7 +423,7 @@ function Notice(props) {
                                 <img src={search_icon} alt="" className={classes.searchImg} />
                                 <InputBase placeholder={i18next.t('Search')} className={classes.inputSearch} onChange={handleInputValue} />
                             </Box>
-                            <IconButton onClick={handleMenuClick} circle style={{ borderRadius: '50%', width: '32px', height: '32px' }}>
+                            <IconButton onClick={handleMenuClick}  style={{ borderRadius: '50%', width: '32px', height: '32px' }}>
                                 <img src={menu_icon} alt="menu" style={{ width: '32px', height: '32px' }} />
                             </IconButton>
                         </Box>
@@ -447,7 +447,7 @@ function Notice(props) {
             onClose={onClose}
             title={i18next.t("Request")}
             content={renderContent()}
-            maxWidth={700}
+            maxWidth={false}
         ></CommonDialog>
     );
 }

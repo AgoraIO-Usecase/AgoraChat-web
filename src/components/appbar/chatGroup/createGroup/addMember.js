@@ -131,7 +131,7 @@ const useStyles = makeStyles((theme) => {
 const AddGroupMemberDialog = ({ groupInfoData, onClearValue, open, onClose }) => {
     const { groupNameValue, groupDescriptionValue } = groupInfoData
     const state = store.getState();
-    const contacts = state?.constacts;
+    const contacts = state?.contacts;
     const isSearching = state?.isSearching || false
     const classes = useStyles();
     const [searchValue, setSearchValue] = useState('')
@@ -301,7 +301,7 @@ const AddGroupMemberDialog = ({ groupInfoData, onClearValue, open, onClose }) =>
             onClose={onClose}
             title={i18next.t('Add a Group Chat')}
             content={renderMember()}
-            maxWidth={880}
+            maxWidth={false}
         ></CommonDialog>
     )
 }

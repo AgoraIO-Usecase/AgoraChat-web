@@ -108,7 +108,7 @@ const useStyles = makeStyles((theme) => {
 function AddressBookDialog(props) {
     const { open, onClose } = props
     const classes = useStyles();
-    const constacts = useSelector((state) => state?.constacts) || []
+    const contacts = useSelector((state) => state?.contacts) || []
     const presenceList = useSelector((state) => state?.presenceList) || []
     const muteDataObj = useSelector((state) => state?.muteDataObj) || {}
     const [userInfoObj, setUserInfoObj] = useState({})
@@ -127,7 +127,7 @@ function AddressBookDialog(props) {
             return setUserInfoObj(Object.assign(userInfoObj, { [item.username]: item.userAvatar }))
         })
     }
-    let contactsData = constacts.map((user) => {
+    let contactsData = contacts.map((user) => {
         return {
             name: user,
             jid: user,
@@ -309,7 +309,7 @@ function AddressBookDialog(props) {
         }
         getcontactsInfo()
         // // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [constacts.length, presenceList.length])
+    }, [contacts.length, presenceList.length])
 
     return (
         <CommonDialog
