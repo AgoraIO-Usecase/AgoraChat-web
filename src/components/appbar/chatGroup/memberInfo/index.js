@@ -4,7 +4,6 @@ import { Box, Button, Tooltip } from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import { addContact } from "../../../../api/contactsChat/getContacts";
-import avatarImg from "../../../../assets/avatar1.jpg";
 import newChatIcon from "../../../../assets/newchat@2x.png";
 import addContactIcon from "../../../../assets/addcontact@2x.png";
 import offlineImg from "../../../../assets/Offline.png";
@@ -32,12 +31,12 @@ const useStyles = makeStyles((theme) => {
       position: "relative"
     },
     avatarImg: {
-			display: "flex",
+      display: "flex",
       width: "100px",
       height: "100px",
       margin: "25px auto",
-			alignItems: "center",
-			justifyContent: "center",
+      alignItems: "center",
+      justifyContent: "center"
     },
     nameText: {
       Typeface: "Ping Fang SC",
@@ -106,7 +105,7 @@ const CustomUserProfile = ({ userId }) => {
   let presenceExt = userInfo?.isOnline ? userInfo?.presenceExt : "Offline";
 
   useEffect(() => {
-    getUserInfo([userId]);
+    getUserInfo(userId);
   }, []);
 
   const handleClickChat = (userId) => {
@@ -133,7 +132,9 @@ const CustomUserProfile = ({ userId }) => {
             />
           </div>
         </Tooltip>
-        <Typography className={classes.nameText}>{userId}</Typography>
+        <Typography className={classes.nameText}>
+          {userInfo?.nickname}
+        </Typography>
         <Typography className={classes.idText}>AgoraID:{userId}</Typography>
       </Box>
       {contacts.includes(userId) ? (
