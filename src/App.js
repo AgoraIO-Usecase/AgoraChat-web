@@ -1,10 +1,16 @@
 import "./App.css";
 
-import { Switch, Route, Redirect, HashRouter } from "react-router-dom";
-import { createHashHistory } from "history";
-import Login from "./layout/login";
-import Main from "./layout/main";
-import Signup from "./layout/signup";
+import {
+	Switch,
+	Route,
+	Redirect,
+	HashRouter
+} from "react-router-dom";
+import { createHashHistory } from 'history'
+import Login from './layout/login'
+import Main from './layout/main'
+import Signup from './layout/signup'
+
 
 import initListen from "./utils/WebIMListen";
 import Loading from "./components/common/loading";
