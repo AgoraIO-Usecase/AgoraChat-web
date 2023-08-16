@@ -29,49 +29,52 @@ import ThreadMembers from "../components/thread/components/threadMembers";
 import ThreadDialog from "../components/thread/components/threadDialog";
 // import { getSilentModeForConversation } from '../api/notificationPush'
 import { getRtctoken, getConfDetail } from "../api/rtcCall";
+import GroupMemberInfoPopover from '../components/appbar/chatGroup/memberInfo'
 
-import { Chat, ConversationList, Provider, rootStore } from "chatuim2";
-import "chatuim2/style.css";
-const history = createHashHistory();
 
-export default function Main() {
-  //support edit thread
-  useEffect(() => {
-    const webimAuth = sessionStorage.getItem("webim_auth");
-    let webimAuthObj = {};
-    if (webimAuth && WebIM.conn.logOut) {
-      webimAuthObj = JSON.parse(webimAuth);
-      if (webimAuthObj.password) {
-        loginWithToken(
-          webimAuthObj.agoraId.toLowerCase(),
-          webimAuthObj.accessToken
-        );
-        store.dispatch(
-          setMyUserInfo({
-            agoraId: webimAuthObj.agoraId,
-            password: webimAuthObj.password
-          })
-        );
-      } else {
-        history.push("/login");
-      }
-      store.dispatch(setMyUserInfo({ agoraId: webimAuthObj.agoraId }));
-      WebIM.conn.agoraUid = webimAuthObj.agoraUid;
-    } else if (WebIM.conn.logOut) {
-      history.push("/login");
-    }
-  }, []);
-  const state = store.getState();
-  const [sessionInfoAddEl, setSessionInfoAddEl] = useState(null);
-  const [sessionInfo, setSessionInfo] = useState({});
+import {Chat, ConversationList, Provider, rootStore, Thread,RootContext } from 'chatuim2'
+import 'chatuim2/style.css'
+import CombineDialog from '../components/combine'
+import { observer } from 'mobx-react-lite';
 
-  const [groupMemberInfoAddEl, setGroupMemberInfoAddEl] = useState(null);
-  const [presenceList, setPresenceList] = useState([]);
-  const [groupSettingAddEl, setGroupSettingAddEl] = useState(null);
-  const [currentGroupId, setCurrentGroupId] = useState("");
+const history = createHashHistory()
 
-  const [isShowReport, setShowReport] = useState(false);
-  const [currentMsg, setCurrentMsg] = useState({});
+function Main() {
+    //support edit thread 
+    useEffect(() => {
+        const webimAuth = sessionStorage.getItem('webim_auth')
+        let webimAuthObj = {}
+        if (webimAuth && WebIM.conn.logOut) {
+            webimAuthObj = JSON.parse(webimAuth)
+            if (webimAuthObj.password) {
+                loginWithToken(webimAuthObj.agoraId.toLowerCase(), webimAuthObj.accessToken)
+                store.dispatch(setMyUserInfo({ agoraId: webimAuthObj.agoraId, password: webimAuthObj.password }))
+            } else {
+                history.push('/login')
+            }
+            store.dispatch(setMyUserInfo({ agoraId: webimAuthObj.agoraId }))
+            WebIM.conn.agoraUid = webimAuthObj.agoraUid
+        }else if (WebIM.conn.logOut) {
+            history.push('/login')  
+        }
+    }, [])
+    const state = store.getState();
+    const [sessionInfoAddEl, setSessionInfoAddEl] = useState(null)
+    const [sessionInfo, setSessionInfo] = useState({});
+
+    const [groupMemberInfoAddEl, setGroupMemberInfoAddEl] = useState(null)
+    const [memberInfo, setMemberInfo] = useState({})
+    const [presenceList, setPresenceList] = useState([])
+    const [groupSettingAddEl, setGroupSettingAddEl] = useState(null)
+    const [currentGroupId, setCurrentGroupId] = useState("");
+
+    const [isShowReport, setShowReport] = useState(false)
+    const [currentMsg, setCurrentMsg] = useState({})
+    // const rootStore = React.useContext(RootContext).rootStore
+    // || {};
+
+  const thread = rootStore.threadStore;
+ 
   // session avatar click
   const handleClickSessionInfoDialog = (e, res) => {
     // let {chatType,to} = res
@@ -114,16 +117,7 @@ export default function Main() {
     }
   };
 
-  const [clickEditPanelEl, setClickEditPanelEl] = useState(null);
-  const [membersPanelEl, setmembersPanelEl] = useState(null);
-  const changeEditPanelStatus = (e, info) => {
-    if (e) {
-      setClickEditPanelEl(e.currentTarget);
-      store.dispatch(setThreadInfo(info));
-    } else {
-      setClickEditPanelEl(e);
-    }
-  };
+
   const onchangeEditPanelStatus = (e, type) => {
     store.dispatch(setThreadInfo({ currentEditPage: type }));
     if (type === "Members") {
@@ -145,67 +139,150 @@ export default function Main() {
     };
   };
 
-  const handleGetIdMap = async (data) => {
-    let member = {};
-    member = await getConfDetail(data.userId, data.channel);
-    return member;
-  };
 
-  return (
-    <div className="main-container">
-      <div
-        style={{
-          width: "360px",
-          border: "1px solid transparent",
-          background: "#fff"
-        }}
-      >
-        <ConversationList
-          style={{ background: "#F1F2F3" }}
-          renderHeader={() => <Header />}
-        ></ConversationList>
-      </div>
-      <div
-        style={{ width: "calc(100% - 360px)", border: "1px solid transparent" }}
-      >
-        <Chat
-          headerProps={{
-            onAvatarClick: handleClickSessionInfoDialog
-          }}
-          messageListProps={{
-            renderUserProfile: ({ userId }) => (
-              <CustomUserProfile userId={userId} />
-            )
-          }}
-        ></Chat>
-      </div>
-      <SessionInfoPopover
-        open={sessionInfoAddEl}
-        onClose={() => setSessionInfoAddEl(null)}
-        sessionInfo={sessionInfo}
-      />
+    const [clickEditPanelEl,setClickEditPanelEl] = useState(null);
+    const [membersPanelEl,setmembersPanelEl] = useState(null);
+    const changeEditPanelStatus = (e,info) =>{
+        if(e){
+            setClickEditPanelEl(e.currentTarget)
+            store.dispatch(setThreadInfo(info))
+        }
+        else{
+            setClickEditPanelEl(e)
+        }
+    }
 
-      <GroupSettingsDialog
-        open={groupSettingAddEl}
-        authorEl={groupSettingAddEl}
-        onClose={() => setGroupSettingAddEl(null)}
-        currentGroupId={currentGroupId}
-      />
-      <Report
-        open={isShowReport}
-        onClose={() => {
-          setShowReport(false);
-        }}
-        currentMsg={currentMsg}
-      />
-      <EditThreadPanel
-        anchorEl={clickEditPanelEl}
-        onClose={() => setClickEditPanelEl(null)}
-        onchangeEditPanelStatus={onchangeEditPanelStatus}
-      />
-      <ThreadMembers membersPanelEl={membersPanelEl} />
-      <ThreadDialog />
-      <audio id="agoraChatSoundId" src={map3}></audio>
-    </div>
-  );
+    // const onOpenThreadPanel = (obj) => {
+    //     console.log(obj, 'onOpenThreadPanel')
+    //     getSilentModeForConversation({conversationId: obj.id, type: 'groupChat', flag: 'Thread' }).then(res => {
+    //         console.log(res, 'getNotDisturbDuration')
+    //     })
+    // }
+
+      const [showCombineDialog, setShowCombineDialog] = useState(false)
+      const [combineData, setCombineData ] = useState({})
+      const sendMessage= (data) => {
+        console.log('mmmmm', data)
+        if(data.type === "combine"){
+            // combineData = data
+            setCombineData(data)
+            setShowCombineDialog(true)
+        }
+      }
+      const sendCombineMsg = (item) => {
+        
+        const to = item.brandId ? item.brandId : item.groupid
+        combineData.to = to
+        combineData.from = ''
+        combineData.chatType = item.brandId ? 'singleChat' : 'groupChat'
+        console.log('222', combineData, item)
+            rootStore.messageStore.sendMessage(combineData).then((res) => {
+                console.log('发送成功', res)
+            }).catch((err) => {
+                console.log(err)
+            })
+            // setShowCombineDialog(false)
+      }
+      useEffect(() => {
+        console.log('变化了 showThreadPanel', rootStore.threadStore);
+      }, [rootStore.threadStore?.showThreadPanel]);
+
+      const handleGetIdMap = async (data) => {
+	    let member = {};
+	    member = await getConfDetail(data.userId, data.channel);
+	    return member;
+	  };
+    return (
+        <div className='main-container'>
+           
+			<div
+				style={{
+					width: '35%',
+					border: '1px solid transparent',
+					background: '#fff',
+				}}
+			>
+				<ConversationList
+                    style={{background: "#F1F2F3"}}
+                    renderHeader={() => <Header />}
+                ></ConversationList>
+				{/* <ContactList></ContactList> */}
+			</div>
+			<div  style={{
+          width: '65%',
+          borderLeft: '1px solid transparent',
+          overflow: 'hidden',
+          display: 'flex',
+        }}>
+            <div style={{ flex: 1, borderLeft: '1px solid transparent', overflow: 'hidden' }}>
+				<Chat headerProps={{
+                    onAvatarClick: handleClickSessionInfoDialog
+                }}
+                messageEditorProps={{
+                    onSendMessage: sendMessage
+                }}
+                messageListProps={{
+		            renderUserProfile: ({ userId }) => (
+		              <CustomUserProfile userId={userId} />
+		            )
+		          }}
+                ></Chat>
+                </div>
+                 { (
+                <div
+                    style={{
+                    width: '50%',
+                    borderLeft: '1px solid #eee',
+                    overflow: 'hidden',
+                    background: '#fff',
+                    display: rootStore.threadStore?.showThreadPanel ? 'block' : 'none',
+                    }}
+                >
+                    <Thread></Thread>
+                </div>)}
+			</div>
+            {/* <EaseApp
+                header={<Header />}
+                onChatAvatarClick={handleClickSessionInfoDialog}
+                onAvatarChange={handleClickGroupMemberInfoDialog}
+                onConversationClick={handleonConversationClick}
+                customMessageList={[{name: i18next.t("Report"), value: 'report', position: 'others'}]}
+                customMessageClick={onMessageEventClick}
+                onEditThreadPanel={changeEditPanelStatus}
+                // onOpenThreadPanel={onOpenThreadPanel}
+                isShowReaction={true}
+
+                agoraUid={WebIM.conn.agoraUid}
+                appId="15cb0d28b87b425ea613fc46f7c9f974"
+                getRTCToken={handleGetToken}
+                getIdMap={handleGetIdMap}
+                ringingSource={ringing}
+            /> */}
+            <SessionInfoPopover 
+                open={sessionInfoAddEl}
+                onClose={() => setSessionInfoAddEl(null)}
+                sessionInfo={sessionInfo}/>
+            <GroupMemberInfoPopover 
+                open={groupMemberInfoAddEl}
+                onClose={() => setGroupMemberInfoAddEl(null)}
+                memberInfo={memberInfo}
+                presenceList={presenceList}/>
+            <GroupSettingsDialog 
+                open={groupSettingAddEl}
+                authorEl={groupSettingAddEl}
+                onClose={() => setGroupSettingAddEl(null)}
+                currentGroupId={currentGroupId} />
+            <Report open={isShowReport} onClose={() => {setShowReport(false)}} currentMsg={currentMsg}/>
+            <EditThreadPanel 
+                anchorEl={clickEditPanelEl} 
+                onClose={() => setClickEditPanelEl(null)} 
+                onchangeEditPanelStatus = {onchangeEditPanelStatus}/>
+            <ThreadMembers membersPanelEl={membersPanelEl}/>
+            <ThreadDialog/>
+            <CombineDialog open={showCombineDialog} onClickItem={sendCombineMsg} onClose={() => {setShowCombineDialog(false)}}/>
+            <audio id="agoraChatSoundId" src={map3}></audio>
+        </div>
+    )
 }
+
+export default observer(Main)
