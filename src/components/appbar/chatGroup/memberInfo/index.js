@@ -21,7 +21,6 @@ const useStyles = makeStyles((theme) => {
       display: "flex",
       justifyContent: "center",
       flexFlow: "row wrap",
-      height: "280px",
       width: "240px",
       background: "#FFFFFF"
     },
@@ -36,7 +35,8 @@ const useStyles = makeStyles((theme) => {
       height: "100px",
       margin: "25px auto",
       alignItems: "center",
-      justifyContent: "center"
+      justifyContent: "center",
+      fontSize: "30px"
     },
     nameText: {
       Typeface: "Ping Fang SC",
@@ -76,7 +76,7 @@ const useStyles = makeStyles((theme) => {
       textAlign: "center",
       position: "absolute",
       right: 0,
-      bottom: "80px"
+      top: "100px"
     },
     imgStyle: {
       width: "30px",
@@ -98,14 +98,15 @@ const statusImgObj = {
 const CustomUserProfile = ({ userId }) => {
   const classes = useStyles();
   const state = useSelector((state) => state);
-  const { getUserInfo, appUsersInfo } = rootStore.addressStore;
+  const { getUserInfoWithPresence, appUsersInfo } = rootStore.addressStore;
   const { setCurrentCvs } = rootStore.conversationStore;
+  const { client } = rootStore;
   const contacts = state?.contacts || [];
   const userInfo = appUsersInfo[userId];
   let presenceExt = userInfo?.isOnline ? userInfo?.presenceExt : "Offline";
 
   useEffect(() => {
-    getUserInfo(userId);
+    getUserInfoWithPresence([userId]);
   }, []);
 
   const handleClickChat = (userId) => {
@@ -127,7 +128,7 @@ const CustomUserProfile = ({ userId }) => {
           <div className={classes.imgBox}>
             <img
               alt=""
-              src={statusImgObj[presenceExt] || statusImgObj[""] || customIcon}
+              src={statusImgObj[presenceExt] || customIcon}
               className={classes.imgStyle}
             />
           </div>
@@ -137,29 +138,35 @@ const CustomUserProfile = ({ userId }) => {
         </Typography>
         <Typography className={classes.idText}>AgoraID:{userId}</Typography>
       </Box>
-      {contacts.includes(userId) ? (
-        <Button
-          className={classes.infoBtn}
-          onClick={() => handleClickChat(userId)}
-        >
-          <img src={newChatIcon} alt="chat" style={{ width: "30px" }} />
-          <Typography className={classes.infoBtnText}>
-            {i18next.t("Chat")}
-          </Typography>
-        </Button>
-      ) : (
-        <Button
-          className={classes.infoBtn}
-          onClick={() => {
-            addContact(userId, "hi");
-          }}
-        >
-          <img src={addContactIcon} alt="new chat" style={{ width: "30px" }} />
-          <Typography className={classes.infoBtnText}>
-            {i18next.t("Add Contact")}
-          </Typography>
-        </Button>
-      )}
+
+      {userId !== client.user &&
+        (contacts.includes(userId) ? (
+          <Button
+            className={classes.infoBtn}
+            onClick={() => handleClickChat(userId)}
+          >
+            <img src={newChatIcon} alt="chat" style={{ width: "30px" }} />
+            <Typography className={classes.infoBtnText}>
+              {i18next.t("Chat")}
+            </Typography>
+          </Button>
+        ) : (
+          <Button
+            className={classes.infoBtn}
+            onClick={() => {
+              addContact(userId, "hi");
+            }}
+          >
+            <img
+              src={addContactIcon}
+              alt="new chat"
+              style={{ width: "30px" }}
+            />
+            <Typography className={classes.infoBtnText}>
+              {i18next.t("Add Contact")}
+            </Typography>
+          </Button>
+        ))}
     </Box>
   );
 };

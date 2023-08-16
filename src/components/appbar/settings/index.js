@@ -538,8 +538,14 @@ const useStyles = makeStyles((theme) => {
 // const AVATARS = [avater1, avater2, avater3, avater4, avater5, avater6, avater7]
 
 const AVATARS = [
-  "https://p1-jj.byteimg.com/tos-cn-i-t2oaga2asx/gold-user-assets/2019/3/27/169bdc71a9825fd4~tplv-t2oaga2asx-no-mark:180:180:180:180.awebp",
-  "https://avatars.githubusercontent.com/u/10611037?"
+  "https://raw.githubusercontent.com/AgoraIO-Usecase/AgoraChat-web/main/src/assets/avatar1.jpg",
+  "https://raw.githubusercontent.com/AgoraIO-Usecase/AgoraChat-web/main/src/assets/avatar11.jpg",
+  "https://raw.githubusercontent.com/AgoraIO-Usecase/AgoraChat-web/main/src/assets/avatar2.jpg",
+  "https://raw.githubusercontent.com/AgoraIO-Usecase/AgoraChat-web/main/src/assets/avatar3.jpg",
+  "https://raw.githubusercontent.com/AgoraIO-Usecase/AgoraChat-web/main/src/assets/avatar4.jpg",
+  "https://raw.githubusercontent.com/AgoraIO-Usecase/AgoraChat-web/main/src/assets/avatar5.jpg",
+  "https://raw.githubusercontent.com/AgoraIO-Usecase/AgoraChat-web/main/src/assets/avatar6.jpg",
+  "https://raw.githubusercontent.com/AgoraIO-Usecase/AgoraChat-web/main/src/assets/avatar7.jpg"
 ];
 
 const selectList = [
@@ -599,7 +605,6 @@ export default function Setting({ open, onClose }) {
   const [tabIndex, setTabIndex] = useState(1);
   const [editStatus, setEditStatus] = useState(false);
   const [nickName, setNickName] = useState("");
-  const [avatarIndex, setAvatarIndex] = useState(null);
   const [addEl, setAddEl] = useState(null);
   const [addElSub, setAddElSub] = useState(null);
   const [notifyText, setNotifyText] = useState("ALL");
@@ -628,10 +633,6 @@ export default function Setting({ open, onClose }) {
   const { client, addressStore } = rootStore;
   const { appUsersInfo, setAppUserInfo } = addressStore;
   const userInfo = appUsersInfo[client.user];
-
-  useEffect(() => {
-    addressStore.getUserInfo(client.user);
-  }, []);
 
   const handleClose = () => {
     onClose();
@@ -690,9 +691,9 @@ export default function Setting({ open, onClose }) {
   };
 
   const handleCheckAvatar = (index) => {
-    setAvatarIndex(index);
     client.updateUserInfo("avatarurl", AVATARS[index]);
     appUsersInfo[client.user].avatarurl = AVATARS[index];
+    setAppUserInfo({ ...appUsersInfo });
   };
 
   function tabs() {
@@ -707,6 +708,7 @@ export default function Setting({ open, onClose }) {
               width: 100,
               height: 100,
               marginTop: "36px",
+              fontSize: "30px",
               cursor: "pointer"
             }}
             onClick={() => setTabIndex(0)}
@@ -1009,6 +1011,10 @@ export default function Setting({ open, onClose }) {
       inputNickName.current && inputNickName.current.focus();
     }
   }, [inputNickName]);
+
+  useEffect(() => {
+    setNickName(userInfo?.nickname);
+  }, [userInfo]);
   function infoTabPanel() {
     return (
       <div className={classes.infoPanel} style={{ display: "block" }}>
@@ -1116,11 +1122,15 @@ export default function Setting({ open, onClose }) {
                       <div className={classes.privacyItemInfo}>
                         <ListItemAvatar>
                           <Avatar
-                            src={userAvatar(value)}
+                            src={appUsersInfo[value]?.avatarurl}
                             alt={`Avatar n°${value + 1}`}
-                          />
+                          >
+                            {appUsersInfo[value]?.nickname || value}
+                          </Avatar>
                         </ListItemAvatar>
-                        <span style={{ textTransform: "none" }}>{value}</span>
+                        <span style={{ textTransform: "none" }}>
+                          {appUsersInfo[value]?.nickname || value}
+                        </span>
                       </div>
                       <IconButton
                         value={value}
@@ -1215,7 +1225,7 @@ export default function Setting({ open, onClose }) {
               key={value}
             >
               <img src={value} alt="avatar" style={{ width: "100%" }} />
-              {avatarIndex === index ? (
+              {userInfo?.avatarurl === value ? (
                 <img
                   src={avaterSelect}
                   alt="select"
