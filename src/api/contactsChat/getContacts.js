@@ -12,12 +12,10 @@ import { getSilentModeForConversations } from "../notificationPush/index";
 import { setMyUserInfo } from "../../redux/actions";
 import { rootStore } from "chatuim2";
 const getContacts = () => {
+  const { getUserInfoWithPresence } = rootStore.addressStore;
   rootStore.client.getContacts().then((res) => {
-    const payload = {
-      usernames: res.data
-    };
-    if (payload.usernames.length) {
-      subFriendStatus(payload);
+    if (res.data.length) {
+      getUserInfoWithPresence(res.data);
     }
     const conversationList = [];
     res.data.forEach((item) => {
