@@ -258,7 +258,11 @@ function Main() {
               display: rootStore.threadStore?.showThreadPanel ? "block" : "none"
             }}
           >
-            <Thread></Thread>
+            <Thread  messageListProps={{
+              renderUserProfile: ({ userId }) => (
+                <CustomUserProfile userId={userId} />
+              )
+            }}></Thread>
           </div>
         }
       </div>
