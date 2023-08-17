@@ -117,15 +117,7 @@ function AddressBookDialog(props) {
 
   const [contactList, setContactList] = useState([]);
   const handleClick = (itemData) => {
-    // uikit
-    let conversationItem = {
-      conversationType: "singleChat",
-      conversationId: itemData.name,
-      ext: {
-        ext: itemData?.presence?.ext,
-        muteFlag: muteDataObj[itemData.name]
-      }
-    };
+
     rootStore.conversationStore.addConversation({
       chatType: "singleChat",
       conversationId: itemData.name,

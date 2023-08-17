@@ -17,7 +17,6 @@ import TransFerOwner from "./transfer";
 import Notifications from "./members/notifications";
 import ConfirmDialog from "../../../common/confirmDialog";
 import MemberInfo from "./memberInfo";
-import groupAvatar from "../../../../assets/groupAvatar.png";
 import membersIcon from "../../../../assets/members@2x.png";
 import addMembersIcon from "../../../../assets/addcontact@2x.png";
 import noticeIcon from "../../../../assets/notice@2x.png";
@@ -31,6 +30,7 @@ import memberInfoIcon from "../../../../assets/person_3lines_fill.png";
 
 import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
+import { Avatar } from "chatuim2";
 
 const useStyles = makeStyles((theme) => {
   return {
@@ -50,7 +50,9 @@ const useStyles = makeStyles((theme) => {
     },
     gAvatar: {
       height: "100px",
-      width: "100px"
+      width: "100px",
+      lineHeight: "100px",
+      fontSize: "30px"
     },
     gNameText: {
       typeface: "Ping Fang SC",
@@ -312,7 +314,9 @@ const GroupSettingsDialog = ({ open, onClose, currentGroupId, authorEl }) => {
       <Box className={classes.root}>
         <Box className={classes.gSettingleft}>
           <Box className={classes.gInfoBox}>
-            <img src={groupAvatar} alt="" className={classes.gAvatar} />
+            <Avatar alt="" className={classes.gAvatar}>
+              {groupsInfo?.name}
+            </Avatar>
             <Typography className={classes.gNameText}>
               {groupsInfo?.name}
               {muteFlag ? (
