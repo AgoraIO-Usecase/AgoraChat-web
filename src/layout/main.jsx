@@ -36,7 +36,15 @@ import {
   Provider,
   rootStore,
   Thread,
-  RootContext
+  RootContext,
+  MessageList,
+  TextMessage,
+  AudioMessage,
+  FileMessage,
+  ImageMessage,
+  CombinedMessage,
+  RecalledMessage,
+  Icon
 } from "chatuim2";
 import "chatuim2/style.css";
 import CombineDialog from "../components/combine";
@@ -204,6 +212,119 @@ function Main() {
     member = await getConfDetail(data.userId, data.channel);
     return member;
   };
+
+  let selfMoreAction = {
+    visible: true,
+    icon: null,
+    actions: [
+      {
+        content: 'REPLY',
+      },
+      {
+        content: 'DELETE',
+      },
+      {
+        content: 'UNSEND',
+      },
+      {
+        content: 'TRANSLATE',
+      },
+      {
+        content: 'Modify',
+      },
+      {
+        content: 'SELECT',
+      },
+    ],
+  };
+
+  let targetMoreAction = {
+    ...selfMoreAction,
+    actions: [...selfMoreAction.actions, {
+      icon: <Icon type='ENVELOPE' width={16} height={16}></Icon>,
+      content: 'Report',
+      onClick: (msg) => {
+        setCurrentMsg(msg)
+        setShowReport(true)
+      }
+    }]
+  }
+
+  const renderMessage = (msg) => {
+    console.log('自定义的消息')
+    let moreAction = selfMoreAction
+    // add report button
+    if(msg.from !== rootStore.client.user ){
+      moreAction = targetMoreAction
+    }
+    if (msg.type === 'txt') {
+      return(
+      <TextMessage
+        key={msg.id}
+        textMessage={msg}
+        renderUserProfile={({ userId }) => (
+          <CustomUserProfile userId={userId} />
+        )}
+        thread={true}
+        customAction={moreAction}
+      ></TextMessage>)
+    } else if(msg.type === 'audio'){
+      <AudioMessage
+        key={msg.id}
+          //@ts-ignore
+          audioMessage={msg}
+          renderUserProfile={({ userId }) => (
+            <CustomUserProfile userId={userId} />
+          )}
+          thread={true}
+        ></AudioMessage>
+    } else if (msg.type === 'img') {
+      return (
+        <ImageMessage
+          key={msg.id}
+          //@ts-ignore
+          imageMessage={msg}
+          renderUserProfile={({ userId }) => (
+            <CustomUserProfile userId={userId} />
+          )}
+          thread={true}
+          customAction={moreAction}
+        ></ImageMessage>
+      )
+    } else if(msg.type === 'file'){
+      <FileMessage
+        key={msg.id}
+          //@ts-ignore
+          fileMessage={msg}
+          renderUserProfile={({ userId }) => (
+            <CustomUserProfile userId={userId} />
+          )}
+          thread={true}
+          customAction={moreAction}
+        ></FileMessage>
+    } else if(msg.type === 'recall'){
+      <RecalledMessage
+        key={msg.id}
+          //@ts-ignore
+          status={msg.status}
+          //@ts-ignore
+          message={msg}
+        >
+        </RecalledMessage>
+    } else if(msg.type === 'combine'){
+      <CombinedMessage
+        key={msg.id}
+          //@ts-ignore
+          status={msg.status}
+          //@ts-ignore
+          combinedMessage={msg}
+          renderUserProfile={({ userId }) => (
+            <CustomUserProfile userId={userId} />
+          )}
+          thread={true}
+        ></CombinedMessage>
+    }
+  }
   return (
     <div className="main-container">
       <div
@@ -246,6 +367,7 @@ function Main() {
                 <CustomUserProfile userId={userId} />
               )
             }}
+            renderMessageList={() => <MessageList renderMessage={renderMessage} />}
           ></Chat>
         </div>
         {

@@ -12,6 +12,7 @@ import FormLabel from '@material-ui/core/FormLabel';
 import TextareaAutosize from '@material-ui/core/TextareaAutosize';
 import WebIM from '../../utils/WebIM';
 import { message } from '../common/alert'
+import { rootStore } from 'chatuim2'
 const useStyles = makeStyles((theme) => ({
     root: {
         width: '620px',
@@ -31,33 +32,33 @@ export function Report(props) {
     const [textValue, setTextValue] = useState('')
     const classes = useStyles();
     const handleChange = (event) => {
-        if(event.target.value.length > 150) {return}
+        if (event.target.value.length > 150) { return }
         setValue(event.target.value)
     }
 
     const handleConfrm = () => {
-        WebIM.conn.reportMessage({
+        rootStore.client.reportMessage({
             reportType: value, // 举报类型。
             reportReason: textValue, // 举报原因。
             messageId: currentMsg.id,
-	    }).then(() =>{
+        }).then(() => {
             message.success('Report success')
             setTextValue('')
             setValue('adult')
             onClose()
         }).catch((error) => {
-            if(error.type == 505){
+            if (error.type == 505) {
                 message.error('Service not open.')
-            }else{
+            } else {
                 message.error(error.message)
             }
             setTextValue('')
             setValue('adult')
             onClose()
-        }) 
+        })
     }
 
-    const handleTextChange = (e)=>{
+    const handleTextChange = (e) => {
         setTextValue(e.target.value)
     }
 
@@ -83,10 +84,10 @@ export function Report(props) {
                     placeholder="Report reasons"
                 />
                 <div style={{ margin: '45px auto' }}>
-                    <Button variant="contained" color="primary" style={{marginRight: '50px'}} onClick={handleConfrm}>
+                    <Button variant="contained" color="primary" style={{ marginRight: '50px' }} onClick={handleConfrm}>
                         Confrm
                     </Button>
-                    <Button variant="contained" onClick={() => {onClose()}}>Cancel</Button>
+                    <Button variant="contained" onClick={() => { onClose() }}>Cancel</Button>
                 </div>
             </div>
         )
