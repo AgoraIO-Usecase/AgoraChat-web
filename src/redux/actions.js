@@ -42,8 +42,8 @@ export const groupsNoticeAction = (data) => {
     return { type: 'GROUPS_NOTICE_ACTION', data };
 }
 
-export const groupsFilesAction = (data,option) => {
-	return { type: "GROUPS_FILES_ACTION", data, option };
+export const groupsFilesAction = (data, option) => {
+    return { type: "GROUPS_FILES_ACTION", data, option };
 };
 
 // set user info
@@ -73,8 +73,8 @@ export const setFetchingStatus = (data) => {
 }
 
 // search added group value
-export const searchAddedGroupAction = (data ) => {
-    return { type: 'SEARCH_ADDED_GROUP_ACTION', data}
+export const searchAddedGroupAction = (data) => {
+    return { type: 'SEARCH_ADDED_GROUP_ACTION', data }
 }
 
 // search public group value
@@ -93,7 +93,7 @@ export const searchContactsAction = (data) => {
 
 // close Group Chat
 export const closeGroupChatAction = (data) => {
-	return { type: "CLOSE_GROUP_CHAT_ACTION", data };
+    return { type: "CLOSE_GROUP_CHAT_ACTION", data };
 };
 
 export const presenceStatusImg = ext => {
@@ -143,5 +143,14 @@ export const setCurrentSessionId = (data) => {
 }
 //set thread info
 export const setThreadInfo = (data) => {
-    return { type: 'SET_THREAD_INFO',data}
+    return { type: 'SET_THREAD_INFO', data }
 }
+
+export const setTargetLanguage = (data) => {
+    return { type: 'SET_TARGET_LANGUAGE', data }
+}
+
+export const setSettingVisible = (data) => {
+    return { type: 'SET_SETTING_VISIBLE', data }
+}
+

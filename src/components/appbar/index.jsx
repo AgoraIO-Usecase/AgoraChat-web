@@ -18,7 +18,7 @@ import logoutIcon from "../../assets/logout@2x.png";
 import AgoraChat from "../../assets/AgoraChat@2x.png";
 import menuIcon from "../../assets/menu@2x.png";
 import store from "../../redux/store";
-import { setMyUserInfo, closeGroupChatAction } from "../../redux/actions";
+import { setMyUserInfo, closeGroupChatAction, setSettingVisible } from "../../redux/actions";
 import { logout } from "../../api/loginChat";
 import getGroups from "../../api/groupChat/getGroups";
 import SecondConfirmDialog from "../common/secondConfirmDialog";
@@ -29,14 +29,15 @@ import { acceptGroupRequest } from "../../api/groupChat/groupRequest";
 import { Avatar, rootStore } from "chatuim2";
 
 export default function Header() {
+  const state = useSelector((state) => state) || {};
   const [addEl, setAddEl] = useState(null);
   const [showAddFriend, setShowAddFriend] = useState(false);
-  const [showUserSetting, setShowUserSetting] = useState(false);
+  const [showUserSetting, setShowUserSetting] = useState(state.settingDialogVisible);
   const [showContact, setShowContact] = useState(false);
   const [showRequest, setShowRequest] = useState(false);
   const [secondSure, setSecondSure] = useState(false);
   const [unDealRequestsNum, setUnDealRequestsNum] = useState(0);
-  const state = useSelector((state) => state);
+  
   let myUserInfo = state?.myUserInfo;
   let requests = state?.requests || {};
   let showChatGroup = state?.isShowGroupChat || false;
@@ -106,6 +107,7 @@ export default function Header() {
 
   function handlleSettingDialog(params) {
     setShowUserSetting(true);
+    store.dispatch(setSettingVisible(true))
     setAddEl(null);
   }
 
@@ -277,8 +279,8 @@ export default function Header() {
       />
 
       <SettingsDialog
-        open={showUserSetting}
-        onClose={() => setShowUserSetting(false)}
+        open={state.settingDialogVisible}
+        onClose={() => store.dispatch(setSettingVisible(false))}
       ></SettingsDialog>
 
       <ContactDialog

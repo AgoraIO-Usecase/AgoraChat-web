@@ -10,7 +10,8 @@ import {
   setMyUserInfo,
   setUnread,
   setCurrentSessionId,
-  setThreadInfo
+  setThreadInfo,
+  setTargetLanguage
 } from "../redux/actions";
 import SessionInfoPopover from "../components/appbar/sessionInfo";
 import CustomUserProfile from "../components/appbar/chatGroup/memberInfo";
@@ -19,14 +20,15 @@ import { Report } from "../components/report";
 
 import map3 from "../assets/notify.mp3";
 
-import { changeTitle } from "../utils/notification";
+import { changeTitle, getLocalStorageData } from "../utils/notification";
 
 import EditThreadPanel from "../components/thread/components/editThreadPanel";
 import ThreadMembers from "../components/thread/components/threadMembers";
 import ThreadDialog from "../components/thread/components/threadDialog";
+import {TranslateDialog} from '../components/translate'
 // import { getSilentModeForConversation } from '../api/notificationPush'
 import { getRtctoken, getConfDetail } from "../api/rtcCall";
-
+import { useSelector } from "react-redux";
 import {
   Chat,
   ConversationList,
@@ -44,7 +46,8 @@ import {
 import "chatuim2/style.css";
 import CombineDialog from "../components/combine";
 import { observer } from "mobx-react-lite";
-
+import CommonDialog from '../components/common/dialog'
+import { Button } from "@material-ui/core";
 const history = createHashHistory();
 
 function Main() {
@@ -82,6 +85,15 @@ function Main() {
       history.push("/login");
     }
   }, []);
+  const state = useSelector(state => state)
+  // const targetLanguage = store.getState()?.targetLanguage
+
+  const [groupMemberInfoAddEl, setGroupMemberInfoAddEl] = useState(null);
+  const [memberInfo, setMemberInfo] = useState({});
+  const [presenceList, setPresenceList] = useState([]);
+
+  // const rootStore = React.useContext(RootContext).rootStore
+  // || {};
 
   // session avatar click
   const handleClickSessionInfoDialog = (e, res) => {
@@ -238,7 +250,23 @@ function Main() {
         }
       }
     ]
-  };
+  }
+  useEffect(() => {
+    const data = getLocalStorageData()
+    if(data.selectedLang){
+      store.dispatch(setTargetLanguage(data.selectedLang))
+    }
+  }, [])
+
+  const handleTranslateMsg = () => {
+    console.log('state', state)
+    const data = getLocalStorageData()
+    const targetLanguage = state?.targetLanguage
+    if(targetLanguage == 'none' || targetLanguage == '' || data.translateSwitch == false){
+      setTransDialogOpen(true)
+      return false
+    }
+  }
 
   const renderMessage = (msg) => {
     console.log("自定义的消息");
@@ -257,10 +285,12 @@ function Main() {
           )}
           thread={true}
           customAction={moreAction}
+          onTranslateMessage={handleTranslateMsg}
+          targetLanguage={state.targetLanguage}
         ></TextMessage>
       );
     } else if (msg.type === "audio") {
-      <AudioMessage
+      return (<AudioMessage
         key={msg.id}
         //@ts-ignore
         audioMessage={msg}
@@ -268,8 +298,9 @@ function Main() {
           <CustomUserProfile userId={userId} />
         )}
         thread={true}
-      ></AudioMessage>;
-    } else if (msg.type === "img") {
+        customAction={moreAction}
+      ></AudioMessage>)
+    } else if (msg.type === 'img') {
       return (
         <ImageMessage
           key={msg.id}
@@ -283,7 +314,7 @@ function Main() {
         ></ImageMessage>
       );
     } else if (msg.type === "file") {
-      <FileMessage
+      return (<FileMessage
         key={msg.id}
         //@ts-ignore
         fileMessage={msg}
@@ -292,17 +323,19 @@ function Main() {
         )}
         thread={true}
         customAction={moreAction}
-      ></FileMessage>;
+      ></FileMessage>);
     } else if (msg.type === "recall") {
-      <RecalledMessage
+      console.log('RecalledMessage', msg)
+      alert(1)
+      return(<RecalledMessage
         key={msg.id}
         //@ts-ignore
         status={msg.status}
         //@ts-ignore
-        message={msg}
-      ></RecalledMessage>;
+        message={msg||{}}
+      ></RecalledMessage>);
     } else if (msg.type === "combine") {
-      <CombinedMessage
+      return (<CombinedMessage
         key={msg.id}
         //@ts-ignore
         status={msg.status}
@@ -312,9 +345,12 @@ function Main() {
           <CustomUserProfile userId={userId} />
         )}
         thread={true}
-      ></CombinedMessage>;
+        customAction={moreAction}
+      ></CombinedMessage>);
     }
-  };
+  }
+
+  const [transDialogOpen, setTransDialogOpen] = useState(false)
   return (
     <div className="main-container">
       <div
@@ -414,6 +450,13 @@ function Main() {
           setShowCombineDialog(false);
         }}
       />
+
+      <TranslateDialog
+          open={transDialogOpen}
+          onClose={() => {
+            setTransDialogOpen(false)
+          }}
+        ></TranslateDialog>
       <audio id="agoraChatSoundId" src={map3}></audio>
     </div>
   );
