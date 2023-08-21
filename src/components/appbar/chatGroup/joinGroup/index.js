@@ -54,21 +54,23 @@ const JoinGroup = ({ contentObj, sendMethod }) => {
     const classes = useStyles();
     const [inputValue, setInputValue] = useState('')
 
-    const hangleInputValue = (event) => {
+    const handleInputValue = (event) => {
         setInputValue(event.target.value)
     }
     const handlerSendRequest = () => {
         if (sendMethod) {
             sendMethod(inputValue)
+            setInputValue('')
         } else {
             addGroup(inputValue)
+            setInputValue('')
         }
     }
     return (
         <Box>
             <Box className={classes.searchBox}>
                 <img src={search_icon} alt="" className={classes.searchImg} />
-                <InputBase placeholder={(contentObj && contentObj.placeholder) ? contentObj.placeholder : i18next.t('Group ID')} className={classes.inputSearch} onChange={hangleInputValue} />
+                <InputBase value={inputValue} placeholder={(contentObj && contentObj.placeholder) ? contentObj.placeholder : i18next.t('Group ID')} className={classes.inputSearch} onChange={handleInputValue} />
             </Box>
             {inputValue.length > 0 && <Box className={classes.joinBox}>
                 <Typography>{`${(contentObj && contentObj.title) ? contentObj.title : 'GroupID'}: ${inputValue}`}</Typography>

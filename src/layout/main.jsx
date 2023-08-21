@@ -16,11 +16,8 @@ import SessionInfoPopover from "../components/appbar/sessionInfo";
 import CustomUserProfile from "../components/appbar/chatGroup/memberInfo";
 import GroupSettingsDialog from "../components/appbar/chatGroup/groupSettings";
 import { Report } from "../components/report";
-import i18next from "i18next";
 
-import { subFriendStatus } from "../api/presence";
 import map3 from "../assets/notify.mp3";
-import ringing from "../assets/ringing.mp3";
 
 import { changeTitle } from "../utils/notification";
 
@@ -33,10 +30,8 @@ import { getRtctoken, getConfDetail } from "../api/rtcCall";
 import {
   Chat,
   ConversationList,
-  Provider,
   rootStore,
   Thread,
-  RootContext,
   MessageList,
   TextMessage,
   AudioMessage,
@@ -53,6 +48,14 @@ import { observer } from "mobx-react-lite";
 const history = createHashHistory();
 
 function Main() {
+  const [sessionInfoAddEl, setSessionInfoAddEl] = useState(null);
+  const [sessionInfo, setSessionInfo] = useState({});
+  const [groupSettingAddEl, setGroupSettingAddEl] = useState(null);
+  const [currentGroupId, setCurrentGroupId] = useState("");
+  const [isShowReport, setShowReport] = useState(false);
+  const [currentMsg, setCurrentMsg] = useState({});
+  const thread = rootStore.threadStore;
+
   //support edit thread
   useEffect(() => {
     const webimAuth = sessionStorage.getItem("webim_auth");
@@ -79,22 +82,6 @@ function Main() {
       history.push("/login");
     }
   }, []);
-  const state = store.getState();
-  const [sessionInfoAddEl, setSessionInfoAddEl] = useState(null);
-  const [sessionInfo, setSessionInfo] = useState({});
-
-  const [groupMemberInfoAddEl, setGroupMemberInfoAddEl] = useState(null);
-  const [memberInfo, setMemberInfo] = useState({});
-  const [presenceList, setPresenceList] = useState([]);
-  const [groupSettingAddEl, setGroupSettingAddEl] = useState(null);
-  const [currentGroupId, setCurrentGroupId] = useState("");
-
-  const [isShowReport, setShowReport] = useState(false);
-  const [currentMsg, setCurrentMsg] = useState({});
-  // const rootStore = React.useContext(RootContext).rootStore
-  // || {};
-
-  const thread = rootStore.threadStore;
 
   // session avatar click
   const handleClickSessionInfoDialog = (e, res) => {
@@ -218,67 +205,71 @@ function Main() {
     icon: null,
     actions: [
       {
-        content: 'REPLY',
+        content: "REPLY"
       },
       {
-        content: 'DELETE',
+        content: "DELETE"
       },
       {
-        content: 'UNSEND',
+        content: "UNSEND"
       },
       {
-        content: 'TRANSLATE',
+        content: "TRANSLATE"
       },
       {
-        content: 'Modify',
+        content: "Modify"
       },
       {
-        content: 'SELECT',
-      },
-    ],
+        content: "SELECT"
+      }
+    ]
   };
 
   let targetMoreAction = {
     ...selfMoreAction,
-    actions: [...selfMoreAction.actions, {
-      icon: <Icon type='ENVELOPE' width={16} height={16}></Icon>,
-      content: 'Report',
-      onClick: (msg) => {
-        setCurrentMsg(msg)
-        setShowReport(true)
+    actions: [
+      ...selfMoreAction.actions,
+      {
+        icon: <Icon type="ENVELOPE" width={16} height={16}></Icon>,
+        content: "Report",
+        onClick: (msg) => {
+          setCurrentMsg(msg);
+          setShowReport(true);
+        }
       }
-    }]
-  }
+    ]
+  };
 
   const renderMessage = (msg) => {
-    console.log('自定义的消息')
-    let moreAction = selfMoreAction
+    console.log("自定义的消息");
+    let moreAction = selfMoreAction;
     // add report button
-    if(msg.from !== rootStore.client.user ){
-      moreAction = targetMoreAction
+    if (msg.from !== rootStore.client.user) {
+      moreAction = targetMoreAction;
     }
-    if (msg.type === 'txt') {
-      return(
-      <TextMessage
-        key={msg.id}
-        textMessage={msg}
-        renderUserProfile={({ userId }) => (
-          <CustomUserProfile userId={userId} />
-        )}
-        thread={true}
-        customAction={moreAction}
-      ></TextMessage>)
-    } else if(msg.type === 'audio'){
-      <AudioMessage
-        key={msg.id}
-          //@ts-ignore
-          audioMessage={msg}
+    if (msg.type === "txt") {
+      return (
+        <TextMessage
+          key={msg.id}
+          textMessage={msg}
           renderUserProfile={({ userId }) => (
             <CustomUserProfile userId={userId} />
           )}
           thread={true}
-        ></AudioMessage>
-    } else if (msg.type === 'img') {
+          customAction={moreAction}
+        ></TextMessage>
+      );
+    } else if (msg.type === "audio") {
+      <AudioMessage
+        key={msg.id}
+        //@ts-ignore
+        audioMessage={msg}
+        renderUserProfile={({ userId }) => (
+          <CustomUserProfile userId={userId} />
+        )}
+        thread={true}
+      ></AudioMessage>;
+    } else if (msg.type === "img") {
       return (
         <ImageMessage
           key={msg.id}
@@ -290,41 +281,40 @@ function Main() {
           thread={true}
           customAction={moreAction}
         ></ImageMessage>
-      )
-    } else if(msg.type === 'file'){
+      );
+    } else if (msg.type === "file") {
       <FileMessage
         key={msg.id}
-          //@ts-ignore
-          fileMessage={msg}
-          renderUserProfile={({ userId }) => (
-            <CustomUserProfile userId={userId} />
-          )}
-          thread={true}
-          customAction={moreAction}
-        ></FileMessage>
-    } else if(msg.type === 'recall'){
+        //@ts-ignore
+        fileMessage={msg}
+        renderUserProfile={({ userId }) => (
+          <CustomUserProfile userId={userId} />
+        )}
+        thread={true}
+        customAction={moreAction}
+      ></FileMessage>;
+    } else if (msg.type === "recall") {
       <RecalledMessage
         key={msg.id}
-          //@ts-ignore
-          status={msg.status}
-          //@ts-ignore
-          message={msg}
-        >
-        </RecalledMessage>
-    } else if(msg.type === 'combine'){
+        //@ts-ignore
+        status={msg.status}
+        //@ts-ignore
+        message={msg}
+      ></RecalledMessage>;
+    } else if (msg.type === "combine") {
       <CombinedMessage
         key={msg.id}
-          //@ts-ignore
-          status={msg.status}
-          //@ts-ignore
-          combinedMessage={msg}
-          renderUserProfile={({ userId }) => (
-            <CustomUserProfile userId={userId} />
-          )}
-          thread={true}
-        ></CombinedMessage>
+        //@ts-ignore
+        status={msg.status}
+        //@ts-ignore
+        combinedMessage={msg}
+        renderUserProfile={({ userId }) => (
+          <CustomUserProfile userId={userId} />
+        )}
+        thread={true}
+      ></CombinedMessage>;
     }
-  }
+  };
   return (
     <div className="main-container">
       <div
@@ -367,7 +357,9 @@ function Main() {
                 <CustomUserProfile userId={userId} />
               )
             }}
-            renderMessageList={() => <MessageList renderMessage={renderMessage} />}
+            renderMessageList={() => (
+              <MessageList renderMessage={renderMessage} />
+            )}
           ></Chat>
         </div>
         {
@@ -380,31 +372,16 @@ function Main() {
               display: rootStore.threadStore?.showThreadPanel ? "block" : "none"
             }}
           >
-            <Thread  messageListProps={{
-              renderUserProfile: ({ userId }) => (
-                <CustomUserProfile userId={userId} />
-              )
-            }}></Thread>
+            <Thread
+              messageListProps={{
+                renderUserProfile: ({ userId }) => (
+                  <CustomUserProfile userId={userId} />
+                )
+              }}
+            ></Thread>
           </div>
         }
       </div>
-      {/* <EaseApp
-                header={<Header />}
-                onChatAvatarClick={handleClickSessionInfoDialog}
-                onAvatarChange={handleClickGroupMemberInfoDialog}
-                onConversationClick={handleonConversationClick}
-                customMessageList={[{name: i18next.t("Report"), value: 'report', position: 'others'}]}
-                customMessageClick={onMessageEventClick}
-                onEditThreadPanel={changeEditPanelStatus}
-                // onOpenThreadPanel={onOpenThreadPanel}
-                isShowReaction={true}
-
-                agoraUid={WebIM.conn.agoraUid}
-                appId="15cb0d28b87b425ea613fc46f7c9f974"
-                getRTCToken={handleGetToken}
-                getIdMap={handleGetIdMap}
-                ringingSource={ringing}
-            /> */}
       <SessionInfoPopover
         open={sessionInfoAddEl}
         onClose={() => setSessionInfoAddEl(null)}

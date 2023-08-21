@@ -106,7 +106,9 @@ const CustomUserProfile = ({ userId }) => {
   let presenceExt = userInfo?.isOnline ? userInfo?.presenceExt : "Offline";
 
   useEffect(() => {
-    getUserInfoWithPresence([userId]);
+    if (!appUsersInfo[userId]) {
+      getUserInfoWithPresence([userId]);
+    }
   }, []);
 
   const handleClickChat = (userId) => {
