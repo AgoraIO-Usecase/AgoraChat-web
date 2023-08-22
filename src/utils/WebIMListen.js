@@ -49,14 +49,14 @@ function publicNotify(message, msgType, iconTitle = {}, body = 'You Have A New M
         sessionType = 'threading'
         return
     }
-    if (sessionType === 'singleChat' && ((single[from]?.ignoreDuration && !setTimeVSNowTime(single[from], true)) || (single[from]?.type && single[from]?.type === 'NONE') || (!single[from].type && global[agoraId].type === 'NONE'))) {
+    if (sessionType === 'singleChat' && ((single[from]?.ignoreDuration && !setTimeVSNowTime(single[from], true)) || (single[from]?.type && single[from]?.type === 'NONE') || (!single[from]?.type && global[agoraId]?.type === 'NONE'))) {
         return
-    } else if (sessionType === 'groupChat' && ((group[to]?.ignoreDuration && !setTimeVSNowTime(group[to], true)) || (group[to]?.type && group[to]?.type === 'NONE') || (!group[to].type && global[agoraId].type === 'NONE'))) {
+    } else if (sessionType === 'groupChat' && ((group[to]?.ignoreDuration && !setTimeVSNowTime(group[to], true)) || (group[to]?.type && group[to]?.type === 'NONE') || (!group[to]?.type && global[agoraId]?.type === 'NONE'))) {
         return
-    } else if (sessionType === 'threading' && ((threading[to]?.ignoreDuration && !setTimeVSNowTime(threading[to], true)) || (threading[to]?.type && threading[to]?.type === 'NONE') || (!threading[to].type && global[agoraId].type === 'NONE'))) {
+    } else if (sessionType === 'threading' && ((threading[to]?.ignoreDuration && !setTimeVSNowTime(threading[to], true)) || (threading[to]?.type && threading[to]?.type === 'NONE') || (!threading[to]?.type && global[agoraId]?.type === 'NONE'))) {
         return
     }
-    if ((sessionType === 'singleChat' && (!single[from].type || (single[from]?.type && single[from]?.type === 'DEFAULT'))) || (sessionType === 'groupChat' && (!group[to].type || (group[to]?.type && group[to]?.type === 'DEFAULT'))) || (sessionType === 'threading' && (!threading[to].type || (threading[to]?.type && threading[to]?.type === 'DEFAULT')))) {
+    if ((sessionType === 'singleChat' && (!single[from]?.type || (single[from]?.type && single[from]?.type === 'DEFAULT'))) || (sessionType === 'groupChat' && (!group[to]?.type || (group[to]?.type && group[to]?.type === 'DEFAULT'))) || (sessionType === 'threading' && (!threading[to]?.type || (threading[to]?.type && threading[to]?.type === 'DEFAULT')))) {
         if (global[agoraId]?.type && global[agoraId].type === 'NONE') {
             return
         } else if (global[agoraId]?.type && global[agoraId].type === 'AT') {

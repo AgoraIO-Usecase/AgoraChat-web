@@ -191,7 +191,6 @@ function Main() {
     combineData.to = to;
     combineData.from = "";
     combineData.chatType = item.brandId ? "singleChat" : "groupChat";
-    console.log("222", combineData, item);
     rootStore.messageStore
       .sendMessage(combineData)
       .then((res) => {
@@ -325,8 +324,6 @@ function Main() {
         customAction={moreAction}
       ></FileMessage>);
     } else if (msg.type === "recall") {
-      console.log('RecalledMessage', msg)
-      alert(1)
       return(<RecalledMessage
         key={msg.id}
         //@ts-ignore
