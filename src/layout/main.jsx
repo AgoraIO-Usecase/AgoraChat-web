@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Header from "../components/appbar";
 import "./login.css";
 import getGroupInfo from "../api/groupChat/getGroupInfo";
@@ -25,7 +25,7 @@ import { changeTitle, getLocalStorageData } from "../utils/notification";
 import EditThreadPanel from "../components/thread/components/editThreadPanel";
 import ThreadMembers from "../components/thread/components/threadMembers";
 import ThreadDialog from "../components/thread/components/threadDialog";
-import {TranslateDialog} from '../components/translate'
+import { TranslateDialog } from "../components/translate";
 // import { getSilentModeForConversation } from '../api/notificationPush'
 import { getRtctoken, getConfDetail } from "../api/rtcCall";
 import { useSelector } from "react-redux";
@@ -46,8 +46,6 @@ import {
 import "chatuim2/style.css";
 import CombineDialog from "../components/combine";
 import { observer } from "mobx-react-lite";
-import CommonDialog from '../components/common/dialog'
-import { Button } from "@material-ui/core";
 const history = createHashHistory();
 
 function Main() {
@@ -58,6 +56,16 @@ function Main() {
   const [isShowReport, setShowReport] = useState(false);
   const [currentMsg, setCurrentMsg] = useState({});
   const thread = rootStore.threadStore;
+  const { currentCvs } = rootStore.conversationStore;
+
+  const renderUserProfile = useCallback(
+    ({ userId }) => {
+      return currentCvs.chatType === "groupChat" ? (
+        <CustomUserProfile userId={userId} />
+      ) : null;
+    },
+    [currentCvs]
+  );
 
   //support edit thread
   useEffect(() => {
@@ -85,7 +93,7 @@ function Main() {
       history.push("/login");
     }
   }, []);
-  const state = useSelector(state => state)
+  const state = useSelector((state) => state);
   // const targetLanguage = store.getState()?.targetLanguage
 
   const [groupMemberInfoAddEl, setGroupMemberInfoAddEl] = useState(null);
@@ -249,23 +257,27 @@ function Main() {
         }
       }
     ]
-  }
+  };
   useEffect(() => {
-    const data = getLocalStorageData()
-    if(data.selectedLang){
-      store.dispatch(setTargetLanguage(data.selectedLang))
+    const data = getLocalStorageData();
+    if (data.selectedLang) {
+      store.dispatch(setTargetLanguage(data.selectedLang));
     }
-  }, [])
+  }, []);
 
   const handleTranslateMsg = () => {
-    console.log('state', state)
-    const data = getLocalStorageData()
-    const targetLanguage = state?.targetLanguage
-    if(targetLanguage == 'none' || targetLanguage == '' || data.translateSwitch == false){
-      setTransDialogOpen(true)
-      return false
+    console.log("state", state);
+    const data = getLocalStorageData();
+    const targetLanguage = state?.targetLanguage;
+    if (
+      targetLanguage == "none" ||
+      targetLanguage == "" ||
+      data.translateSwitch == false
+    ) {
+      setTransDialogOpen(true);
+      return false;
     }
-  }
+  };
 
   const renderMessage = (msg) => {
     console.log("自定义的消息");
@@ -279,9 +291,7 @@ function Main() {
         <TextMessage
           key={msg.id}
           textMessage={msg}
-          renderUserProfile={({ userId }) => (
-            <CustomUserProfile userId={userId} />
-          )}
+          renderUserProfile={renderUserProfile}
           thread={true}
           customAction={moreAction}
           onTranslateMessage={handleTranslateMsg}
@@ -289,65 +299,65 @@ function Main() {
         ></TextMessage>
       );
     } else if (msg.type === "audio") {
-      return (<AudioMessage
-        key={msg.id}
-        //@ts-ignore
-        audioMessage={msg}
-        renderUserProfile={({ userId }) => (
-          <CustomUserProfile userId={userId} />
-        )}
-        thread={true}
-        customAction={moreAction}
-      ></AudioMessage>)
-    } else if (msg.type === 'img') {
+      return (
+        <AudioMessage
+          key={msg.id}
+          //@ts-ignore
+          audioMessage={msg}
+          renderUserProfile={renderUserProfile}
+          thread={true}
+          customAction={moreAction}
+        ></AudioMessage>
+      );
+    } else if (msg.type === "img") {
       return (
         <ImageMessage
           key={msg.id}
           //@ts-ignore
           imageMessage={msg}
-          renderUserProfile={({ userId }) => (
-            <CustomUserProfile userId={userId} />
-          )}
+          renderUserProfile={renderUserProfile}
           thread={true}
           customAction={moreAction}
         ></ImageMessage>
       );
     } else if (msg.type === "file") {
-      return (<FileMessage
-        key={msg.id}
-        //@ts-ignore
-        fileMessage={msg}
-        renderUserProfile={({ userId }) => (
-          <CustomUserProfile userId={userId} />
-        )}
-        thread={true}
-        customAction={moreAction}
-      ></FileMessage>);
+      return (
+        <FileMessage
+          key={msg.id}
+          //@ts-ignore
+          fileMessage={msg}
+          renderUserProfile={renderUserProfile}
+          thread={true}
+          customAction={moreAction}
+        ></FileMessage>
+      );
     } else if (msg.type === "recall") {
-      return(<RecalledMessage
-        key={msg.id}
-        //@ts-ignore
-        status={msg.status}
-        //@ts-ignore
-        message={msg||{}}
-      ></RecalledMessage>);
+      return (
+        <RecalledMessage
+          key={msg.id}
+          //@ts-ignore
+          status={msg.status}
+          //@ts-ignore
+          message={msg || {}}
+        ></RecalledMessage>
+      );
     } else if (msg.type === "combine") {
-      return (<CombinedMessage
-        key={msg.id}
-        //@ts-ignore
-        status={msg.status}
-        //@ts-ignore
-        combinedMessage={msg}
-        renderUserProfile={({ userId }) => (
-          <CustomUserProfile userId={userId} />
-        )}
-        thread={true}
-        customAction={moreAction}
-      ></CombinedMessage>);
+      return (
+        <CombinedMessage
+          key={msg.id}
+          //@ts-ignore
+          status={msg.status}
+          renderUserProfile={renderUserProfile}
+          //@ts-ignore
+          combinedMessage={msg}
+          thread={true}
+          customAction={moreAction}
+        ></CombinedMessage>
+      );
     }
-  }
+  };
 
-  const [transDialogOpen, setTransDialogOpen] = useState(false)
+  const [transDialogOpen, setTransDialogOpen] = useState(false);
   return (
     <div className="main-container">
       <div
@@ -384,11 +394,6 @@ function Main() {
             }}
             messageEditorProps={{
               onSendMessage: sendMessage
-            }}
-            messageListProps={{
-              renderUserProfile: ({ userId }) => (
-                <CustomUserProfile userId={userId} />
-              )
             }}
             renderMessageList={() => (
               <MessageList renderMessage={renderMessage} />
@@ -449,11 +454,11 @@ function Main() {
       />
 
       <TranslateDialog
-          open={transDialogOpen}
-          onClose={() => {
-            setTransDialogOpen(false)
-          }}
-        ></TranslateDialog>
+        open={transDialogOpen}
+        onClose={() => {
+          setTransDialogOpen(false);
+        }}
+      ></TranslateDialog>
       <audio id="agoraChatSoundId" src={map3}></audio>
     </div>
   );
