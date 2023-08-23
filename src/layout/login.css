@@ -7,7 +7,6 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    /* min-width: 600px; */
     min-height: 698px;
     background-position: center;
 }
@@ -100,9 +99,7 @@
 .login-copyright {
     font-size: 16px;
     color: #fff;
-    position: relative;
-    /* bottom: -90px; */
-    bottom: -10%;
+    margin-top: 20px;
 }
 
 .main-container {
