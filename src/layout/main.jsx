@@ -291,6 +291,7 @@ function Main() {
         <TextMessage
           key={msg.id}
           textMessage={msg}
+          status={msg.status}
           renderUserProfile={renderUserProfile}
           thread={true}
           customAction={moreAction}
@@ -303,6 +304,7 @@ function Main() {
         <AudioMessage
           key={msg.id}
           //@ts-ignore
+          status={msg.status}
           audioMessage={msg}
           renderUserProfile={renderUserProfile}
           thread={true}
@@ -314,6 +316,7 @@ function Main() {
         <ImageMessage
           key={msg.id}
           //@ts-ignore
+          status={msg.status}
           imageMessage={msg}
           renderUserProfile={renderUserProfile}
           thread={true}
@@ -325,6 +328,7 @@ function Main() {
         <FileMessage
           key={msg.id}
           //@ts-ignore
+          status={msg.status}
           fileMessage={msg}
           renderUserProfile={renderUserProfile}
           thread={true}
