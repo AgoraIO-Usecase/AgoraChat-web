@@ -16,7 +16,7 @@ import {
   Radio,
   InputBase,
   FormControl,
-  InputLabel,
+  InputLabel
 } from "@material-ui/core";
 import ListItemButton from "@mui/material/ListItemButton";
 import { makeStyles } from "@material-ui/core/styles";
@@ -76,7 +76,7 @@ import { userAvatar } from "../../../utils";
 import settingsIcon from "../../../assets/settings@2x.png";
 import { rootStore, Avatar } from "chatuim2";
 import store from "../../../redux/store";
-import { setTargetLanguage } from '../../../redux/actions';
+import { setTargetLanguage } from "../../../redux/actions";
 const useStyles = makeStyles((theme) => {
   return {
     root: {
@@ -536,11 +536,11 @@ const useStyles = makeStyles((theme) => {
       }
     },
     transText: {
-      display: 'flex',
-      padding: '4px',
-      alignItems: 'center',
-      color: '#75828A',
-      fontWeight: '500'
+      display: "flex",
+      padding: "4px",
+      alignItems: "center",
+      color: "#75828A",
+      fontWeight: "500"
     }
   };
 });
@@ -815,7 +815,7 @@ export default function Setting({ open, onClose }) {
     setShowSelectOption(false);
   };
   const setNotDisturb = (params) => {
-    setSilentModeForAll(params).then((res) => { });
+    setSilentModeForAll(params).then((res) => {});
   };
 
   const handleCloseMenu = () => {
@@ -882,7 +882,7 @@ export default function Setting({ open, onClose }) {
       setTranslateSwitch(getLocalStorageData().translateSwitch);
     }
     if (getLocalStorageData().selectedLang) {
-      setSelectedLang(getLocalStorageData().selectedLang)
+      setSelectedLang(getLocalStorageData().selectedLang);
     }
   }, [open]);
   const handleChangeRadio = (event) => {
@@ -930,7 +930,7 @@ export default function Setting({ open, onClose }) {
     setTurnOffBtnFlag(true);
   };
 
-  const [translateSwitch, setTranslateSwitch] = useState(false)
+  const [translateSwitch, setTranslateSwitch] = useState(false);
   const handleSwitchChange = (e, val) => {
     const checked = e.target.checked;
     const soundPreviewText = {
@@ -954,10 +954,9 @@ export default function Setting({ open, onClose }) {
       setGroupRequestSwitch(checked);
       soundPreviewText["groupRequestSwitch"] = checked;
     } else if (Number(val) === 5) {
-      setTranslateSwitch(checked)
-      soundPreviewText["translateSwitch"] = checked
-    }
-    else {
+      setTranslateSwitch(checked);
+      soundPreviewText["translateSwitch"] = checked;
+    } else {
       setTextSwitch(checked);
       soundPreviewText["previewText"] = checked;
     }
@@ -1038,39 +1037,39 @@ export default function Setting({ open, onClose }) {
     setNickName(userInfo?.nickname);
   }, [userInfo]);
 
-  const [languages, setLanguages] = useState([])
-  const [selectedLang, setSelectedLang] = useState('none')
+  const [languages, setLanguages] = useState([]);
+  const [selectedLang, setSelectedLang] = useState("none");
   useEffect(() => {
     rootStore.client.getSupportedLanguages().then((res) => {
-      console.log('支持的语言', res)
-      setLanguages(res.data)
-    })
-  }, [rootStore.loginState])
+      console.log("支持的语言", res);
+      setLanguages(res.data);
+    });
+  }, [rootStore.loginState]);
 
   const handleLanguageChange = (e) => {
-    console.log('handleLanguageChange', e.target.value)
-    setSelectedLang(e.target.value)
-    store.dispatch(setTargetLanguage(e.target.value))
-    if (e.target.value == '') {
-      setTranslateSwitch(false)
+    console.log("handleLanguageChange", e.target.value);
+    setSelectedLang(e.target.value);
+    store.dispatch(setTargetLanguage(e.target.value));
+    if (e.target.value == "") {
+      setTranslateSwitch(false);
     }
-    const data = getLocalStorageData()
+    const data = getLocalStorageData();
     data.selectedLang = e.target.value;
-    console.log('设置语言', data)
+    console.log("设置语言", data);
     localStorage.setItem("soundPreviewText", JSON.stringify(data));
-  }
+  };
 
   function infoTabPanel() {
     return (
       <div className={classes.infoPanel} style={{ display: "block" }}>
         {editStatus ? (
           <Box className={classes.infoSwitchItem}>
-            <span className={classes.spanNickName}>NickName</span>
+            <span className={classes.spanNickName}>Nickname</span>
             <InputBase
               type="text"
               max={12}
               className={classes.gInputBaseWidth}
-              placeholder={i18next.t("Your NickName")}
+              placeholder={i18next.t("Your Nickname")}
               value={nickName}
               onChange={handleEditChange}
               inputRef={inputNickName}
@@ -1081,7 +1080,7 @@ export default function Setting({ open, onClose }) {
           </Box>
         ) : (
           <div className={classes.infoItem}>
-            <span>NickName</span>
+            <span>Nickname</span>
             <span>{nickName}</span>
             <span onClick={handleEditClick}>Edit</span>
           </div>
@@ -1139,8 +1138,9 @@ export default function Setting({ open, onClose }) {
           </div>
           <img
             onClick={closeOrShowBlockList}
-            className={`${classes.arrowImg} ${showOrClose ? classes.arrowUpImg : classes.arrowDownImg
-              }`}
+            className={`${classes.arrowImg} ${
+              showOrClose ? classes.arrowUpImg : classes.arrowDownImg
+            }`}
             alt=""
             src={arrow}
           />
@@ -1334,10 +1334,11 @@ export default function Setting({ open, onClose }) {
                       {selectContent}
                     </span>
                     <img
-                      className={`${classes.imgStyle} ${showSelectOption
-                        ? classes.imgUpStyle
-                        : classes.imgDownStyle
-                        }`}
+                      className={`${classes.imgStyle} ${
+                        showSelectOption
+                          ? classes.imgUpStyle
+                          : classes.imgDownStyle
+                      }`}
                       alt=""
                       src={muteIcon}
                     />
@@ -1349,8 +1350,9 @@ export default function Setting({ open, onClose }) {
                           <div
                             key={item.value}
                             onClick={() => handleSelectChange(item)}
-                            className={`${classes.selectTextlist} ${item.checked ? classes.selectChecked : ""
-                              }`}
+                            className={`${classes.selectTextlist} ${
+                              item.checked ? classes.selectChecked : ""
+                            }`}
                           >
                             <span
                               className={classes.selectOption}
@@ -1376,8 +1378,9 @@ export default function Setting({ open, onClose }) {
               </div>
               <div className={classes.bottomItem}>
                 <div
-                  className={`${classes.flexBox} ${!turnOffBtnFlag ? classes.cursorStyle : ""
-                    }`}
+                  className={`${classes.flexBox} ${
+                    !turnOffBtnFlag ? classes.cursorStyle : ""
+                  }`}
                   onClick={handlerArrowImg}
                 >
                   <div>
@@ -1399,8 +1402,9 @@ export default function Setting({ open, onClose }) {
                     </span>
                   ) : (
                     <img
-                      className={`${classes.arrowImg} ${showRadio ? classes.arrowUpImg : classes.arrowDownImg
-                        }`}
+                      className={`${classes.arrowImg} ${
+                        showRadio ? classes.arrowUpImg : classes.arrowDownImg
+                      }`}
                       alt=""
                       src={arrow}
                     />
@@ -1456,8 +1460,9 @@ export default function Setting({ open, onClose }) {
               <Switch
                 checked={textSwitch}
                 color="primary"
-                className={`${classes.switchStyle} ${classes.switchStyleMargin
-                  } ${textSwitch ? classes.switchOpenStyle : ""}`}
+                className={`${classes.switchStyle} ${
+                  classes.switchStyleMargin
+                } ${textSwitch ? classes.switchOpenStyle : ""}`}
                 onChange={(e) => handleSwitchChange(e, 0)}
               ></Switch>
             </div>
@@ -1482,8 +1487,9 @@ export default function Setting({ open, onClose }) {
             <Switch
               checked={soundSwitch}
               color="primary"
-              className={`${classes.switchStyle} ${soundSwitch ? classes.switchOpenStyle : ""
-                }`}
+              className={`${classes.switchStyle} ${
+                soundSwitch ? classes.switchOpenStyle : ""
+              }`}
               onChange={(e) => handleSwitchChange(e, 1)}
             ></Switch>
           </div>
@@ -1550,12 +1556,16 @@ export default function Setting({ open, onClose }) {
               value={selectedLang}
               onChange={handleLanguageChange}
             >
-              <MenuItem key={'none'} value={'none'}>{'Not Set'}</MenuItem>
-              {
-                languages.map((lang) => {
-                  return <MenuItem key={lang.code} value={lang.code}>{lang.nativeName}</MenuItem>
-                })
-              }
+              <MenuItem key={"none"} value={"none"}>
+                {"Not Set"}
+              </MenuItem>
+              {languages.map((lang) => {
+                return (
+                  <MenuItem key={lang.code} value={lang.code}>
+                    {lang.nativeName}
+                  </MenuItem>
+                );
+              })}
             </Select>
           </FormControl>
         </div>
@@ -1565,14 +1575,13 @@ export default function Setting({ open, onClose }) {
             {i18next.t("On-demand translation")}
           </span>
           <Switch
-            disabled={selectedLang == 'none' || selectedLang == ''}
+            disabled={selectedLang == "none" || selectedLang == ""}
             checked={translateSwitch}
             color="primary"
             className={classes.switchMargin}
             onChange={(e) => handleSwitchChange(e, 5)}
           ></Switch>
         </div>
-
       </div>
     );
   }

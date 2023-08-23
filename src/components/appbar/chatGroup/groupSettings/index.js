@@ -304,7 +304,7 @@ const GroupSettingsDialog = ({ open, onClose, currentGroupId, authorEl }) => {
             className={classes.iconStyle}
           ></img>
           <Typography className={classes.menus}>
-            {i18next.t("My Info In Group")}
+            {i18next.t("My Alias In Group")}
           </Typography>
         </Button>
       );

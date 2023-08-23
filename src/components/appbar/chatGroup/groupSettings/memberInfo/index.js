@@ -68,7 +68,7 @@ const MemberInfo = () => {
       .getGroupMemberAttributes({ groupId, userId: client.user })
       .then((res) => {
         if (res.data) {
-          setValue(res.data?.nickname || "");
+          setValue(res.data?.nickName || "");
         }
       });
   };
@@ -80,7 +80,7 @@ const MemberInfo = () => {
         groupId,
         userId: client.user,
         memberAttributes: {
-          nickname: value
+          nickName: value
         }
       })
       .then(() => {
@@ -96,7 +96,7 @@ const MemberInfo = () => {
     <Box>
       <Box className={classes.titleBox}>
         <Typography className={classes.titleStyle}>
-          {i18next.t("My Info in Group")}
+          {i18next.t("My Alias in Group")}
         </Typography>
       </Box>
       <Box className={classes.infoBox}>
