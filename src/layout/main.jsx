@@ -191,9 +191,9 @@ function Main() {
     return () => {
       rootStore.conversationStore.setCurrentCvs({
         chatType: "",
-        conversationId: ''
-      })
-    }
+        conversationId: ""
+      });
+    };
   }, []);
 
   const handleTranslateMsg = () => {
@@ -335,7 +335,7 @@ function Main() {
             )}
           ></Chat>
         </div>
-        {   
+        {
           <div
             style={{
               width: "360px",
@@ -355,24 +355,22 @@ function Main() {
           </div>
         }
       </div>
-       (
-        <SessionInfoPopover
-          open={sessionInfoAddEl}
-          onClose={() => setSessionInfoAddEl(null)}
-          sessionInfo={sessionInfo}
-        />
-      )
-
-      {groupSettingAddEl && (
+      <SessionInfoPopover
+        open={sessionInfoAddEl}
+        onClose={() => setSessionInfoAddEl(null)}
+        sessionInfo={sessionInfo}
+      />
+      {groupSettingAddEl ? (
         <GroupSettingsDialog
           open={groupSettingAddEl}
           authorEl={groupSettingAddEl}
           onClose={() => setGroupSettingAddEl(null)}
           currentGroupId={currentGroupId}
         />
+      ) : (
+        <></>
       )}
-
-      {isShowReport && (
+      {isShowReport ? (
         <Report
           open={isShowReport}
           onClose={() => {
@@ -380,8 +378,10 @@ function Main() {
           }}
           currentMsg={currentMsg}
         />
+      ) : (
+        <></>
       )}
-      {showCombineDialog && (
+      {showCombineDialog ? (
         <CombineDialog
           open={showCombineDialog}
           onClickItem={sendCombineMsg}
@@ -389,8 +389,9 @@ function Main() {
             setShowCombineDialog(false);
           }}
         />
+      ) : (
+        <></>
       )}
-
       <TranslateDialog
         open={transDialogOpen}
         onClose={() => {
