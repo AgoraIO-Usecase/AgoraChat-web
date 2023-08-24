@@ -10,7 +10,6 @@ import {
   presenceStatusImg,
   setPresenceList,
   setUnread,
-  setGlobalSilentMode
 } from "../redux/actions";
 import { getToken } from "../api/loginChat";
 import { agreeInviteGroup } from "../api/groupChat/addGroup";
@@ -18,15 +17,11 @@ import { getGroupMuted } from "../api/groupChat/groupMute";
 import { getGroupWrite } from "../api/groupChat/groupWhite";
 import getGroupInfo from "../api/groupChat/getGroupInfo";
 import {
-  notification,
   getLocalStorageData,
   playSound,
-  randomNumber,
   setTimeVSNowTime,
-  checkBrowerNotifyStatus,
   notifyMe
 } from "./notification";
-import { handlerThreadChangedMsg } from "../api/thread/index";
 
 import i18next from "i18next";
 import { message } from "../components/common/alert";
@@ -39,10 +34,9 @@ function publicNotify(
   iconTitle = {},
   body = "You Have A New Message"
 ) {
-  const { chatType, from, data, type, to, time, url } = message;
+  const {  from, data, type, to, time, url } = message;
   let {
     myUserInfo: { agoraId },
-    muteDataObj,
     globalSilentMode: { global, single, group, threading }
   } = store.getState();
   handlerNewMessage(message, true);
@@ -426,12 +420,6 @@ const initListen = () => {
     },
     onDisconnected: () => {
       console.log("onDisconnected");
-    }
-  });
-
-  rootStore.client.addEventHandler("Thread", {
-    onMultiDeviceEvent: (message) => {
-      handlerThreadChangedMsg(message);
     }
   });
 };

@@ -9,23 +9,15 @@ import {
   setMyUserInfo,
   setUnread,
   setCurrentSessionId,
-  setThreadInfo,
   setTargetLanguage
 } from "../redux/actions";
 import SessionInfoPopover from "../components/appbar/sessionInfo";
 import CustomUserProfile from "../components/appbar/chatGroup/memberInfo";
 import GroupSettingsDialog from "../components/appbar/chatGroup/groupSettings";
 import { Report } from "../components/report";
-
 import map3 from "../assets/notify.mp3";
-
 import { changeTitle, getLocalStorageData } from "../utils/notification";
-
-import EditThreadPanel from "../components/thread/components/editThreadPanel";
-import ThreadMembers from "../components/thread/components/threadMembers";
-import ThreadDialog from "../components/thread/components/threadDialog";
 import { TranslateDialog } from "../components/translate";
-// import { getSilentModeForConversation } from '../api/notificationPush'
 import { getRtctoken, getConfDetail } from "../api/rtcCall";
 import { useSelector } from "react-redux";
 import {
@@ -54,7 +46,6 @@ function Main() {
   const [currentGroupId, setCurrentGroupId] = useState("");
   const [isShowReport, setShowReport] = useState(false);
   const [currentMsg, setCurrentMsg] = useState({});
-  const thread = rootStore.threadStore;
   const { currentCvs } = rootStore.conversationStore;
 
   const renderUserProfile = useCallback(
@@ -128,38 +119,6 @@ function Main() {
     changeTitle();
   };
 
-  const onMessageEventClick = (e, data, msg) => {
-    if (data.value === "report") {
-      setShowReport(true);
-      setCurrentMsg(msg);
-    }
-  };
-
-  const onchangeEditPanelStatus = (e, type) => {
-    store.dispatch(setThreadInfo({ currentEditPage: type }));
-    if (type === "Members") {
-      setmembersPanelEl(e.currentTarget);
-    }
-  };
-
-  const [clickEditPanelEl, setClickEditPanelEl] = useState(null);
-  const [membersPanelEl, setmembersPanelEl] = useState(null);
-  const changeEditPanelStatus = (e, info) => {
-    if (e) {
-      setClickEditPanelEl(e.currentTarget);
-      store.dispatch(setThreadInfo(info));
-    } else {
-      setClickEditPanelEl(e);
-    }
-  };
-
-  // const onOpenThreadPanel = (obj) => {
-  //     console.log(obj, 'onOpenThreadPanel')
-  //     getSilentModeForConversation({conversationId: obj.id, type: 'groupChat', flag: 'Thread' }).then(res => {
-  //         console.log(res, 'getNotDisturbDuration')
-  //     })
-  // }
-
   const [showCombineDialog, setShowCombineDialog] = useState(false);
   const [combineData, setCombineData] = useState({});
   const sendMessage = (data) => {
@@ -183,16 +142,6 @@ function Main() {
       .catch((err) => {
         console.log(err);
       });
-    // setShowCombineDialog(false)
-  };
-  useEffect(() => {
-    console.log("变化了 showThreadPanel", rootStore.threadStore);
-  }, [rootStore.threadStore?.showThreadPanel]);
-
-  const handleGetIdMap = async (data) => {
-    let member = {};
-    member = await getConfDetail(data.userId, data.channel);
-    return member;
   };
 
   let selfMoreAction = {
@@ -400,38 +349,41 @@ function Main() {
           </div>
         }
       </div>
-      <SessionInfoPopover
-        open={sessionInfoAddEl}
-        onClose={() => setSessionInfoAddEl(null)}
-        sessionInfo={sessionInfo}
-      />
-      <GroupSettingsDialog
-        open={groupSettingAddEl}
-        authorEl={groupSettingAddEl}
-        onClose={() => setGroupSettingAddEl(null)}
-        currentGroupId={currentGroupId}
-      />
-      <Report
-        open={isShowReport}
-        onClose={() => {
-          setShowReport(false);
-        }}
-        currentMsg={currentMsg}
-      />
-      <EditThreadPanel
-        anchorEl={clickEditPanelEl}
-        onClose={() => setClickEditPanelEl(null)}
-        onchangeEditPanelStatus={onchangeEditPanelStatus}
-      />
-      <ThreadMembers membersPanelEl={membersPanelEl} />
-      <ThreadDialog />
-      <CombineDialog
-        open={showCombineDialog}
-        onClickItem={sendCombineMsg}
-        onClose={() => {
-          setShowCombineDialog(false);
-        }}
-      />
+      {sessionInfoAddEl && (
+        <SessionInfoPopover
+          open={sessionInfoAddEl}
+          onClose={() => setSessionInfoAddEl(null)}
+          sessionInfo={sessionInfo}
+        />
+      )}
+
+      {groupSettingAddEl && (
+        <GroupSettingsDialog
+          open={groupSettingAddEl}
+          authorEl={groupSettingAddEl}
+          onClose={() => setGroupSettingAddEl(null)}
+          currentGroupId={currentGroupId}
+        />
+      )}
+
+      {isShowReport && (
+        <Report
+          open={isShowReport}
+          onClose={() => {
+            setShowReport(false);
+          }}
+          currentMsg={currentMsg}
+        />
+      )}
+      {showCombineDialog && (
+        <CombineDialog
+          open={showCombineDialog}
+          onClickItem={sendCombineMsg}
+          onClose={() => {
+            setShowCombineDialog(false);
+          }}
+        />
+      )}
 
       <TranslateDialog
         open={transDialogOpen}

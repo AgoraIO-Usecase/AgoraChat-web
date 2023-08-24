@@ -46,7 +46,7 @@ export const modifyGroupInfo = (newGroupName, newDescription, handleClose) => {
 		description: newDescription ? newDescription : groupDescription,
 	};
 	rootStore.client.modifyGroup(option).then((res) => {
-		console.log("modifyGroupInfo>>>", res);
+		rootStore.addressStore.updateGroupName(groupId, option.groupName)
 		getGroupInfo(groupId);
 		handleClose && handleClose();
 	});

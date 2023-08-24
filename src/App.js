@@ -1,16 +1,10 @@
 import "./App.css";
 
-import {
-	Switch,
-	Route,
-	Redirect,
-	HashRouter
-} from "react-router-dom";
-import { createHashHistory } from 'history'
-import Login from './layout/login'
-import Main from './layout/main'
-import Signup from './layout/signup'
-
+import { Switch, Route, Redirect, HashRouter } from "react-router-dom";
+import { createHashHistory } from "history";
+import Login from "./layout/login";
+import Main from "./layout/main";
+import Signup from "./layout/signup";
 
 import initListen from "./utils/WebIMListen";
 import Loading from "./components/common/loading";
@@ -35,21 +29,21 @@ const AuthorizedComponent = (props) => {
 function App() {
   const isFetching = useSelector((state) => state?.isFetching) || false;
   useEffect(() => {
-    console.log("********", rootStore.client);
     initListen();
   }, []);
   return (
     <div className="App">
+      <Loading show={isFetching} />
       <Provider
         initConfig={{
           appKey: "41117440#383391"
         }}
       >
-        <Loading show={isFetching} />
         <HashRouter basename="/" history={history}>
           <Switch>
             <Route exact path="/login" component={Login} />
             <Route exact path="/main" component={Main} />
+
             <Route exact path="/signup" component={Signup} />
             <Route
               path="/"
