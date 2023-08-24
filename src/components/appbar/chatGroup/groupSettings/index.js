@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import CommonDialog from "../../../common/dialog";
 import i18next, { use } from "i18next";
@@ -168,13 +168,15 @@ const GroupSettingsDialog = ({ open, onClose, currentGroupId, authorEl }) => {
   const loginUser = WebIM.conn.context?.userId;
   const isOwner = loginUser === groupsInfo?.owner;
   const groupId = groupsInfo?.id;
-  const groupName = groupsInfo?.name;
   const [value, setValue] = useState(0);
   const [muteFlag, setmuteFlag] = useState(false);
-  const [secondSure, setSecondSure] = useState(false);
-  const [GroupStatus, setGroupStatus] = useState("");
-  const [groupContent, setgroupContent] = useState("");
   const [btnWord, setBtnWord] = useState("");
+
+  useEffect(() => {
+    if (!open) {
+      setValue(0);
+    }
+  }, [open]);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -304,7 +306,7 @@ const GroupSettingsDialog = ({ open, onClose, currentGroupId, authorEl }) => {
             className={classes.iconStyle}
           ></img>
           <Typography className={classes.menus}>
-            {i18next.t("My Alias In Group")}
+            {i18next.t("My Info In Group")}
           </Typography>
         </Button>
       );
@@ -411,6 +413,7 @@ const GroupSettingsDialog = ({ open, onClose, currentGroupId, authorEl }) => {
             </Button>
           </Box>
         </Box>
+        
         <Box className={classes.gSettingRight}>
           <TabPanel value={value} index={0} className={classes.content}>
             <Members />
