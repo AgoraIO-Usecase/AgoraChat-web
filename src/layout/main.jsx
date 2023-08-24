@@ -188,6 +188,12 @@ function Main() {
     if (data.selectedLang) {
       store.dispatch(setTargetLanguage(data.selectedLang));
     }
+    return () => {
+      rootStore.conversationStore.setCurrentCvs({
+        chatType: "",
+        conversationId: ''
+      })
+    }
   }, []);
 
   const handleTranslateMsg = () => {
@@ -329,7 +335,7 @@ function Main() {
             )}
           ></Chat>
         </div>
-        {
+        {   
           <div
             style={{
               width: "360px",
