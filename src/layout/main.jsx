@@ -355,13 +355,13 @@ function Main() {
           </div>
         }
       </div>
-      {sessionInfoAddEl && (
+       (
         <SessionInfoPopover
           open={sessionInfoAddEl}
           onClose={() => setSessionInfoAddEl(null)}
           sessionInfo={sessionInfo}
         />
-      )}
+      )
 
       {groupSettingAddEl && (
         <GroupSettingsDialog
