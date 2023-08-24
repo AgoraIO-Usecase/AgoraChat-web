@@ -1,5 +1,4 @@
 
-import WebIM from '../../utils/WebIM'
 import store from '../../redux/store'
 import { groupListAction, searchLoadAction } from '../../redux/actions'
 import { getSilentModeForConversations } from '../notificationPush/index'

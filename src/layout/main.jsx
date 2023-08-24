@@ -2,8 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import Header from "../components/appbar";
 import "./login.css";
 import getGroupInfo from "../api/groupChat/getGroupInfo";
-import WebIM from "../utils/WebIM";
-import { loginWithToken, loginWithPassword } from "../api/loginChat";
+import { loginWithToken } from "../api/loginChat";
 import { createHashHistory } from "history";
 import store from "../redux/store";
 import {
@@ -71,7 +70,7 @@ function Main() {
   useEffect(() => {
     const webimAuth = sessionStorage.getItem("webim_auth");
     let webimAuthObj = {};
-    if (webimAuth && WebIM.conn.logOut) {
+    if (webimAuth) {
       webimAuthObj = JSON.parse(webimAuth);
       if (webimAuthObj.password) {
         loginWithToken(
@@ -88,20 +87,11 @@ function Main() {
         history.push("/login");
       }
       store.dispatch(setMyUserInfo({ agoraId: webimAuthObj.agoraId }));
-      WebIM.conn.agoraUid = webimAuthObj.agoraUid;
-    } else if (WebIM.conn.logOut) {
+    } else {
       history.push("/login");
     }
   }, []);
   const state = useSelector((state) => state);
-  // const targetLanguage = store.getState()?.targetLanguage
-
-  const [groupMemberInfoAddEl, setGroupMemberInfoAddEl] = useState(null);
-  const [memberInfo, setMemberInfo] = useState({});
-  const [presenceList, setPresenceList] = useState([]);
-
-  // const rootStore = React.useContext(RootContext).rootStore
-  // || {};
 
   // session avatar click
   const handleClickSessionInfoDialog = (e, res) => {
@@ -150,20 +140,6 @@ function Main() {
     if (type === "Members") {
       setmembersPanelEl(e.currentTarget);
     }
-  };
-  const handleGetToken = async (data) => {
-    let token = "";
-    console.log("data", data);
-
-    token = await getRtctoken({
-      channel: data.channel,
-      agoraId: WebIM.conn.agoraUid,
-      username: data.username
-    });
-    return {
-      agoraUid: WebIM.conn.agoraUid,
-      accessToken: token.accessToken
-    };
   };
 
   const [clickEditPanelEl, setClickEditPanelEl] = useState(null);

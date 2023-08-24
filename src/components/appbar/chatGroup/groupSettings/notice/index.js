@@ -3,11 +3,8 @@ import { useSelector } from 'react-redux'
 import { makeStyles } from "@material-ui/core/styles";
 import { Box, InputBase, Typography, Avatar } from "@material-ui/core";
 import i18next from "i18next";
-import store from "../../../../../redux/store";
-import WebIM from "../../../../../utils/WebIM";
 import { updateGroupNotice } from "../../../../../api/groupChat/getGroupInfo";
 import { message } from '../../../../common/alert'
-import avatarDefault from '../../../../../assets/avatar_default.jpg'
 import { userAvatar } from '../../../../../utils'
 import { rootStore } from 'chatuim2'
 const useStyles = makeStyles((theme) => {

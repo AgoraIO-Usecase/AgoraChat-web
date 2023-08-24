@@ -130,7 +130,6 @@ function AddressBookDialog(props) {
       chatType: "singleChat",
       conversationId: itemData.name
     });
-    // EaseApp.addConversationItem(conversationItem);
     onClose();
   };
 

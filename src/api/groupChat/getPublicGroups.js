@@ -1,5 +1,4 @@
 
-import WebIM from '../../utils/WebIM'
 import store from '../../redux/store'
 import { searchLoadAction } from '../../redux/actions'
 import { publicGroupsAction } from '../../redux/actions'

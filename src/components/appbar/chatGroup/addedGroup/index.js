@@ -120,16 +120,6 @@ const AddedGroups = ({ onClose }) => {
 
   // click group name
   const handleClickSession = (itemData) => {
-    // uikit
-    let conversationItem = {
-      conversationType: "groupChat",
-      conversationId: itemData,
-      ext: {
-        muteFlag: muteDataObj[itemData]
-      }
-    };
-    // EaseApp.addConversationItem(conversationItem);
-
     rootStore.conversationStore.addConversation({
       chatType: "groupChat",
       conversationId: itemData.groupid,

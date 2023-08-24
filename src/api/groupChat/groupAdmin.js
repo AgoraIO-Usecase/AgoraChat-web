@@ -1,5 +1,4 @@
 
-import WebIM from '../../utils/WebIM'
 import store from '../../redux/store'
 import { groupAdminsAction } from '../../redux/actions'
 import { getGroupWrite } from './groupWhite'

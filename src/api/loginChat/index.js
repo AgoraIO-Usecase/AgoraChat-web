@@ -1,11 +1,9 @@
-import WebIM from '../../utils/WebIM'
 import store from '../../redux/store'
 import { setMyUserInfo, setFetchingStatus } from '../../redux/actions'
 import { message } from '../../components/common/alert'
 import i18next from "i18next";
 import { createHashHistory } from 'history'
-import { reject } from 'lodash';
-import { Chat, ConversationList, RootProvider, rootStore } from 'chatuim2'
+import { rootStore } from 'chatuim2'
 const history = createHashHistory()
 export const getToken = (agoraId, password) => {
     return postData('https://a41.chat.agora.io/app/chat/user/login', { "userAccount": agoraId, "userPassword": password })

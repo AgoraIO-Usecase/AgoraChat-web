@@ -7,7 +7,6 @@ import {
   updateRequestStatus,
   searchLoadAction
 } from "../../redux/actions";
-import { subFriendStatus } from "../presence/index";
 import { getSilentModeForConversations } from "../notificationPush/index";
 import { setMyUserInfo } from "../../redux/actions";
 import { rootStore } from "chatuim2";
@@ -77,13 +76,6 @@ export const deleteContact = (userId, onClose) => {
 
 export const acceptContactRequest = (userId) => {
   rootStore.client.acceptInvitation(userId);
-  // .then(()=>{
-  //     let conversationItem = {
-  //         conversationType: "singleChat",
-  //         conversationId: userId,
-  //     };
-  //     EaseApp.addConversationItem(conversationItem);
-  // })
   store.dispatch(
     updateRequestStatus({ type: "contact", name: userId, status: "accepted" })
   );

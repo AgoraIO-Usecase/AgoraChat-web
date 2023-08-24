@@ -1,7 +1,5 @@
-import WebIM from '../../utils/WebIM'
 import store from '../../redux/store'
 import { setMuteDataObj, setGlobalSilentMode, setUnread } from '../../redux/actions'
-import { EaseApp } from "agora-chat-uikit"
 import { setTimeVSNowTime, changeTitle } from '../../utils/notification'
 import { rootStore } from 'chatuim2'
 function silentModeRedux(type, data) {
@@ -45,7 +43,6 @@ function refreshSilentModeStatus(data, payload) {
       }
     }
     store.dispatch(setMuteDataObj(collectObj))
-    EaseApp.changePresenceStatus(collectObj1)
     const { unread } = store.getState()
     for (let item in unread) {
       for (let val in unread[item]) {
@@ -206,7 +203,6 @@ export const getSilentModeForConversations = (payload, params = { type: '', opti
       }
       changeTitle()
       store.dispatch(setMuteDataObj(collectObj))
-      EaseApp.changePresenceStatus(collectObj1)
       resolve(res.data)
     }).catch(err => {
       reject(err)

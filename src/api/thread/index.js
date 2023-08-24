@@ -1,7 +1,3 @@
-import WebIM from '../../utils/WebIM'
-// import { EaseApp } from "chat-uikit";
-
-import { EaseApp } from "agora-chat-uikit";
 import store from '../../redux/store'
 import { message } from "../../components/common/alert"
 import { setThreadInfo } from "../../redux/actions";
@@ -49,7 +45,6 @@ export const changeThreadName = (options) => {
 }
 export const leaveThread = (options) => {
     rootStore.client.leaveChatThread(options).then((res) => {
-        EaseApp.thread.closeThreadPanel()
         message.warn('You have exited this thread');
     }).catch(e => {
         message.warn('Error Message needed to add details info');

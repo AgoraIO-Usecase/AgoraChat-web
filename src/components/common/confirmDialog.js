@@ -4,7 +4,6 @@ import i18next from "i18next";
 import { Popover, Box, Avatar, Button } from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
-import WebIM from '../../utils/WebIM'
 import { deleteContact } from "../../api/contactsChat/getContacts"
 import { closeGroup, transferOwner } from "../../api/groupChat/closeGroup";
 import closeIcon from '../../../src/assets/close.png'

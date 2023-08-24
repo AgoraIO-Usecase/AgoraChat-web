@@ -1,6 +1,5 @@
 import store from '../redux/store'
 import { setMuteDataObj, setUnread } from '../redux/actions'
-import { EaseApp } from "agora-chat-uikit"
 let options = {
   requireInteraction: false, // 是否自动消失
   body: 'new message', // 展示的具体内容
@@ -280,7 +279,6 @@ export function setTimeVSNowTime(setterObj, falseFlag) {
       }
     }
     store.dispatch(setMuteDataObj(collectObj))
-    // EaseApp.changePresenceStatus(collectObj1)
   }
 }
 

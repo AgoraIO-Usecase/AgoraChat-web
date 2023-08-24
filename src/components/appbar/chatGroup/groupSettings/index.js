@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import CommonDialog from "../../../common/dialog";
-import i18next, { use } from "i18next";
+import i18next from "i18next";
 import { Box, Tabs, Tab, Button, Popover } from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
-import WebIM from "../../../../utils/WebIM";
 import { TabPanel, a11yProps } from "../../../common/tabs";
-
 import Members from "./members";
 import AddMembers from "./addMembers";
 import GroupNotice from "./notice";
@@ -30,7 +28,7 @@ import memberInfoIcon from "../../../../assets/person_3lines_fill.png";
 
 import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
-import { Avatar } from "chatuim2";
+import { Avatar, rootStore } from "chatuim2";
 
 const useStyles = makeStyles((theme) => {
   return {
@@ -165,7 +163,7 @@ const GroupSettingsDialog = ({ open, onClose, currentGroupId, authorEl }) => {
   const [confirmStatus, setConfirmStatus] = useState(null);
   const groupsInfo = state?.groups?.groupsInfo || {};
   const groupNotice = state?.groups?.groupNotice;
-  const loginUser = WebIM.conn.context?.userId;
+  const loginUser = rootStore.client.user;
   const isOwner = loginUser === groupsInfo?.owner;
   const groupId = groupsInfo?.id;
   const [value, setValue] = useState(0);
@@ -413,7 +411,7 @@ const GroupSettingsDialog = ({ open, onClose, currentGroupId, authorEl }) => {
             </Button>
           </Box>
         </Box>
-        
+
         <Box className={classes.gSettingRight}>
           <TabPanel value={value} index={0} className={classes.content}>
             <Members />

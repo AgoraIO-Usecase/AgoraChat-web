@@ -1,11 +1,10 @@
 
-import WebIM from '../../utils/WebIM'
 import getGroups from './getGroups'
 import { message } from '../../components/common/alert'
 import i18next from "i18next";
 import store from "../../redux/store";
 import { closeGroupChatAction } from "../../redux/actions";
-import { Chat, ConversationList, RootProvider, rootStore } from 'chatuim2'
+import { rootStore } from 'chatuim2'
 const createGroup = (
 	groupInfo,
 	member,

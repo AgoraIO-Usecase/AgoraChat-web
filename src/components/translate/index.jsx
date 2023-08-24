@@ -12,7 +12,6 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
 import TextareaAutosize from '@material-ui/core/TextareaAutosize';
-import WebIM from '../../utils/WebIM';
 import { message } from '../common/alert'
 import { rootStore } from 'chatuim2'
 import store from "../../redux/store";

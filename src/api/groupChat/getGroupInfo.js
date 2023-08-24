@@ -1,5 +1,4 @@
 
-import WebIM from '../../utils/WebIM'
 import store from '../../redux/store'
 import {
 	groupsInfoAction,
@@ -10,7 +9,6 @@ import { getGroupAdmins } from './groupAdmin'
 import { getGroupMuted } from './groupMute'
 import { getGroupBlock } from './groupBlock'
 import { getGroupWrite } from './groupWhite'
-import { EaseApp } from "agora-chat-uikit"
 import { rootStore } from 'chatuim2'
 const getGroupInfo = (groupId, type) => {
 	let admins = store.getState().groups?.groupAdmins || [];
@@ -47,19 +45,9 @@ export const modifyGroupInfo = (newGroupName, newDescription, handleClose) => {
 		groupName: newGroupName ? newGroupName : groupName,
 		description: newDescription ? newDescription : groupDescription,
 	};
-	const muteDataObj = state.muteDataObj
 	rootStore.client.modifyGroup(option).then((res) => {
 		console.log("modifyGroupInfo>>>", res);
 		getGroupInfo(groupId);
-		let conversationItem = {
-			conversationType: "groupChat",
-			conversationId: groupId,
-			conversationName: option.groupName,
-			ext: {
-				muteFlag: muteDataObj[groupId]
-			}
-		};
-		EaseApp.addConversationItem(conversationItem);
 		handleClose && handleClose();
 	});
 };

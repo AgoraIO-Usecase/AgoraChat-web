@@ -1,5 +1,4 @@
 
-import WebIM from '../../utils/WebIM'
 import store from '../../redux/store'
 import { groupMuteAction } from '../../redux/actions'
 import { rootStore } from 'chatuim2'

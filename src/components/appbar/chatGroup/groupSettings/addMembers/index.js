@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
 import i18next from "i18next";
 import store from "../../../../../redux/store";
-
-import { EaseApp } from "agora-chat-uikit";
 import {
   Box,
   Checkbox,
@@ -20,7 +18,6 @@ import {
   searchContactsAction,
   searchLoadAction
 } from "../../../../../redux/actions";
-import { message } from "../../../../common/alert";
 
 import Loading from "../../../../common/loading";
 import rearchIcon from "../../../../../assets/search@2x.png";
@@ -28,9 +25,7 @@ import doneActiveIcon from "../../../../../assets/create@2x.png";
 import doneDisabledIcon from "../../../../../assets/go@2x.png";
 import deldeteIcon from "../../../../../assets/delete@2x.png";
 import PanoramaFishEyeIcon from "@material-ui/icons/PanoramaFishEye";
-import CheckCircleOutlineRoundedIcon from "@material-ui/icons/CheckCircleOutlineRounded";
 import CheckCircleRoundedIcon from "@material-ui/icons/CheckCircleRounded";
-import { userAvatar } from "../../../../../utils";
 import { Avatar, rootStore } from "chatuim2";
 
 const useStyles = makeStyles((theme) => {
@@ -169,11 +164,6 @@ const AddMembers = ({ onClose }) => {
   const handleClickSession = () => {
     // uikit
     // TODO insert an invitation message
-    let conversationItem = {
-      conversationType: "groupChat",
-      conversationId: groupId
-    };
-    EaseApp.addConversationItem(conversationItem);
     onClose();
   };
 

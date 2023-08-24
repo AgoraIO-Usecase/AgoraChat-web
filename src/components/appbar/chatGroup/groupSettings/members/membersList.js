@@ -12,7 +12,6 @@ import {
   Typography
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import WebIM from "../../../../../utils/WebIM";
 import { onChengeGroupAdmin } from "../../../../../api/groupChat/groupAdmin";
 import { onChangeGroipMute } from "../../../../../api/groupChat/groupMute";
 import { onChangeGroupBlock } from "../../../../../api/groupChat/groupBlock";
@@ -113,11 +112,12 @@ const useStyles = makeStyles((theme) => {
 const MembersList = ({ newMuteList, inputVal }) => {
   const classes = useStyles();
   const state = useSelector((state) => state);
+  const { addressStore, client } = rootStore;
   const groupsInfo = state?.groups?.groupsInfo || {};
   const groupAdmins = state?.groups?.groupAdmins || [];
   const groupAllowList = state?.groups?.groupAllowList || [];
   const members = groupsInfo?.affiliations || [];
-  const loginUser = WebIM.conn.context?.userId;
+  const loginUser = client.user;
   const groupOwner = groupsInfo?.owner;
   const groupId = groupsInfo?.id;
   const isOwner = loginUser === groupOwner;
@@ -129,7 +129,6 @@ const MembersList = ({ newMuteList, inputVal }) => {
   const [GroupStatus, setGroupStatus] = useState("");
   const [groupContent, setgroupContent] = useState("");
   const [action, setAction] = useState("");
-  const { addressStore, client } = rootStore;
   const { appUsersInfo } = addressStore;
 
   const handleClick = (event, item) => {
@@ -215,7 +214,7 @@ const MembersList = ({ newMuteList, inputVal }) => {
                     <Box className={classes.gMemberAvatar}>
                       <Avatar
                         style={{ width: "36px", height: "36px" }}
-                        src={appUsersInfo[item]?.avatarurl }
+                        src={appUsersInfo[item]?.avatarurl}
                       >
                         {appUsersInfo[item]?.nickname || item}
                       </Avatar>

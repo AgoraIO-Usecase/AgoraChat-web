@@ -1,4 +1,3 @@
-import WebIM from '../../utils/WebIM'
 import store from '../../redux/store'
 import { setPresenceList } from '../../redux/actions'
 import { rootStore } from 'chatuim2'

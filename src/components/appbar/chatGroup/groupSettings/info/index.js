@@ -3,7 +3,6 @@ import { makeStyles } from "@material-ui/core/styles";
 import { Box, InputBase, Typography } from "@material-ui/core";
 import i18next from "i18next";
 import store from "../../../../../redux/store";
-import WebIM from '../../../../../utils/WebIM'
 import { modifyGroupInfo } from "../../../../../api/groupChat/getGroupInfo";
 import { message } from "../../../../common/alert";
 import { rootStore } from 'chatuim2'

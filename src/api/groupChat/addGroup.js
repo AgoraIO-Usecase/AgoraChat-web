@@ -1,9 +1,8 @@
 
-import WebIM from '../../utils/WebIM'
 import getGroups from './getGroups'
 import { message } from '../../components/common/alert'
 import i18next from "i18next";
-import { Chat, ConversationList, RootProvider, rootStore } from 'chatuim2'
+import { rootStore } from 'chatuim2'
 export const addGroup = (groupId) => {
     let options = {
         groupId: groupId,

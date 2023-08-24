@@ -1,5 +1,4 @@
 
-import WebIM from '../../utils/WebIM'
 import store from '../../redux/store'
 import { groupBlockAction } from '../../redux/actions'
 import getGroupInfo from './getGroupInfo'
