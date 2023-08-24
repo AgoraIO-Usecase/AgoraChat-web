@@ -1116,7 +1116,7 @@ export default function Setting({ open, onClose }) {
               <div className={classes.inputBox}>
                 <InputBase
                   type="search"
-                  placeholder={i18next.t("User Name")}
+                  placeholder={i18next.t("Username")}
                   className={classes.textStyle}
                   onChange={searchChangeValue}
                 />
@@ -1511,7 +1511,7 @@ export default function Setting({ open, onClose }) {
       <div className={classes.infoPanel} style={{ display: "block" }}>
         <div className={classes.infoSwitchItem}>
           <span className={classes.notifySubTitle} style={{ fontSize: "16px" }}>
-            {i18next.t("Show Typing")}
+            {i18next.t("Typing Indicator")}
           </span>
           <Switch
             checked={typingSwitch}
@@ -1522,7 +1522,7 @@ export default function Setting({ open, onClose }) {
         </div>
         <div className={classes.infoSwitchItem}>
           <span className={classes.notifySubTitle} style={{ fontSize: "16px" }}>
-            {i18next.t("Add Group Request")}
+            {i18next.t("Need approval when invited to join a group")}
           </span>
           <Switch
             checked={groupRequestSwitch}

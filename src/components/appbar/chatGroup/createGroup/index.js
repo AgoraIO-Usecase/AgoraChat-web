@@ -152,7 +152,7 @@ const CreateGroup = () => {
       if (Number(event.target.value).toString() === 'NaN') {
         if (maximumValueNotNum) {
           SetMaximumValueNotNum(false)
-          message.error(i18next.t("Maximum Mumbers Need Number"));
+          message.error(i18next.t("Maximum Group Size Need Number"));
         }
         return
       } else {
@@ -258,7 +258,7 @@ const CreateGroup = () => {
               <Box>
                 <Box className={classes.gInfoSetting} style={{paddingBottom: '5px'}}>
                   <Typography className={classes.gNameText}>
-                    Maximum Mumbers
+                    Maximum Group Size
                   </Typography>
                   <InputBase
                     className={classes.gInputBaseWidth}
@@ -272,7 +272,7 @@ const CreateGroup = () => {
             </Box>
             <Box className={classes.gSetting}>
               <Typography className={classes.gNameText}>
-                Set as Public Group
+                Set as a Public Group
               </Typography>
               <Switch
                 checked={groupPublicChecked}
