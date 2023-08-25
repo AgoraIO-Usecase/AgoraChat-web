@@ -19,7 +19,6 @@ export const loginWithToken = (agoraId, agoraToken) => {
     };
 
     return new Promise((resolve, reject) => {
-        console.log('开始登录', rootStore.client, options)
         rootStore.client.open(options).then(res => {
             rootStore.client.context.userId = agoraId;
             rootStore.client.fetchUserInfoById(agoraId).then(val => {
@@ -67,6 +66,7 @@ export const loginWithPassword = (agoraId, password) => {
 export function logout() {
     rootStore.client.close()
     sessionStorage.removeItem('webim_auth')
+    rootStore.clear()
     window.document.title = 'Agora chat'
 }
 
