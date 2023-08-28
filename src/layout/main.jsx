@@ -139,6 +139,10 @@ function Main() {
       .sendMessage(combineData)
       .then((res) => {
         console.log("发送成功", res);
+        rootStore.messageStore.setSelectedMessage(currentCvs, {
+          selectable: false,
+          selectedMessage: [],
+        });
       })
       .catch((err) => {
         console.log(err);
