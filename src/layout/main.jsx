@@ -9,7 +9,8 @@ import {
   setMyUserInfo,
   setUnread,
   setCurrentSessionId,
-  setTargetLanguage
+  setTargetLanguage,
+  setTypingSwitch
 } from "../redux/actions";
 import SessionInfoPopover from "../components/appbar/sessionInfo";
 import CustomUserProfile from "../components/appbar/chatGroup/memberInfo";
@@ -188,6 +189,9 @@ function Main() {
     if (data.selectedLang) {
       store.dispatch(setTargetLanguage(data.selectedLang));
     }
+    if(data.typingSwitch){
+      store.dispatch(setTypingSwitch(data.typingSwitch));
+    }
     return () => {
       rootStore.conversationStore.setCurrentCvs({
         chatType: "",
@@ -328,7 +332,8 @@ function Main() {
               onAvatarClick: handleClickSessionInfoDialog
             }}
             messageEditorProps={{
-              onSendMessage: sendMessage
+              onSendMessage: sendMessage,
+              enabledTyping: state?.typingSwitch
             }}
             renderMessageList={() => (
               <MessageList renderMessage={renderMessage} />

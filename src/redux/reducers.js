@@ -55,6 +55,7 @@ let defaultState = {
 	},
 	currentSessionId: '',
 	targetLanguage: '',
+	typingSwitch: false,
 	settingDialogVisible: false
 };
 
@@ -309,6 +310,12 @@ const reducer = (state = defaultState, action) => {
 			return {
 				...state,
 				settingDialogVisible: data
+			}
+		case 'SET_TYPING_SWITCH':
+			console.log(data, 111)
+			return {
+				...state,
+				typingSwitch: data
 			}
 		default:
 			break;

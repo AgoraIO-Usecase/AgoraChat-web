@@ -154,3 +154,7 @@ export const setSettingVisible = (data) => {
     return { type: 'SET_SETTING_VISIBLE', data }
 }
 
+export const setTypingSwitch = (data) => {
+    return { type: 'SET_TYPING_SWITCH', data }
+}
+

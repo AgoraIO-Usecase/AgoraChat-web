@@ -76,7 +76,8 @@ import { userAvatar } from "../../../utils";
 import settingsIcon from "../../../assets/settings@2x.png";
 import { rootStore, Avatar } from "chatuim2";
 import store from "../../../redux/store";
-import { setTargetLanguage } from "../../../redux/actions";
+import { setTargetLanguage, setTypingSwitch } from "../../../redux/actions";
+
 const useStyles = makeStyles((theme) => {
   return {
     root: {
@@ -638,7 +639,7 @@ export default function Setting({ open, onClose }) {
   const [blockList, setblockList] = useState(blackList);
   const [nickNameLen, setNickNameLen] = useState(false);
   const inputNickName = createRef();
-  const [typingSwitch, setTypingSwitch] = useState(false);
+  const [typingSwitch, setTypingSwitch2] = useState(false);
   const [groupRequestSwitch, setGroupRequestSwitch] = useState(false);
   const { client, addressStore } = rootStore;
   const { appUsersInfo, setAppUserInfo } = addressStore;
@@ -815,7 +816,7 @@ export default function Setting({ open, onClose }) {
     setShowSelectOption(false);
   };
   const setNotDisturb = (params) => {
-    setSilentModeForAll(params).then((res) => {});
+    setSilentModeForAll(params).then((res) => { });
   };
 
   const handleCloseMenu = () => {
@@ -870,7 +871,7 @@ export default function Setting({ open, onClose }) {
       setTextSwitch(getLocalStorageData().previewText);
     }
     if (getLocalStorageData().typingSwitch) {
-      setTypingSwitch(getLocalStorageData().typingSwitch);
+      setTypingSwitch2(getLocalStorageData().typingSwitch);
     }
     if (getLocalStorageData().groupRequestSwitch) {
       setGroupRequestSwitch(getLocalStorageData().groupRequestSwitch);
@@ -948,8 +949,10 @@ export default function Setting({ open, onClose }) {
       setDeleteSwitch(checked);
       soundPreviewText["deleteSwitch"] = checked;
     } else if (Number(val) === 3) {
-      setTypingSwitch(checked);
+      setTypingSwitch2(checked);
       soundPreviewText["typingSwitch"] = checked;
+      console.log('setTypingSwitch', checked)
+      store.dispatch(setTypingSwitch(checked))
     } else if (Number(val) === 4) {
       setGroupRequestSwitch(checked);
       soundPreviewText["groupRequestSwitch"] = checked;
@@ -1138,9 +1141,8 @@ export default function Setting({ open, onClose }) {
           </div>
           <img
             onClick={closeOrShowBlockList}
-            className={`${classes.arrowImg} ${
-              showOrClose ? classes.arrowUpImg : classes.arrowDownImg
-            }`}
+            className={`${classes.arrowImg} ${showOrClose ? classes.arrowUpImg : classes.arrowDownImg
+              }`}
             alt=""
             src={arrow}
           />
@@ -1334,11 +1336,10 @@ export default function Setting({ open, onClose }) {
                       {selectContent}
                     </span>
                     <img
-                      className={`${classes.imgStyle} ${
-                        showSelectOption
-                          ? classes.imgUpStyle
-                          : classes.imgDownStyle
-                      }`}
+                      className={`${classes.imgStyle} ${showSelectOption
+                        ? classes.imgUpStyle
+                        : classes.imgDownStyle
+                        }`}
                       alt=""
                       src={muteIcon}
                     />
@@ -1350,9 +1351,8 @@ export default function Setting({ open, onClose }) {
                           <div
                             key={item.value}
                             onClick={() => handleSelectChange(item)}
-                            className={`${classes.selectTextlist} ${
-                              item.checked ? classes.selectChecked : ""
-                            }`}
+                            className={`${classes.selectTextlist} ${item.checked ? classes.selectChecked : ""
+                              }`}
                           >
                             <span
                               className={classes.selectOption}
@@ -1378,9 +1378,8 @@ export default function Setting({ open, onClose }) {
               </div>
               <div className={classes.bottomItem}>
                 <div
-                  className={`${classes.flexBox} ${
-                    !turnOffBtnFlag ? classes.cursorStyle : ""
-                  }`}
+                  className={`${classes.flexBox} ${!turnOffBtnFlag ? classes.cursorStyle : ""
+                    }`}
                   onClick={handlerArrowImg}
                 >
                   <div>
@@ -1402,9 +1401,8 @@ export default function Setting({ open, onClose }) {
                     </span>
                   ) : (
                     <img
-                      className={`${classes.arrowImg} ${
-                        showRadio ? classes.arrowUpImg : classes.arrowDownImg
-                      }`}
+                      className={`${classes.arrowImg} ${showRadio ? classes.arrowUpImg : classes.arrowDownImg
+                        }`}
                       alt=""
                       src={arrow}
                     />
@@ -1460,9 +1458,8 @@ export default function Setting({ open, onClose }) {
               <Switch
                 checked={textSwitch}
                 color="primary"
-                className={`${classes.switchStyle} ${
-                  classes.switchStyleMargin
-                } ${textSwitch ? classes.switchOpenStyle : ""}`}
+                className={`${classes.switchStyle} ${classes.switchStyleMargin
+                  } ${textSwitch ? classes.switchOpenStyle : ""}`}
                 onChange={(e) => handleSwitchChange(e, 0)}
               ></Switch>
             </div>
@@ -1487,9 +1484,8 @@ export default function Setting({ open, onClose }) {
             <Switch
               checked={soundSwitch}
               color="primary"
-              className={`${classes.switchStyle} ${
-                soundSwitch ? classes.switchOpenStyle : ""
-              }`}
+              className={`${classes.switchStyle} ${soundSwitch ? classes.switchOpenStyle : ""
+                }`}
               onChange={(e) => handleSwitchChange(e, 1)}
             ></Switch>
           </div>
@@ -1569,19 +1565,21 @@ export default function Setting({ open, onClose }) {
             </Select>
           </FormControl>
         </div>
+        {
+          selectedLang !== 'none' && <div className={classes.infoSwitchItem}>
+            <span className={classes.notifySubTitle} style={{ fontSize: "16px" }}>
+              {i18next.t("On-demand translation")}
+            </span>
+            <Switch
+              disabled={selectedLang == "none" || selectedLang == ""}
+              checked={translateSwitch}
+              color="primary"
+              className={classes.switchMargin}
+              onChange={(e) => handleSwitchChange(e, 5)}
+            ></Switch>
+          </div>
+        }
 
-        <div className={classes.infoSwitchItem}>
-          <span className={classes.notifySubTitle} style={{ fontSize: "16px" }}>
-            {i18next.t("On-demand translation")}
-          </span>
-          <Switch
-            disabled={selectedLang == "none" || selectedLang == ""}
-            checked={translateSwitch}
-            color="primary"
-            className={classes.switchMargin}
-            onChange={(e) => handleSwitchChange(e, 5)}
-          ></Switch>
-        </div>
       </div>
     );
   }
