@@ -12,7 +12,7 @@ import {
   Typography
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { onChengeGroupAdmin } from "../../../../../api/groupChat/groupAdmin";
+import { onChangeGroupAdmin } from "../../../../../api/groupChat/groupAdmin";
 import { onChangeGroipMute } from "../../../../../api/groupChat/groupMute";
 import { onChangeGroupBlock } from "../../../../../api/groupChat/groupBlock";
 import {
@@ -186,7 +186,7 @@ const MembersList = ({ newMuteList, inputVal }) => {
   };
   const confirmQuitGroup = () => {
     if (GroupStatus === 1) {
-      onChengeGroupAdmin(groupId, selectedUser, action, handleClose);
+      onChangeGroupAdmin(groupId, selectedUser, action, handleClose);
     } else if (GroupStatus === 2) {
       onChangeGroipMute(groupId, selectedUser, action, handleClose);
     } else if (GroupStatus === 3) {
