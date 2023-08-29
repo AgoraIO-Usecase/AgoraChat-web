@@ -86,7 +86,7 @@ const useStyles = makeStyles((theme) => {
   };
 });
 
-const statusImgObj = {
+export const statusImgObj = {
   Offline: offlineImg,
   Online: onlineIcon,
   Busy: busyIcon,

@@ -5,6 +5,7 @@ import getGroupInfo from "../api/groupChat/getGroupInfo";
 import { loginWithToken } from "../api/loginChat";
 import { createHashHistory } from "history";
 import store from "../redux/store";
+import { Tooltip } from "@material-ui/core";
 import {
   setMyUserInfo,
   setUnread,
@@ -21,6 +22,9 @@ import { changeTitle, getLocalStorageData } from "../utils/notification";
 import { TranslateDialog } from "../components/translate";
 import { getRtctoken, getConfDetail } from "../api/rtcCall";
 import { useSelector } from "react-redux";
+import { statusImgObj } from "../components/appbar/chatGroup/memberInfo";
+import customIcon from "../assets/custom.png";
+import { makeStyles } from "@material-ui/core/styles";
 import {
   Chat,
   ConversationList,
@@ -33,12 +37,38 @@ import {
   ImageMessage,
   CombinedMessage,
   RecalledMessage,
-  Icon
+  Icon,
+  Avatar
 } from "chatuim2";
 import "chatuim2/style.css";
 import CombineDialog from "../components/combine";
 import { observer } from "mobx-react-lite";
 const history = createHashHistory();
+
+const useStyles = makeStyles(() => {
+  return {
+    avatarWrap: {
+      position: "relative",
+      cursor: "pointer"
+    },
+    presenceWrap: {
+      borderRadius: "50%",
+      width: "15px",
+      height: "15px",
+      background: "#fff",
+      textAlign: "center",
+      position: "absolute",
+      lineHeight: "15px",
+      bottom: "-2px",
+      right: "-5px"
+    },
+    presenceImgStyle: {
+      width: "13px",
+      height: "13px",
+      borderRadius: "50%"
+    }
+  };
+});
 
 function Main() {
   const [sessionInfoAddEl, setSessionInfoAddEl] = useState(null);
@@ -48,6 +78,10 @@ function Main() {
   const [isShowReport, setShowReport] = useState(false);
   const [currentMsg, setCurrentMsg] = useState({});
   const { currentCvs } = rootStore.conversationStore;
+  const userInfo =
+    rootStore.addressStore?.appUsersInfo?.[currentCvs?.conversationId];
+  let presenceExt = userInfo?.isOnline ? userInfo?.presenceExt : "Offline";
+  const classes = useStyles();
 
   const renderUserProfile = useCallback(
     ({ userId }) => {
@@ -57,6 +91,15 @@ function Main() {
     },
     [currentCvs]
   );
+
+  const getChatAvatarUrl = () => {
+    const cvs = currentCvs;
+    if (cvs.chatType === "singleChat") {
+      return rootStore.addressStore.appUsersInfo[cvs.conversationId]?.avatarurl;
+    } else {
+      return "";
+    }
+  };
 
   //support edit thread
   useEffect(() => {
@@ -141,7 +184,7 @@ function Main() {
         console.log("发送成功", res);
         rootStore.messageStore.setSelectedMessage(currentCvs, {
           selectable: false,
-          selectedMessage: [],
+          selectedMessage: []
         });
       })
       .catch((err) => {
@@ -193,7 +236,7 @@ function Main() {
     if (data.selectedLang) {
       store.dispatch(setTargetLanguage(data.selectedLang));
     }
-    if(data.typingSwitch){
+    if (data.typingSwitch) {
       store.dispatch(setTypingSwitch(data.typingSwitch));
     }
     return () => {
@@ -333,7 +376,24 @@ function Main() {
         >
           <Chat
             headerProps={{
-              onAvatarClick: handleClickSessionInfoDialog
+              avatar: (
+                <div onClick={handleClickSessionInfoDialog} className={classes.avatarWrap}>
+                  <Avatar src={getChatAvatarUrl()}>
+                    {currentCvs?.name || currentCvs?.conversationId}
+                  </Avatar>
+                  {currentCvs.chatType === "singleChat" && (
+                    <Tooltip title={presenceExt} placement="bottom-end">
+                      <div className={classes.presenceWrap}>
+                        <img
+                          className={classes.presenceImgStyle}
+                          alt={presenceExt}
+                          src={statusImgObj[presenceExt] || customIcon}
+                        />
+                      </div>
+                    </Tooltip>
+                  )}
+                </div>
+              ),
             }}
             messageEditorProps={{
               onSendMessage: sendMessage,
