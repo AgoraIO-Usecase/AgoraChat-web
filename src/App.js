@@ -11,6 +11,7 @@ import Loading from "./components/common/loading";
 import { useSelector } from "react-redux";
 import { useEffect } from "react";
 import { rootStore, Provider } from "chatuim2";
+import { handleError } from './handleError'
 const history = createHashHistory();
 
 const AuthorizedComponent = (props) => {
@@ -35,6 +36,7 @@ function App() {
     <div className="App">
       <Loading show={isFetching} />
       <Provider
+        onError={handleError}
         initConfig={{
           appKey: "41117440#383391"
         }}
