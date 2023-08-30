@@ -34,7 +34,7 @@ function publicNotify(
   iconTitle = {},
   body = "You Have A New Message"
 ) {
-  const {  from, data, type, to, time, url } = message;
+  const { from, data, type, to, time, url } = message;
   let {
     myUserInfo: { agoraId },
     globalSilentMode: { global, single, group, threading }
@@ -232,9 +232,11 @@ const initListen = () => {
       const { type } = event;
       switch (type) {
         case "subscribed":
+          message.success(`${event.from} approved your add contact application`)
           getContacts();
           break;
         case "unsubscribed":
+          message.info(`${event.from} refused your add contact application`)
           getContacts();
           break;
         case "joinPublicGroupSuccess":

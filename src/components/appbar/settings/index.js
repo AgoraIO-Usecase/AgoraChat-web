@@ -518,7 +518,11 @@ const useStyles = makeStyles((theme) => {
     },
     gInputBaseWidth: {
       width: "230px",
-      marginLeft: "10px"
+      marginLeft: "10px",
+      border: "1px solid #ccc",
+      borderRadius: "10px",
+      padding: "6px",
+      margin: "4px"
     },
     spanNickName: {
       backgroundColor: "#F4F5F7",

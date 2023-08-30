@@ -289,6 +289,8 @@ const PresencePopover = (props) => {
     });
   };
   const handlerInput = (e) => {
+    console.log(e.currentTarget.value.length)
+    if (e.currentTarget.value.length > 10) return
     setInputValue(e.currentTarget.value);
   };
   const handlerChangeStatus = () => {
@@ -384,6 +386,8 @@ const PresencePopover = (props) => {
             <Input
               className={useClasses.inputStyle}
               placeholder="Custom Status"
+              length={10}
+              value={useInputValue}
               onChange={handlerInput}
             />
             <div className={useClasses.bottomBtn}>

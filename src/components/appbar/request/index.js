@@ -164,7 +164,15 @@ const useStyles = makeStyles((theme) => ({
     menuIcon: {
         width: '30px',
         height: '30px'
-    }
+    },
+    redDot: {
+        width: '8px',
+        height: '8px',
+        background: 'rgb(255, 20, 204)',
+        position: 'relative',
+        borderRadius: '4px',
+        left: '4px'
+    },
 }))
 
 function a11yProps(index) {
@@ -276,6 +284,7 @@ function Notice(props) {
     const AddedContactMenu = () => {
         return (
             <Box className={classes.menusBox}>
+                {tabRedDot.contact && <p className={classes.redDot}></p>}
                 <img src={addcontactIcon} alt='new chat' style={{ width: '30px' }} />
                 <Typography style={{ marginLeft: '8px' }}>{`${i18next.t('New Friends')}`}</Typography>
             </Box>
@@ -284,6 +293,7 @@ function Notice(props) {
     const AddedGroupsMenu = () => {
         return (
             <Box className={classes.menusBox}>
+                {tabRedDot.group && <p className={classes.redDot}></p>}
                 <img src={group_request} alt='new chat' style={{ width: '30px' }} />
                 <Typography style={{ marginLeft: '8px' }}>{`${i18next.t('Group Requests')}`}</Typography>
             </Box>
@@ -375,8 +385,24 @@ function Notice(props) {
         );
     };
 
+    const [tabRedDot, setTabRedDot] = useState({ contact: false, group: false })
+
+
     useEffect(() => {
         setRequestsCp(requests)
+        let contact = false;
+        let group = false;
+        requests.contact.forEach((item) => {
+            if (item.status === 'pending') {
+                contact = true
+            }
+        })
+        requests.group.forEach((item) => {
+            if (item.status === 'pending') {
+                group = true
+            }
+        })
+        setTabRedDot({ group, contact })
     }, [
         requests
     ])
@@ -405,7 +431,7 @@ function Notice(props) {
                                 <img src={search_icon} alt="" className={classes.searchImg} />
                                 <InputBase placeholder={i18next.t('Search')} className={classes.inputSearch} onChange={handleInputValue} />
                             </Box>
-                            <IconButton  style={{ borderRadius: '50%', width: '32px', height: '32px' }} onClick={handleMenuClick}>
+                            <IconButton style={{ borderRadius: '50%', width: '32px', height: '32px' }} onClick={handleMenuClick}>
                                 <img src={menu_icon} alt="menu" style={{ width: '32px', height: '32px' }} />
                             </IconButton>
                         </Box>
@@ -423,7 +449,7 @@ function Notice(props) {
                                 <img src={search_icon} alt="" className={classes.searchImg} />
                                 <InputBase placeholder={i18next.t('Search')} className={classes.inputSearch} onChange={handleInputValue} />
                             </Box>
-                            <IconButton onClick={handleMenuClick}  style={{ borderRadius: '50%', width: '32px', height: '32px' }}>
+                            <IconButton onClick={handleMenuClick} style={{ borderRadius: '50%', width: '32px', height: '32px' }}>
                                 <img src={menu_icon} alt="menu" style={{ width: '32px', height: '32px' }} />
                             </IconButton>
                         </Box>
