@@ -377,7 +377,10 @@ function Main() {
           <Chat
             headerProps={{
               avatar: (
-                <div onClick={handleClickSessionInfoDialog} className={classes.avatarWrap}>
+                <div
+                  onClick={handleClickSessionInfoDialog}
+                  className={classes.avatarWrap}
+                >
                   <Avatar src={getChatAvatarUrl()}>
                     {currentCvs?.name || currentCvs?.conversationId}
                   </Avatar>
@@ -393,7 +396,7 @@ function Main() {
                     </Tooltip>
                   )}
                 </div>
-              ),
+              )
             }}
             messageEditorProps={{
               onSendMessage: sendMessage,
@@ -416,9 +419,7 @@ function Main() {
           >
             <Thread
               messageListProps={{
-                renderUserProfile: ({ userId }) => (
-                  <CustomUserProfile userId={userId} />
-                )
+                renderUserProfile: () => null
               }}
             ></Thread>
           </div>
