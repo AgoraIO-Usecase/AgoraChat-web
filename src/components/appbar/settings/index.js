@@ -994,7 +994,7 @@ export default function Setting({ open, onClose }) {
   const showSecondDialog = (val) => {
     setGroupStatus(val);
     if (val === 1) {
-      setgroupContent("Move To Block");
+      setgroupContent("Move To unBlock");
     } else {
       setgroupContent("Delete Contact");
     }

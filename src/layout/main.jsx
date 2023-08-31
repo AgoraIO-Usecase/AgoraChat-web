@@ -37,12 +37,14 @@ import {
   ImageMessage,
   CombinedMessage,
   RecalledMessage,
+  NoticeMessage,
   Icon,
   Avatar
 } from "chatuim2";
 import "chatuim2/style.css";
 import CombineDialog from "../components/combine";
 import { observer } from "mobx-react-lite";
+import { message } from "../components/common/alert";
 const history = createHashHistory();
 
 const useStyles = makeStyles(() => {
@@ -189,6 +191,7 @@ function Main() {
       })
       .catch((err) => {
         console.log(err);
+        message.error(err.message)
       });
   };
 
@@ -319,13 +322,7 @@ function Main() {
       );
     } else if (msg.type === "recall") {
       return (
-        <RecalledMessage
-          key={msg.id}
-          //@ts-ignore
-          status={msg.status}
-          //@ts-ignore
-          message={msg || {}}
-        ></RecalledMessage>
+        <NoticeMessage noticeMessage={msg}></NoticeMessage>
       );
     } else if (msg.type === "combine") {
       return (
