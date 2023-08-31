@@ -1129,7 +1129,10 @@ export default function Setting({ open, onClose }) {
                 />
                 <span
                   className={classes.cancelBtn}
-                  onClick={() => setShowInput(false)}
+                  onClick={() => {
+                    setShowInput(false)
+                    setblockList(blackList);
+                  }}
                 >
                   Cancel
                 </span>

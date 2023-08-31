@@ -1,6 +1,7 @@
 import getGroups from "./getGroups";
 import getGroupInfo from "../groupChat/getGroupInfo";
 import { rootStore } from "chatuim2";
+import { getLocalStorageData } from '../../utils/notification'
 export const closeGroup = (groupId, type, onClose) => {
   let option = {
     groupId: groupId
@@ -15,10 +16,14 @@ export const closeGroup = (groupId, type, onClose) => {
       getGroups();
     });
   }
-  rootStore.conversationStore.deleteConversation({
-    chatType: "groupChat",
-    conversationId: groupId
-  });
+
+  if (getLocalStorageData().deleteSwitch) {
+    rootStore.conversationStore.deleteConversation({
+      chatType: "groupChat",
+      conversationId: groupId
+    });
+  }
+
   onClose && onClose();
 };
 
