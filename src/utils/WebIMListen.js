@@ -231,14 +231,14 @@ const initListen = () => {
       console.log("onPresence>>>", event);
       const { type } = event;
       switch (type) {
-        case "subscribed":
-          message.success(`${event.from} approved your add contact application`)
-          getContacts();
-          break;
-        case "unsubscribed":
-          message.info(`${event.from} refused your add contact application`)
-          getContacts();
-          break;
+        // case "subscribed":
+        //   message.success(`${event.from} approved your add contact application`)
+        //   getContacts();
+        //   break;
+        // case "unsubscribed":
+        //   message.info(`${event.from} refused your add contact application`)
+        //   getContacts();
+        //   break;
         case "joinPublicGroupSuccess":
         case "direct_joined":
           getGroups();
@@ -354,6 +354,14 @@ const initListen = () => {
       //     playSound()
       // }
       // notification({body: 'Have A New Friend Want To Be Your Friend', tag: randomNumber()}, {title: 'agora chat'})
+    },
+    onContactRefuse: (msg) => {
+      message.info(`${msg.from} refused your add contact application`)
+      getContacts();
+    },
+    onContactAgreed: (msg) => {
+      message.success(`${msg.from} approved your add contact application`)
+      getContacts();
     },
     onGroupChange: (msg) => {
       console.log("onGroupChange", msg);

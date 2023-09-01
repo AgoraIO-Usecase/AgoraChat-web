@@ -337,7 +337,20 @@ function Main() {
           customAction={moreAction}
         ></CombinedMessage>
       );
-    }
+    } else if (msg.type == 'video' || msg.type == 'loc') {
+      return (
+        <RecalledMessage
+          key={msg.id}
+          // style={data.style}
+          //@ts-ignore
+          status={msg.status}
+          //@ts-ignore
+          message={msg}
+        >
+          {msg}
+        </RecalledMessage>
+      );
+      }
   };
 
   const [transDialogOpen, setTransDialogOpen] = useState(false);
