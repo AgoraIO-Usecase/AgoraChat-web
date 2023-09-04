@@ -440,15 +440,14 @@ function Main() {
         onClose={() => setSessionInfoAddEl(null)}
         sessionInfo={sessionInfo}
       />
-      {groupSettingAddEl ? (
+
+      { (
         <GroupSettingsDialog
           open={groupSettingAddEl}
           authorEl={groupSettingAddEl}
           onClose={() => setGroupSettingAddEl(null)}
           currentGroupId={currentGroupId}
         />
-      ) : (
-        <></>
       )}
       {isShowReport ? (
         <Report
