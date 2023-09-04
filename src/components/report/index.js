@@ -36,6 +36,9 @@ export function Report(props) {
     }
 
     const handleConfrm = () => {
+        if (!textValue) {
+            return message.error('the reason can not be empty')
+        }
         rootStore.client.reportMessage({
             reportType: value, // 举报类型。
             reportReason: textValue, // 举报原因。
