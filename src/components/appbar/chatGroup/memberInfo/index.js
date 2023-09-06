@@ -29,6 +29,11 @@ const useStyles = makeStyles((theme) => {
       textAlign: "center",
       position: "relative"
     },
+    avatarBox: {
+      width: "100px",
+      margin: "0 auto",
+      position: "relative"
+    },
     avatarImg: {
       display: "flex",
       width: "100px",
@@ -76,7 +81,7 @@ const useStyles = makeStyles((theme) => {
       textAlign: "center",
       position: "absolute",
       right: 0,
-      top: "100px"
+      top: "75px"
     },
     imgStyle: {
       width: "30px",
@@ -123,18 +128,21 @@ const CustomUserProfile = ({ userId }) => {
   return (
     <Box className={classes.root}>
       <Box className={classes.infoBox}>
-        <Avatar src={userInfo?.avatarurl} className={classes.avatarImg}>
-          {userInfo?.nickname || userId}
-        </Avatar>
-        <Tooltip title={presenceExt} placement="bottom-end">
-          <div className={classes.imgBox}>
-            <img
-              alt=""
-              src={statusImgObj[presenceExt] || customIcon}
-              className={classes.imgStyle}
-            />
-          </div>
-        </Tooltip>
+        <Box className={classes.avatarBox}>
+          <Avatar src={userInfo?.avatarurl} className={classes.avatarImg}>
+            {userInfo?.nickname || userId}
+          </Avatar>
+          <Tooltip title={presenceExt} placement="bottom-end">
+            <div className={classes.imgBox}>
+              <img
+                alt=""
+                src={statusImgObj[presenceExt] || customIcon}
+                className={classes.imgStyle}
+              />
+            </div>
+          </Tooltip>
+        </Box>
+
         <Typography className={classes.nameText}>
           {userInfo?.nickname}
         </Typography>
