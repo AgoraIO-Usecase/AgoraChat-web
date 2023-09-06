@@ -108,7 +108,9 @@ const CustomUserProfile = ({ userId }) => {
   const { client } = rootStore;
   const contacts = state?.contacts || [];
   const userInfo = appUsersInfo[userId];
-  let presenceExt = userInfo?.isOnline ? userInfo?.presenceExt : "Offline";
+  let presenceExt = userInfo?.isOnline
+    ? userInfo?.presenceExt || "Online"
+    : "Offline";
 
   useEffect(() => {
     if (!appUsersInfo[userId]) {

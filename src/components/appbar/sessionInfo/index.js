@@ -4,7 +4,10 @@ import i18next from "i18next";
 import { Popover, Box, Button, Tooltip, Select } from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
-import { addFromBlackList, removeFromBlackList } from "../../../api/contactsChat/getContacts";
+import {
+  addFromBlackList,
+  removeFromBlackList
+} from "../../../api/contactsChat/getContacts";
 import CommonDialog from "../../common/dialog";
 import {
   handlerTime,
@@ -335,14 +338,16 @@ const SessionInfoPopover = ({ open, onClose, sessionInfo }) => {
   let { to } = sessionInfo;
   const { getUserInfoWithPresence, appUsersInfo } = rootStore.addressStore;
   const userInfo = appUsersInfo[to];
-  let presenceExt = userInfo?.isOnline ? userInfo?.presenceExt : "Offline";
+  let presenceExt = userInfo?.isOnline
+    ? userInfo?.presenceExt || "Online"
+    : "Offline";
   const blackList = useSelector((state) => state?.blackList) || [];
-  const [blockBtnText, setbBlockBtnText] = useState('block')
+  const [blockBtnText, setbBlockBtnText] = useState("block");
   useEffect(() => {
     if (blackList.includes(to)) {
-      setbBlockBtnText('unBlock')
+      setbBlockBtnText("unBlock");
     }
-  }, [blackList.length])
+  }, [blackList.length]);
   const setUserNotification = () => {
     setOpenTurnOff(true);
   };
@@ -400,7 +405,7 @@ const SessionInfoPopover = ({ open, onClose, sessionInfo }) => {
   };
 
   const setNotDisturb = (params) => {
-    setSilentModeForConversation(params).then((res) => { });
+    setSilentModeForConversation(params).then((res) => {});
   };
   const getNotDisturb = (userId) => {
     getSilentModeForConversation({
@@ -455,8 +460,9 @@ const SessionInfoPopover = ({ open, onClose, sessionInfo }) => {
                   {selectContent}
                 </span>
                 <img
-                  className={`${classes.arrowImgStyle} ${showSelectOption ? classes.imgUpStyle : classes.imgDownStyle
-                    }`}
+                  className={`${classes.arrowImgStyle} ${
+                    showSelectOption ? classes.imgUpStyle : classes.imgDownStyle
+                  }`}
                   alt=""
                   src={upAndDown}
                 />
@@ -468,8 +474,9 @@ const SessionInfoPopover = ({ open, onClose, sessionInfo }) => {
                       <div
                         key={item.value}
                         onClick={() => handleSelectChange(item)}
-                        className={`${classes.selectTextlist} ${item.checked ? classes.selectChecked : ""
-                          }`}
+                        className={`${classes.selectTextlist} ${
+                          item.checked ? classes.selectChecked : ""
+                        }`}
                       >
                         <span
                           className={classes.selectOption}
@@ -541,10 +548,10 @@ const SessionInfoPopover = ({ open, onClose, sessionInfo }) => {
   const showSecondDialog = (val) => {
     setGroupStatus(val);
     if (val === 1) {
-      if (blockBtnText == 'unBlock') {
-        removeFromBlackList(to)
-        setbBlockBtnText('Block')
-        return
+      if (blockBtnText == "unBlock") {
+        removeFromBlackList(to);
+        setbBlockBtnText("Block");
+        return;
       }
       setgroupContent("Make To Block");
     } else {

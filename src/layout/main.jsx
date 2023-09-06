@@ -82,7 +82,9 @@ function Main() {
   const { currentCvs } = rootStore.conversationStore;
   const userInfo =
     rootStore.addressStore?.appUsersInfo?.[currentCvs?.conversationId];
-  let presenceExt = userInfo?.isOnline ? userInfo?.presenceExt : "Offline";
+  let presenceExt = userInfo?.isOnline
+    ? userInfo?.presenceExt || "Online"
+    : "Offline";
   const classes = useStyles();
 
   const renderUserProfile = useCallback(
@@ -191,7 +193,7 @@ function Main() {
       })
       .catch((err) => {
         console.log(err);
-        message.error(err.message)
+        message.error(err.message);
       });
   };
 
@@ -321,9 +323,7 @@ function Main() {
         ></FileMessage>
       );
     } else if (msg.type === "recall") {
-      return (
-        <NoticeMessage noticeMessage={msg}></NoticeMessage>
-      );
+      return <NoticeMessage noticeMessage={msg}></NoticeMessage>;
     } else if (msg.type === "combine") {
       return (
         <CombinedMessage
@@ -337,7 +337,7 @@ function Main() {
           customAction={moreAction}
         ></CombinedMessage>
       );
-    } else if (msg.type == 'video' || msg.type == 'loc') {
+    } else if (msg.type == "video" || msg.type == "loc") {
       return (
         <RecalledMessage
           key={msg.id}
@@ -350,7 +350,7 @@ function Main() {
           {msg}
         </RecalledMessage>
       );
-      }
+    }
   };
 
   const [transDialogOpen, setTransDialogOpen] = useState(false);
@@ -441,14 +441,14 @@ function Main() {
         sessionInfo={sessionInfo}
       />
 
-      { (
+      {
         <GroupSettingsDialog
           open={groupSettingAddEl}
           authorEl={groupSettingAddEl}
           onClose={() => setGroupSettingAddEl(null)}
           currentGroupId={currentGroupId}
         />
-      )}
+      }
       {isShowReport ? (
         <Report
           open={isShowReport}
