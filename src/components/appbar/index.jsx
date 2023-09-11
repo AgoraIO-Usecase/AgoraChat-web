@@ -46,7 +46,7 @@ export default function Header() {
   const userinfo = appUsersInfo[client.user];
 
   useEffect(() => {
-    if (getLocalStorageData().groupRequestSwitch && requests?.group.length) {
+    if (getLocalStorageData().groupRequestSwitch && requests?.group?.length) {
       requests.group.forEach((item) => {
         acceptGroupRequest(item.name, item.groupId);
       });

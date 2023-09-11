@@ -16,12 +16,7 @@ import { agreeInviteGroup } from "../api/groupChat/addGroup";
 import { getGroupMuted } from "../api/groupChat/groupMute";
 import { getGroupWrite } from "../api/groupChat/groupWhite";
 import getGroupInfo from "../api/groupChat/getGroupInfo";
-import {
-  getLocalStorageData,
-  playSound,
-  setTimeVSNowTime,
-  notifyMe
-} from "./notification";
+import { notification, getLocalStorageData, playSound, randomNumber, setTimeVSNowTime, checkBrowerNotifyStatus, notifyMe } from './notification'
 
 import i18next from "i18next";
 import { message } from "../components/common/alert";
@@ -231,24 +226,25 @@ const initListen = () => {
       console.log("onPresence>>>", event);
       const { type } = event;
       switch (type) {
-        // case "subscribed":
-        //   message.success(`${event.from} approved your add contact application`)
-        //   getContacts();
-        //   break;
-        // case "unsubscribed":
-        //   message.info(`${event.from} refused your add contact application`)
-        //   getContacts();
-        //   break;
+        case "subscribed":
+          // message.success(`${event.from} approved your add contact application`)
+          getContacts();
+          break;
+        case "unsubscribed":
+          // message.info(`${event.from} refused your add contact application`)
+          getContacts();
+          break;
         case "joinPublicGroupSuccess":
         case "direct_joined":
           getGroups();
           break;
         case "invite":
-          agreeInviteGroup(event);
+          // agreeInviteGroup(event);
+
           // if (getLocalStorageData().sound) {
           //     playSound()
           // }
-          // notification({body: 'Have A Group Invite', tag: randomNumber()}, {title: 'agora chat'})
+          // notification({ body: 'Have A Group Invite', tag: randomNumber() }, { title: 'agora chat' })
           break;
         case "removedFromGroup":
           message.info(
@@ -357,11 +353,11 @@ const initListen = () => {
     },
     onContactRefuse: (msg) => {
       message.info(`${msg.from} refused your add contact application`)
-      getContacts();
+      // getContacts();
     },
     onContactAgreed: (msg) => {
       message.success(`${msg.from} approved your add contact application`)
-      getContacts();
+      // getContacts();
     },
     onGroupChange: (msg) => {
       console.log("onGroupChange", msg);
