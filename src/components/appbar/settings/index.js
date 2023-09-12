@@ -1059,9 +1059,12 @@ export default function Setting({ open, onClose }) {
     store.dispatch(setTargetLanguage(e.target.value));
     if (e.target.value == "") {
       setTranslateSwitch(false);
+    } else {
+      setTranslateSwitch(true)
     }
     const data = getLocalStorageData();
     data.selectedLang = e.target.value;
+    data.translateSwitch = translateSwitch
     console.log("设置语言", data);
     localStorage.setItem("soundPreviewText", JSON.stringify(data));
   };

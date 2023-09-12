@@ -474,6 +474,9 @@ function Main() {
             case 'refused on other devices':
               message.error('Rejected on another device.')
               break;
+            case 'processed on other devices':
+              message.info('Handled on another device.')
+              break;
             case 'busy':
               message.warn('The other party is busy.')
               break;
