@@ -7,6 +7,7 @@ import ClearIcon from '@material-ui/icons/Clear';
 import { useSelector } from 'react-redux'
 import { acceptContactRequest, declineContactRequest } from '../../../api/contactsChat/getContacts'
 import { acceptGroupRequest, declineGroupRequest } from '../../../api/groupChat/groupRequest'
+import { agreeInviteGroup, rejectInviteGroup } from "../../../api/groupChat/addGroup";
 import addcontactIcon from '../../../assets/addcontact@2x.png'
 import search_icon from '../../../assets/search.png'
 import menu_icon from '../../../assets/menu@2x.png'
@@ -16,6 +17,7 @@ import clear_icon from '../../../assets/clearall@2x.png'
 import group_request from '../../../assets/group_requates@2x.png'
 import store from "../../../redux/store";
 import { setRequests } from '../../../redux/actions'
+import { rootStore } from "chatuim2";
 const useStyles = makeStyles((theme) => ({
     root: {
         width: '700px',
@@ -208,6 +210,13 @@ function RequestItem(props) {
         if (type === 'contact') {
             acceptContactRequest(data.name)
         } else {
+            if (data.type == 'invite') {
+                return agreeInviteGroup({
+                    to: rootStore.client.user,
+                    gid: data.groupId,
+                    from: data.name
+                })
+            }
             acceptGroupRequest(data.name, data.groupId)
         }
     }
@@ -216,6 +225,13 @@ function RequestItem(props) {
         if (type === 'contact') {
             declineContactRequest(data.name)
         } else {
+            if (data.type == 'invite') {
+                return rejectInviteGroup({
+                    to: rootStore.client.user,
+                    gid: data.groupId,
+                    from: data.name
+                })
+            }
             declineGroupRequest(data.name, data.groupId)
         }
     }
@@ -456,7 +472,7 @@ function Notice(props) {
                         {requestsCp.group.map((value, key) => {
                             if (!value.hidden) {
                                 return (
-                                    <RequestItem key={value.groupId + Math.floor(Math.random() * 1000)} data={value} type="group" text={"Want to join the " + value.groupId} />
+                                    <RequestItem key={value.groupId + Math.floor(Math.random() * 1000)} data={value} type="group" text={value.type == 'invite' ? `${value.name} invite you to join group: ${value.groupId}` : "Want to join the " + value.groupId} />
                                 )
                             }
                         })}

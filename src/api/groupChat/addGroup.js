@@ -3,6 +3,8 @@ import getGroups from './getGroups'
 import { message } from '../../components/common/alert'
 import i18next from "i18next";
 import { rootStore } from 'chatuim2'
+import store from '../../redux/store';
+import { updateRequestStatus } from '../../redux/actions';
 export const addGroup = (groupId) => {
     let options = {
         groupId: groupId,
@@ -20,7 +22,7 @@ export const addGroup = (groupId) => {
 }
 
 export const agreeInviteGroup = (val) => {
-    const { to, gid } = val
+    const { to, gid, from } = val
     let options = {
         invitee: to,
         groupId: gid
@@ -29,17 +31,21 @@ export const agreeInviteGroup = (val) => {
         console.log('agreeInvite>>>', res);
         message.success(`${i18next.t('You have joined the group：')}` + gid)
         getGroups();
+
+        store.dispatch(updateRequestStatus({ type: 'group', name: from, groupId: gid, status: 'accepted' }))
+
     })
 }
 
-// export const rejectInviteGroup = (val) => {
-//     const { to, gid } = val
-//     let options = {
-//         invitee: to,
-//         groupId: gid
-//     };
-//      rootStore.client.rejectInviteIntoGroup(options).then((res) => {
-//         console.log('rejectInvite>>>', res);
-//         message.success(`${i18next.t('已拒绝加入群组：')}` + gid)
-//     })
-// }
+export const rejectInviteGroup = (val) => {
+    const { to, gid, from } = val
+    let options = {
+        invitee: to,
+        groupId: gid
+    };
+    rootStore.client.rejectInviteIntoGroup(options).then((res) => {
+        // console.log('rejectInvite>>>', res);
+        // message.success(`${i18next.t('已拒绝加入群组：')}` + gid)
+        store.dispatch(updateRequestStatus({ type: 'group', name: from, groupId: gid, status: 'ignored' }))
+    })
+}

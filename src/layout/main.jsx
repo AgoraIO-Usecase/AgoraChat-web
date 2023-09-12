@@ -47,7 +47,7 @@ import { observer } from "mobx-react-lite";
 import { message } from "../components/common/alert";
 import InviteModal from '../components/inviteModal'
 const history = createHashHistory();
-
+const appId = '15cb0d28b87b425ea613fc46f7c9f974';
 
 const useStyles = makeStyles(() => {
   return {
@@ -463,7 +463,7 @@ function Main() {
               message.error('Declined.')
               break;
             case 'refuse':
-              message.warn('Declined.')
+              message.info('Declined.')
               break;
             case 'cancel':
               message.info('Hung Up.')
@@ -590,8 +590,9 @@ function Main() {
               onAddPerson: handleAddPerson,
               getIdMap: handleGetIdMap,
               onStateChange: handleRtcStateChange,
+              appId: appId,
+              getRTCToken: getRtcToken
             }}  
-            getRTCToken={getRtcToken}
           ></Chat>
         </div>
         {

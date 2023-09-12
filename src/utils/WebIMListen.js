@@ -245,6 +245,35 @@ const initListen = () => {
           //     playSound()
           // }
           // notification({ body: 'Have A Group Invite', tag: randomNumber() }, { title: 'agora chat' })
+          console.log('开关', getLocalStorageData().groupRequestSwitch)
+          if (!getLocalStorageData().groupRequestSwitch) {
+            return agreeInviteGroup(event);
+          }
+
+          console.log('收到加群邀请', event)
+          let { requests } = store.getState();
+          let groupRequests = requests.group;
+          let data = {
+            name: event.from,
+            groupId: event.gid,
+            status: "pending",
+            time: Date.now(),
+            type: 'invite'
+          };
+          let index = groupRequests.findIndex((value) => {
+            if (value.name === data.name && value.groupId === data.groupId && value.type == 'invite') {
+              return true;
+            }
+          });
+          if (index > -1) {
+            groupRequests[index] = data;
+          } else {
+            groupRequests.unshift(data);
+          }
+          // groupRequests.unshift(data)
+          let newRequests = { ...requests, group: [...groupRequests] };
+          store.dispatch(setRequests(newRequests));
+
           break;
         case "removedFromGroup":
           message.info(

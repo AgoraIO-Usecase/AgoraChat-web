@@ -46,11 +46,11 @@ export default function Header() {
   const userinfo = appUsersInfo[client.user];
 
   useEffect(() => {
-    if (getLocalStorageData().groupRequestSwitch && requests?.group?.length) {
-      requests.group.forEach((item) => {
-        acceptGroupRequest(item.name, item.groupId);
-      });
-    }
+    // if (getLocalStorageData().groupRequestSwitch && requests?.group?.length) {
+    //   requests.group.forEach((item) => {
+    //     acceptGroupRequest(item.name, item.groupId);
+    //   });
+    // }
     let unDealRequestsNum =
       countNum(requests.group) + countNum(requests.contact);
     setUnDealRequestsNum(unDealRequestsNum);
