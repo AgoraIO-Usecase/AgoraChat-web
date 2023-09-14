@@ -153,14 +153,14 @@ const presenceList = [
   },
   {
     id: 101,
-    title: "Do not Disturb",
+    title: "Do Not Disturb",
     checked: false,
     img: donotdisturbIcon,
     subTitle: "Do Not Disturb"
   },
   {
     id: 102,
-    title: "Leave",
+    title: "Away",
     checked: false,
     img: leaveIcon,
     subTitle: "Away"

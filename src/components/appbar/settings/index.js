@@ -1394,7 +1394,7 @@ export default function Setting({ open, onClose }) {
                 >
                   <div>
                     <span className={classes.notifySubTitle}>
-                      {i18next.t("Do not Disturb")}
+                      {i18next.t("Do Not Disturb")}
                     </span>
                     {checkedValue ? (
                       <span className={classes.notifyPrayTitle}>
@@ -1539,7 +1539,7 @@ export default function Setting({ open, onClose }) {
         </div>
         <div className={classes.infoSwitchItem}>
           <span className={classes.notifySubTitle} style={{ fontSize: "16px" }}>
-            {i18next.t("Delete the Chat after Leaving Group")}
+            {i18next.t("Delete Chat after Leaving A Group")}
           </span>
           <Switch
             checked={deleteSwitch}
@@ -1552,7 +1552,7 @@ export default function Setting({ open, onClose }) {
         <span className={classes.transText}> Translation Settings </span>
         <div className={classes.infoSwitchItem}>
           <span className={classes.notifySubTitle} style={{ fontSize: "16px" }}>
-            {i18next.t("Target language")}
+            {i18next.t("Preferred Language")}
           </span>
           <FormControl className={classes.switchMargin}>
             {/* <InputLabel id="demo-simple-select-label">Age</InputLabel> */}
