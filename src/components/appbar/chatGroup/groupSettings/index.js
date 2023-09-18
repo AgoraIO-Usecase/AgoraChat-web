@@ -173,6 +173,13 @@ const GroupSettingsDialog = ({ open, onClose, currentGroupId, authorEl }) => {
   const [muteFlag, setmuteFlag] = useState(false);
   const [btnWord, setBtnWord] = useState("");
 
+  const { allowinvites, owner } = groupsInfo
+  let showAddMember = true
+  if (!allowinvites && owner !== rootStore.client.user) {
+    showAddMember = false
+  }
+
+
   useEffect(() => {
     if (!open) {
       setValue(0);
@@ -351,11 +358,11 @@ const GroupSettingsDialog = ({ open, onClose, currentGroupId, authorEl }) => {
               {...a11yProps(0)}
               className={classes.itemBox}
             />
-            <Tab
+            {showAddMember && <Tab
               label={addMembersLabel()}
               {...a11yProps(1)}
               className={classes.itemBox}
-            />
+            />}
             <Tab
               label={groupNoticeLabel()}
               {...a11yProps(2)}
