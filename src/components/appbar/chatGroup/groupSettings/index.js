@@ -44,7 +44,10 @@ const useStyles = makeStyles((theme) => {
     gInfoBox: {
       height: "30%",
       textAlign: "center",
-      marginTop: "15px"
+      marginTop: "15px",
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
     },
     gAvatar: {
       height: "100px",

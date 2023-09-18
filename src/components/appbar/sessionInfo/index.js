@@ -48,7 +48,11 @@ const useStyles = makeStyles((theme) => {
     },
     infoBox: {
       textAlign: "center",
-      position: "relative"
+      position: "relative",
+      display: "flex",
+      alignItems: "center",
+      flexDirection: "column",
+      gap: "8px",
     },
     avatarImg: {
       display: "flex",
@@ -100,7 +104,7 @@ const useStyles = makeStyles((theme) => {
       textAlign: "center",
       position: "absolute",
       left: "189px",
-      bottom: "70px",
+      bottom: "82px",
       lineHeight: "34px"
     },
     imgStyle: {
@@ -405,7 +409,7 @@ const SessionInfoPopover = ({ open, onClose, sessionInfo }) => {
   };
 
   const setNotDisturb = (params) => {
-    setSilentModeForConversation(params).then((res) => {});
+    setSilentModeForConversation(params).then((res) => { });
   };
   const getNotDisturb = (userId) => {
     getSilentModeForConversation({
@@ -460,9 +464,8 @@ const SessionInfoPopover = ({ open, onClose, sessionInfo }) => {
                   {selectContent}
                 </span>
                 <img
-                  className={`${classes.arrowImgStyle} ${
-                    showSelectOption ? classes.imgUpStyle : classes.imgDownStyle
-                  }`}
+                  className={`${classes.arrowImgStyle} ${showSelectOption ? classes.imgUpStyle : classes.imgDownStyle
+                    }`}
                   alt=""
                   src={upAndDown}
                 />
@@ -474,9 +477,8 @@ const SessionInfoPopover = ({ open, onClose, sessionInfo }) => {
                       <div
                         key={item.value}
                         onClick={() => handleSelectChange(item)}
-                        className={`${classes.selectTextlist} ${
-                          item.checked ? classes.selectChecked : ""
-                        }`}
+                        className={`${classes.selectTextlist} ${item.checked ? classes.selectChecked : ""
+                          }`}
                       >
                         <span
                           className={classes.selectOption}

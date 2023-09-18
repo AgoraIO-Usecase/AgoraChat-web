@@ -99,6 +99,7 @@ const useStyles = makeStyles((theme) => {
       flexDirection: "column",
       alignItems: "center",
       marginBottom: "10px",
+      gap: "8px",
       "& div:nth-last-child(2)": {
         marginTop: "-12px",
         fontSize: "20px",
@@ -1064,7 +1065,7 @@ export default function Setting({ open, onClose }) {
     }
     const data = getLocalStorageData();
     data.selectedLang = e.target.value;
-    data.translateSwitch = translateSwitch
+    data.translateSwitch = e.target.value == "" ? false : true
     console.log("设置语言", data);
     localStorage.setItem("soundPreviewText", JSON.stringify(data));
   };

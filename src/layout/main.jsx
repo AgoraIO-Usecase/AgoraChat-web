@@ -39,7 +39,8 @@ import {
   RecalledMessage,
   NoticeMessage,
   Icon,
-  Avatar
+  Avatar,
+  useSDK
 } from "chatuim2";
 import "chatuim2/style.css";
 import CombineDialog from "../components/combine";
@@ -75,6 +76,11 @@ const useStyles = makeStyles(() => {
 });
 
 function Main() {
+  // set sdk log level
+  const {AgoraRTC, AgoraChat} = useSDK()
+  AgoraRTC.setLogLevel(4)
+  AgoraChat.logger.setLevel(5)
+
   const [sessionInfoAddEl, setSessionInfoAddEl] = useState(null);
   const [sessionInfo, setSessionInfo] = useState({});
   const [groupSettingAddEl, setGroupSettingAddEl] = useState(null);
@@ -255,9 +261,10 @@ function Main() {
   }, []);
 
   const handleTranslateMsg = () => {
-    console.log("state", state);
+    
     const data = getLocalStorageData();
     const targetLanguage = state?.targetLanguage;
+    console.log("state", targetLanguage, targetLanguage, data.translateSwitch);
     if (
       targetLanguage == "none" ||
       targetLanguage == "" ||
@@ -284,7 +291,7 @@ function Main() {
           renderUserProfile={renderUserProfile}
           thread={true}
           customAction={moreAction}
-          onTranslateMessage={handleTranslateMsg}
+          onTranslateTextMessage={handleTranslateMsg}
           targetLanguage={state.targetLanguage}
         ></TextMessage>
       );
