@@ -331,7 +331,7 @@ const GroupSettingsDialog = ({ open, onClose, currentGroupId, authorEl }) => {
               ) : null}
             </Typography>
             <Typography className={classes.gAppIdText}>
-              GroupID:{groupsInfo?.id}{" "}
+              Group ID:{groupsInfo?.id}{" "}
             </Typography>
             <Typography className={classes.gDescriptionText}>
               {groupNotice}

@@ -624,7 +624,7 @@ const SessionInfoPopover = ({ open, onClose, sessionInfo }) => {
                 />
               ) : null}
             </Typography>
-            <Typography className={classes.idText}>AgoraID:{to}</Typography>
+            <Typography className={classes.idText}>Agora ID:{to}</Typography>
           </Box>
           <Button
             className={classes.infoBtn}

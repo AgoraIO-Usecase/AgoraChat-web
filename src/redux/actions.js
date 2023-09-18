@@ -112,7 +112,7 @@ export const presenceStatusImg = ext => {
     } else if (ext === 'Busy') {
         data.statusImg = busyIcon
         data.index = 1
-    } else if (ext === 'Do not Disturb') {
+    } else if (ext === 'Do not Disturb' || ext === 'Do Not Disturb') {
         data.statusImg = doNotDisturbIcon
         data.index = 2
     } else if (ext === 'Leave') {

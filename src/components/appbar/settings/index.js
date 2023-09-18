@@ -734,7 +734,7 @@ export default function Setting({ open, onClose }) {
           </Avatar>
           <img src={editIcon} alt="edit" className={classes.avatarEditIcon} />
           <div>{nickName}</div>
-          <div>AgoraID: {userInfo?.userId}</div>
+          <div>Agora ID: {userInfo?.userId}</div>
         </div>
         <List className={classes.settingMenuBox} onClick={handleMenuClick}>
           <ListItemButton
@@ -1104,8 +1104,8 @@ export default function Setting({ open, onClose }) {
     return (
       <div className={classes.infoPanel}>
         <div style={{ flex: 1 }}>
-          <div className={classes.aboutItem}>SDK version: 4.0.5</div>
-          <div className={classes.aboutItem}>uikit version: 1.0.3</div>
+          <div className={classes.aboutItem}>SDK Version: 1.2.0</div>
+          <div className={classes.aboutItem}>UIKit Version: 2.0.0</div>
           <div className={classes.aboutItem}>
             More:{" "}
             <a href="https://www.agora.io/en/" target="_black">

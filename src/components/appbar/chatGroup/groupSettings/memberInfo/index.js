@@ -112,12 +112,10 @@ const MemberInfo = () => {
     <Box>
       <Box className={classes.titleBox}>
         <Typography className={classes.titleStyle}>
-          {i18next.t("My Info in Group")}
+          {i18next.t("My Alias in Group")}
         </Typography>
       </Box>
-      <Typography className={classes.subTitle}>
-        {i18next.t("My Alias in Group")}
-      </Typography>
+
       <Box className={classes.infoBox}>
         <InputBase
           className={classes.input}
@@ -128,7 +126,7 @@ const MemberInfo = () => {
           onInput={(e) => {
             setValue(e.target.value);
           }}
-          placeholder={i18next.t("Alias in group")}
+          placeholder={i18next.t("My Alias in Group")}
         ></InputBase>
         <Box className={classes.countWrap}>
           {editStatus ? <p>{`${value.length}/${maxLength}`}</p> : <></>}
