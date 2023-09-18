@@ -18,7 +18,15 @@ export const handleError = (error) => {
                 );
             }
             break;
+        case 603:
+            if (errorMsg === "blocked") {
+                message.error(
+                    "You have been blocked by the other person."
+                );
+            }
+            break;
         default:
+            console.error('error', error)
             message.error(errorMsg);
             break;
     }

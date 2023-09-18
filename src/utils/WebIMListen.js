@@ -375,17 +375,18 @@ const initListen = () => {
       contactRequests.unshift(data);
       let newRequests = { ...requests, contact: contactRequests };
       store.dispatch(setRequests(newRequests));
-      // if (getLocalStorageData().sound) {
-      //     playSound()
-      // }
-      // notification({body: 'Have A New Friend Want To Be Your Friend', tag: randomNumber()}, {title: 'agora chat'})
+      if (getLocalStorageData().sound) {
+        playSound()
+      }
+      notification({ body: 'Have A New Friend Want To Be Your Friend', tag: randomNumber() }, { title: 'agora chat' })
     },
     onContactRefuse: (msg) => {
       message.info(`${msg.from} refused your add contact application`)
       // getContacts();
     },
     onContactAgreed: (msg) => {
-      message.success(`${msg.from} approved your add contact application`)
+      // message.success(`${msg.from} approved your add contact application`)
+      message.success(`You have added ${msg.from} as your contact`)
       // getContacts();
     },
     onGroupChange: (msg) => {

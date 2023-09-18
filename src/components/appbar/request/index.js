@@ -18,6 +18,7 @@ import group_request from '../../../assets/group_requates@2x.png'
 import store from "../../../redux/store";
 import { setRequests } from '../../../redux/actions'
 import { rootStore } from "chatuim2";
+import { message } from '../../common/alert';
 const useStyles = makeStyles((theme) => ({
     root: {
         width: '700px',
@@ -209,6 +210,8 @@ function RequestItem(props) {
     const accept = () => {
         if (type === 'contact') {
             acceptContactRequest(data.name)
+            // message.info("Friend request accepted.")
+            message.success(`You have added ${data.name} as your contact`)
         } else {
             if (data.type == 'invite') {
                 return agreeInviteGroup({

@@ -38,7 +38,7 @@ import checkgrayIcon from "../../../assets/check_gray.png";
 import upAndDown from "../../../assets/go@2x.png";
 import SecondConfirmDialog from "../../common/secondConfirmDialog";
 import { Avatar, rootStore } from "chatuim2";
-
+import { getBlackList } from '../../../api/contactsChat/getContacts'
 const useStyles = makeStyles((theme) => {
   return {
     root: {
@@ -347,6 +347,9 @@ const SessionInfoPopover = ({ open, onClose, sessionInfo }) => {
     : "Offline";
   const blackList = useSelector((state) => state?.blackList) || [];
   const [blockBtnText, setbBlockBtnText] = useState("Block");
+  useEffect(() => {
+    getBlackList()
+  }, [])
   useEffect(() => {
     if (blackList.includes(to)) {
       setbBlockBtnText("unBlock");
