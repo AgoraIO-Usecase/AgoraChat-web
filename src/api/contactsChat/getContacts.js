@@ -53,7 +53,7 @@ export const addFromBlackList = (userId) => {
 };
 
 export const removeFromBlackList = (userId, onClose) => {
-  rootStore.client.removeFromBlackList({
+  rootStore.client.removeUserFromBlocklist({
     name: [userId]
   });
   let { blackList } = store.getState();

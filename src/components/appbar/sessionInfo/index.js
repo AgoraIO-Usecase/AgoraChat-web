@@ -346,10 +346,12 @@ const SessionInfoPopover = ({ open, onClose, sessionInfo }) => {
     ? userInfo?.presenceExt || "Online"
     : "Offline";
   const blackList = useSelector((state) => state?.blackList) || [];
-  const [blockBtnText, setbBlockBtnText] = useState("block");
+  const [blockBtnText, setbBlockBtnText] = useState("Block");
   useEffect(() => {
     if (blackList.includes(to)) {
       setbBlockBtnText("unBlock");
+    } else {
+      setbBlockBtnText("Block");
     }
   }, [blackList.length]);
   const setUserNotification = () => {
