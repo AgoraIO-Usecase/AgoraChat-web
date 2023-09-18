@@ -129,6 +129,7 @@ export const changeIcon = (iconTitle = {}) => {
 }
 
 export const changeTitle = () => {
+  return;
   const { unread } = store.getState()
   let num = 0
   for (let item in unread) {

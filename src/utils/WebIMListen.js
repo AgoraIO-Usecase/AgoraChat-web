@@ -29,7 +29,8 @@ function publicNotify(
   iconTitle = {},
   body = "You Have A New Message"
 ) {
-  const { from, data, type, to, time, url } = message;
+  const { from, data, type, to, time, url, ext } = message;
+  const atList = ext?.em_at_list || []
   let {
     myUserInfo: { agoraId },
     globalSilentMode: { global, single, group, threading }
@@ -103,7 +104,7 @@ function publicNotify(
       if (sessionType === "singleChat") {
         return;
       } else {
-        if (!new RegExp("^@" + agoraId).test(data)) {
+        if (!atList.includes(agoraId)) {
           return;
         }
       }
@@ -117,7 +118,7 @@ function publicNotify(
       threading[to]?.type &&
       threading[to]?.type === "AT")
   ) {
-    if (!new RegExp("^@" + agoraId).test(data)) {
+    if (!atList.includes(agoraId)) {
       return;
     }
   }
