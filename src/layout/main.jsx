@@ -79,7 +79,7 @@ function Main() {
   // set sdk log level
   const {AgoraRTC, AgoraChat} = useSDK()
   AgoraRTC.setLogLevel(4)
-  AgoraChat.logger.setLevel(5)
+  // AgoraChat.logger.setLevel(0)
 
   const [sessionInfoAddEl, setSessionInfoAddEl] = useState(null);
   const [sessionInfo, setSessionInfo] = useState({});

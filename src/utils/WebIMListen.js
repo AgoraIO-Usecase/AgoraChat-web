@@ -237,6 +237,9 @@ const initListen = () => {
           break;
         case "joinPublicGroupSuccess":
         case "direct_joined":
+          message.info(
+            `${i18next.t("You've joined the group:")}` + event.gid
+          );
           getGroups();
           break;
         case "invite":
@@ -415,12 +418,16 @@ const initListen = () => {
         let newRequests = { ...requests, group: [...groupRequests] };
         store.dispatch(setRequests(newRequests));
       } else if (msg.type === "addMute") {
+        message.info(`${msg.to} were muted in the group: ${msg.gid}`)
         getGroupMuted(msg.gid);
       } else if (msg.type === "removeMute") {
+        message.info(`${msg.to} were unmuted in the group: ${msg.gid}`)
         getGroupMuted(msg.gid);
       } else if (msg.type === "addUserToGroupWhiteList") {
+        message.info(`${msg.to} were allowlisted in the group: ${msg.gid}`)
         getGroupWrite(msg.gid);
       } else if (msg.type === "rmUserFromGroupWhiteList") {
+        message.info(`${msg.to} were removed from the allowlist in the group: ${msg.gid}`)
         getGroupWrite(msg.gid);
       } else if (msg.type === "update") {
         getGroupInfo(msg.gid);
@@ -432,6 +439,10 @@ const initListen = () => {
         getGroups();
       } else if (msg.type === "removedFromGroup") {
         getGroups();
+      } else if (msg.type === 'addAdmin') {
+        message.info(`${msg.to} were set up as an administrator in the group: ${msg.gid}`)
+      } else if (msg.type === 'removeAdmin') {
+        message.info(`${msg.to} were cancelled from becoming an administrator in the group: ${msg.gid}`)
       }
       // checkBrowerNotifyStatus(false)
     }

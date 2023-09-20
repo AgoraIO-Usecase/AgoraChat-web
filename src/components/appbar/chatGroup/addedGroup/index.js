@@ -132,7 +132,8 @@ const AddedGroups = ({ onClose }) => {
     console.log("itemData", itemData);
     rootStore.conversationStore.setCurrentCvs({
       chatType: "groupChat",
-      conversationId: itemData.groupid
+      conversationId: itemData.groupid,
+      name: itemData.groupname
     });
     onClose();
   };

@@ -5,6 +5,7 @@ import i18next from "i18next";
 import { rootStore } from 'chatuim2'
 import store from '../../redux/store';
 import { updateRequestStatus } from '../../redux/actions';
+import { includes } from 'lodash';
 export const addGroup = (groupId) => {
     let options = {
         groupId: groupId,
@@ -15,8 +16,13 @@ export const addGroup = (groupId) => {
         message.success(`${i18next.t('addGroup succes')}`)
         getGroups();
     }).catch((err) => {
+        console.log('err', err)
         if (err.type === 605) {
             message.error(`${i18next.t("Group does not exist")}`);
+        } else if (err.type === 603 && err.data.includes('blacklist')) {
+            message.error("You've been blocklisted")
+        } else {
+            message.error(err?.message)
         }
     })
 }
