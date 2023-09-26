@@ -40,7 +40,8 @@ import {
   NoticeMessage,
   Icon,
   Avatar,
-  useSDK
+  useSDK,
+  // ConversationItem
 } from "chatuim2";
 import "chatuim2/style.css";
 import CombineDialog from "../components/combine";
@@ -178,7 +179,6 @@ function Main() {
   const [showCombineDialog, setShowCombineDialog] = useState(false);
   const [combineData, setCombineData] = useState({});
   const sendMessage = (data) => {
-    console.log("mmmmm", data);
     if (data.type === "combine") {
       // combineData = data
       setCombineData(data);
@@ -194,10 +194,24 @@ function Main() {
       .sendMessage(combineData)
       .then((res) => {
         console.log("发送成功", res);
+        rootStore.conversationStore.topConversation({
+          chatType: combineData.chatType,
+          conversationId: combineData.to
+        })
         rootStore.messageStore.setSelectedMessage(currentCvs, {
           selectable: false,
           selectedMessage: []
         });
+        if(rootStore.threadStore.currentThread.visible){
+          rootStore.messageStore.setSelectedMessage({
+            chatType: 'groupChat',
+            conversationId: rootStore.threadStore.currentThread.info.id
+          }, {
+            selectable: false,
+            selectedMessage: []
+          });
+        }
+        
       })
       .catch((err) => {
         console.log(err);
@@ -293,6 +307,14 @@ function Main() {
           customAction={moreAction}
           onTranslateTextMessage={handleTranslateMsg}
           targetLanguage={state.targetLanguage}
+          // reactionConfig={{
+          //   path: '/assets/',
+          //   map: {
+          //     'emoji_1':  <img src={customIcon} alt={'emoji_1'} />,
+          //     'emoji_2':  <img src={customIcon} alt={'emoji_2'} />,
+          //     'emoji_3':  <img src={customIcon} alt={'emoji_3'} />
+          //   }
+          // }}
         ></TextMessage>
       );
     } else if (msg.type === "audio") {
@@ -545,6 +567,7 @@ function Main() {
         <ConversationList
           style={{ background: "#F1F2F3" }}
           renderHeader={() => <Header />}
+          // renderItem={csv => <ConversationItem key={csv.conversationId} data={csv} />}
         ></ConversationList>
         {/* <ContactList></ContactList> */}
       </div>
@@ -617,7 +640,14 @@ function Main() {
           >
             <Thread
               messageListProps={{
-                renderUserProfile: () => null
+                renderUserProfile: () => null,
+                messageProps: {
+                  onTranslateTextMessage: handleTranslateMsg
+                }
+              }}
+              messageEditorProps={{
+                onSendMessage: sendMessage,
+                enabledTyping: state?.typingSwitch
               }}
             ></Thread>
           </div>
