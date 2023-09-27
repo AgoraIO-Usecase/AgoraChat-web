@@ -6,11 +6,8 @@ import i18next from "i18next";
 import { createHashHistory } from 'history'
 import { reject } from 'lodash';
 const history = createHashHistory()
-export const getToken = (agoraId, password) => {
-    return postData('https://a41.chat.agora.io/app/chat/user/login', { "userAccount": agoraId, "userPassword": password })
-}
-export const signUp = (agoraId, password) => {
-    return postData('https://a41.chat.agora.io/app/chat/user/register', { "userAccount": agoraId, "userPassword": password })
+export const getToken = (agoraId) => {
+    return postData(`${process.env.ELP_INTEGRATION_SERVER}/users/${agoraId}/chatsAuth`, {})
 }
 
 export const loginWithToken = (agoraId, agoraToken) => {
@@ -18,6 +15,29 @@ export const loginWithToken = (agoraId, agoraToken) => {
         user: agoraId,
         agoraToken: agoraToken
     };
+    WebIM.conn.addEventHandler("AUTHHANDLER", {
+    // The event handler for successfully connecting to the server.
+            // The event handler for the token about to expire.
+            onTokenWillExpire: (params) => {
+                refreshToken(agoraId);
+            },
+            // The event handler for the token already expired.
+            onTokenExpired: (params) => {
+                refreshToken(agoraId);
+            },
+            onError: (error) => {
+                console.log("on error", error);
+            },
+    });
+    // Renews the token.
+    function refreshToken(username) {
+            getToken()
+            .then((res) => res.json())
+            .then((res) => {
+                    WebIM.conn.renewToken(res.chatToken);
+                }
+            );
+    }
 
     return new Promise((resolve,reject) => {
         WebIM.conn.open(options).then(res => {
@@ -27,6 +47,7 @@ export const loginWithToken = (agoraId, agoraToken) => {
             })
             resolve(res)
         }).catch(err => {
+            console.error(err)
             reject(err)
         })
     })
@@ -36,15 +57,19 @@ export function postData(url, data) {
     return fetch(url, {
         body: JSON.stringify(data),
         cache: 'no-cache',
-        headers: {
-            'content-type': 'application/json'
-        },
         method: 'POST',
+        credentials: 'include',
         mode: 'cors',
         redirect: 'follow',
-        referrer: 'no-referrer',
+        // referrer: 'localhost',
     })
-        .then(response => response.json())
+        .then(response => {
+            console.log(response)
+            return response.json().then((data) => {
+                console.log('elp response', data)
+                return data
+            })
+        })
 }
 
 export const loginWithPassword = (agoraId, password) => {
@@ -71,8 +96,6 @@ export function logout() {
 
 export function register (agoraId, password, nickname) {
     let options = {
-        // appKey: WebIM.config.appkey,
-        // apiUrl: WebIM.config.restServer,
         username: agoraId,
         password: password,
         nickname: nickname ? nickname.trim().toLowerCase() : '',

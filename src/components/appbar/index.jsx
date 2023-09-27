@@ -152,16 +152,16 @@ export default function Header() {
             <div className='chatlist-header'>
                 {/* <div className='chatlist-header-avatar'></div> */}
                 <Avatar style={{ width: 40, height: 40 }} src={avatarUrl} ></Avatar>
-                <PresenceStatus style={{position: 'absolute', bottom: '2px', left: '35px'}} />
+                {/* <PresenceStatus style={{position: 'absolute', bottom: '2px', left: '35px'}} /> */}
                 <div className='chatlist-header-title'>
-                    <img src={AgoraChat} alt="agora chat"/>
+                    Чат
                 </div>
-                <div className='chatlist-header-more' onClick={handleClickMore}>
+                {/* <div className='chatlist-header-more' onClick={handleClickMore}>
                     <img src={menuIcon} alt="menu" className={Boolean(addEl) ? 'img-active' : ''} />
                 {unDealRequestsNum > 0 ? <p style={{ width: '6px', height: '6px', background: '#FF14CC', borderRadius: '3px', position: 'absolute', top: '-12px', left: '-5px' }}></p> : null}
-                </div>
+                </div> */}
 
-                <Menu
+                {/* <Menu
                     id="simple-menu"
                     anchorEl={addEl}
                     keepMounted
@@ -207,7 +207,7 @@ export default function Header() {
                             Log out
                     </Typography>
                     </MenuItem>
-                </Menu>
+                </Menu> */}
 
             </div>
             <AddFriendDialog

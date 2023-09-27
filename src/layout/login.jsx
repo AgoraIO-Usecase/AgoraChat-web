@@ -15,7 +15,6 @@ import eyeOpen from '../assets/eye@2x.png'
 import eyeClose from '../assets/eye_slash@2x.png'
 
 export default function Login() {
-    const history = createHashHistory()
     const [notice, setNotice] = useState({
         show: false,
         text: ''
@@ -47,9 +46,10 @@ export default function Login() {
         // store.dispatch(setFetchingStatus(true))
         if (values.password) {
             getToken(values.agoraId, values.password).then((res) => {
-                const { accessToken, agoraUid } = res
+                console.log('elp agora login res', res)
+                const { chatToken, tokenExpire, agoraUid } = res
                 WebIM.conn.agoraUid = agoraUid
-                loginWithToken(values.agoraId.toLowerCase(), accessToken).then(value => {
+                loginWithToken(values.agoraId.toLowerCase(), chatToken).then(value => {
 
                 }).catch(err => {
                     setNotice({ show: true, text: 'Wrong Username or Password' })
@@ -60,7 +60,7 @@ export default function Login() {
                 })
                 
                 store.dispatch(setMyUserInfo({ agoraId: values.agoraId, password: values.password }))
-                sessionStorage.setItem('webim_auth', JSON.stringify({ ...values, accessToken, agoraUid }))
+                sessionStorage.setItem('webim_auth', JSON.stringify({ ...values, chatToken, agoraUid }))
             }).catch(() => {
                 // store.dispatch(setFetchingStatus(false))
                 setNotice({ show: true, text: 'login fail' })
@@ -92,9 +92,6 @@ export default function Login() {
 
         setValues({ ...values, [prop]: value });
     };
-    const jumpToSignUp = () => {
-        history.push('/signup')
-    }
     useEffect(() => {
         const webim_auth = JSON.parse(sessionStorage.getItem('webim_auth'))
         if (webim_auth && webim_auth.password) {
@@ -184,13 +181,9 @@ export default function Login() {
                         !loginBtn && <img className='loading-img' src={loading} alt="" />
                     }
                 </div>
-                <div className='sign-up-box'>
-                    {i18next.t('NoAccount')}
-                    <span onClick={jumpToSignUp} className='sign-up'>{i18next.t('Register')}</span>
-                </div>
             </div>
             <div className='login-copyright'>
-                © 2022 Agora
+                © 2023 Study.ru
             </div>
         </div>
     )

@@ -69,6 +69,12 @@ function getClientEnvironment(publicUrl) {
         return env;
       },
       {
+        AGORA_APP_ID: process.env.AGORA_APP_ID,
+        AGORA_CHAT_SERVER: process.env.AGORA_CHAT_SERVER,
+        AGORA_CHAT_ORG_NAME: process.env.AGORA_CHAT_ORG_NAME,
+        AGORA_CHAT_APP_NAME: process.env.AGORA_CHAT_APP_NAME,
+        ELP_INTEGRATION_SERVER: process.env.ELP_INTEGRATION_SERVER,
+        ALLOWED_ORIGINS: process.env.ALLOWED_ORIGINS,
         // Useful for determining whether we’re running in production mode.
         // Most importantly, it switches React into the correct mode.
         NODE_ENV: process.env.NODE_ENV || 'development',

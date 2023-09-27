@@ -9,7 +9,6 @@ import {
 import { createHashHistory } from 'history'
 import Login from './layout/login'
 import Main from './layout/main'
-import Signup from './layout/signup'
 
 import initListen from './utils/WebIMListen'
 import Loading from './components/common/loading'
@@ -38,8 +37,7 @@ function App() {
 				<Switch>
 					<Route exact path="/login" component={Login} />
 					<Route exact path="/main" component={Main} />
-					<Route exact path="/signup" component={Signup} />
-					<Route path="/" render={() => <AuthorizedComponent token={'11'} component={Main} />} />
+					<Route path="/" render={() => <AuthorizedComponent component={Main} />} />
 				</Switch>
 			</HashRouter>
 		</div>

@@ -37,7 +37,7 @@ export default function Main() {
         if (webimAuth && WebIM.conn.logOut) {
             webimAuthObj = JSON.parse(webimAuth)
             if (webimAuthObj.password) {
-                loginWithToken(webimAuthObj.agoraId.toLowerCase(), webimAuthObj.accessToken)
+                loginWithToken(webimAuthObj.agoraId.toLowerCase(), webimAuthObj.chatToken)
                 store.dispatch(setMyUserInfo({ agoraId: webimAuthObj.agoraId, password: webimAuthObj.password }))
             } else {
                 history.push('/login')
@@ -161,10 +161,9 @@ export default function Main() {
                 onEditThreadPanel={changeEditPanelStatus}
                 // onOpenThreadPanel={onOpenThreadPanel}
                 isShowReaction={true}
-
                 agoraUid={WebIM.conn.agoraUid}
-                appId="15cb0d28b87b425ea613fc46f7c9f974"
-                getRTCToken={handleGetToken}
+                appId={process.env.AGORA_APP_ID}
+                // getRTCToken={handleGetToken}
                 getIdMap={handleGetIdMap}
                 ringingSource={ringing}
             />
