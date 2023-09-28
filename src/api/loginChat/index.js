@@ -30,8 +30,8 @@ export const loginWithToken = (agoraId, agoraToken) => {
             },
     });
     // Renews the token.
-    function refreshToken(username) {
-            getToken()
+    function refreshToken(uid) {
+            getToken(uid)
             .then((res) => res.json())
             .then((res) => {
                     WebIM.conn.renewToken(res.chatToken);
