@@ -436,6 +436,9 @@ const initListen = () => {
         msg.type === "leaveGroup" ||
         msg.type === "deleteGroupChat"
       ) {
+        if (msg.type === "leaveGroup") {
+          message.info(`${msg.from} left the group: ${msg.gid}`)
+        }
         getGroups();
       } else if (msg.type === "removedFromGroup") {
         getGroups();
@@ -443,6 +446,8 @@ const initListen = () => {
         message.info(`${msg.to} were set up as an administrator in the group: ${msg.gid}`)
       } else if (msg.type === 'removeAdmin') {
         message.info(`${msg.to} were cancelled from becoming an administrator in the group: ${msg.gid}`)
+      } else if (msg.type === 'removedFromGroup') {
+        message.info(`${msg.to} has been removed from the group: ${msg.gid}`)
       }
       // checkBrowerNotifyStatus(false)
     }
