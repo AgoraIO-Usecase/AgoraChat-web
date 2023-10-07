@@ -545,6 +545,9 @@ function Main() {
       const members = rtcGroup[0].members.map((item) => {
         const member = {...item}
         if(!item?.attributes?.nickName){
+          if(!member.attributes){
+            member.attributes = {}
+          }
           member.attributes.nickName = rootStore.addressStore.appUsersInfo[item.userId]?.nickname
         }
         if(!item?.attributes?.avatarurl){

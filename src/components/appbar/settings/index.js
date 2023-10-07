@@ -1232,7 +1232,7 @@ export default function Setting({ open, onClose }) {
               Unblock
             </Typography>
           </MenuItem>
-          <MenuItem onClick={() => showSecondDialog(2)}>
+          {/* <MenuItem onClick={() => showSecondDialog(2)}>
             <Typography
               variant="inherit"
               noWrap
@@ -1249,7 +1249,7 @@ export default function Setting({ open, onClose }) {
               />
               Delete Contact
             </Typography>
-          </MenuItem>
+          </MenuItem> */}
         </Menu>
         <SecondConfirmDialog
           open={Boolean(secondSure)}
