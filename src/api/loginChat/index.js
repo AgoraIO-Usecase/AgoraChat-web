@@ -5,7 +5,9 @@ import { message } from '../../components/common/alert'
 import i18next from "i18next";
 import { createHashHistory } from 'history'
 import { reject } from 'lodash';
+
 const history = createHashHistory()
+
 export const getToken = (agoraId) => {
     return postData(`${process.env.ELP_INTEGRATION_SERVER}/users/${agoraId}/chatsAuth`, {})
 }

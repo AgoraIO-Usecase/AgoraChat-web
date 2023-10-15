@@ -35,7 +35,7 @@ function App() {
 			<Loading show={isFetching} />
 			<HashRouter basename='/' history={history}>
 				<Switch>
-					<Route exact path="/login" component={Login} />
+					{/* <Route exact path="/login" component={Login} /> */}
 					<Route exact path="/main" component={Main} />
 					<Route path="/" render={() => <AuthorizedComponent component={Main} />} />
 				</Switch>

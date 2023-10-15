@@ -1,13 +1,10 @@
 import React, { useState,useEffect, useCallback } from 'react'
 import './login.css'
 import i18next from "i18next";
-import { getToken, loginWithToken, loginWithPassword } from '../api/loginChat'
-import { createHashHistory } from 'history';
-// import { useHistory } from 'react-router-dom'
+import { getToken, loginWithToken } from '../api/loginChat'
 
 import store from '../redux/store'
 import { setMyUserInfo, setFetchingStatus } from '../redux/actions'
-import { message } from '../components/common/alert'
 import WebIM from '../utils/WebIM'
 import loading from '../assets/loading.png'
 import closeIcon from '../assets/Xmark@2x.png'
@@ -47,9 +44,9 @@ export default function Login() {
         if (values.password) {
             getToken(values.agoraId, values.password).then((res) => {
                 console.log('elp agora login res', res)
-                const { chatToken, tokenExpire, agoraUid } = res
+                const { accessToken, tokenExpire, agoraUid } = res
                 WebIM.conn.agoraUid = agoraUid
-                loginWithToken(values.agoraId.toLowerCase(), chatToken).then(value => {
+                loginWithToken(values.agoraId.toLowerCase(), accessToken).then(value => {
 
                 }).catch(err => {
                     setNotice({ show: true, text: 'Wrong Username or Password' })
@@ -60,7 +57,7 @@ export default function Login() {
                 })
                 
                 store.dispatch(setMyUserInfo({ agoraId: values.agoraId, password: values.password }))
-                sessionStorage.setItem('webim_auth', JSON.stringify({ ...values, chatToken, agoraUid }))
+                sessionStorage.setItem('webim_auth', JSON.stringify({ ...values, accessToken, agoraUid }))
             }).catch(() => {
                 // store.dispatch(setFetchingStatus(false))
                 setNotice({ show: true, text: 'login fail' })

@@ -3,7 +3,7 @@ import Header from '../components/appbar'
 import './login.css'
 import getGroupInfo from '../api/groupChat/getGroupInfo'
 import WebIM from '../utils/WebIM';
-import { loginWithToken, loginWithPassword } from '../api/loginChat'
+import { loginWithToken, getToken } from '../api/loginChat'
 import { EaseApp } from 'agora-chat-uikit'
 import { createHashHistory } from 'history'
 import store from '../redux/store'
@@ -26,11 +26,13 @@ import ThreadMembers from '../components/thread/components/threadMembers';
 import ThreadDialog from '../components/thread/components/threadDialog'
 // import { getSilentModeForConversation } from '../api/notificationPush'
 import {getRtctoken, getConfDetail} from '../api/rtcCall'
+import { useCookies } from 'react-cookie'
 
 const history = createHashHistory()
 
 export default function Main() {
-    //support edit thread 
+    const [cookies] = useCookies(['elp_session'])
+    
     useEffect(() => {
         const webimAuth = sessionStorage.getItem('webim_auth')
         let webimAuthObj = {}
@@ -39,13 +41,25 @@ export default function Main() {
             if (webimAuthObj.password) {
                 loginWithToken(webimAuthObj.agoraId.toLowerCase(), webimAuthObj.chatToken)
                 store.dispatch(setMyUserInfo({ agoraId: webimAuthObj.agoraId, password: webimAuthObj.password }))
-            } else {
-                history.push('/login')
             }
             store.dispatch(setMyUserInfo({ agoraId: webimAuthObj.agoraId }))
             WebIM.conn.agoraUid = webimAuthObj.agoraUid
-        }else if (WebIM.conn.logOut) {
-            history.push('/login')  
+        } else if (WebIM.conn.logOut) {
+            const uid = cookies.user.userId
+            getToken(uid).then((res) => {
+                console.log('elp agora login res', res)
+                const { accessToken, tokenExpire, agoraUid } = res
+                WebIM.conn.agoraUid = agoraUid
+                loginWithToken(uid.toLowerCase(), accessToken).then(value => {
+
+                }).catch(err => {
+                    console.error('Login error', err)
+                })
+                store.dispatch(setMyUserInfo({ agoraId: uid, password: uid }))
+                sessionStorage.setItem('webim_auth', JSON.stringify({  agoraId: uid, password: uid, accessToken, agoraUid }))
+            }).catch((err) => {
+                console.error('Login failed', err)
+            })
         }
     }, [])
     const state = store.getState();
