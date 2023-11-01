@@ -112,14 +112,14 @@ const AddedGroups = ({ onClose }) => {
     const handleSearchValue = (e) => {
         if (!(e.target.value)) {
             // getGroups()
-            // store.dispatch(searchLoadAction(true))
+            // stores.dispatch(searchLoadAction(true))
             setRenderGroups(groupList)
         } else {
             let reRenderGroups = groupList.filter((item) => {
                 return item.groupname.includes(e.target.value)
             });
             setRenderGroups(reRenderGroups)
-            // store.dispatch(searchAddedGroupAction(e.target.value))
+            // stores.dispatch(searchAddedGroupAction(e.target.value))
         }
     }
 

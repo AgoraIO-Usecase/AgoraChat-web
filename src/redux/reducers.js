@@ -2,6 +2,7 @@ import _ from 'lodash'
 import onlineIcon from '../assets/Online.png'
 let defaultState = {
 	constacts: [],
+	fullNameByIdMap: {},
     groups: {
         groupList: [],
         publicGroups: [],
@@ -14,14 +15,13 @@ let defaultState = {
     },
     sessionList: [],
     requests: { contact: [], group: [] },
-    // requests: { group: [{ name: 'zdzd', group: '123456', status: 'pedding', time: '', type: 'apply' }], contact: [{ name: 'zdzd', status: 'pedding', time: '' }] },
     blackList: [],
     myUserInfo: {
         agoraId: null,
         nickName: null,
         avatarIndex: null
     },
-    isFetching: false,
+    isFetching: true,
     isSearching: false,
     isShowGroupChat: false,
 		thread: {
@@ -145,6 +145,12 @@ const reducer = (state = defaultState, action) => {
 					groupFiles: files,
 				},
 			};
+		case "SET_FULL_NAME_MAP": {
+			return  {
+				...state,
+				fullNameByIdMap: data
+			}
+		}
 		case "SET_SESSION_LIST":
 			return {
 				...state,

@@ -127,7 +127,7 @@ export const clearRemindTypeForConversation = (payload) => {
       // res.data.forEach(item => {
       //   tempObj[item.group] = item.value
       // })
-      // store.dispatch(setMuteDataObj(tempObj))
+      // stores.dispatch(setMuteDataObj(tempObj))
       resolve(res.data)
     }).catch(err => {
       reject(err)
@@ -142,7 +142,6 @@ export const getSilentModeForConversations = (payload, params = { type: '', opti
       const data = res.data
       const tempData = {}
       if (payload.conversationList[0]?.flagType === 'threading' && !payload.conversationList[1]?.flagType) {
-        console.log(payload.conversationList, 'payload.conversationList')
         tempData[payload.conversationList[0].id] = data.group[payload.conversationList[0].id]
       } else if (payload.conversationList[1]?.flagType === 'threading') {
         payload.conversationList.forEach(item => {
@@ -152,7 +151,6 @@ export const getSilentModeForConversations = (payload, params = { type: '', opti
       if (Object.keys(data.user).length) {
         silentModeRedux('single', { ...data.user })
       }
-      console.log(tempData, 'tempData')
       if (Object.keys(tempData).length) {
         silentModeRedux('threading', { ...tempData })
       } else {

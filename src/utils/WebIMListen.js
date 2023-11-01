@@ -3,23 +3,25 @@ import getContacts, { getBlackList } from '../api/contactsChat/getContacts'
 import getGroups from '../api/groupChat/getGroups'
 import getPublicGroups from '../api/groupChat/getPublicGroups'
 import { getSilentModeForAll } from '../api/notificationPush'
-import { createHashHistory } from 'history'
 import store from '../redux/store'
-import { setRequests, setFetchingStatus, presenceStatusImg, setPresenceList, setUnread, setGlobalSilentMode } from '../redux/actions'
-import { getToken } from '../api/loginChat'
+import { setRequests, setFetchingStatus, presenceStatusImg, setPresenceList, setUnread } from '../redux/actions'
+import { getToken } from '../utils/http-client'
 import { agreeInviteGroup } from '../api/groupChat/addGroup'
+import getSessions from "../api/sessionsChat/getSessions";
 import { getGroupMuted } from "../api/groupChat/groupMute";
 import { getGroupWrite } from "../api/groupChat/groupWhite";
 import getGroupInfo from '../api/groupChat/getGroupInfo'
-import { notification, getLocalStorageData, playSound, randomNumber, setTimeVSNowTime, checkBrowerNotifyStatus, notifyMe } from './notification'
+import { getLocalStorageData, playSound, setTimeVSNowTime, notifyMe } from './notification'
 import { handlerThreadChangedMsg } from "../api/thread/index";
 
 import i18next from "i18next";
 import { message } from '../components/common/alert'
 import { EaseApp } from "agora-chat-uikit"
+
+
 function publicNotify(message, msgType, iconTitle = {}, body = 'You Have A New Message') {
-    const { chatType, from, data, type, to, time, url } = message
-    let { myUserInfo: { agoraId }, muteDataObj, globalSilentMode: { global, single, group, threading } } = store.getState()
+    const { from, data, type, to, time, url } = message
+    let { myUserInfo: { agoraId }, globalSilentMode: { global, single, group, threading } } = store.getState()
     handlerNewMessage(message, true)
     if ((global[agoraId]?.ignoreDuration && !setTimeVSNowTime(global[agoraId], true))) {
         return
@@ -146,22 +148,22 @@ function handlerNewMessage(message, realFlag) {
     }
     store.dispatch(setUnread(tempObj))
 }
-const history = createHashHistory()
 const initListen = () => {
     WebIM.conn.listen({
         onOpened: () => {
-            history.push('/main')
             getSilentModeForAll().finally(res => {
                 getContacts();
-                // getGroups();
+                getSessions();
             })
             getPublicGroups();
             getBlackList()
             store.dispatch(setFetchingStatus(false))
         },
+        onContactAdded: () => {
+           console.log('onContactAdded');
+        },
         onClosed: () => {
             store.dispatch(setFetchingStatus(false))
-            history.push('/login')
         },
         onError: (err) => {
             console.log('onError>>>', err);
@@ -182,10 +184,6 @@ const initListen = () => {
                     break;
                 case 'invite':
                     agreeInviteGroup(event)
-                    // if (getLocalStorageData().sound) {
-                    //     playSound()
-                    // }
-                    // notification({body: 'Have A Group Invite', tag: randomNumber()}, {title: 'agora chat'})
                     break;
                 case 'removedFromGroup':
                     message.info(`${i18next.t('You have been removed from the group:')}` + event.gid);
@@ -305,9 +303,8 @@ const initListen = () => {
                     time: Date.now()
                 }
                 let index = groupRequests.findIndex((value) => {
-                    if (value.name === data.name && value.groupId === data.groupId) {
-                        return true
-                    }
+                    return value.name === data.name && value.groupId === data.groupId;
+
                 })
                 if (index > -1) {
                     groupRequests[index] = data

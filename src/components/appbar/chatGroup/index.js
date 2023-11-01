@@ -198,7 +198,7 @@ const ChatGroupDialog = ({ open, onClose, authorEl }) => {
             onClose={onClose}
             title={i18next.t('Group Chat')}
             content={renderGroupContent()}
-            maxWidth={880}
+            maxWidth='lg'
         ></CommonDialog>
     )
 }

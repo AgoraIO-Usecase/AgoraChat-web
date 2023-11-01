@@ -7,14 +7,18 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import './i18n/index';
 
-ReactDOM.render(
-  <React.StrictMode>
-    <Provider store={store}>
-      <App />
-    </Provider>
-  </React.StrictMode>,
-  document.getElementById('root')
-);
+document.addEventListener('DOMContentLoaded', async () => {
+    const urlParams = new URLSearchParams(document.location.search);
+    const uid = urlParams.get('userId');
+    ReactDOM.render(
+        <React.StrictMode>
+            <Provider store={store}>
+                <App uid={uid}/>
+            </Provider>
+        </React.StrictMode>,
+        document.getElementById('root')
+    );
+});
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))

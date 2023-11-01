@@ -5,44 +5,8 @@
   position: absolute;
   display: flex;
   overflow: auto;
-  /* font-family: "Roboto" !important; */
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-
-  to {
-    transform: rotate(360deg);
-  }
-}
 .MuiDialog-paper,.MuiMenu-paper,.MuiPopover-paper {
   border-radius: 12px !important;
 }
@@ -51,4 +15,12 @@
 }
 .MuiMenuItem-root {
   border-radius: 8px !important;
+}
+
+.main-container div[style$="788px;"]{
+  min-width: auto !important;
+}
+
+.main-container div[contenteditable="true"]:empty::before {
+  content: "Наберите сообщение";
 }

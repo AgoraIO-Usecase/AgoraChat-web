@@ -72,6 +72,10 @@ export const setFetchingStatus = (data) => {
     return { type: 'SET_FETCHING_STATUS', data };
 }
 
+export const setFullNameMap = (data) => {
+    return { type: 'SET_FULL_NAME_MAP', data };
+}
+
 // search added group value
 export const searchAddedGroupAction = (data ) => {
     return { type: 'SEARCH_ADDED_GROUP_ACTION', data}

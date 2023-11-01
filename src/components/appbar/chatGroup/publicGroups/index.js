@@ -114,7 +114,7 @@ const useStyles = makeStyles((theme) => {
 
 const PublicGroup = () => {
     const classes = useStyles();
-    // const state = store.getState();
+    // const state = stores.getState();
     const state = useSelector((state) => state);
     const addedGroups = state?.groups?.groupList;
     const publicGroupsList = state?.groups?.publicGroups;
@@ -156,14 +156,14 @@ const PublicGroup = () => {
     const handleSearchValue = (e) => {
         if (!(e.target.value)) {
             // getPublicGroups()
-            // store.dispatch(searchLoadAction(true))
+            // stores.dispatch(searchLoadAction(true))
             setRenderGroups(publicGroupsList)
         } else {
             let reRenderGroups = publicGroupsList.filter((item) => {
                 return item.groupname.includes(e.target.value)
             });
             setRenderGroups(reRenderGroups)
-            //store.dispatch(searchPublicGroupAction(e.target.value))
+            //stores.dispatch(searchPublicGroupAction(e.target.value))
         }
     }
     const handlerOnMouseEnter = (item) => {

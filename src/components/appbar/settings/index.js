@@ -1,7 +1,7 @@
 import React, { useEffect, useState, createRef } from "react";
 import CommonDialog from "../../common/dialog";
-import i18next, { use } from "i18next";
-import { Avatar, Button, TextField, List, ListItem, ListItemAvatar, Menu, MenuItem, Box, Switch, Select, RadioGroup, FormControlLabel, Radio, InputBase } from "@material-ui/core";
+import i18next from "i18next";
+import { Avatar, Button, List, ListItem, ListItemAvatar, Menu, MenuItem, Box, Switch, RadioGroup, FormControlLabel, Radio, InputBase } from "@material-ui/core";
 import ListItemButton from '@mui/material/ListItemButton';
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
@@ -20,7 +20,6 @@ import avater7 from '../../../assets/avatar7.jpg'
 import avater11 from '../../../assets/avatar11.jpg'
 import avaterSelect from '../../../assets/avatar_select@2x.png'
 
-import CheckIcon from '@material-ui/icons/Check';
 import arrow from '../../../assets/go@2x.png'
 import checkgrayIcon from '../../../assets/check_gray.png'
 import muteIcon from '../../../assets/go@2x.png'
@@ -28,7 +27,6 @@ import muteIcon from '../../../assets/go@2x.png'
 import aboutIcon from '../../../assets/about@2x.png'
 import privacyIcon from '../../../assets/privacy@2x.png'
 import notificationsIcon from '../../../assets/notifications@2x.png'
-import generalIcon from '../../../assets/general@2x.png'
 import infoIcon from '../../../assets/info@2x.png'
 import rearchIcon from "../../../assets/search@2x.png";
 
@@ -38,8 +36,8 @@ import store from '../../../redux/store'
 import { message } from "../../common/alert";
 
 import { removeFromBlackList, deleteContact, editSelfInfoMessage } from '../../../api/contactsChat/getContacts'
-import { handlerTime, getMillisecond, computedItervalTime, timeIntervalToMinutesOrHours, setTimeVSNowTime, getLocalStorageData } from '../../../utils/notification'
-import { setSilentModeForAll, getSilentModeForAll, getSilentModeForConversations, setPushPerformLanguage, getPushPerformLanguage } from '../../../api/notificationPush'
+import { handlerTime, getMillisecond,  setTimeVSNowTime, getLocalStorageData } from '../../../utils/notification'
+import { setSilentModeForAll, getSilentModeForAll } from '../../../api/notificationPush'
 import SecondConfirmDialog from "../../common/secondConfirmDialog"
 import { userAvatar } from '../../../utils'
 import settingsIcon from '../../../assets/settings@2x.png'

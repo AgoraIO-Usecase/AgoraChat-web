@@ -2,15 +2,10 @@ import WebIM from '../../utils/WebIM'
 import store from '../../redux/store'
 import { setMyUserInfo, setFetchingStatus } from '../../redux/actions'
 import { message } from '../../components/common/alert'
+import { getToken } from '../../utils/http-client';
+
 import i18next from "i18next";
-import { createHashHistory } from 'history'
-import { reject } from 'lodash';
 
-const history = createHashHistory()
-
-export const getToken = (agoraId) => {
-    return postData(`${process.env.ELP_INTEGRATION_SERVER}/users/${agoraId}/chatsAuth`, {})
-}
 
 export const loginWithToken = (agoraId, agoraToken) => {
     let options = {
@@ -18,7 +13,7 @@ export const loginWithToken = (agoraId, agoraToken) => {
         agoraToken: agoraToken
     };
     WebIM.conn.addEventHandler("AUTHHANDLER", {
-    // The event handler for successfully connecting to the server.
+            // The event handler for successfully connecting to the server.
             // The event handler for the token about to expire.
             onTokenWillExpire: (params) => {
                 refreshToken(agoraId);
@@ -45,6 +40,7 @@ export const loginWithToken = (agoraId, agoraToken) => {
         WebIM.conn.open(options).then(res => {
             WebIM.conn.fetchUserInfoById(agoraId).then(val => {
                 const res = val.data || {}
+                console.log('fetchUserInfoById', res);
                 store.dispatch(setMyUserInfo({ nickName: res[agoraId]?.nickname || '' }))
             })
             resolve(res)
@@ -55,24 +51,7 @@ export const loginWithToken = (agoraId, agoraToken) => {
     })
 }
 
-export function postData(url, data) {
-    return fetch(url, {
-        body: JSON.stringify(data),
-        cache: 'no-cache',
-        method: 'POST',
-        credentials: 'include',
-        mode: 'cors',
-        redirect: 'follow',
-        // referrer: 'localhost',
-    })
-        .then(response => {
-            console.log(response)
-            return response.json().then((data) => {
-                console.log('elp response', data)
-                return data
-            })
-        })
-}
+
 
 export const loginWithPassword = (agoraId, password) => {
     let options = {
@@ -105,7 +84,6 @@ export function register (agoraId, password, nickname) {
             store.dispatch(setFetchingStatus(false))
             store.dispatch(setMyUserInfo({ agoraId, password }))
             sessionStorage.setItem('webim_auth', JSON.stringify({ agoraId, password }))
-            history.push('/login')
         },
 
         error: (err) => {

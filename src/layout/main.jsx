@@ -1,68 +1,58 @@
-import React, { useState,useEffect } from 'react';
-import Header from '../components/appbar'
-import './login.css'
+import React, {useState, useEffect} from 'react';
 import getGroupInfo from '../api/groupChat/getGroupInfo'
 import WebIM from '../utils/WebIM';
-import { loginWithToken, getToken } from '../api/loginChat'
+import { loginWithToken } from '../api/loginChat'
+import { getToken } from '../utils/http-client';
 import { EaseApp } from 'agora-chat-uikit'
-import { createHashHistory } from 'history'
 import store from '../redux/store'
 import { setMyUserInfo, setUnread, setCurrentSessionId, setThreadInfo } from '../redux/actions'
 import SessionInfoPopover from '../components/appbar/sessionInfo'
 import GroupMemberInfoPopover from '../components/appbar/chatGroup/memberInfo'
 import GroupSettingsDialog from '../components/appbar/chatGroup/groupSettings'
-import { Report } from '../components/report';
-import i18next from "i18next";
-
 import { subFriendStatus } from '../api/presence'
 import map3 from '../assets/notify.mp3'
 import ringing from '../assets/ringing.mp3'
 
 import { changeTitle } from '../utils/notification'
 
-import { truncate } from 'lodash';
 import EditThreadPanel from '../components/thread/components/editThreadPanel'
 import ThreadMembers from '../components/thread/components/threadMembers';
 import ThreadDialog from '../components/thread/components/threadDialog'
-// import { getSilentModeForConversation } from '../api/notificationPush'
-import {getRtctoken, getConfDetail} from '../api/rtcCall'
-import { useCookies } from 'react-cookie'
+import { getConfDetail} from '../api/rtcCall'
+export default function Main(props) {
+    const uid = props.uid;
 
-const history = createHashHistory()
-
-export default function Main() {
-    const [cookies] = useCookies(['elp_session'])
-    
     useEffect(() => {
-        const webimAuth = sessionStorage.getItem('webim_auth')
-        let webimAuthObj = {}
-        if (webimAuth && WebIM.conn.logOut) {
-            webimAuthObj = JSON.parse(webimAuth)
-            if (webimAuthObj.password) {
-                loginWithToken(webimAuthObj.agoraId.toLowerCase(), webimAuthObj.chatToken)
-                store.dispatch(setMyUserInfo({ agoraId: webimAuthObj.agoraId, password: webimAuthObj.password }))
+        async function initialize() {
+            const webimAuth = sessionStorage.getItem('webim_auth');
+            if (webimAuth && WebIM.conn.logOut) {
+                let webimAuthObj = {}
+                webimAuthObj = JSON.parse(webimAuth);
+                console.log(webimAuthObj);
+                if (webimAuthObj.password) {
+                    await loginWithToken(webimAuthObj.agoraId.toLowerCase(), webimAuthObj.accessToken)
+                    store.dispatch(setMyUserInfo({ agoraId: webimAuthObj.agoraId, password: webimAuthObj.password }))
+                }
+                store.dispatch(setMyUserInfo({ agoraId: webimAuthObj.agoraId }))
+                WebIM.conn.agoraUid = webimAuthObj.agoraUid
+            } else if (WebIM.conn.logOut) {
+                try {
+                    const res = await getToken(uid);
+                    console.log('elp agora login res', res)
+                    const { accessToken, agoraUid } = res
+                    WebIM.conn.agoraUid = agoraUid
+                    await loginWithToken(uid.toLowerCase(), accessToken);
+                    store.dispatch(setMyUserInfo({ agoraId: uid, password: uid }))
+                    sessionStorage.setItem('webim_auth', JSON.stringify({  agoraId: uid, password: uid, accessToken, agoraUid }))
+                } catch (err) {
+                    console.error('Login failed', err)
+                }
             }
-            store.dispatch(setMyUserInfo({ agoraId: webimAuthObj.agoraId }))
-            WebIM.conn.agoraUid = webimAuthObj.agoraUid
-        } else if (WebIM.conn.logOut) {
-            const uid = cookies.user.userId
-            getToken(uid).then((res) => {
-                console.log('elp agora login res', res)
-                const { accessToken, tokenExpire, agoraUid } = res
-                WebIM.conn.agoraUid = agoraUid
-                loginWithToken(uid.toLowerCase(), accessToken).then(value => {
-
-                }).catch(err => {
-                    console.error('Login error', err)
-                })
-                store.dispatch(setMyUserInfo({ agoraId: uid, password: uid }))
-                sessionStorage.setItem('webim_auth', JSON.stringify({  agoraId: uid, password: uid, accessToken, agoraUid }))
-            }).catch((err) => {
-                console.error('Login failed', err)
-            })
         }
-    }, [])
-    const state = store.getState();
+        initialize().catch();
+
+    }, [uid]);
+
     const [sessionInfoAddEl, setSessionInfoAddEl] = useState(null)
     const [sessionInfo, setSessionInfo] = useState({});
 
@@ -71,9 +61,7 @@ export default function Main() {
     const [presenceList, setPresenceList] = useState([])
     const [groupSettingAddEl, setGroupSettingAddEl] = useState(null)
     const [currentGroupId, setCurrentGroupId] = useState("");
-
-    const [isShowReport, setShowReport] = useState(false)
-    const [currentMsg, setCurrentMsg] = useState({})
+    
     // session avatar click
     const handleClickSessionInfoDialog = (e,res) => {
         let {chatType,to} = res
@@ -115,15 +103,8 @@ export default function Main() {
         changeTitle()
     }
 
-    const onMessageEventClick = (e,data,msg) => {
-        if(data.value === 'report'){
-            setShowReport(true)
-            setCurrentMsg(msg)
-        }        
-    }
-
     const [clickEditPanelEl,setClickEditPanelEl] = useState(null);
-    const [membersPanelEl,setmembersPanelEl] = useState(null);
+    const [membersPanelEl, setmembersPanelEl] = useState(null);
     const changeEditPanelStatus = (e,info) =>{
         if(e){
             setClickEditPanelEl(e.currentTarget)
@@ -139,45 +120,24 @@ export default function Main() {
             setmembersPanelEl(e.currentTarget)
         }
     }
-    // const onOpenThreadPanel = (obj) => {
-    //     console.log(obj, 'onOpenThreadPanel')
-    //     getSilentModeForConversation({conversationId: obj.id, type: 'groupChat', flag: 'Thread' }).then(res => {
-    //         console.log(res, 'getNotDisturbDuration')
-    //     })
-    // }
 
-    const handleGetToken = async (data) => {
-        let token = ''
-        console.log('data', data)
-    
-        token = await getRtctoken({ channel: data.channel, agoraId: WebIM.conn.agoraUid, username: data.username })
-        return {
-          agoraUid: WebIM.conn.agoraUid,
-          accessToken: token.accessToken
-        }
-      }
-    
-      const handleGetIdMap = async (data) => {
-        let member = {}
-        member = await getConfDetail(data.userId, data.channel)
-        return member
-      }
+
+  const handleGetIdMap = async (data) => {
+    let member = {}
+    member = await getConfDetail(data.userId, data.channel)
+    return member
+  }
 
     return (
         <div className='main-container'>
             <EaseApp
-                header={<Header />}
                 onChatAvatarClick={handleClickSessionInfoDialog}
                 onAvatarChange={handleClickGroupMemberInfoDialog}
                 onConversationClick={handleonConversationClick}
-                customMessageList={[{name: i18next.t("Report"), value: 'report', position: 'others'}]}
-                customMessageClick={onMessageEventClick}
                 onEditThreadPanel={changeEditPanelStatus}
-                // onOpenThreadPanel={onOpenThreadPanel}
                 isShowReaction={true}
                 agoraUid={WebIM.conn.agoraUid}
                 appId={process.env.AGORA_APP_ID}
-                // getRTCToken={handleGetToken}
                 getIdMap={handleGetIdMap}
                 ringingSource={ringing}
             />
@@ -195,7 +155,6 @@ export default function Main() {
                 authorEl={groupSettingAddEl}
                 onClose={() => setGroupSettingAddEl(null)}
                 currentGroupId={currentGroupId} />
-            <Report open={isShowReport} onClose={() => {setShowReport(false)}} currentMsg={currentMsg}/>
             <EditThreadPanel 
                 anchorEl={clickEditPanelEl} 
                 onClose={() => setClickEditPanelEl(null)} 
