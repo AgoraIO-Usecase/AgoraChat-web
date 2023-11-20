@@ -1,68 +1,71 @@
 import _ from 'lodash'
 import onlineIcon from '../assets/Online.png'
 let defaultState = {
-	constacts: [],
-    groups: {
-        groupList: [],
-        publicGroups: [],
-        groupsInfo: [],
-        groupAdmins: [],
-        groupMuteList: [],
-        groupBlockList: [],
-        groupAllowList: [],
-        groupNotices: '',
-    },
-    sessionList: [],
-    requests: { contact: [], group: [] },
-    // requests: { group: [{ name: 'zdzd', group: '123456', status: 'pedding', time: '', type: 'apply' }], contact: [{ name: 'zdzd', status: 'pedding', time: '' }] },
-    blackList: [],
-    myUserInfo: {
-        agoraId: null,
-        nickName: null,
-        avatarIndex: null
-    },
-    isFetching: false,
-    isSearching: false,
-    isShowGroupChat: false,
-		thread: {
-			groupId:'',
-			threadId:'',
-			threadName:'',
-			threadOwner:'',
-			membersList: [],
-			isLast: false,
-			cursor:'',
-			isAdmin:false,
-			currentEditPage:''
-		},
-    statusObj: {
-        statusImg: onlineIcon,
-        index: 0,
-        ext: ''
-    },
-    presenceList: [],
-    muteDataObj: {},
-    globalSilentMode: {
-        global: {},
-        single: {},
-        group: {},
-        threading: {}
-    },
-    unread: {
-        singleChat: {},
-        groupChat: {},
-        chatRoom: {},
-    },
-    currentSessionId: ''
+	contacts: [],
+	groups: {
+		groupList: [],
+		publicGroups: [],
+		groupsInfo: [],
+		groupAdmins: [],
+		groupMuteList: [],
+		groupBlockList: [],
+		groupAllowList: [],
+		groupNotices: '',
+	},
+	sessionList: [],
+	requests: { contact: [], group: [] },
+	// requests: { group: [{ name: 'zdzd', group: '123456', status: 'pedding', time: '', type: 'apply' }], contact: [{ name: 'zdzd', status: 'pedding', time: '' }] },
+	blackList: [],
+	myUserInfo: {
+		agoraId: null,
+		nickName: null,
+		avatarIndex: null
+	},
+	isFetching: false,
+	isSearching: false,
+	isShowGroupChat: false,
+	thread: {
+		groupId: '',
+		threadId: '',
+		threadName: '',
+		threadOwner: '',
+		membersList: [],
+		isLast: false,
+		cursor: '',
+		isAdmin: false,
+		currentEditPage: ''
+	},
+	statusObj: {
+		statusImg: onlineIcon,
+		index: 0,
+		ext: ''
+	},
+	presenceList: [],
+	muteDataObj: {},
+	globalSilentMode: {
+		global: {},
+		single: {},
+		group: {},
+		threading: {}
+	},
+	unread: {
+		singleChat: {},
+		groupChat: {},
+		chatRoom: {},
+	},
+	currentSessionId: '',
+	targetLanguage: '',
+	typingSwitch: false,
+	settingDialogVisible: false
 };
 
 const reducer = (state = defaultState, action) => {
-    const { type, data,option } = action;
-    switch (type) {
+	const { type, data, option } = action;
+	switch (type) {
 		case "CONTACTS_ACTION": {
 			return {
 				...state,
-				constacts: data,
+				contacts: data,
 			};
 		}
 		case "GROUP_LIST_ACTION":
@@ -135,8 +138,8 @@ const reducer = (state = defaultState, action) => {
 			let files = []
 			if (type === "getFile") {
 				files = data
-			}else {
-				files = _.concat(state.groups.groupFiles,data)
+			} else {
+				files = _.concat(state.groups.groupFiles, data)
 			}
 			return {
 				...state,
@@ -173,10 +176,11 @@ const reducer = (state = defaultState, action) => {
 				//     }
 				//     return value
 				// })
+
 				let groupReqs = [...requests.group];
 				let len = groupReqs.length;
 				for (let index = 0; index < len; index++) {
-					if (groupReqs[index].name === data.name) {
+					if (groupReqs[index].groupId === data.groupId) {
 						groupReqs[index].status = data.status;
 						break;
 					}
@@ -233,12 +237,12 @@ const reducer = (state = defaultState, action) => {
 			};
 
 		case "SEARCH_CONTACTS_ACTION":
-			let searchContacts = state.constacts.filter((item) =>
+			let searchContacts = state.contacts.filter((item) =>
 				item.includes(data)
 			);
 			return {
 				...state,
-				constacts: searchContacts,
+				contacts: searchContacts,
 			};
 		case "CLOSE_GROUP_CHAT_ACTION":
 			return {
@@ -258,11 +262,11 @@ const reducer = (state = defaultState, action) => {
 		case 'SET_MUTE_DATA_OBJ':
 			return {
 				...state,
-				muteDataObj: { ...state.muteDataObj, ...data}
+				muteDataObj: { ...state.muteDataObj, ...data }
 			}
 		case 'SET_GLOBAL_SILENT_MODE':
 			for (let item in data) {
-				state.globalSilentMode[item] = {...state.globalSilentMode[item], ...data[item]}
+				state.globalSilentMode[item] = { ...state.globalSilentMode[item], ...data[item] }
 			}
 			return {
 				...state,
@@ -286,16 +290,33 @@ const reducer = (state = defaultState, action) => {
 
 		case 'SET_THREAD_INFO':
 			let threadInfo = data;
-			if(data.isScroll === 'isScroll'){
+			if (data.isScroll === 'isScroll') {
 				data.data.membersList = state.thread.membersList.concat(data.data.membersList)
 				threadInfo = data.data
 			}
 			return {
 				...state,
-				thread:{
+				thread: {
 					...state.thread,
 					...threadInfo
 				}
+			}
+		case 'SET_TARGET_LANGUAGE':
+			console.log('dddd', data)
+			return {
+				...state,
+				targetLanguage: data
+			}
+		case 'SET_SETTING_VISIBLE':
+			return {
+				...state,
+				settingDialogVisible: data
+			}
+		case 'SET_TYPING_SWITCH':
+			console.log(data, 111)
+			return {
+				...state,
+				typingSwitch: data
 			}
 		default:
 			break;

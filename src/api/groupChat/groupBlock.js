@@ -1,14 +1,13 @@
 
-import WebIM from '../../utils/WebIM'
 import store from '../../redux/store'
 import { groupBlockAction } from '../../redux/actions'
 import getGroupInfo from './getGroupInfo'
-
+import { rootStore } from 'chatuim2'
 export const getGroupBlock = (groupId) => {
     let option = {
         groupId: groupId
     };
-    WebIM.conn.getGroupBlacklistNew(option).then((res) => {
+    rootStore.client.getGroupBlacklistNew(option).then((res) => {
         store.dispatch(groupBlockAction(res.data));
         getGroupInfo(groupId, 'block')
     })
@@ -20,11 +19,11 @@ export const onChangeGroupBlock = (groupId, userName, type, onClose) => {
         username: userName
     };
     if (type === "move") {
-        WebIM.conn.removeGroupBlockSingle(options).then((res) => {
+        rootStore.client.removeGroupBlockSingle(options).then((res) => {
             getGroupBlock(groupId)
         })
     } else if (type === "make") {
-        WebIM.conn.groupBlockSingle(options).then((res) => {
+        rootStore.client.groupBlockSingle(options).then((res) => {
             getGroupBlock(groupId)
         })
     }

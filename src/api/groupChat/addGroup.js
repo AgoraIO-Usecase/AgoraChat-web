@@ -1,46 +1,57 @@
 
-import WebIM from '../../utils/WebIM'
 import getGroups from './getGroups'
 import { message } from '../../components/common/alert'
 import i18next from "i18next";
-
+import { rootStore } from 'chatuim2'
+import store from '../../redux/store';
+import { updateRequestStatus } from '../../redux/actions';
+import { includes } from 'lodash';
 export const addGroup = (groupId) => {
     let options = {
         groupId: groupId,
         message: "I am Tom"
     };
-    WebIM.conn.joinGroup(options).then((res) => {
+    rootStore.client.joinGroup(options).then((res) => {
         console.log('joinGroup>>>', res)
         message.success(`${i18next.t('addGroup succes')}`)
         getGroups();
-    }).catch((err)=>{
+    }).catch((err) => {
+        console.log('err', err)
         if (err.type === 605) {
             message.error(`${i18next.t("Group does not exist")}`);
+        } else if (err.type === 603 && err.data.includes('blacklist')) {
+            message.error("You've been blocklisted")
+        } else {
+            message.error(err?.message)
         }
     })
 }
 
 export const agreeInviteGroup = (val) => {
-    const { to, gid } = val
+    const { to, gid, from } = val
     let options = {
         invitee: to,
         groupId: gid
     };
-    WebIM.conn.agreeInviteIntoGroup(options).then((res) => {
+    rootStore.client.agreeInviteIntoGroup(options).then((res) => {
         console.log('agreeInvite>>>', res);
         message.success(`${i18next.t('You have joined the group：')}` + gid)
         getGroups();
+
+        store.dispatch(updateRequestStatus({ type: 'group', name: from, groupId: gid, status: 'accepted' }))
+
     })
 }
 
-// export const rejectInviteGroup = (val) => {
-//     const { to, gid } = val
-//     let options = {
-//         invitee: to,
-//         groupId: gid
-//     };
-//     WebIM.conn.rejectInviteIntoGroup(options).then((res) => {
-//         console.log('rejectInvite>>>', res);
-//         message.success(`${i18next.t('已拒绝加入群组：')}` + gid)
-//     })
-// }
+export const rejectInviteGroup = (val) => {
+    const { to, gid, from } = val
+    let options = {
+        invitee: to,
+        groupId: gid
+    };
+    rootStore.client.rejectInviteIntoGroup(options).then((res) => {
+        // console.log('rejectInvite>>>', res);
+        // message.success(`${i18next.t('已拒绝加入群组：')}` + gid)
+        store.dispatch(updateRequestStatus({ type: 'group', name: from, groupId: gid, status: 'ignored' }))
+    })
+}

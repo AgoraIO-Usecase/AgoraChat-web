@@ -40,7 +40,7 @@ const DialogTitle = withStyles(styles)((props) => {
     );
 });
 
-export default function AlertDialogSlide({ open, title, content, onClose, footer, maxWidth, style, className }) {
+export default function AlertDialogSlide({ open = false, title, content, onClose, footer, maxWidth, style, className }) {
     return (
         <div>
             <Dialog

@@ -1,196 +1,723 @@
-import React, { useState,useEffect } from 'react';
-import Header from '../components/appbar'
-import './login.css'
-import getGroupInfo from '../api/groupChat/getGroupInfo'
-import WebIM from '../utils/WebIM';
-import { loginWithToken, loginWithPassword } from '../api/loginChat'
-import { EaseApp } from 'agora-chat-uikit'
-import { createHashHistory } from 'history'
-import store from '../redux/store'
-import { setMyUserInfo, setUnread, setCurrentSessionId, setThreadInfo } from '../redux/actions'
-import SessionInfoPopover from '../components/appbar/sessionInfo'
-import GroupMemberInfoPopover from '../components/appbar/chatGroup/memberInfo'
-import GroupSettingsDialog from '../components/appbar/chatGroup/groupSettings'
-import { Report } from '../components/report';
-import i18next from "i18next";
+import React, { useState, useEffect, useCallback,useRef } from "react";
+import Header from "../components/appbar";
+import "./login.css";
+import getGroupInfo from "../api/groupChat/getGroupInfo";
+import { loginWithToken } from "../api/loginChat";
+import { createHashHistory } from "history";
+import store from "../redux/store";
+import { Tooltip } from "@material-ui/core";
+import {
+  setMyUserInfo,
+  setUnread,
+  setCurrentSessionId,
+  setTargetLanguage,
+  setTypingSwitch
+} from "../redux/actions";
+import SessionInfoPopover from "../components/appbar/sessionInfo";
+import CustomUserProfile from "../components/appbar/chatGroup/memberInfo";
+import GroupSettingsDialog from "../components/appbar/chatGroup/groupSettings";
+import { Report } from "../components/report";
+import map3 from "../assets/notify.mp3";
+import { changeTitle, getLocalStorageData } from "../utils/notification";
+import { TranslateDialog } from "../components/translate";
+import { getRtctoken, getConfDetail } from "../api/rtcCall";
+import { useSelector } from "react-redux";
+import { statusImgObj } from "../components/appbar/chatGroup/memberInfo";
+import customIcon from "../assets/custom.png";
+import { makeStyles } from "@material-ui/core/styles";
+import {
+  Chat,
+  ConversationList,
+  rootStore,
+  Thread,
+  MessageList,
+  TextMessage,
+  AudioMessage,
+  FileMessage,
+  ImageMessage,
+  CombinedMessage,
+  RecalledMessage,
+  NoticeMessage,
+  Icon,
+  Avatar,
+  useSDK,
+  useAddressContext
+  // ConversationItem
+} from "chatuim2";
+import "chatuim2/style.css";
+import CombineDialog from "../components/combine";
+import { observer } from "mobx-react-lite";
+import { message } from "../components/common/alert";
+import InviteModal from '../components/inviteModal'
+const history = createHashHistory();
+const appId = '15cb0d28b87b425ea613fc46f7c9f974';
 
-import { subFriendStatus } from '../api/presence'
-import map3 from '../assets/notify.mp3'
-import ringing from '../assets/ringing.mp3'
-
-import { changeTitle } from '../utils/notification'
-
-import { truncate } from 'lodash';
-import EditThreadPanel from '../components/thread/components/editThreadPanel'
-import ThreadMembers from '../components/thread/components/threadMembers';
-import ThreadDialog from '../components/thread/components/threadDialog'
-// import { getSilentModeForConversation } from '../api/notificationPush'
-import {getRtctoken, getConfDetail} from '../api/rtcCall'
-
-const history = createHashHistory()
-
-export default function Main() {
-    //support edit thread 
-    useEffect(() => {
-        const webimAuth = sessionStorage.getItem('webim_auth')
-        let webimAuthObj = {}
-        if (webimAuth && WebIM.conn.logOut) {
-            webimAuthObj = JSON.parse(webimAuth)
-            if (webimAuthObj.password) {
-                loginWithToken(webimAuthObj.agoraId.toLowerCase(), webimAuthObj.accessToken)
-                store.dispatch(setMyUserInfo({ agoraId: webimAuthObj.agoraId, password: webimAuthObj.password }))
-            } else {
-                history.push('/login')
-            }
-            store.dispatch(setMyUserInfo({ agoraId: webimAuthObj.agoraId }))
-            WebIM.conn.agoraUid = webimAuthObj.agoraUid
-        }else if (WebIM.conn.logOut) {
-            history.push('/login')  
-        }
-    }, [])
-    const state = store.getState();
-    const [sessionInfoAddEl, setSessionInfoAddEl] = useState(null)
-    const [sessionInfo, setSessionInfo] = useState({});
-
-    const [groupMemberInfoAddEl, setGroupMemberInfoAddEl] = useState(null)
-    const [memberInfo, setMemberInfo] = useState({})
-    const [presenceList, setPresenceList] = useState([])
-    const [groupSettingAddEl, setGroupSettingAddEl] = useState(null)
-    const [currentGroupId, setCurrentGroupId] = useState("");
-
-    const [isShowReport, setShowReport] = useState(false)
-    const [currentMsg, setCurrentMsg] = useState({})
-    // session avatar click
-    const handleClickSessionInfoDialog = (e,res) => {
-        let {chatType,to} = res
-        if (chatType === "singleChat") {
-            setSessionInfoAddEl(e.target);
-            setSessionInfo(res)
-        } else if (chatType === "groupChat"){
-            getGroupInfo(to)
-            setGroupSettingAddEl(e.target)
-            setCurrentGroupId(to)
-        }
+const useStyles = makeStyles(() => {
+  return {
+    avatarWrap: {
+      position: "relative",
+      cursor: "pointer"
+    },
+    presenceWrap: {
+      borderRadius: "50%",
+      width: "15px",
+      height: "15px",
+      background: "#fff",
+      textAlign: "center",
+      position: "absolute",
+      lineHeight: "15px",
+      bottom: "-2px",
+      right: "-5px"
+    },
+    presenceImgStyle: {
+      width: "13px",
+      height: "13px",
+      borderRadius: "50%"
     }
+  };
+});
 
-    const handleClickGroupMemberInfoDialog = (e,res) => {
-        let isGroupChat = res.chatType === "groupChat"
-        if (isGroupChat) {
-            subFriendStatus({usernames: [res.from]}).then(val => {
-                setPresenceList(val)
-                setMemberInfo(res)
-                setGroupMemberInfoAddEl(e.target);
-            })
-        }
-    }
+function Main() {
+  // set sdk log level
+  const {AgoraRTC, AgoraChat} = useSDK()
+  AgoraRTC.setLogLevel(4)
+  // AgoraChat.logger.setLevel(0)
+  const {getGroupMembers: getGroupMembersUIKit} = useAddressContext()
 
-    const handleonConversationClick = (session) => {
-        console.log(session, 'handleonConversationClick')
-        const { sessionType, sessionId } = session
-        store.dispatch(setCurrentSessionId(sessionId))
-        const { unread } = store.getState()
-        console.log(unread, 'main')
-        if (!unread[sessionType][sessionId]) {
-            unread[sessionType][sessionId] = {}
-        }
-        unread[sessionType][sessionId] = {
-            realNum: 0,
-            fakeNum: 0
-        }
-        store.dispatch(setUnread(unread))
-        changeTitle()
-    }
+  const [sessionInfoAddEl, setSessionInfoAddEl] = useState(null);
+  const [sessionInfo, setSessionInfo] = useState({});
+  const [groupSettingAddEl, setGroupSettingAddEl] = useState(null);
+  const [currentGroupId, setCurrentGroupId] = useState("");
+  const [isShowReport, setShowReport] = useState(false);
+  const [currentMsg, setCurrentMsg] = useState({});
+  const { currentCvs } = rootStore.conversationStore;
+  const userInfo =
+    rootStore.addressStore?.appUsersInfo?.[currentCvs?.conversationId];
+  let presenceExt = userInfo?.isOnline
+    ? userInfo?.presenceExt || "Online"
+    : "Offline";
+  const classes = useStyles();
 
-    const onMessageEventClick = (e,data,msg) => {
-        if(data.value === 'report'){
-            setShowReport(true)
-            setCurrentMsg(msg)
-        }        
-    }
+  const renderUserProfile = useCallback(
+    ({ userId }) => {
+      return currentCvs.chatType === "groupChat" ? (
+        <CustomUserProfile userId={userId} />
+      ) : null;
+    },
+    [currentCvs]
+  );
 
-    const [clickEditPanelEl,setClickEditPanelEl] = useState(null);
-    const [membersPanelEl,setmembersPanelEl] = useState(null);
-    const changeEditPanelStatus = (e,info) =>{
-        if(e){
-            setClickEditPanelEl(e.currentTarget)
-            store.dispatch(setThreadInfo(info))
-        }
-        else{
-            setClickEditPanelEl(e)
-        }
+  const getChatAvatarUrl = () => {
+    const cvs = currentCvs;
+    if (cvs.chatType === "singleChat") {
+      return rootStore.addressStore.appUsersInfo[cvs.conversationId]?.avatarurl;
+    } else {
+      return "";
     }
-    const onchangeEditPanelStatus = (e,type)=>{
-        store.dispatch(setThreadInfo({currentEditPage:type}))
-        if(type === 'Members'){
-            setmembersPanelEl(e.currentTarget)
-        }
-    }
-    // const onOpenThreadPanel = (obj) => {
-    //     console.log(obj, 'onOpenThreadPanel')
-    //     getSilentModeForConversation({conversationId: obj.id, type: 'groupChat', flag: 'Thread' }).then(res => {
-    //         console.log(res, 'getNotDisturbDuration')
-    //     })
-    // }
+  };
 
-    const handleGetToken = async (data) => {
-        let token = ''
-        console.log('data', data)
-    
-        token = await getRtctoken({ channel: data.channel, agoraId: WebIM.conn.agoraUid, username: data.username })
-        return {
-          agoraUid: WebIM.conn.agoraUid,
-          accessToken: token.accessToken
+  //support edit thread
+  useEffect(() => {
+    const webimAuth = sessionStorage.getItem("webim_auth");
+    let webimAuthObj = {};
+    if (webimAuth) {
+      webimAuthObj = JSON.parse(webimAuth);
+      if (webimAuthObj.password) {
+        loginWithToken(
+          webimAuthObj.agoraId.toLowerCase(),
+          webimAuthObj.accessToken
+        );
+        store.dispatch(
+          setMyUserInfo({
+            agoraId: webimAuthObj.agoraId,
+            password: webimAuthObj.password
+          })
+        );
+      } else {
+        history.push("/login");
+      }
+      store.dispatch(setMyUserInfo({ agoraId: webimAuthObj.agoraId }));
+    } else {
+      history.push("/login");
+    }
+  }, []);
+  const state = useSelector((state) => state);
+
+  // session avatar click
+  const handleClickSessionInfoDialog = (e, res) => {
+    // let {chatType,to} = res
+    let { chatType, conversationId: to } =
+      rootStore.conversationStore.currentCvs;
+    if (chatType === "singleChat") {
+      setSessionInfoAddEl(e.target);
+      setSessionInfo({
+        chatType,
+        to
+      });
+    } else if (chatType === "groupChat") {
+      getGroupInfo(to);
+      setGroupSettingAddEl(e.target);
+      setCurrentGroupId(to);
+    }
+  };
+
+  const handleonConversationClick = (session) => {
+    console.log(session, "handleonConversationClick");
+    const { sessionType, sessionId } = session;
+    store.dispatch(setCurrentSessionId(sessionId));
+    const { unread } = store.getState();
+    console.log(unread, "main");
+    if (!unread[sessionType][sessionId]) {
+      unread[sessionType][sessionId] = {};
+    }
+    unread[sessionType][sessionId] = {
+      realNum: 0,
+      fakeNum: 0
+    };
+    store.dispatch(setUnread(unread));
+    changeTitle();
+  };
+
+  const [showCombineDialog, setShowCombineDialog] = useState(false);
+  const [combineData, setCombineData] = useState({});
+  const sendMessage = (data) => {
+    if (data.type === "combine") {
+      // combineData = data
+      setCombineData(data);
+      setShowCombineDialog(true);
+    }
+  };
+  const sendCombineMsg = (item) => {
+    const to = item.brandId ? item.brandId : item.groupid;
+    combineData.to = to;
+    combineData.from = "";
+    combineData.chatType = item.brandId ? "singleChat" : "groupChat";
+    rootStore.messageStore
+      .sendMessage(combineData)
+      .then((res) => {
+        console.log("发送成功", res);
+        rootStore.conversationStore.topConversation({
+          chatType: combineData.chatType,
+          conversationId: combineData.to
+        })
+        rootStore.messageStore.setSelectedMessage(currentCvs, {
+          selectable: false,
+          selectedMessage: []
+        });
+        if(rootStore.threadStore.currentThread.visible){
+          rootStore.messageStore.setSelectedMessage({
+            chatType: 'groupChat',
+            conversationId: rootStore.threadStore.currentThread.info.id
+          }, {
+            selectable: false,
+            selectedMessage: []
+          });
+        }
+        
+      })
+      .catch((err) => {
+        console.log(err);
+        message.error(err.message);
+      });
+  };
+
+  let selfMoreAction = {
+    visible: true,
+    icon: null,
+    actions: [
+      {
+        content: "REPLY"
+      },
+      {
+        content: "DELETE"
+      },
+      {
+        content: "UNSEND"
+      },
+      {
+        content: "TRANSLATE"
+      },
+      {
+        content: "Modify"
+      },
+      {
+        content: "SELECT"
+      }
+    ]
+  };
+
+  let targetMoreAction = {
+    ...selfMoreAction,
+    actions: [
+      ...selfMoreAction.actions,
+      {
+        icon: <Icon type="ENVELOPE" width={16} height={16}></Icon>,
+        content: "Report",
+        onClick: (msg) => {
+          setCurrentMsg(msg);
+          setShowReport(true);
         }
       }
+    ]
+  };
+  useEffect(() => {
+    const data = getLocalStorageData();
+    if (data.selectedLang) {
+      store.dispatch(setTargetLanguage(data.selectedLang));
+    }
+    if (data.typingSwitch) {
+      store.dispatch(setTypingSwitch(data.typingSwitch));
+    }
+    return () => {
+      rootStore.conversationStore.setCurrentCvs({
+        chatType: "",
+        conversationId: ""
+      });
+    };
+  }, []);
+
+  const handleTranslateMsg = () => {
     
-      const handleGetIdMap = async (data) => {
-        let member = {}
-        member = await getConfDetail(data.userId, data.channel)
+    const data = getLocalStorageData();
+    const targetLanguage = state?.targetLanguage;
+    console.log("state", targetLanguage, targetLanguage, data.translateSwitch);
+    if (
+      targetLanguage == "none" ||
+      targetLanguage == "" ||
+      data.translateSwitch == false
+    ) {
+      setTransDialogOpen(true);
+      return false;
+    }
+  };
+
+  const renderMessage = (msg) => {
+    console.log("自定义的消息");
+    let moreAction = selfMoreAction;
+    // add report button
+    if (msg.from !== rootStore.client.user) {
+      moreAction = targetMoreAction;
+    }
+    if (msg.type === "txt") {
+      return (
+        <TextMessage
+          key={msg.id}
+          textMessage={{...msg}}
+          status={msg.status}
+          renderUserProfile={renderUserProfile}
+          thread={true}
+          customAction={moreAction}
+          onTranslateTextMessage={handleTranslateMsg}
+          targetLanguage={state.targetLanguage}
+          // reactionConfig={{
+          //   path: '/assets/',
+          //   map: {
+          //     'emoji_1':  <img src={customIcon} alt={'emoji_1'} />,
+          //     'emoji_2':  <img src={customIcon} alt={'emoji_2'} />,
+          //     'emoji_3':  <img src={customIcon} alt={'emoji_3'} />
+          //   }
+          // }}
+        ></TextMessage>
+      );
+    } else if (msg.type === "audio") {
+      return (
+        <AudioMessage
+          key={msg.id}
+          //@ts-ignore
+          status={msg.status}
+          audioMessage={{...msg}}
+          renderUserProfile={renderUserProfile}
+          thread={true}
+          customAction={moreAction}
+        ></AudioMessage>
+      );
+    } else if (msg.type === "img") {
+      return (
+        <ImageMessage
+          key={msg.id}
+          //@ts-ignore
+          status={msg.status}
+          imageMessage={{...msg}}
+          renderUserProfile={renderUserProfile}
+          thread={true}
+          customAction={moreAction}
+        ></ImageMessage>
+      );
+    } else if (msg.type === "file") {
+      return (
+        <FileMessage
+          key={msg.id}
+          //@ts-ignore
+          status={msg.status}
+          fileMessage={{...msg}}
+          renderUserProfile={renderUserProfile}
+          thread={true}
+          customAction={moreAction}
+        ></FileMessage>
+      );
+    } else if (msg.type === "recall") {
+      return (
+        <NoticeMessage noticeMessage={{...msg}}></NoticeMessage>
+      );
+    } else if (msg.type === "combine") {
+      return (
+        <CombinedMessage
+          key={msg.id}
+          //@ts-ignore
+          status={msg.status}
+          renderUserProfile={renderUserProfile}
+          //@ts-ignore
+          combinedMessage={{...msg}}
+          thread={true}
+          customAction={moreAction}
+        ></CombinedMessage>
+      );
+    } else if (msg.type == "video" || msg.type == "loc") {
+      return (
+        <RecalledMessage
+          key={msg.id}
+          // style={data.style}
+          //@ts-ignore
+          status={msg.status}
+          //@ts-ignore
+          message={{...msg}}
+        >
+          {msg}
+        </RecalledMessage>
+      );
+    }
+  };
+
+  const [transDialogOpen, setTransDialogOpen] = useState(false);
+
+  const [inviteDialogOpen, setInviteDialogOpen] = useState(false);
+  let _resolve = useRef(null)
+  const handleInviteToCall = (data) => {
+    console.log('handleInviteToCall', data)
+    setInviteDialogOpen(true)
+
+    getGroupMembers(data.conversation.conversationId)
+    return new Promise((resolve, reject)=> {
+      _resolve.current = resolve
+    })
+  }
+  const webimAuth = sessionStorage.getItem("webim_auth");
+    let webimAuthObj = {};
+    if (webimAuth) {
+      webimAuthObj = JSON.parse(webimAuth);
+    }
+  const getRtcToken = (data) => {
+    const webimAuth = sessionStorage.getItem("webim_auth");
+    let webimAuthObj = {};
+    if (webimAuth) {
+      webimAuthObj = JSON.parse(webimAuth);
+    }
+    return getRtctoken({...data, agoraUid: webimAuthObj.agoraUid})
+  }
+  const handleAddPerson = async(data) => {
+    console.log('handleAddPerson', data)
+  //   {
+  //     "channel": "41683685",
+  //     "token": null,
+  //     "type": 2,
+  //     "callId": "429206643145",
+  //     "callerDevId": "webim_random_1694160229682",
+  //     "confrName": "zd2",
+  //     "calleeIMName": "zd2",
+  //     "callerIMName": "zd3",
+  //     "groupId": "182614118957057",
+  //     "groupName": "grouptest",
+  //     "joinedMembers": [
+  //         {
+  //             "imUserId": "zd3",
+  //             "agoraUid": 527268238
+  //         },
+  //         {
+  //             "imUserId": 935243573,
+  //             "agoraUid": 935243573
+  //         }
+  //     ]
+  // }
+  const rtcGroup = rootStore.addressStore.groups.filter((item) => {
+    return item.groupid == data.groupId
+  })
+  let members = []
+  if(rtcGroup.length > 0) {
+    if(!rtcGroup[0]?.members || rtcGroup[0]?.members.length == 0){
+      // await getGroupMembers(data.groupId)
+      await getGroupMembersUIKit(data.groupId)
+    }
+    members = rtcGroup[0]?.members.map((item) => {
+      const member = {...item}
+      if(!item?.attributes?.nickName){
+        if(!member.attributes){
+          member.attributes = {}
+        }
+        member.attributes.nickName = rootStore.addressStore.appUsersInfo[item.userId]?.nickname
+      }
+      if(!item?.attributes?.avatarurl){
+        member.attributes.avatarurl = rootStore.addressStore.appUsersInfo[item.userId]?.avatarurl
+      }
+      return member
+    })
+    console.log('members ---', rtcGroup)
+  } 
+    getGroupMembers(data.groupId)
+    const addedPerson = data.joinedMembers.map((item) => {
+      let person = {}
+      console.log('item ---', item, members)
+      members.forEach((member) => {
+        if(member.userId === item.imUserId){
+          person = member
+        }
+      })
+      return person
+    })
+    console.log('addedPerson --', addedPerson)
+    setAddedMembers(addedPerson)
+    setInviteDialogOpen(true)
+    
+    return new Promise((resolve) => {
+      _resolve.current = resolve
+    })
+  }
+
+  const handleGetIdMap = (data) => {
+    console.log('handleGetIdMap', data)
+
+    return getConfDetail(data.userId, data.channel)
+  }
+
+  const handleRtcStateChange = (info) => {
+    console.log('handleRtcStateChange', info)
+    switch (info.type) {
+      case 'hangup':
+      case 'refuse':
+        if (info.type == 'hangup') {
+          switch (info.reason) {
+            case 'timeout':
+              message.info('Timeout.')
+              break;
+            case 'refused':
+              message.error('Declined.')
+              break;
+            case 'refuse':
+              message.info('Declined.')
+              break;
+            case 'cancel':
+              message.info('Hung Up.')
+              break;
+            case 'accepted on other devices':
+              message.info('Answered on another device.')
+              break;
+            case 'refused on other devices':
+              message.error('Rejected on another device.')
+              break;
+            case 'processed on other devices':
+              message.info('Handled on another device.')
+              break;
+            case 'busy':
+              message.warn('The other party is busy.')
+              break;
+            case 'invitation has expired':
+              message.info('Invitation Expired.')
+              break;
+            case 'user-left':
+              message.info('Hung Up.')
+              break;
+            case 'normal':
+              message.info('Canceled')
+              break;
+            default:
+              console.log(info.reason)
+              // message.error(info.reason || 'normal hangup')
+              break;
+          }
+        }
+        setAddedMembers([])
+        break;
+      case 'user-published':
+        break;
+      default:
+        break;
+    }
+  }
+
+
+  const [groupMembers, setMembers] = useState([]) 
+  const [addedMembers, setAddedMembers] = useState([]);
+  const getGroupMembers = (groupId) => {
+    const rtcGroup = rootStore.addressStore.groups.filter((item) => {
+      return item.groupid == groupId
+    })
+    if(rtcGroup.length > 0) {
+      console.log('members ---', rtcGroup)
+      const members = rtcGroup[0].members.map((item) => {
+        const member = {...item}
+        if(!item?.attributes?.nickName){
+          if(!member.attributes){
+            member.attributes = {}
+          }
+          member.attributes.nickName = rootStore.addressStore.appUsersInfo[item.userId]?.nickname
+        }
+        if(!item?.attributes?.avatarurl){
+          member.attributes.avatarurl = rootStore.addressStore.appUsersInfo[item.userId]?.avatarurl
+        }
         return member
-      }
-
-    return (
-        <div className='main-container'>
-            <EaseApp
-                header={<Header />}
-                onChatAvatarClick={handleClickSessionInfoDialog}
-                onAvatarChange={handleClickGroupMemberInfoDialog}
-                onConversationClick={handleonConversationClick}
-                customMessageList={[{name: i18next.t("Report"), value: 'report', position: 'others'}]}
-                customMessageClick={onMessageEventClick}
-                onEditThreadPanel={changeEditPanelStatus}
-                // onOpenThreadPanel={onOpenThreadPanel}
-                isShowReaction={true}
-
-                agoraUid={WebIM.conn.agoraUid}
-                appId="15cb0d28b87b425ea613fc46f7c9f974"
-                getRTCToken={handleGetToken}
-                getIdMap={handleGetIdMap}
-                ringingSource={ringing}
-            />
-            <SessionInfoPopover 
-                open={sessionInfoAddEl}
-                onClose={() => setSessionInfoAddEl(null)}
-                sessionInfo={sessionInfo}/>
-            <GroupMemberInfoPopover 
-                open={groupMemberInfoAddEl}
-                onClose={() => setGroupMemberInfoAddEl(null)}
-                memberInfo={memberInfo}
-                presenceList={presenceList}/>
-            <GroupSettingsDialog 
-                open={groupSettingAddEl}
-                authorEl={groupSettingAddEl}
-                onClose={() => setGroupSettingAddEl(null)}
-                currentGroupId={currentGroupId} />
-            <Report open={isShowReport} onClose={() => {setShowReport(false)}} currentMsg={currentMsg}/>
-            <EditThreadPanel 
-                anchorEl={clickEditPanelEl} 
-                onClose={() => setClickEditPanelEl(null)} 
-                onchangeEditPanelStatus = {onchangeEditPanelStatus}/>
-            <ThreadMembers membersPanelEl={membersPanelEl}/>
-            <ThreadDialog/>
-            <audio id="agoraChatSoundId" src={map3}></audio>
+      })
+      setMembers(members)
+    }
+  }
+  return (
+    <div className="main-container">
+      <div
+        style={{
+          width: "360px",
+          border: "1px solid transparent",
+          background: "#fff"
+        }}
+      >
+        <ConversationList
+          style={{ background: "#F1F2F3" }}
+          renderHeader={() => <Header />}
+          // renderItem={csv => <ConversationItem key={csv.conversationId} data={csv} />}
+        ></ConversationList>
+        {/* <ContactList></ContactList> */}
+      </div>
+      <div
+        style={{
+          width: "calc(100% - 360px)",
+          borderLeft: "1px solid transparent",
+          overflow: "hidden",
+          display: "flex"
+        }}
+      >
+        <div
+          style={{
+            flex: 1,
+            borderLeft: "1px solid transparent",
+            overflow: "hidden"
+          }}
+        >
+          <Chat
+            headerProps={{
+              avatar: (
+                <div
+                  onClick={handleClickSessionInfoDialog}
+                  className={classes.avatarWrap}
+                >
+                  <Avatar src={getChatAvatarUrl()}>
+                    {currentCvs?.name || currentCvs?.conversationId}
+                  </Avatar>
+                  {currentCvs.chatType === "singleChat" && (
+                    <Tooltip title={presenceExt} placement="bottom-end">
+                      <div className={classes.presenceWrap}>
+                        <img
+                          className={classes.presenceImgStyle}
+                          alt={presenceExt}
+                          src={statusImgObj[presenceExt] || customIcon}
+                        />
+                      </div>
+                    </Tooltip>
+                  )}
+                </div>
+              )
+            }}
+            messageEditorProps={{
+              onSendMessage: sendMessage,
+              enabledTyping: state?.typingSwitch
+            }}
+            renderMessageList={() => (
+              <MessageList renderMessage={renderMessage} messageProps={{}}/>
+            )}
+            rtcConfig={{
+              onInvite: handleInviteToCall,
+              agoraUid: webimAuthObj.agoraUid,
+              onAddPerson: handleAddPerson,
+              getIdMap: handleGetIdMap,
+              onStateChange: handleRtcStateChange,
+              appId: appId,
+              getRTCToken: getRtcToken
+            }}  
+          ></Chat>
         </div>
-    )
+        {
+          <div
+            style={{
+              width: "360px",
+              borderLeft: "1px solid #eee",
+              overflow: "hidden",
+              background: "#fff",
+              display: rootStore.threadStore?.showThreadPanel ? "block" : "none"
+            }}
+          >
+            <Thread
+              messageListProps={{
+                renderUserProfile: () => null,
+                messageProps: {
+                  onTranslateTextMessage: handleTranslateMsg
+                }
+              }}
+              messageEditorProps={{
+                onSendMessage: sendMessage,
+                enabledTyping: state?.typingSwitch
+              }}
+            ></Thread>
+          </div>
+        }
+      </div>
+      <SessionInfoPopover
+        open={sessionInfoAddEl}
+        onClose={() => setSessionInfoAddEl(null)}
+        sessionInfo={sessionInfo}
+      />
+
+      {
+        <GroupSettingsDialog
+          open={groupSettingAddEl}
+          authorEl={groupSettingAddEl}
+          onClose={() => setGroupSettingAddEl(null)}
+          currentGroupId={currentGroupId}
+        />
+      }
+      {isShowReport ? (
+        <Report
+          open={isShowReport}
+          onClose={() => {
+            setShowReport(false);
+          }}
+          currentMsg={currentMsg}
+        />
+      ) : (
+        <></>
+      )}
+      {showCombineDialog ? (
+        <CombineDialog
+          open={showCombineDialog}
+          onClickItem={sendCombineMsg}
+          onClose={() => {
+            setShowCombineDialog(false);
+          }}
+        />
+      ) : (
+        <></>
+      )}
+      <TranslateDialog
+        open={transDialogOpen}
+        onClose={() => {
+          setTransDialogOpen(false);
+        }}
+      ></TranslateDialog>
+      <audio id="agoraChatSoundId" src={map3}></audio>
+      <InviteModal open={inviteDialogOpen} members={groupMembers} onClose={() => {
+        setInviteDialogOpen(false)
+      }} joinedMembers={addedMembers} onCall={(members) => {
+        _resolve.current(members)
+        setInviteDialogOpen(false)
+        console.log('members', members)
+      }}></InviteModal>
+    </div>
+  );
 }
 
+export default observer(Main);

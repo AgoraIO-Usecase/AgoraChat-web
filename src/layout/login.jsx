@@ -1,14 +1,12 @@
 import React, { useState,useEffect, useCallback } from 'react'
 import './login.css'
 import i18next from "i18next";
-import { getToken, loginWithToken, loginWithPassword } from '../api/loginChat'
+import { getToken, loginWithToken } from '../api/loginChat'
 import { createHashHistory } from 'history';
 // import { useHistory } from 'react-router-dom'
 
 import store from '../redux/store'
-import { setMyUserInfo, setFetchingStatus } from '../redux/actions'
-import { message } from '../components/common/alert'
-import WebIM from '../utils/WebIM'
+import { setMyUserInfo } from '../redux/actions'
 import loading from '../assets/loading.png'
 import closeIcon from '../assets/Xmark@2x.png'
 import eyeOpen from '../assets/eye@2x.png'
@@ -48,10 +46,10 @@ export default function Login() {
         if (values.password) {
             getToken(values.agoraId, values.password).then((res) => {
                 const { accessToken, agoraUid } = res
-                WebIM.conn.agoraUid = agoraUid
                 loginWithToken(values.agoraId.toLowerCase(), accessToken).then(value => {
 
                 }).catch(err => {
+                    console.log(err)
                     setNotice({ show: true, text: 'Wrong Username or Password' })
                 }).finally(_ => {
                     setTimeout(() => {
@@ -190,7 +188,7 @@ export default function Login() {
                 </div>
             </div>
             <div className='login-copyright'>
-                © 2022 Agora
+                © 2023 Agora
             </div>
         </div>
     )

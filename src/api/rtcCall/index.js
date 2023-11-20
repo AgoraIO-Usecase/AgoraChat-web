@@ -1,8 +1,8 @@
 import axios from 'axios'
 
 export function getRtctoken(params) {
-    const { channel, agoraId, username } = params;
-    const url = `https://a41.chat.agora.io/token/rtc/channel/${channel}/agorauid/${agoraId}?userAccount=${username}`
+    const { channel, agoraUid, chatUserId } = params;
+    const url = `https://a41.chat.agora.io/token/rtc/channel/${channel}/agorauid/${agoraUid}?userAccount=${chatUserId}`
     return axios
         .get(url)
         .then(function (response) {
@@ -13,6 +13,7 @@ export function getRtctoken(params) {
             console.log(error);
         });
 }
+
 export function getConfDetail(username, channelName) {
     const url = `https://a41.chat.agora.io/agora/channel/mapper?channelName=${channelName}&userAccount=${username}`
 

@@ -3,13 +3,10 @@ import { useSelector } from 'react-redux'
 import { makeStyles } from "@material-ui/core/styles";
 import { Box, InputBase, Typography, Avatar } from "@material-ui/core";
 import i18next from "i18next";
-import store from "../../../../../redux/store";
-import WebIM from "../../../../../utils/WebIM";
 import { updateGroupNotice } from "../../../../../api/groupChat/getGroupInfo";
 import { message } from '../../../../common/alert'
-import avatarDefault from '../../../../../assets/avatar_default.jpg'
 import { userAvatar } from '../../../../../utils'
-
+import { rootStore } from 'chatuim2'
 const useStyles = makeStyles((theme) => {
 	return {
 		root: {
@@ -134,11 +131,10 @@ const GroupNotice = () => {
 	let groupId = state.groups.groupsInfo?.id;
 	let owner = state.groups.groupsInfo?.owner;
 	let admin = state.groups.groupAdmins;
-	let currentLoginUser = WebIM.conn.context.userId;
+	let currentLoginUser = rootStore.client.context.userId;
 	let isPermissions =
 		owner === currentLoginUser || admin.includes(currentLoginUser);
 	let isGroupNotice = groupNotices.length > 0;
-
 	const [editStatus, setEditStatus] = useState(true);
 	const [disabledStatus, setDisabledStatus] = useState(true);
 	const [noticeContent, setnoticeContent] = useState("");
@@ -167,7 +163,7 @@ const GroupNotice = () => {
 			return
 		}
 		setnoticeContent(value);
-		
+
 	};
 
 	const renderNameEdit = () => {
