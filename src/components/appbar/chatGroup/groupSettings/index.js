@@ -358,7 +358,8 @@ const GroupSettingsDialog = ({ open, onClose, currentGroupId, authorEl }) => {
               {...a11yProps(0)}
               className={classes.itemBox}
             />
-            {showAddMember && <Tab
+            {<Tab
+              style={{ display: showAddMember ? 'block' : 'none' }}
               label={addMembersLabel()}
               {...a11yProps(1)}
               className={classes.itemBox}
@@ -426,9 +427,9 @@ const GroupSettingsDialog = ({ open, onClose, currentGroupId, authorEl }) => {
           <TabPanel value={value} index={0} className={classes.content}>
             <Members />
           </TabPanel>
-          <TabPanel value={value} index={1} className={classes.content}>
+          {showAddMember && <TabPanel value={value} index={1} className={classes.content} >
             <AddMembers onClose={onClose} />
-          </TabPanel>
+          </TabPanel>}
           <TabPanel value={value} index={2} className={classes.content}>
             <GroupNotice />
           </TabPanel>

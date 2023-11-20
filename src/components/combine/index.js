@@ -231,7 +231,7 @@ function CombineDialog(props) {
     let serchList = getBrands(serchContact);
     setContactList(serchList);
   };
-  
+
   const inputEl = createRef();
   useEffect(() => {
     inputEl.current && inputEl.current.focus();
@@ -317,7 +317,7 @@ function CombineDialog(props) {
             }
             onClick={changeTab("contact")}
           >
-            联系人
+            Contact
           </li>
           <li
             className={
@@ -325,7 +325,7 @@ function CombineDialog(props) {
             }
             onClick={changeTab("group")}
           >
-            群组
+            Chat Group
           </li>
         </ul>
         {renderGroup()}
@@ -340,46 +340,46 @@ function CombineDialog(props) {
             />
           </Box>
           <List dense>
-             {contactList.map((userGroup, index) => {
-            return (
-              <ListItem
-                key={userGroup.id}
-                className={classes.listItemContainer}
-              >
-                <Typography>{userGroup.region}</Typography>
-                <hr className={classes.listLine} />
-                {userGroup.brands.map((user) => {
-                  return (
-                    <ListItem
-                      key={user.name}
-                      onClick={() => handleClick(user)}
-                      data={user.name}
-                      value={user.name}
-                      button
-                      className={classes.listItem}
-                    >
-                      <Box className={classes.itemBox}>
-                        <ListItemAvatar>
-                          <Avatar
-                            className={classes.avatar}
-                            src={appUsersInfo[user.name]?.avatarurl}
-                            alt={`${user.name}`}
-                          >
-                            {user.name}
-                          </Avatar>
-                        </ListItemAvatar>
-                        <Box>
-                          <Typography className={classes.itemName}>
-                            {user.name}
-                          </Typography>
+            {contactList.map((userGroup, index) => {
+              return (
+                <ListItem
+                  key={userGroup.id}
+                  className={classes.listItemContainer}
+                >
+                  <Typography>{userGroup.region}</Typography>
+                  <hr className={classes.listLine} />
+                  {userGroup.brands.map((user) => {
+                    return (
+                      <ListItem
+                        key={user.name}
+                        onClick={() => handleClick(user)}
+                        data={user.name}
+                        value={user.name}
+                        button
+                        className={classes.listItem}
+                      >
+                        <Box className={classes.itemBox}>
+                          <ListItemAvatar>
+                            <Avatar
+                              className={classes.avatar}
+                              src={appUsersInfo[user.name]?.avatarurl}
+                              alt={`${user.name}`}
+                            >
+                              {user.name}
+                            </Avatar>
+                          </ListItemAvatar>
+                          <Box>
+                            <Typography className={classes.itemName}>
+                              {user.name}
+                            </Typography>
+                          </Box>
                         </Box>
-                      </Box>
-                    </ListItem>
-                  );
-                })}
-              </ListItem>
-            );
-          })}
+                      </ListItem>
+                    );
+                  })}
+                </ListItem>
+              );
+            })}
           </List>
         </div>
       </div>

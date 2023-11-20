@@ -159,10 +159,10 @@ const CreateGroup = () => {
       SetMaximumValueNotNum(true)
     }
 
-    if (Number(event.target.value) > 2000) {
+    if (Number(event.target.value) > 3000) {
       if (maximumValue) {
         setMaximumValue(false)
-        message.error(i18next.t("No More Than 2000"))
+        message.error(i18next.t("No More Than 3000"))
       }
       return
     } else {
@@ -189,6 +189,9 @@ const CreateGroup = () => {
     if (groupNameValue.match(/^\s*$/)) {
       message.error(i18next.t('Group name cannot be empty'))
       return;
+    }
+    if (groupMaximumValue < 3) {
+      return message.error(i18next.t("The group has fallen below the minimum number of participants. Please try again."))
     }
     setShowAddMemberDialog(true);
     setGroupInfoData({
@@ -272,7 +275,7 @@ const CreateGroup = () => {
                   className={classes.gInputBaseWidth}
                   style={{ marginTop: 0, paddingRight: '145px' }}
                   value={groupMaximumValue}
-                  placeholder={i18next.t("No More Than 2000")}
+                  placeholder={i18next.t("No More Than 3000")}
                   onChange={handleMaximumChange}
                 />
               </Box>

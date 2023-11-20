@@ -95,7 +95,7 @@ const InviteModal = (props) => {
     const [contactsObjs, setContactsObjs] = useState(contacts);
     useEffect(() => {
         setContactsObjs(contacts)
-    }, [members])
+    }, [members, joinedMembers])
     // search value
     const searchChangeValue = (e) => {
         setSearchValue(e.target.value)
@@ -127,11 +127,11 @@ const InviteModal = (props) => {
         if (e.target.checked) {
             let joinedNum = joinedMembers ? joinedMembers.length : 0
 
-            if (joinedNum > 0 && groupMembers.length + joinedNum >= 3) {
+            if (joinedNum > 0 && groupMembers.length + joinedNum >= 16) {
                 message.error('There can only be 16 people in the channel')
                 return
             }
-            if (joinedNum === 0 && groupMembers.length + 1 >= 3) {
+            if (joinedNum === 0 && groupMembers.length + 1 >= 16) {
                 message.error('There can only be 16 people in the channel')
                 return
             }

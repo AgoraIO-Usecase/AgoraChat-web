@@ -41,6 +41,7 @@ import {
   Icon,
   Avatar,
   useSDK,
+  useAddressContext
   // ConversationItem
 } from "chatuim2";
 import "chatuim2/style.css";
@@ -81,6 +82,7 @@ function Main() {
   const {AgoraRTC, AgoraChat} = useSDK()
   AgoraRTC.setLogLevel(4)
   // AgoraChat.logger.setLevel(0)
+  const {getGroupMembers: getGroupMembersUIKit} = useAddressContext()
 
   const [sessionInfoAddEl, setSessionInfoAddEl] = useState(null);
   const [sessionInfo, setSessionInfo] = useState({});
@@ -412,7 +414,7 @@ function Main() {
     }
     return getRtctoken({...data, agoraUid: webimAuthObj.agoraUid})
   }
-  const handleAddPerson = (data) => {
+  const handleAddPerson = async(data) => {
     console.log('handleAddPerson', data)
   //   {
   //     "channel": "41683685",
@@ -441,9 +443,16 @@ function Main() {
   })
   let members = []
   if(rtcGroup.length > 0) {
-    members = rtcGroup[0].members.map((item) => {
+    if(!rtcGroup[0]?.members || rtcGroup[0]?.members.length == 0){
+      // await getGroupMembers(data.groupId)
+      await getGroupMembersUIKit(data.groupId)
+    }
+    members = rtcGroup[0]?.members.map((item) => {
       const member = {...item}
       if(!item?.attributes?.nickName){
+        if(!member.attributes){
+          member.attributes = {}
+        }
         member.attributes.nickName = rootStore.addressStore.appUsersInfo[item.userId]?.nickname
       }
       if(!item?.attributes?.avatarurl){
@@ -452,7 +461,8 @@ function Main() {
       return member
     })
     console.log('members ---', rtcGroup)
-  }
+  } 
+    getGroupMembers(data.groupId)
     const addedPerson = data.joinedMembers.map((item) => {
       let person = {}
       console.log('item ---', item, members)
@@ -466,7 +476,7 @@ function Main() {
     console.log('addedPerson --', addedPerson)
     setAddedMembers(addedPerson)
     setInviteDialogOpen(true)
-    getGroupMembers(data.groupId)
+    
     return new Promise((resolve) => {
       _resolve.current = resolve
     })

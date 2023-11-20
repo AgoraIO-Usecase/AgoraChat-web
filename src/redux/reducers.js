@@ -176,10 +176,11 @@ const reducer = (state = defaultState, action) => {
 				//     }
 				//     return value
 				// })
+
 				let groupReqs = [...requests.group];
 				let len = groupReqs.length;
 				for (let index = 0; index < len; index++) {
-					if (groupReqs[index].name === data.name) {
+					if (groupReqs[index].groupId === data.groupId) {
 						groupReqs[index].status = data.status;
 						break;
 					}

@@ -135,8 +135,6 @@ const GroupNotice = () => {
 	let isPermissions =
 		owner === currentLoginUser || admin.includes(currentLoginUser);
 	let isGroupNotice = groupNotices.length > 0;
-	console.log('判断group 权限', state.groups, currentLoginUser)
-	console.log('我是谁', currentLoginUser)
 	const [editStatus, setEditStatus] = useState(true);
 	const [disabledStatus, setDisabledStatus] = useState(true);
 	const [noticeContent, setnoticeContent] = useState("");
