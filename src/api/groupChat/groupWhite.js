@@ -1,7 +1,7 @@
 
 import store from '../../redux/store'
 import { groupAllowAction } from '../../redux/actions'
-import { rootStore } from 'chatuim2'
+import { rootStore } from 'agora-chat-uikit'
 export const getGroupWrite = (groupId) => {
     let options = {
         groupId: groupId

@@ -17,7 +17,7 @@ import rearch_icon from "../../../../assets/search@2x.png";
 import back_icon from "../../../../assets/back@2x.png";
 import create_icon from "../../../../assets/create@2x.png";
 import deldete_icon from "../../../../assets/delete@2x.png";
-import { Avatar, rootStore } from "chatuim2";
+import { Avatar, rootStore } from "agora-chat-uikit";
 import PanoramaFishEyeIcon from "@material-ui/icons/PanoramaFishEye";
 import CheckCircleRoundedIcon from "@material-ui/icons/CheckCircleRounded";
 const useStyles = makeStyles((theme) => {
@@ -292,9 +292,8 @@ const AddGroupMemberDialog = ({
             </List>
           </Box>
           <Box className={classes.memberBox}>
-            <Typography>{`${i18next.t("Group Members")}(${
-              groupMembers.length
-            })`}</Typography>
+            <Typography>{`${i18next.t("Group Members")}(${groupMembers.length
+              })`}</Typography>
             <List>
               {groupMembers.length > 0 &&
                 groupMembers.map((item, key) => {

@@ -29,7 +29,7 @@ import allowIcon from "../../../../../assets/allow_search@2x.png";
 import deleteIcon from "../../../../../assets/red@2x.png";
 import SecondConfirmDialog from "../../../../common/secondConfirmDialog";
 import moreMenu from "../../../../../assets/menu@2x.png";
-import { rootStore, Avatar } from "chatuim2";
+import { rootStore, Avatar } from "agora-chat-uikit";
 const useStyles = makeStyles((theme) => {
   return {
     moreMenus: {
@@ -235,9 +235,8 @@ const MembersList = ({ newMuteList, inputVal }) => {
                           <img
                             src={moreMenu}
                             alt="menu"
-                            className={`${classes.imgActive} ${
-                              Boolean(anchorEl) ? classes.imgActiveBgc : ""
-                            }`}
+                            className={`${classes.imgActive} ${Boolean(anchorEl) ? classes.imgActiveBgc : ""
+                              }`}
                           />
                         </span>
                         <Menu
@@ -284,15 +283,15 @@ const MembersList = ({ newMuteList, inputVal }) => {
                             onClick={() =>
                               newMuteList.includes(selectedUser)
                                 ? showSecondDialog(
-                                    2,
-                                    "move",
-                                    "Remove from Muted List"
-                                  )
+                                  2,
+                                  "move",
+                                  "Remove from Muted List"
+                                )
                                 : showSecondDialog(
-                                    2,
-                                    "make",
-                                    "Move to Muted List"
-                                  )
+                                  2,
+                                  "make",
+                                  "Move to Muted List"
+                                )
                             }
                           >
                             <img
@@ -344,15 +343,15 @@ const MembersList = ({ newMuteList, inputVal }) => {
                             onClick={() =>
                               groupAllowList.includes(selectedUser)
                                 ? showSecondDialog(
-                                    4,
-                                    null,
-                                    "Remove from Allowed List"
-                                  )
+                                  4,
+                                  null,
+                                  "Remove from Allowed List"
+                                )
                                 : showSecondDialog(
-                                    5,
-                                    null,
-                                    "Move to Allowed List"
-                                  )
+                                  5,
+                                  null,
+                                  "Move to Allowed List"
+                                )
                             }
                           >
                             <img

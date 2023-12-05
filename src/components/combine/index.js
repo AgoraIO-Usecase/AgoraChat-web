@@ -15,7 +15,7 @@ import i18next from "i18next";
 import Loading from "../common/loading";
 import search_icon from "../../assets/search.png";
 import getGroups from "../../api/groupChat/getGroups";
-import { Avatar, rootStore } from "chatuim2";
+import { Avatar, rootStore } from "agora-chat-uikit";
 const useStyles = makeStyles((theme) => {
   return {
     root: {

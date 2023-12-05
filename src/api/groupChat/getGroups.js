@@ -2,7 +2,7 @@
 import store from '../../redux/store'
 import { groupListAction, searchLoadAction } from '../../redux/actions'
 import { getSilentModeForConversations } from '../notificationPush/index'
-import { rootStore } from 'chatuim2'
+import { rootStore } from 'agora-chat-uikit'
 const getGroups = () => {
     rootStore.client.getGroup().then((res) => {
         console.log('getGroups>>>', res);

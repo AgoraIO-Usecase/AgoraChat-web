@@ -43,8 +43,8 @@ import {
   useSDK,
   useAddressContext
   // ConversationItem
-} from "chatuim2";
-import "chatuim2/style.css";
+} from "agora-chat-uikit";
+import "agora-chat-uikit/style.css";
 import CombineDialog from "../components/combine";
 import { observer } from "mobx-react-lite";
 import { message } from "../components/common/alert";

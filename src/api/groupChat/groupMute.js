@@ -1,7 +1,7 @@
 
 import store from '../../redux/store'
 import { groupMuteAction } from '../../redux/actions'
-import { rootStore } from 'chatuim2'
+import { rootStore } from 'agora-chat-uikit'
 export const getGroupMuted = (groupId, type) => {
     let options = {
         groupId: groupId

@@ -1,7 +1,7 @@
 import store from "../../redux/store";
 import { groupAdminsAction } from "../../redux/actions";
 import { getGroupWrite } from "./groupWhite";
-import { rootStore } from "chatuim2";
+import { rootStore } from "agora-chat-uikit";
 export const getGroupAdmins = (groupId) => {
   const { addressStore } = rootStore;
   const { setGroupAdmins } = addressStore;

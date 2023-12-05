@@ -28,7 +28,7 @@ import memberInfoIcon from "../../../../assets/person_3lines_fill.png";
 
 import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
-import { Avatar, rootStore } from "chatuim2";
+import { Avatar, rootStore } from "agora-chat-uikit";
 
 const useStyles = makeStyles((theme) => {
   return {

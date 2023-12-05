@@ -37,7 +37,7 @@ import grayMuteIcon from "../../../assets/gray@2x.png";
 import checkgrayIcon from "../../../assets/check_gray.png";
 import upAndDown from "../../../assets/go@2x.png";
 import SecondConfirmDialog from "../../common/secondConfirmDialog";
-import { Avatar, rootStore } from "chatuim2";
+import { Avatar, rootStore } from "agora-chat-uikit";
 import { getBlackList } from '../../../api/contactsChat/getContacts'
 const useStyles = makeStyles((theme) => {
   return {

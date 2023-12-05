@@ -2,7 +2,7 @@
 import store from '../../redux/store'
 import { groupBlockAction } from '../../redux/actions'
 import getGroupInfo from './getGroupInfo'
-import { rootStore } from 'chatuim2'
+import { rootStore } from 'agora-chat-uikit'
 export const getGroupBlock = (groupId) => {
     let option = {
         groupId: groupId

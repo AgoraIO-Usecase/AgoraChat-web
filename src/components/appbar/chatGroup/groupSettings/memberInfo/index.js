@@ -2,7 +2,7 @@ import React, { memo, useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Box, InputBase, Typography } from "@material-ui/core";
 import i18next from "i18next";
-import { rootStore } from "chatuim2";
+import { rootStore } from "agora-chat-uikit";
 import { useSelector } from "react-redux";
 
 const useStyles = makeStyles((theme) => {

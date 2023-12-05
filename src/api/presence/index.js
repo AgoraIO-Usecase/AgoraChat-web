@@ -1,6 +1,6 @@
 import store from '../../redux/store'
 import { setPresenceList } from '../../redux/actions'
-import { rootStore } from 'chatuim2'
+import { rootStore } from 'agora-chat-uikit'
 export const publishNewPresence = (payload) => {
   return new Promise((resolve, reject) => {
     rootStore.client.publishPresence(payload).then(res => {

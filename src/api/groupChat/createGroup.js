@@ -4,7 +4,7 @@ import { message } from '../../components/common/alert'
 import i18next from "i18next";
 import store from "../../redux/store";
 import { closeGroupChatAction } from "../../redux/actions";
-import { rootStore } from 'chatuim2'
+import { rootStore } from 'agora-chat-uikit'
 const createGroup = (
 	groupInfo,
 	member,

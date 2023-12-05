@@ -6,7 +6,7 @@ import i18next from "i18next";
 import { updateGroupNotice } from "../../../../../api/groupChat/getGroupInfo";
 import { message } from '../../../../common/alert'
 import { userAvatar } from '../../../../../utils'
-import { rootStore } from 'chatuim2'
+import { rootStore } from 'agora-chat-uikit'
 const useStyles = makeStyles((theme) => {
 	return {
 		root: {

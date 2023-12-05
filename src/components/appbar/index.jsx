@@ -26,7 +26,7 @@ import PresenceStatus from "./presence/index";
 import { useSelector } from "react-redux";
 import { getLocalStorageData } from "../../utils/notification";
 import { acceptGroupRequest } from "../../api/groupChat/groupRequest";
-import { Avatar, rootStore } from "chatuim2";
+import { Avatar, rootStore } from "agora-chat-uikit";
 
 export default function Header() {
   const state = useSelector((state) => state) || {};

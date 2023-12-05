@@ -2,7 +2,7 @@
 import getGroups from './getGroups'
 import { message } from '../../components/common/alert'
 import i18next from "i18next";
-import { rootStore } from 'chatuim2'
+import { rootStore } from 'agora-chat-uikit'
 import store from '../../redux/store';
 import { updateRequestStatus } from '../../redux/actions';
 import { includes } from 'lodash';

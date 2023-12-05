@@ -9,7 +9,7 @@ import {
 } from "../../redux/actions";
 import { getSilentModeForConversations } from "../notificationPush/index";
 import { setMyUserInfo } from "../../redux/actions";
-import { rootStore } from "chatuim2";
+import { rootStore } from "agora-chat-uikit";
 const getContacts = () => {
   const { getUserInfoWithPresence } = rootStore.addressStore;
   rootStore.client.getContacts().then((res) => {

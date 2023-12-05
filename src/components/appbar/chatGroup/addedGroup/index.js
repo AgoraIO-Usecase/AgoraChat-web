@@ -7,7 +7,7 @@ import GroupSettingsDialog from "../groupSettings";
 import getGroupInfo from "../../../../api/groupChat/getGroupInfo";
 import Loading from "../../../common/loading";
 import search_icon from "../../../../assets/search.png";
-import { rootStore, Avatar } from "chatuim2";
+import { rootStore, Avatar } from "agora-chat-uikit";
 const useStyles = makeStyles((theme) => {
   return {
     root: {

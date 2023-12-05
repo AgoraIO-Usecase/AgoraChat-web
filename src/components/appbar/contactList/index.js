@@ -4,7 +4,7 @@ import { Box, ListItemAvatar, ListItem, List } from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import { useSelector } from "react-redux";
-import { rootStore, Avatar } from "chatuim2";
+import { rootStore, Avatar } from "agora-chat-uikit";
 
 const useStyles = makeStyles((theme) => {
   return {

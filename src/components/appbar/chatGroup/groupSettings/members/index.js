@@ -12,7 +12,7 @@ import BlockList from "./blockList";
 import AllowList from "./allowList";
 import { getGroupBlock } from "../../../../../api/groupChat/groupBlock";
 import rearchIcon from "../../../../../assets/search@2x.png";
-import { rootStore } from "chatuim2";
+import { rootStore } from "agora-chat-uikit";
 
 const useStyles = makeStyles((theme) => {
   return {

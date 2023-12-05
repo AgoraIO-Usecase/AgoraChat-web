@@ -14,7 +14,7 @@ import Menu from "./menu";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import searchIcon from "../../../../../assets/search@2x.png";
 import { userAvatar } from "../../../../../utils";
-import { rootStore, Avatar } from "chatuim2";
+import { rootStore, Avatar } from "agora-chat-uikit";
 
 const useStyles = makeStyles((theme) => ({
   transBox: {

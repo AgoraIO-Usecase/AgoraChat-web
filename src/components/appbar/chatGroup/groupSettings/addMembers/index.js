@@ -26,7 +26,7 @@ import doneDisabledIcon from "../../../../../assets/go@2x.png";
 import deldeteIcon from "../../../../../assets/delete@2x.png";
 import PanoramaFishEyeIcon from "@material-ui/icons/PanoramaFishEye";
 import CheckCircleRoundedIcon from "@material-ui/icons/CheckCircleRounded";
-import { Avatar, rootStore } from "chatuim2";
+import { Avatar, rootStore } from "agora-chat-uikit";
 
 const useStyles = makeStyles((theme) => {
   return {

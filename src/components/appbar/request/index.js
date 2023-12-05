@@ -17,7 +17,7 @@ import clear_icon from '../../../assets/clearall@2x.png'
 import group_request from '../../../assets/group_requates@2x.png'
 import store from "../../../redux/store";
 import { setRequests } from '../../../redux/actions'
-import { rootStore } from "chatuim2";
+import { rootStore } from "agora-chat-uikit";
 import { message } from '../../common/alert';
 const useStyles = makeStyles((theme) => ({
     root: {

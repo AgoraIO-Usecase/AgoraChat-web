@@ -9,7 +9,7 @@ import { getGroupAdmins } from './groupAdmin'
 import { getGroupMuted } from './groupMute'
 import { getGroupBlock } from './groupBlock'
 import { getGroupWrite } from './groupWhite'
-import { rootStore } from 'chatuim2'
+import { rootStore } from 'agora-chat-uikit'
 const getGroupInfo = (groupId, type) => {
 	let admins = store.getState().groups?.groupAdmins || [];
 	let owner = store.getState().groups?.groupsInfo?.owner;

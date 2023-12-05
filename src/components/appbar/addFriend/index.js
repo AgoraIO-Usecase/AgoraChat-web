@@ -5,7 +5,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { message } from "../../common/alert";
 import { addContact } from "../../../api/contactsChat/getContacts";
 import JoinGroup from "../chatGroup/joinGroup/index";
-import { rootStore } from "chatuim2";
+import { rootStore } from "agora-chat-uikit";
 const useStyles = makeStyles((theme) => {
   return {
     root: {

@@ -18,7 +18,7 @@ import {
   FormControl,
   InputLabel
 } from "@material-ui/core";
-import ListItemButton from "@mui/material/ListItemButton";
+import ListItemButton from '@mui/material/ListItemButton';
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import editIcon from "../../../assets/white@2x.png";
@@ -74,7 +74,7 @@ import {
 import SecondConfirmDialog from "../../common/secondConfirmDialog";
 import { userAvatar } from "../../../utils";
 import settingsIcon from "../../../assets/settings@2x.png";
-import { rootStore, Avatar } from "chatuim2";
+import { rootStore, Avatar } from "agora-chat-uikit";
 import store from "../../../redux/store";
 import { setTargetLanguage, setTypingSwitch } from "../../../redux/actions";
 

@@ -21,7 +21,7 @@ import { notification, getLocalStorageData, playSound, randomNumber, setTimeVSNo
 import i18next from "i18next";
 import { message } from "../components/common/alert";
 
-import { rootStore } from "chatuim2";
+import { rootStore } from "agora-chat-uikit";
 
 function publicNotify(
   message,

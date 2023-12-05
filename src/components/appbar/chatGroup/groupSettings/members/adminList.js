@@ -3,7 +3,7 @@ import { List, ListItem, ListItemText, Button, Box } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import i18next from "i18next";
 import { userAvatar } from "../../../../../utils";
-import { rootStore, Avatar } from "chatuim2";
+import { rootStore, Avatar } from "agora-chat-uikit";
 const useStyles = makeStyles((theme) => {
   return {
     gUserName: {

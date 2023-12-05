@@ -1,4 +1,4 @@
-import { rootStore } from 'chatuim2'
+import { rootStore } from 'agora-chat-uikit'
 export const inviteUsersToGroup = (groupId, data, onClose) => {
 	let option = {
 		users: data,

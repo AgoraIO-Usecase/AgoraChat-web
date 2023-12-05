@@ -10,7 +10,7 @@ import closeIcon from '../../../src/assets/close.png'
 import avatar from '../../../src/assets/avatar2.jpg'
 import defaultAvatar from '../../../src/assets/avatar_default.jpg'
 import groupAvatar from "../../../src/assets/avatar_group.jpg";
-import { rootStore } from 'chatuim2'
+import { rootStore } from 'agora-chat-uikit'
 const useStyles = makeStyles((theme) => {
     return {
         root: {

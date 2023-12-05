@@ -11,7 +11,7 @@ import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
 import TextareaAutosize from '@material-ui/core/TextareaAutosize';
 import { message } from '../common/alert'
-import { rootStore } from 'chatuim2'
+import { rootStore } from 'agora-chat'
 const useStyles = makeStyles((theme) => ({
     root: {
         width: '620px',

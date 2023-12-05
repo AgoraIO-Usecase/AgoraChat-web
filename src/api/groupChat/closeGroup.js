@@ -1,6 +1,6 @@
 import getGroups from "./getGroups";
 import getGroupInfo from "../groupChat/getGroupInfo";
-import { rootStore } from "chatuim2";
+import { rootStore } from "agora-chat-uikit";
 import { getLocalStorageData } from '../../utils/notification'
 export const closeGroup = (groupId, type, onClose) => {
   let option = {

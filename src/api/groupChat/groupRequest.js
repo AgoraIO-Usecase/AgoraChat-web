@@ -1,6 +1,6 @@
 import store from '../../redux/store'
 import { updateRequestStatus } from '../../redux/actions'
-import { rootStore } from 'chatuim2'
+import { rootStore } from 'agora-chat-uikit'
 export const declineGroupRequest = (userId, groupId) => {
     let options = {
         applicant: userId,

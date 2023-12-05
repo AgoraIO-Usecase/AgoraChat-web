@@ -10,7 +10,7 @@ import initListen from "./utils/WebIMListen";
 import Loading from "./components/common/loading";
 import { useSelector } from "react-redux";
 import { useEffect } from "react";
-import { Provider } from "chatuim2";
+import { Provider, UIKitProvider } from "agora-chat-uikit";
 import { handleError } from "./handleError";
 import customIcon from "./assets/custom.png";
 const history = createHashHistory();
@@ -36,7 +36,7 @@ function App() {
 	return (
 		<div className="App">
 			<Loading show={isFetching} />
-			<Provider
+			<UIKitProvider
 				onError={handleError}
 				initConfig={{
 					appKey: "41117440#383391"
@@ -65,7 +65,7 @@ function App() {
 						/>
 					</Switch>
 				</HashRouter>
-			</Provider>
+			</UIKitProvider>
 		</div>
 	);
 }

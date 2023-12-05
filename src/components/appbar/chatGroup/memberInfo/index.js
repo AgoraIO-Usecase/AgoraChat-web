@@ -13,7 +13,7 @@ import donotdisturbIcon from "../../../../assets/Do_not_Disturb.png";
 import customIcon from "../../../../assets/custom.png";
 import leaveIcon from "../../../../assets/leave.png";
 import { useSelector } from "react-redux";
-import { rootStore, Avatar } from "chatuim2";
+import { rootStore, Avatar } from "agora-chat-uikit";
 
 const useStyles = makeStyles((theme) => {
   return {

@@ -8,7 +8,7 @@ import { addGroup } from "../../../../api/groupChat/addGroup";
 import getPublicGroups from "../../../../api/groupChat/getPublicGroups";
 import Loading from "../../../common/loading";
 import search_icon from "../../../../assets/search.png";
-import { Avatar } from "chatuim2";
+import { Avatar } from "agora-chat-uikit";
 
 const useStyles = makeStyles((theme) => {
   return {

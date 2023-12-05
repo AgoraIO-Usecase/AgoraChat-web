@@ -5,7 +5,7 @@ import i18next from "i18next";
 import store from "../../../../../redux/store";
 import { modifyGroupInfo } from "../../../../../api/groupChat/getGroupInfo";
 import { message } from "../../../../common/alert";
-import { rootStore } from 'chatuim2'
+import { rootStore } from 'agora-chat-uikit'
 const useStyles = makeStyles((theme) => {
 	return {
 		titleBox: {

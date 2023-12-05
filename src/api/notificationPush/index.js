@@ -1,7 +1,7 @@
 import store from '../../redux/store'
 import { setMuteDataObj, setGlobalSilentMode, setUnread } from '../../redux/actions'
 import { setTimeVSNowTime, changeTitle } from '../../utils/notification'
-import { rootStore } from 'chatuim2'
+import { rootStore } from 'agora-chat-uikit'
 function silentModeRedux(type, data) {
   store.dispatch(setGlobalSilentMode({ [type]: data }))
 }

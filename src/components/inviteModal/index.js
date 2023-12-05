@@ -12,7 +12,7 @@ import deldete_icon from '../../assets/delete@2x.png'
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import WebIM from '../../utils/WebIM'
 import { message } from '../common/alert'
-import { Avatar, rootStore } from "chatuim2";
+import { Avatar, rootStore } from "agora-chat-uikit";
 const useStyles = makeStyles((theme) => {
     return ({
         root: {
