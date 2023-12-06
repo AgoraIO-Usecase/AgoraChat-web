@@ -10,7 +10,7 @@ import initListen from "./utils/WebIMListen";
 import Loading from "./components/common/loading";
 import { useSelector } from "react-redux";
 import { useEffect } from "react";
-import { Provider, UIKitProvider } from "agora-chat-uikit";
+import { Provider, UIKitProvider, eventHandler } from "agora-chat-uikit";
 import { handleError } from "./handleError";
 import customIcon from "./assets/custom.png";
 const history = createHashHistory();
@@ -32,12 +32,30 @@ function App() {
 	const isFetching = useSelector((state) => state?.isFetching) || false;
 	useEffect(() => {
 		initListen();
+		eventHandler.addEventHandler("chatroom", {
+			onError: handleError,
+			recallMessage: {
+				error: () => {
+					console.log("recallMessage error");
+				}
+			},
+			sendMessage: {
+				error: () => {
+					console.log("sendMessage error");
+				}
+			},
+			modifyMessage: {
+				error: () => {
+					console.log("modifyMessage error");
+				}
+			}
+		})
 	}, []);
 	return (
 		<div className="App">
 			<Loading show={isFetching} />
 			<UIKitProvider
-				onError={handleError}
+				// onError={handleError}
 				initConfig={{
 					appKey: "41117440#383391"
 				}}

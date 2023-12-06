@@ -249,12 +249,10 @@ const initListen = () => {
           //     playSound()
           // }
           // notification({ body: 'Have A Group Invite', tag: randomNumber() }, { title: 'agora chat' })
-          console.log('开关', getLocalStorageData().groupRequestSwitch)
           if (!getLocalStorageData().groupRequestSwitch) {
             return agreeInviteGroup(event);
           }
 
-          console.log('收到加群邀请', event)
           let { requests } = store.getState();
           let groupRequests = requests.group;
           let data = {
