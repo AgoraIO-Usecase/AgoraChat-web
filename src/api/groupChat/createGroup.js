@@ -33,9 +33,7 @@ const createGroup = (
 			maxusers: groupMaximumValue
 		},
 	};
-	console.log(options)
 	rootStore.client.createGroupNew(options).then((res) => {
-		console.log("createGroupNew>>>", res);
 		message.success(i18next.t("created success"));
 		getGroups();
 		onClearValue();

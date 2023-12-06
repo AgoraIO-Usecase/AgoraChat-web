@@ -1049,7 +1049,6 @@ export default function Setting({ open, onClose }) {
   const [selectedLang, setSelectedLang] = useState("none");
   useEffect(() => {
     rootStore.client.getSupportedLanguages().then((res) => {
-      console.log("支持的语言", res);
       setLanguages(res.data);
     });
   }, [rootStore.loginState]);
@@ -1066,7 +1065,6 @@ export default function Setting({ open, onClose }) {
     const data = getLocalStorageData();
     data.selectedLang = e.target.value;
     data.translateSwitch = e.target.value == "" ? false : true
-    console.log("设置语言", data);
     localStorage.setItem("soundPreviewText", JSON.stringify(data));
   };
 

@@ -12,7 +12,6 @@ export const addGroup = (groupId) => {
         message: "I am Tom"
     };
     rootStore.client.joinGroup(options).then((res) => {
-        console.log('joinGroup>>>', res)
         message.success(`${i18next.t('addGroup succes')}`)
         getGroups();
     }).catch((err) => {
@@ -50,8 +49,6 @@ export const rejectInviteGroup = (val) => {
         groupId: gid
     };
     rootStore.client.rejectInviteIntoGroup(options).then((res) => {
-        // console.log('rejectInvite>>>', res);
-        // message.success(`${i18next.t('已拒绝加入群组：')}` + gid)
         store.dispatch(updateRequestStatus({ type: 'group', name: from, groupId: gid, status: 'ignored' }))
     })
 }

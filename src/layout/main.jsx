@@ -79,9 +79,9 @@ const useStyles = makeStyles(() => {
 
 function Main() {
   // set sdk log level
-  const {AgoraRTC, AgoraChat} = useSDK()
+  const {AgoraRTC, ChatSDK} = useSDK()
   AgoraRTC.setLogLevel(4)
-  // AgoraChat.logger.setLevel(0)
+  ChatSDK.logger.setLevel(0)
   const {getGroupMembers: getGroupMembersUIKit} = useAddressContext()
 
   const [sessionInfoAddEl, setSessionInfoAddEl] = useState(null);
@@ -166,7 +166,6 @@ function Main() {
     const { sessionType, sessionId } = session;
     store.dispatch(setCurrentSessionId(sessionId));
     const { unread } = store.getState();
-    console.log(unread, "main");
     if (!unread[sessionType][sessionId]) {
       unread[sessionType][sessionId] = {};
     }
@@ -195,7 +194,6 @@ function Main() {
     rootStore.messageStore
       .sendMessage(combineData)
       .then((res) => {
-        console.log("发送成功", res);
         rootStore.conversationStore.topConversation({
           chatType: combineData.chatType,
           conversationId: combineData.to
@@ -292,7 +290,6 @@ function Main() {
   };
 
   const renderMessage = (msg) => {
-    console.log("自定义的消息");
     let moreAction = selfMoreAction;
     // add report button
     if (msg.from !== rootStore.client.user) {
@@ -460,12 +457,10 @@ function Main() {
       }
       return member
     })
-    console.log('members ---', rtcGroup)
   } 
     getGroupMembers(data.groupId)
     const addedPerson = data.joinedMembers.map((item) => {
       let person = {}
-      console.log('item ---', item, members)
       members.forEach((member) => {
         if(member.userId === item.imUserId){
           person = member
@@ -473,7 +468,6 @@ function Main() {
       })
       return person
     })
-    console.log('addedPerson --', addedPerson)
     setAddedMembers(addedPerson)
     setInviteDialogOpen(true)
     
@@ -551,7 +545,6 @@ function Main() {
       return item.groupid == groupId
     })
     if(rtcGroup.length > 0) {
-      console.log('members ---', rtcGroup)
       const members = rtcGroup[0].members.map((item) => {
         const member = {...item}
         if(!item?.attributes?.nickName){
@@ -714,7 +707,6 @@ function Main() {
       }} joinedMembers={addedMembers} onCall={(members) => {
         _resolve.current(members)
         setInviteDialogOpen(false)
-        console.log('members', members)
       }}></InviteModal>
     </div>
   );
