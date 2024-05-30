@@ -10,7 +10,7 @@ import initListen from "./utils/WebIMListen";
 import Loading from "./components/common/loading";
 import { useSelector } from "react-redux";
 import { useEffect } from "react";
-import { Provider, UIKitProvider, eventHandler } from "agora-chat-uikit";
+import { Provider, UIKitProvider, eventHandler, useSDK } from "agora-chat-uikit";
 import { handleError } from "./handleError";
 import customIcon from "./assets/custom.png";
 const history = createHashHistory();
@@ -30,6 +30,10 @@ const AuthorizedComponent = (props) => {
 
 function App() {
 	const isFetching = useSelector((state) => state?.isFetching) || false;
+	// close Chat and RTC log
+	const { AgoraRTC, ChatSDK } = useSDK();
+	ChatSDK.logger.disableAll();
+	AgoraRTC.setLogLevel(1);
 	useEffect(() => {
 		initListen();
 		eventHandler.addEventHandler("chatroom", {
