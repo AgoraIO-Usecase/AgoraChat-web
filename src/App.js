@@ -33,7 +33,7 @@ function App() {
 	// close Chat and RTC log
 	const { AgoraRTC, ChatSDK } = useSDK();
 	ChatSDK.logger.disableAll();
-	AgoraRTC.setLogLevel(1);
+	AgoraRTC.setLogLevel(4);
 	useEffect(() => {
 		initListen();
 		eventHandler.addEventHandler("chatroom", {
