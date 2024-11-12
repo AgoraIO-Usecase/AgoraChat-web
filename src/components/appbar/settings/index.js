@@ -1102,8 +1102,8 @@ export default function Setting({ open, onClose }) {
     return (
       <div className={classes.infoPanel}>
         <div style={{ flex: 1 }}>
-          <div className={classes.aboutItem}>SDK Version: 1.2.0</div>
-          <div className={classes.aboutItem}>UIKit Version: 2.0.0</div>
+          <div className={classes.aboutItem}>SDK Version: 1.2.1</div>
+          <div className={classes.aboutItem}>UIKit Version: 1.2.1</div>
           <div className={classes.aboutItem}>
             More:{" "}
             <a href="https://www.agora.io/en/" target="_black">

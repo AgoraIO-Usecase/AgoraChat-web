@@ -188,7 +188,7 @@ export default function Login() {
                 </div>
             </div>
             <div className='login-copyright'>
-                © 2023 Agora
+                © 2024 Agora
             </div>
         </div>
     )
