@@ -244,7 +244,7 @@ const AddMembers = ({ onClose }) => {
                   >
                     <Box className={classes.itemBox}>
                       <Box className={classes.gMemberAvatar}>
-                        <Avatar src={appUsersInfo[item.id]?.avatarurl}>
+                        <Avatar src={appUsersInfo[item.id]?.avatarurl} size={36}>
                           {appUsersInfo[item.id]?.nickname || item.id}
                         </Avatar>
                       </Box>
@@ -285,7 +285,7 @@ const AddMembers = ({ onClose }) => {
                 return (
                   <ListItem key={key} className={classes.contactsItem}>
                     <Box className={classes.itemBox}>
-                      <Avatar src={appUsersInfo[item]?.avatarurl}>
+                      <Avatar src={appUsersInfo[item]?.avatarurl} size={36}>
                         {appUsersInfo[item]?.nickname || item}
                       </Avatar>
                       <Typography className={classes.marginStyle}>

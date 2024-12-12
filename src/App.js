@@ -1,6 +1,6 @@
 import "./App.css";
 
-import { Switch, Route, Redirect, HashRouter } from "react-router-dom";
+import { Switch, Route, Redirect, HashRouter, Router, BrowserRouter, Routes } from "react-router-dom";
 import { createHashHistory } from "history";
 import Login from "./layout/login";
 import Main from "./layout/main";
@@ -31,12 +31,13 @@ const AuthorizedComponent = (props) => {
 function App() {
 	const isFetching = useSelector((state) => state?.isFetching) || false;
 	// close Chat and RTC log
+	const state = useSelector((state) => state);
 	const { AgoraRTC, ChatSDK } = useSDK();
 	ChatSDK.logger.disableAll();
 	AgoraRTC.setLogLevel(4);
 	useEffect(() => {
 		initListen();
-		eventHandler.addEventHandler("chatroom", {
+		eventHandler.addEventHandler("messageEvent", {
 			onError: handleError,
 			recallMessage: {
 				error: () => {
@@ -61,7 +62,9 @@ function App() {
 			<UIKitProvider
 				// onError={handleError}
 				initConfig={{
-					appKey: "41117440#383391"
+					appKey: "41117440#383391",
+					useUserInfo: true,
+					translationTargetLanguage: state?.targetLanguage
 				}}
 			// reactionConfig={{
 			// 	path: '/assets/',

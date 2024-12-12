@@ -131,7 +131,7 @@ const CustomUserProfile = ({ userId }) => {
     <Box className={classes.root}>
       <Box className={classes.infoBox}>
         <Box className={classes.avatarBox}>
-          <Avatar src={userInfo?.avatarurl} className={classes.avatarImg}>
+          <Avatar src={userInfo?.avatarurl} className={classes.avatarImg} size={36}>
             {userInfo?.nickname || userId}
           </Avatar>
           <Tooltip title={presenceExt} placement="bottom-end">

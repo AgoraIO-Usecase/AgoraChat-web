@@ -12,10 +12,10 @@ export const signUp = (agoraId, password) => {
     return postData('https://a41.chat.agora.io/app/chat/user/register', { "userAccount": agoraId, "userPassword": password })
 }
 
-export const loginWithToken = (agoraId, agoraToken) => {
+export const loginWithToken = (agoraId, accessToken) => {
     let options = {
         user: agoraId,
-        agoraToken: agoraToken
+        accessToken: accessToken
     };
 
     return new Promise((resolve, reject) => {
@@ -68,6 +68,7 @@ export function logout() {
     sessionStorage.removeItem('webim_auth')
     rootStore.clear()
     window.document.title = 'Agora chat'
+
 }
 
 export function register(agoraId, password, nickname) {

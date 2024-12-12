@@ -56,7 +56,8 @@ const useStyles = makeStyles(() => {
   return {
     avatarWrap: {
       position: "relative",
-      cursor: "pointer"
+      cursor: "pointer",
+      marginRight: '12px'
     },
     presenceWrap: {
       borderRadius: "50%",
@@ -616,16 +617,58 @@ function Main() {
                 </div>
               )
             }}
-            messageEditorProps={{
+            messageInputProps={{
               onSendMessage: sendMessage,
               enabledTyping: state?.typingSwitch
             }}
-            renderMessageList={() => (
-              <MessageList renderMessage={renderMessage} messageProps={{}}/>
-            )}
+            // renderMessageList={() => (
+            //   <MessageList renderMessage={renderMessage} messageProps={{}}/>
+            // )}
+            messageListProps={{
+              renderUserProfile:renderUserProfile,
+              messageProps: {
+                reaction: true,
+                thread: true,
+                customAction: {
+                  visible: true,
+                  icon: null,
+                  actions: [
+                    {
+                      content: "REPLY",
+                      onClick: () => {},
+                    },
+                    {
+                      content: "UNSEND",
+                      onClick: () => {},
+                    },
+                    {
+                      content: "Modify",
+                      onClick: () => {},
+                    },
+                    {
+                      content: "SELECT",
+                      onClick: () => {},
+                    },
+                    {
+                      content: "TRANSLATE",
+                      onClick: () => {},
+                    },
+                    {
+                      content: "REPORT",
+                      onClick: () => {},
+                    },
+                    {
+                      content: "DELETE",
+                      onClick: () => {},
+                    },
+                  ],
+                },
+              },
+            }}
+       
             rtcConfig={{
               onInvite: handleInviteToCall,
-              agoraUid: webimAuthObj.agoraUid,
+              agoraUid: webimAuthObj.agoraUid || '',
               onAddPerson: handleAddPerson,
               getIdMap: handleGetIdMap,
               onStateChange: handleRtcStateChange,
@@ -651,7 +694,7 @@ function Main() {
                   onTranslateTextMessage: handleTranslateMsg
                 }
               }}
-              messageEditorProps={{
+              messageInputProps={{
                 onSendMessage: sendMessage,
                 enabledTyping: state?.typingSwitch
               }}

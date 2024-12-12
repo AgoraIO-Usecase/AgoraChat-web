@@ -218,7 +218,7 @@ const InviteModal = (props) => {
                                     <ListItem key={key} onClick={handleSelect(item)} className={classes.contactsItem}>
                                         <Box style={{ display: 'flex', alignItems: 'center' }}>
                                             <Box className={classes.gMemberAvatar}>
-                                                <Avatar src={item.avatarurl || item.name}>{item.name}</Avatar>
+                                                <Avatar src={item.avatarurl || item.name} size={36}>{item.name}</Avatar>
                                             </Box>
                                             <Typography style={{ marginLeft: '10px' }}>{item.name}</Typography>
                                         </Box>
@@ -240,7 +240,7 @@ const InviteModal = (props) => {
                                     <ListItem key={key} className={classes.contactsItem}>
                                         <Box style={{ display: 'flex', alignItems: 'center' }}>
                                             <Box className={classes.gMemberAvatar}>
-                                                <Avatar src={item.avatarurl || item.name}>{item.name}</Avatar>
+                                                <Avatar src={item.avatarurl || item.name} size={36}>{item.name}</Avatar>
                                             </Box>
                                             <Typography style={{ marginLeft: '10px' }}>{item.name}</Typography>
                                         </Box>

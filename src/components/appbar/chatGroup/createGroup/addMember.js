@@ -227,7 +227,7 @@ const AddGroupMemberDialog = ({
       <Box className={classes.root}>
         <Box className={classes.gInfoText}>
           <Box>
-            <Avatar alt="" className={classes.gAvatar}>
+            <Avatar alt="" className={classes.gAvatar} >
               {groupNameValue}
             </Avatar>
             <Typography className={classes.gNameText}>
@@ -269,7 +269,7 @@ const AddGroupMemberDialog = ({
                     >
                       <Box style={{ display: "flex", alignItems: "center" }}>
                         <Box className={classes.gMemberAvatar}>
-                          <Avatar src={appUsersInfo[item.id]?.avatarurl}>
+                          <Avatar src={appUsersInfo[item.id]?.avatarurl} size={36}>
                             {appUsersInfo[item.id]?.nickname || item.id}
                           </Avatar>
                         </Box>
@@ -301,7 +301,7 @@ const AddGroupMemberDialog = ({
                     <ListItem key={key} className={classes.contactsItem}>
                       <Box style={{ display: "flex", alignItems: "center" }}>
                         <Box className={classes.gMemberAvatar}>
-                          <Avatar src={appUsersInfo[item]?.avatarurl}>
+                          <Avatar src={appUsersInfo[item]?.avatarurl} size={36}>
                             {appUsersInfo[item]?.nickname || item}
                           </Avatar>
                         </Box>
