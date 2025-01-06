@@ -5,15 +5,12 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-y: hidden;
+  min-width: 1080px;
+  font-family: Roboto;
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
-}
-::-webkit-scrollbar {
-  width:0px;
-  margin-right: 0px;
-  padding: 0px;
-  display: none !important;
 }

@@ -1,0 +1,235 @@
+import React, { ChangeEvent, useState, useRef, useContext } from "react";
+import ReactDom from "react-dom";
+import "./personalInfo.scss";
+import i18next from "../../../i18n";
+import {
+  Avatar,
+  rootStore,
+  Icon,
+  Modal,
+  Input,
+  RootContext,
+} from "agora-chat-uikit";
+import { uploadImage } from "../../../service/avatar";
+import { observer } from "mobx-react-lite";
+import classNames from "classnames";
+import ImageCrop from "../../../components/imageCrop/imageCrop";
+import toast from "../../../components/toast/toast";
+const PersonalInfo = () => {
+  const prefixCls = "user-info";
+  const { addressStore } = rootStore;
+  const [nicknameModalVisible, setNicknameModalVisible] = useState(false);
+
+  const [nicknameValue, setNicknameValue] = useState(
+    addressStore.appUsersInfo[rootStore.client.user]?.nickname
+  );
+  const editNickname = () => {
+    addressStore.setAppUserInfo({
+      ...addressStore.appUsersInfo,
+      [rootStore.client.user]: {
+        ...addressStore.appUsersInfo[rootStore.client.user],
+        nickname: nicknameValue,
+      },
+    });
+    setNicknameModalVisible(false);
+  };
+
+  const handleNicknameChange = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.value.length > 20) return;
+
+    rootStore.client
+      .updateUserInfo({
+        nickname: e.target.value,
+      })
+      .then(() => {
+        setNicknameValue(e.target.value);
+      });
+  };
+
+  const imageEl = useRef<HTMLInputElement>(null);
+  const selectImage = () => {
+    imageEl.current?.focus();
+    setTimeout(() => {
+      imageEl.current?.click();
+    }, 0);
+  };
+  const [img, setImg] = useState<string>("");
+  const [cropModalOpen, setCropModalOpen] = useState(false);
+  const handleImageChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
+    let file = imageEl.current?.files?.[0];
+    const url = URL.createObjectURL(file as File);
+    setImg(url);
+    setCropModalOpen(true);
+    imageEl!.current!.value = "";
+  };
+
+  const handleUploadImage = (url: string) => {
+    fetch(url).then((res) => {
+      res.blob().then((blob) => {
+        const formData = new FormData();
+        formData.append("file", blob);
+        uploadImage(formData).then((url) => {
+          rootStore.addressStore.setAppUserInfo({
+            ...addressStore.appUsersInfo,
+            [rootStore.client.user]: {
+              ...addressStore.appUsersInfo[rootStore.client.user],
+              avatarurl: url,
+            },
+          });
+          setCropModalOpen(false);
+        });
+      });
+    });
+  };
+
+  const context = useContext(RootContext);
+  const { theme, presenceMap } = context;
+  const themeMode = theme?.mode;
+  const myInfo =
+    rootStore.addressStore.appUsersInfo[rootStore.client.user] || {};
+
+  const presence = myInfo.isOnline
+    ? presenceMap?.[myInfo.presenceExt ?? "Online"] || presenceMap?.["Custom"]
+    : presenceMap?.["Offline"];
+  const handleCopy = () => {
+    var textArea = document.createElement("textarea");
+    textArea.value = rootStore.client.user;
+    // Add to the DOM element for easier invocation of the select method
+    document.body.appendChild(textArea);
+    // “Select Text”
+    textArea.select();
+    // “Execute Copy Command”
+    document.execCommand("copy");
+    // Remove Temporary Element
+    document.body.removeChild(textArea);
+    toast.success(i18next.t("copySuccess"));
+  };
+  return (
+    <div
+      className={classNames("setting-personal", {
+        "setting-personal-dark": themeMode === "dark",
+      })}
+    >
+      <header className="setting-personal-header">
+        {i18next.t("personalInfo")}
+      </header>
+      <main className="setting-personal-main">
+        <section className="setting-personal-content">
+          <div className={`${prefixCls}-header`}>
+            <Avatar
+              src={addressStore.appUsersInfo[rootStore.client.user]?.avatarurl}
+              size={100}
+              shape={theme?.avatarShape}
+              presence={{ visible: true, icon: presence }}
+            >
+              {addressStore.appUsersInfo[rootStore.client.user]?.nickname ||
+                rootStore.client.user}
+            </Avatar>
+            <div>
+              <div className={`${prefixCls}-header-name`}>
+                {addressStore.appUsersInfo[rootStore.client.user]?.nickname}
+              </div>
+              <div className={`${prefixCls}-header-id`}>
+                <div>{i18next.t("User")} ID:</div>
+                {rootStore.client.user}
+                <Icon
+                  type="DOC_ON_DOC"
+                  style={{ cursor: "copy" }}
+                  onClick={handleCopy}
+                ></Icon>
+              </div>
+            </div>
+          </div>
+
+          <div className={`${prefixCls}-content`}>
+            <div className={`${prefixCls}-content-item`}>
+              <div
+                className={`${prefixCls}-content-item-box`}
+                onClick={() => {
+                  setNicknameModalVisible(true);
+                }}
+              >
+                <span>{i18next.t("nickname")}</span>
+                <div>
+                  {addressStore.appUsersInfo[rootStore.client.user]?.nickname}
+                  <Icon type="SLASH_IN_BOX" width={24} height={24}></Icon>
+                </div>
+              </div>
+            </div>
+
+            <div className={`${prefixCls}-content-item`}>
+              <div
+                style={{ position: "relative" }}
+                className={`${prefixCls}-content-item-box`}
+                onClick={() => {
+                  // setNicknameModalVisible(true);
+                }}
+              >
+                <span>{i18next.t("avatar")}</span>
+                <div>
+                  <Avatar
+                    src={
+                      addressStore.appUsersInfo[rootStore.client.user]
+                        ?.avatarurl
+                    }
+                    size={40}
+                    shape={theme?.avatarShape}
+                  >
+                    {addressStore.appUsersInfo[rootStore.client.user]?.nickname}
+                  </Avatar>
+                  <Icon
+                    type="SLASH_IN_BOX"
+                    width={24}
+                    height={24}
+                    color="#F9FAFA"
+                    onClick={selectImage}
+                    style={{
+                      position: "absolute",
+                      right: "8px",
+                    }}
+                  ></Icon>
+                </div>
+              </div>
+            </div>
+            <ImageCrop
+              open={cropModalOpen}
+              onCancel={() => {
+                setCropModalOpen(false);
+              }}
+              title={i18next.t("uploadProfileImage")}
+              onUpload={handleUploadImage}
+              img={img}
+            ></ImageCrop>
+          </div>
+        </section>
+      </main>
+
+      <Modal
+        open={nicknameModalVisible}
+        onCancel={() => {
+          setNicknameModalVisible(false);
+        }}
+        onOk={editNickname}
+        title={i18next.t("nickname")}
+        wrapClassName="modify-message-modal"
+      >
+        <Input
+          className="cui-group-nickname-input"
+          maxLength={20}
+          value={nicknameValue}
+          onChange={handleNicknameChange}
+        />
+      </Modal>
+      <input
+        id="btn"
+        type="file"
+        accept="image/gif,image/jpeg,image/jpg,image/png,image/svg"
+        ref={imageEl}
+        onChange={handleImageChange}
+        style={{ display: "none" }}
+      />
+    </div>
+  );
+};
+
+export default observer(PersonalInfo);

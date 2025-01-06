@@ -1,11 +1,6 @@
 .App {
-  text-align: left!important;
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  display: flex;
-  overflow: auto;
-  /* font-family: "Roboto" !important; */
+  text-align: center;
+  overflow: hidden;
 }
 
 .App-logo {
@@ -38,17 +33,69 @@
   from {
     transform: rotate(0deg);
   }
-
   to {
     transform: rotate(360deg);
   }
 }
-.MuiDialog-paper,.MuiMenu-paper,.MuiPopover-paper {
-  border-radius: 12px !important;
+
+
+.conversation{
+  background-color: #eee;
 }
-.MuiList-padding {
-  padding: 8px !important;
+
+.tab-box{
+  width: 50px;
+  border: 1px solid transparent;
+  background: #607D8B;
+  gap: 10px;
+  display: flex;
+  flex-direction: column;
+  padding: 10px 4px;
 }
-.MuiMenuItem-root {
-  border-radius: 8px !important;
+
+.tab-btn{
+  height: 50px;
+  width: 50px;
+  text-align: center;
+  line-height: 50px;
+  background: #2196F3;
+  color: #fff;
+  cursor: pointer;
+  border-radius: 25px;
+  font-size: 12px;
+}
+
+body{
+  background-color: #d8dee5;
+  font-family: Roboto;
+}
+.add-contact{
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.add-contact-input input{
+  background: #eee;
+}
+
+.cui-conversationItem-content{
+  width: 100%;
+}
+
+@media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
+  ::-webkit-scrollbar-track {
+    border: none;
+    background-color: transparent;
+  }
+  
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+}
+
+@font-face {
+  font-family: Roboto;
+  src: url('./font/Roboto-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
 }

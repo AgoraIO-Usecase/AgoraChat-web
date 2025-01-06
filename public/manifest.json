@@ -21,10 +21,5 @@
   "start_url": ".",
   "display": "standalone",
   "theme_color": "#000000",
-  "background_color": "#ffffff",
-  "permissions": {
-    "desktop-notification":{
-
-    }
-  }
+  "background_color": "#ffffff"
 }
