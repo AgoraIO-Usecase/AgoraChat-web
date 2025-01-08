@@ -154,7 +154,7 @@ const ChatContainer = forwardRef((props, ref) => {
   }));
 
   useEffect(() => {
-    // 获取群组头像
+    // get groups avatar
     if (rootStore.loginState) {
       const groupIds =
         rootStore.addressStore.groups
@@ -171,7 +171,7 @@ const ChatContainer = forwardRef((props, ref) => {
     }
   }, [rootStore.loginState, rootStore.addressStore.groups.length]);
 
-  // --- 创建会话 ---
+  // --- create conversations ---
   const [createChatVisible, setCreateChatVisible] = useState(false);
   let [groupAvatar, setGroupAvatar] = useState("");
   useEffect(() => {

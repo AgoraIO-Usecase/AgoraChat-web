@@ -82,7 +82,7 @@ const Login = () => {
         );
       })
       .catch(function (error) {
-        console.log("获取 token 失败", error);
+        console.log("get token failed", error);
         switch (error.response?.data?.errorInfo) {
           case "UserId password error.":
             toast.error(i18next.t("Incorrect username or password"));

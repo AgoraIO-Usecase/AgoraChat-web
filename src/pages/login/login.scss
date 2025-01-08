@@ -7,10 +7,11 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    min-height: 698px;
+    min-height: 700px;
     background-position: center;
     height: 100vh;
     font-family: "Roboto";
+    position: relative;
 }
 .language-switch{
     position: absolute;
