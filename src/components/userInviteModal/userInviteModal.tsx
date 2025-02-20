@@ -58,7 +58,7 @@ const UserInviteModal = (props: UserInviteModalProps) => {
             rootStore.addressStore.appUsersInfo[item.userId]?.nickname;
         }
         if (!item?.attributes?.avatarurl) {
-          member.attributes.avatarurl =
+          member.attributes!.avatarurl =
             rootStore.addressStore.appUsersInfo[item.userId]?.avatarurl;
         }
         // @ts-ignore

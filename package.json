@@ -14,7 +14,7 @@
     "@types/node": "^16.18.68",
     "@types/react": "^18.2.43",
     "@types/react-dom": "^18.2.17",
-    "agora-chat-uikit": "^1.3.1-beta",
+    "agora-chat-uikit": "^2.0.0",
     "axios": "^1.6.7",
     "babel-jest": "^27.4.2",
     "babel-loader": "^8.2.3",
