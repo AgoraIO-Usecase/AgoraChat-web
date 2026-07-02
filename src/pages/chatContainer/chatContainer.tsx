@@ -34,7 +34,7 @@ import {
   Empty,
 } from "agora-chat-uikit";
 import toast from "../../components/toast/toast";
-import { APP_ID, appKey } from "../../config";
+import { APP_ID } from "../../config";
 import { getRtcToken, getRtcChannelMembers } from "../../service/rtc";
 import { getGroupAvatar } from "../../service/avatar";
 import UserInviteModal from "../../components/userInviteModal/userInviteModal";

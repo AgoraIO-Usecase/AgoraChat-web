@@ -14,7 +14,7 @@
     "@types/node": "^16.18.68",
     "@types/react": "^18.2.43",
     "@types/react-dom": "^18.2.17",
-    "agora-chat-uikit": "^2.0.0",
+    "agora-chat-uikit": "^2.1.1",
     "axios": "^1.6.7",
     "babel-jest": "^27.4.2",
     "babel-loader": "^8.2.3",
@@ -24,13 +24,11 @@
     "browserslist": "^4.18.1",
     "camelcase": "^6.2.1",
     "case-sensitive-paths-webpack-plugin": "^2.4.0",
-    "chatuim2": "^1.4.1-beta75",
     "classnames": "^2.5.1",
     "css-loader": "^6.5.1",
     "css-minimizer-webpack-plugin": "^3.2.0",
     "dotenv": "^10.0.0",
     "dotenv-expand": "^5.1.0",
-    "easemob-chat-uikit": "1.2.0",
     "eslint": "^8.3.0",
     "eslint-config-react-app": "^7.0.1",
     "eslint-webpack-plugin": "^3.1.1",
@@ -80,9 +78,10 @@
     "workbox-webpack-plugin": "^6.4.1"
   },
   "scripts": {
-    "start": "node scripts/start.js",
-    "build": "node scripts/build.js",
-    "test": "node scripts/test.js"
+    "start": "node scripts/run-with-openssl-legacy-provider.js scripts/start.js",
+    "build": "node scripts/run-with-openssl-legacy-provider.js scripts/build.js",
+    "test": "node scripts/run-with-openssl-legacy-provider.js scripts/test.js",
+    "publish": "zip -r webim-hyphenate.zip ./build "
   },
   "eslintConfig": {
     "extends": [
@@ -159,6 +158,6 @@
     ]
   },
   "devDependencies": {
-    "node-sass": "^7.0.3"
+    "sass": "^1.101.0"
   }
 }

@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { rootStore } from "../eventHandler";
 import type { RootState } from "./store";
-import { appKey } from "../config";
+import { appId } from "../config";
 export const loginSlice = createSlice({
   name: "login",
   initialState: {
@@ -11,7 +11,7 @@ export const loginSlice = createSlice({
     userId: "",
     agoraUid: "",
     loggedIn: false,
-    appKey: appKey,
+    appId: appId,
     useDNS: true,
   },
   reducers: {
@@ -28,7 +28,7 @@ export const loginSlice = createSlice({
         userId: string;
         chatToken: string;
         agoraUid: string;
-      }>
+      }>,
     ) => {
       const { client } = rootStore;
       client.open({
@@ -42,7 +42,7 @@ export const loginSlice = createSlice({
 
     loginWithPassword: (
       state,
-      action: PayloadAction<{ userId: string; password: string }>
+      action: PayloadAction<{ userId: string; password: string }>,
     ) => {
       const { client } = rootStore;
       client.open({
@@ -63,7 +63,7 @@ export const loginSlice = createSlice({
             chatToken: state.chatToken,
             password: state.password,
             agoraUid: state.agoraUid,
-          })
+          }),
         );
       }
     },
@@ -78,9 +78,9 @@ export const loginSlice = createSlice({
 
     setSDKConfig: (
       state,
-      action: PayloadAction<{ appKey: string; useDNS: boolean }>
+      action: PayloadAction<{ appId: string; useDNS: boolean }>,
     ) => {
-      state.appKey = action.payload.appKey;
+      state.appId = action.payload.appId;
       state.useDNS = action.payload.useDNS;
     },
   },

@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { getToken } from "../../service/login";
 import { loginWithToken, setSDKConfig } from "../../store/loginSlice";
 import { useAppSelector, useAppDispatch } from "../../hooks";
-import { DEMO_VERSION, SDK_VERSION, UIKIT_VERSION, appKey } from "../../config";
+import { DEMO_VERSION, SDK_VERSION, UIKIT_VERSION, appId } from "../../config";
 import notice from "../../assets/candle_in_circle_fill.png";
 
 import eyeOpen from "../../assets/eye@2x.png";
@@ -21,9 +21,9 @@ const Login = () => {
   useEffect(() => {
     dispatch(
       setSDKConfig({
-        appKey: appKey,
+        appId: appId,
         useDNS: true,
-      })
+      }),
     );
   }, []);
   useEffect(() => {

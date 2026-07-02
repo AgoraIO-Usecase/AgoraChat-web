@@ -21,11 +21,11 @@ const ChatApp: FC<any> = () => {
   // close Chat and RTC log
   const { AgoraRTC, ChatSDK } = useSDK();
   ChatSDK.logger.disableAll();
-  AgoraRTC.setLogLevel(4);
+  // AgoraRTC.setLogLevel(4);
 
   useEffect(() => {
     listener(store);
-  }, [loginState.appKey, loginState.useDNS]);
+  }, [loginState.appId, loginState.useDNS]);
 
   const dispatch = useAppDispatch();
   useEffect(() => {
@@ -40,7 +40,7 @@ const ChatApp: FC<any> = () => {
   return (
     <UIKitProvider
       initConfig={{
-        appKey: loginState.appKey,
+        appId: loginState.appId,
         useUserInfo: true,
         translationTargetLanguage: state.translationTargetLanguage,
       }}
